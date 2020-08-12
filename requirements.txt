@@ -1,0 +1,7 @@
+PyYAML~=5.3.1
+elasticsearch-dsl>=7.0.0,<8.0.0
+elasticsearch~=7.8.1
+certifi~=2020.6.20
+chardet~=3.0.4
+netaddr~=0.8.0
+formatflowed~=2.0.0
