@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.8"
+  - "3.9-dev"
+  - "nightly"
+before_install:
+  - git clone https://github.com/apache/incubator-ponymail-unit-tests.git tests
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - cd tests && python3 runall.py --rootdir ../
+
