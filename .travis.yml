@@ -9,9 +9,6 @@ python:
   - "3.9-dev"
   - "nightly"
 
-before_script:
-  - pip install -r requirements.txt
-
 notifications:
   irc:
     if: fork = false
@@ -21,6 +18,9 @@ notifications:
     if: fork = false
     recipients:
       - dev@ponymail.apache.org
+
+script:
+  - echo "nothing to do here yet"
 
 jobs:
   include:
