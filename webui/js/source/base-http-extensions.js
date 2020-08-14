@@ -1,0 +1,118 @@
+/*
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+
+// URL calls currently 'in escrow'. This controls the spinny wheel animation
+var async_escrow = {}
+var async_maxwait = 250; // ms to wait before displaying spinner
+var async_status = 'clear';
+var async_cache = {}
+
+// Escrow spinner check
+async function escrow_check() {
+    let now = new Date();
+    let show_spinner = false;
+    for (var k in async_escrow) {
+        if ( (now - async_escrow[k]) > async_maxwait ) {
+            show_spinner = true;
+            break;
+        }
+    }
+    // Fetch or create the spinner
+    let spinner = document.getElementById('spinner');
+    if (!spinner) {
+        spinner = new HTML('div', { id: 'spinner', class: 'spinner'});
+        spinwheel = new HTML('div', {id: 'spinwheel', class: 'spinwheel'});
+        spinner.inject(spinwheel);
+        spinner.inject(new HTML('h2', {}, "Loading, please wait.."));
+        document.body.appendChild(spinner);
+    }
+    // Show or don't show spinner?
+    if (show_spinner) {
+        spinner.style.display = 'block';
+        if (async_status === 'clear') {
+            console.log("Waiting for JSON resource, deploying spinner");
+            async_status = 'waiting';
+        }
+    } else {
+        spinner.style.display = 'none';
+        if (async_status === 'waiting') {
+            console.log("All URLs out of escrow, dropping spinner");
+            async_status = 'clear';
+        }
+    }
+}
+
+async function async_snap(error) {
+    msg = await error.text();
+    msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
+    modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s".format(error.status, error.url, msg), "error");
+}
+
+
+// Asynchronous GET call
+async function GET(url, callback, state) {
+    console.log("Fetching JSON resource at %s".format(url))
+    let pkey = "GET-%s-%s".format(callback, url);
+    let res = undefined;
+    let res_json = undefined;
+    state = state || {};
+    state.url = url;
+    if (state && state.cached === true && async_cache[url]) {
+        console.log("Fetching %s from cache".format(url));
+        res_json = async_cache[url];
+    }
+    else {
+        try {
+            console.log("putting %s in escrow...".format(url));
+            async_escrow[pkey] = new Date(); // Log start of request in escrow dict
+            const rv = await fetch(url, {credentials: 'same-origin'}); // Wait for resource...
+            
+            // Since this is an async request, the request may have been canceled
+            // by the time we get a response. Only do callback if not.
+            if (async_escrow[pkey] !== undefined) {
+                delete async_escrow[pkey]; // move out of escrow when fetched
+                res = rv;
+            }
+        }
+        catch (e) {
+            delete async_escrow[pkey]; // move out of escrow if failed
+            console.log("The URL %s could not be fetched: %s".format(url, e));
+            modal("An error occured", "An error occured while trying to fetch %s:\n%s".format(url, e), "error");
+        }
+    }
+    if (res !== undefined || res_json !== undefined) {
+        // We expect a 2xx return code (usually 200 or 201), snap otherwise
+        if ((res_json) || (res.status >= 200 && res.status < 300)) {
+            console.log("Successfully fetched %s".format(url))
+            if (res_json) {
+                js = res_json;
+            } else {
+                js = await res.json();
+                async_cache[url] = js;
+            }
+            if (callback) {
+                callback(state, js);
+            } else {
+                console.log("No callback function was registered for %s, ignoring result.".format(url));
+            }
+        } else {
+            console.log("URL %s returned HTTP code %u, snapping!".format(url, res.status));
+            async_snap(res);
+        }
+    }
+}

@@ -1,0 +1,96 @@
+/* Spinner */
+.spinner {
+    z-index: 100;
+    position: fixed;
+    top: calc(40% - 90px);
+    left: calc(50% - 150px);
+    width: 360px;
+    height: 240px;
+    background: #3285BC88;
+    border-radius: 8px;
+    font-size: 9pt;
+    color: #FFF;
+    text-align: center;
+    font-family: sans-serif;
+}
+.spinwheel {
+    margin: 28px auto;
+    border-top: 10px solid rgba(30,190,200,0.95);
+    border-right: 10px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 10px solid rgba(120, 200, 30, 0.95);
+    border-left: 10px solid rgba(220,190,30,0.95);
+    transform: translateZ(0);
+    animation: spin1 1s 0s ease-in-out, spin2 1s 1s ease-in-out, spin3 1s 2s ease-in-out, spin4 1s 3s ease-in-out;
+}
+
+.spinwheel, .spinwheel:after {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.spinwheel_md {
+    margin: 10px 10px;
+    border-top: 10px solid rgba(30,190,200,0.95);
+    border-right: 10px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 10px solid rgba(120, 200, 30, 0.95);
+    border-left: 10px solid rgba(220,190,30,0.95);
+}
+
+.spinwheel_md, .spinwheel_md:after {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+.spinwheel_sm {
+    margin: 10px 10px;
+    border-top: 20px solid rgba(30,190,200,0.95);
+    border-right: 20px solid rgba(220, 30, 120, 0.95);
+    border-bottom: 20px solid rgba(120, 200, 30, 0.95);
+    border-left: 20px solid rgba(220,190,30,0.95);
+}
+
+.spinwheel_sm, .spinwheel_sm:after {
+    border-radius: 50%;
+    width: 0px;
+    height: 0px;
+}
+
+@keyframes spin1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(450deg);
+    }
+}
+
+@keyframes spin2 {
+    0% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(540deg);
+    }
+}
+@keyframes spin3 {
+    0% {
+        transform: rotate(180deg);
+    }
+
+    100% {
+        transform: rotate(630deg);
+    }
+}
+@keyframes spin4 {
+    0% {
+        transform: rotate(270deg);
+    }
+
+    100% {
+        transform: rotate(720deg);
+    }
+}
