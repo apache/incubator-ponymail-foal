@@ -438,7 +438,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             pmid = mid
             try:
                 mid = plugins.generators.generate(
-                    archiver_generator, msg, body, lid, attachments, raw_msg
+                    self.generator, msg, body, lid, attachments, raw_msg
                 )
             except Exception as err:
                 if logger:
