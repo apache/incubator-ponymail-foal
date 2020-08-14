@@ -23,7 +23,7 @@ before_script:
   - pip install mypy
 
 script:
-  - mypy --ignore-missing-imports archiver.py
+  - mypy --ignore-missing-imports tools/archiver.py
 
 jobs:
   include:
