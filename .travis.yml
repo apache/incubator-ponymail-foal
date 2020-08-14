@@ -19,8 +19,11 @@ notifications:
     recipients:
       - dev@ponymail.apache.org
 
+before_script:
+  - pip install mypy
+
 script:
-  - echo "nothing to do here yet"
+  - mypy --ignore-missing-imports archiver.py
 
 jobs:
   include:
