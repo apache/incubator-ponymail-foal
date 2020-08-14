@@ -29,5 +29,7 @@ jobs:
   include:
     - stage: "Tests"
       name: "Unit Tests"
-      before_script: git clone https://github.com/apache/incubator-ponymail-unit-tests.git tests
+      before_script:
+        - git clone https://github.com/apache/incubator-ponymail-unit-tests.git tests
+        - pip install html2text
       script: cd tests && python3 runall.py --rootdir ../
