@@ -409,7 +409,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         try:
             if (
                 msg_metadata.get("content-type")
-                and msg_metadata.get("content-type", "").find("flowed") != -1
+                and msg_metadata.get("content-type", "").find("format=flowed") != -1
             ):
                 body = formatflowed.convertToWrapped(
                     bytes(body, "utf-8"), character_set="utf-8"
