@@ -328,6 +328,31 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         return body
 
+    def format_flowed(self, body, msg_metadata):
+        try:
+            if (
+                msg_metadata.get("content-type")
+                and msg_metadata.get("content-type", "").find("format=flowed") != -1
+            ):
+                body = formatflowed.convertToWrapped(
+                    bytes(body, "utf-8"), character_set="utf-8"
+                )
+            if isinstance(body, str):
+                body = body.encode("utf-8")
+        except UnicodeEncodeError:
+            try:
+                body = body.decode(chardet.detect(body)["encoding"])
+            except UnicodeDecodeError:
+                try:
+                    body = body.decode("latin-1")
+                except UnicodeDecodeError:
+                    try:
+                        if isinstance(body, str):
+                            body = body.encode("utf-8")
+                    except UnicodeEncodeError:
+                        body = None
+        return body
+
     # N.B. this is also called by import-mbox.py
     def compute_updates(
         self,
@@ -406,28 +431,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         # message_date calculations are all done, prepare the index entry
         date_as_string = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(epoch))
         body = self.message_body(msg, verbose=args.verbose, ignore_body=args.ibody)
-        try:
-            if (
-                msg_metadata.get("content-type")
-                and msg_metadata.get("content-type", "").find("format=flowed") != -1
-            ):
-                body = formatflowed.convertToWrapped(
-                    bytes(body, "utf-8"), character_set="utf-8"
-                )
-            if isinstance(body, str):
-                body = body.encode("utf-8")
-        except UnicodeEncodeError:
-            try:
-                body = body.decode(chardet.detect(body)["encoding"])
-            except UnicodeDecodeError:
-                try:
-                    body = body.decode("latin-1")
-                except UnicodeDecodeError:
-                    try:
-                        if isinstance(body, str):
-                            body = body.encode("utf-8")
-                    except UnicodeEncodeError:
-                        body = None
+        body = self.format_flowed(body, msg_metadata)
 
         attachments, contents = message_attachments(msg)
         irt = ""
