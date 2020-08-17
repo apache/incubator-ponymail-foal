@@ -20,127 +20,138 @@
     also adds defaults for most methods
 """
 
-from ponymailconfig import PonymailConfig
+import yaml
 import sys
 import logging
 import certifi
+import os
+import plugins.ponymailconfig
 
 try:
     from elasticsearch import Elasticsearch, helpers
     from elasticsearch import VERSION as ES_VERSION
     from elasticsearch import ConnectionError as ES_ConnectionError
 except ImportError as e:
-    sys.exit("Sorry, you need to install the elasticsearch module from pip first. (%s)" % str(e))
+    sys.exit(
+        "Sorry, you need to install the elasticsearch module from pip first. (%s)"
+        % str(e)
+    )
+
 
 class Elastic:
+    db_mbox:            str
+    db_source:          str
+    db_attachment:      str
+    db_account:         str
+    db_session:         str
+    db_notification:    str
+    db_mailinglist:     str
+
     def __init__(self, dbname=None):
         # Fetch config
-        config = PonymailConfig()
-        self.dbname = dbname or config.get("elasticsearch", "dbname")
-        ssl = config.get("elasticsearch", "ssl", fallback="false").lower() == 'true'
-        uri = config.get("elasticsearch", "uri", fallback="")
+        config = plugins.ponymailconfig.PonymailConfig()
+
+        # Set default names for all indices we use
+        self.dbname = config.get('elasticsearch', 'dbname', fallback='ponymail')
+        self.db_mbox = self.dbname + '-mbox'
+        self.db_source = self.dbname + '-source'
+        self.db_account = self.dbname + '-account'
+        self.db_attachment = self.dbname + '-attachment'
+        self.db_session = self.dbname + '-session'
+        self.db_notification = self.dbname + '-notification'
+        self.db_mailinglist = self.dbname + '-mailinglist'
+
+        ssl = config.get('elasticsearch', 'ssl', fallback=False)
+        uri = config.get('elasticsearch', 'uri', fallback='')
         auth = None
         if config.has_option('elasticsearch', 'user'):
-            auth = (config.get('elasticsearch','user'), config.get('elasticsearch','password'))
-
+            auth = (
+                config.get('elasticsearch', 'user'),
+                config.get('elasticsearch', 'password')
+            )
 
         # elasticsearch logs lots of warnings on retries/connection failure
         logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-#         # add debug
-#         trace = logging.getLogger("elasticsearch.trace")
-#         trace.setLevel(logging.DEBUG)
-#         # create console handler
-#         consoleHandler = logging.StreamHandler()
-#         trace.addHandler(consoleHandler)
+        #         # add debug
+        #         trace = logging.getLogger("elasticsearch.trace")
+        #         trace.setLevel(logging.DEBUG)
+        #         # create console handler
+        #         consoleHandler = logging.StreamHandler()
+        #         trace.addHandler(consoleHandler)
 
-        self.es = Elasticsearch([
-            {
-                'host': config.get("elasticsearch", "hostname"),
-                'port': int(config.get("elasticsearch", "port")),
-                'use_ssl': ssl,
-                'url_prefix': uri,
-                'auth': auth,
-                'ca_certs': certifi.where()
-            }],
+        self.es = Elasticsearch(
+            [
+                {
+                    "host": config.get('elasticsearch', 'hostname', fallback='localhost'),
+                    "port": config.get('elasticsearch', 'port', fallback=9200),
+                    "use_ssl": ssl,
+                    "url_prefix": uri,
+                    "auth": auth,
+                    "ca_certs": certifi.where(),
+                }
+            ],
             max_retries=5,
-            retry_on_timeout=True
-            )
+            retry_on_timeout=True,
+        )
         self.dbVersion = None
         # Mimic ES hierarchy: es.indices.xyz()
-        self.indices=_indices_wrap(self)
+        self.indices = _indices_wrap(self)
 
     def libraryVersion(self):
         return ES_VERSION
+
     def libraryMajor(self):
         return ES_VERSION[0]
 
     def engineVersion(self):
         if not self.dbVersion:
             try:
-                self.dbVersion = self.info()['version']['number']
+                self.dbVersion = self.info()["version"]["number"]
             except ES_ConnectionError:
                 # default if cannot connect; allows retry
-                return '0.0.0'
+                return "0.0.0"
         return self.dbVersion
+
     def engineMajor(self):
-        return int(self.engineVersion().split('.')[0])
+        return int(self.engineVersion().split(".")[0])
 
     def getdbname(self):
         return self.dbname
 
-    def search(self, doc_type='mbox', **kwargs):
-        return self.es.search(
-            index=self.dbname,
-            doc_type=doc_type,
-            **kwargs
-        )
+    def search(self, **kwargs):
+        return self.es.search(index=self.dbname, **kwargs)
 
     def index(self, **kwargs):
-        return self.es.index(
-            index=self.dbname,
-            **kwargs
-        )
+        return self.es.index(**kwargs)
 
     def update(self, **kwargs):
-        return self.es.update(
-            index=self.dbname,
-            **kwargs
+        return self.es.update(index=self.dbname, **kwargs)
+
+    def scan(self, scroll="3m", size=100, **kwargs):
+        return self.es.search(
+            index=self.dbname, search_type="scan", size=size, scroll=scroll, **kwargs
         )
 
-    def scan(self, doc_type='mbox', scroll='3m', size = 100, **kwargs):
-        return self.es.search(
-            index=self.dbname,
-            doc_type=doc_type,
-            search_type = 'scan',
-            size = size,
-            scroll = scroll,
-            **kwargs
-        )
-    
-    def scan_and_scroll(self, doc_type='mbox', scroll='3m', size = 100, **kwargs):
+    def scan_and_scroll(self, scroll="3m", size=100, **kwargs):
         """ Run a backwards compatible scan/scroll, passing an iterator
             that returns one page of hits per iteration. This
             incorporates es.scroll for continuous iteration, and thus the
             scroll() does NOT need to be called at all by the calling
             process. """
-        results = self.es.search(
-            index=self.dbname,
-            doc_type=doc_type,
-            size = size,
-            scroll = scroll,
-            **kwargs
-        )
-        if results['hits'].get('hits', []): # Might not be there in 2.x?
+        results = self.es.search(index=self.dbname, size=size, scroll=scroll, **kwargs)
+        if results["hits"].get("hits", []):  # Might not be there in 2.x?
             yield results
-        
+
         # While we have hits waiting, scroll...
-        scroll_size = results['hits']['total']
-        while (scroll_size > 0):
-            results = self.scroll(scroll_id = results['_scroll_id'], scroll = scroll)
-            scroll_size = len(results['hits']['hits']) # If >0, try another scroll next.
+        scroll_size = results["hits"]["total"]
+        while scroll_size > 0:
+            results = self.scroll(scroll_id=results["_scroll_id"], scroll=scroll)
+            scroll_size = len(
+                results["hits"]["hits"]
+            )  # If >0, try another scroll next.
             yield results
-            
+
     def get(self, **kwargs):
         return self.es.get(index=self.dbname, **kwargs)
 
@@ -163,21 +174,27 @@ class Elastic:
         """
         return self.es.clear_scroll(*args, **kwargs)
 
+
 class _indices_wrap(object):
     """
         Wrapper for the ES indices methods we use
     """
+
     def __init__(self, parent):
         self.es = parent.es
 
     def exists(self, *args, **kwargs):
         return self.es.indices.exists(*args, **kwargs)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     es = Elastic()
-    print("Versions: Library: %d %s Engine: %d (%s)" % (es.libraryMajor(), es.libraryVersion(), es.engineMajor(), es.engineVersion()))
+    print(
+        "Versions: Library: %d %s Engine: %d (%s)"
+        % (es.libraryMajor(), es.libraryVersion(), es.engineMajor(), es.engineVersion())
+    )
     try:
-        print(es.indices.exists(index='ponymail'))
-        print(es.indices.exists('test'))
+        print(es.indices.exists(index="ponymail"))
+        print(es.indices.exists("test"))
     except ES_ConnectionError as e:
         print(type(e))
