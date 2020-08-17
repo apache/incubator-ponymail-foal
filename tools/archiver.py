@@ -162,7 +162,7 @@ def message_attachments(msg: email.message.Message) -> typing.Tuple[list, dict]:
 
 
 class Body:
-    def __init__(self, part: email.message.MIMEPart):
+    def __init__(self, part: email.message.Message):
         self.content_type = part.get_content_type()
         self.charsets = set([part.get_charset()])  # Part's charset
         self.charsets.update(part.get_charsets())  # Parent charsets as fallback
