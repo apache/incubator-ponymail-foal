@@ -218,7 +218,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             import html2text
             self.html2text = html2text.html2text
 
-
     def message_body(self, msg: email.message.Message, verbose=False, ignore_body=None):
         body = None
         first_html = None
@@ -481,7 +480,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 )
         else:
             self.elastic = plugins.elastic.Elastic()
-
 
         # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
         self.consistency = config["elasticsearch"].get("write", "quorum")
