@@ -198,15 +198,17 @@ class _indices_wrap(object):
     def exists(self, *args, **kwargs):
         return self.es.indices.exists(*args, **kwargs)
 
-
-if __name__ == "__main__":
+def main():
     es = Elastic()
     print(
         "Versions: Library: %d %s Engine: %d (%s)"
         % (es.libraryMajor(), es.libraryVersion(), es.engineMajor(), es.engineVersion())
     )
     try:
-        print(es.indices.exists(index="ponymail"))
+        print(es.indices.exists(index=es.db_mbox))
         print(es.indices.exists("test"))
     except ES_ConnectionError as e:
         print(type(e))
+
+if __name__ == "__main__":
+    main()
