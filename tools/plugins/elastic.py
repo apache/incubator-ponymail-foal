@@ -60,6 +60,7 @@ class Elastic:
         self.db_session = self.dbname + '-session'
         self.db_notification = self.dbname + '-notification'
         self.db_mailinglist = self.dbname + '-mailinglist'
+        self.db_version = 0
 
         ssl = config.get('elasticsearch', 'ssl', fallback=False)
         uri = config.get('elasticsearch', 'uri', fallback='')
@@ -69,6 +70,9 @@ class Elastic:
                 config.get('elasticsearch', 'user'),
                 config.get('elasticsearch', 'password')
             )
+
+        # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
+        self.consistency = config.get("elasticsearch", "write", fallback="quorum")
 
         # elasticsearch logs lots of warnings on retries/connection failure
         logging.getLogger("elasticsearch").setLevel(logging.ERROR)
@@ -94,7 +98,15 @@ class Elastic:
             max_retries=5,
             retry_on_timeout=True,
         )
-        self.dbVersion = None
+
+        es_engine_major = self.engineMajor()
+        if es_engine_major == 2:
+            pass
+        elif es_engine_major in [5, 6, 7]:
+            self.wait_for_active_shards = config.get("elasticsearch", "fallback", fallback=1)
+        else:
+            raise Exception("Unexpected elasticsearch version ", es_engine_major)
+
         # Mimic ES hierarchy: es.indices.xyz()
         self.indices = _indices_wrap(self)
 
@@ -105,13 +117,13 @@ class Elastic:
         return ES_VERSION[0]
 
     def engineVersion(self):
-        if not self.dbVersion:
+        if not self.db_version:
             try:
-                self.dbVersion = self.info()["version"]["number"]
+                self.db_version = self.es.info()["version"]["number"]
             except ES_ConnectionError:
                 # default if cannot connect; allows retry
                 return "0.0.0"
-        return self.dbVersion
+        return self.db_version
 
     def engineMajor(self):
         return int(self.engineVersion().split(".")[0])

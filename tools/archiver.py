@@ -212,34 +212,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         """ Just initialize ES. """
         self.html = parse_html
         self.generator = generator
-        if dump_dir:
-            try:
-                self.elastic = plugins.elastic.Elastic()
-            except elasticsearch.exceptions.ElasticsearchException as e:
-                print(e)
-                print(
-                    "ES connection failed, but dumponfail specified, dumping to %s"
-                    % dump_dir
-                )
-        else:
-            self.elastic = plugins.elastic.Elastic()
-
+        self.dump_dir = dump_dir
+        self.cropout = config.get("debug", {}).get("cropout")
         if parse_html:
             import html2text
-
             self.html2text = html2text.html2text
-        self.dbname = config["elasticsearch"].get("dbname", "ponymail")
-
-        # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
-        self.consistency = config["elasticsearch"].get("write", "quorum")
-        es_engine_major = self.elastic.engineMajor()
-        if es_engine_major == 2:
-            pass
-        elif es_engine_major in [5, 6, 7]:
-            self.wait_for_active_shards = config["elasticsearch"].get("wait", 1)
-        else:
-            raise Exception("Unexpected elasticsearch version ", es_engine_major)
-        self.cropout = config.get("debug", {}).get("cropout")
 
 
     def message_body(self, msg: email.message.Message, verbose=False, ignore_body=None):
@@ -493,6 +470,29 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
 
+        if self.dump_dir:
+            try:
+                self.elastic = plugins.elastic.Elastic()
+            except elasticsearch.exceptions.ElasticsearchException as e:
+                print(e)
+                print(
+                    "ES connection failed, but dumponfail specified, dumping to %s"
+                    % self.dump_dir
+                )
+        else:
+            self.elastic = plugins.elastic.Elastic()
+
+
+        # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
+        self.consistency = config["elasticsearch"].get("write", "quorum")
+        es_engine_major = self.elastic.engineMajor()
+        if es_engine_major == 2:
+            pass
+        elif es_engine_major in [5, 6, 7]:
+            self.wait_for_active_shards = config["elasticsearch"].get("wait", 1)
+        else:
+            raise Exception("Unexpected elasticsearch version ", es_engine_major)
+
         try:
             if contents:
                 for key in contents:
@@ -503,7 +503,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     )
 
             self.index(
-                index=self.elastic.db_mbox
+                index=self.elastic.db_mbox,
                 id=ojson["mid"],
                 consistency=self.consistency,
                 body=ojson,
