@@ -268,7 +268,7 @@ class SlurpThread(Thread):
                 # If --dedup is active, try to filter out any messages that already exist on the list
                 if json and dedup and message.get("message-id", None):
                     res = es.search(
-                        index=dbname + "-" + "mbox",
+                        index=es.db_mbox,
                         doc_type="_doc",
                         size=1,
                         _source=["mid"],  # so can report the match source
@@ -345,7 +345,7 @@ class SlurpThread(Thread):
                         if not args.dry:
                             for key in contents:
                                 es.index(
-                                    index=dbname + "_attachment",
+                                    index=es.db_attachment,
                                     doc_type="_doc",
                                     id=key,
                                     body={"source": contents[key]},
@@ -592,12 +592,12 @@ if args.dry:
 else:
     # Need to check the index before starting bulk operations
     try:
-        if not es.indices.exists(index=dbname + "_mbox"):
-            print("Error: the index '%s' does not exist!" % (dbname))
+        if not es.indices.exists(index=es.db_mbox):
+            print("Error: the index '%s' does not exist!" % (es.db_mbox))
             sys.exit(1)
         print("Database exists OK")
     except Exception as err:
-        print("Error: unable to check if the index %s exists!: %s" % (dbname, err))
+        print("Error: unable to check if the index %s exists!: %s" % (es.db_mbox, err))
         sys.exit(1)
 
 if args.generator:
@@ -752,12 +752,12 @@ elif re.match(r"imaps?://", source):
     for mid, _id in db.items():
         if mid not in mail:
             queue1.append(
-                {"_op_type": "delete", "_index": dbname, "_type": "mbox", "_id": _id}
+                {"_op_type": "delete", "_index": es.db_mbox, "_type": "mbox", "_id": _id}
             )
             queue2.append(
                 {
                     "_op_type": "delete",
-                    "_index": dbname + '-source',
+                    "_index": es.db_source,
                     "_type": "_doc",
                     "_id": _id,
                 }
