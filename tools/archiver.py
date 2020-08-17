@@ -175,7 +175,7 @@ class Body:
                 if cs:
                     try:
                         self.string = contents.decode(cs)
-                        self.character_set = cs
+                        self.character_set = str(cs)
                     except UnicodeDecodeError:
                         pass
             if not self.string:
@@ -248,7 +248,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
     def message_body(
         self, msg: email.message.Message, verbose=False, ignore_body=None
-    ) -> Body:
+    ) -> typing.Optional[Body]:
         """
             Fetches the proper text body from an email as an archiver.Body object
         :param msg: The email or part of it to examine for proper body
@@ -267,7 +267,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 Note: cannot use break here because firstHTML is needed if len(body) <= 1
             """
             try:
-                if not body and part.get_content_type() in [
+                if body is None and part.get_content_type() in [
                     "text/plain",
                     "text/enriched",
                 ]:
@@ -424,7 +424,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "private": private,
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
-                "body": body.unflow(),
+                "body": body.unflow() if body else '',
                 "attachments": attachments,
             }
 
