@@ -557,10 +557,10 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             and mlist.description
             and mlist.list_name
         ):
-            self.index(
+            self.elastic.index(
                 index=self.elastic.db_mailinglist,
                 id=lid,
-                consistency=self.consistency,
+                consistency=self.elastic.consistency,
                 body={
                     "list": lid,
                     "name": mlist.list_name,
@@ -579,14 +579,14 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             if dm:
                 cid = dm.group(1)
                 mid = dm.group(2)
-                if self.elastic.exists(index=self.dbname, doc_type="account", id=cid):
-                    doc = self.elastic.get(index=self.dbname, doc_type="account", id=cid)
+                if self.elastic.exists(index=self.elastic.db_account, id=cid):
+                    doc = self.elastic.get(index=self.elastic.db_account, id=cid)
                     if doc:
                         oldrefs.append(cid)
                         # N.B. no index is supplied, so ES will generate one
                         self.index(
                             index=self.elastic.db_notification,
-                            consistency=self.consistency,
+                            consistency=self.elastic.consistency,
                             body={
                                 "type": "direct",
                                 "recipient": cid,
@@ -613,8 +613,9 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             ):
                 cid = im.group(1)
                 mid = im.group(2)
-                if self.elastic.exists(index=self.dbname, id=cid):
-                    doc = self.elastic.get(index=self.dbname, id=cid)
+                # TODO: Fix this to work with pibbles
+                if self.elastic.exists(index=self.elastic.db_mbox, id=cid):
+                    doc = self.elastic.get(index=self.elastic.db_mbox, id=cid)
 
                     # does the user want to be notified of indirect replies?
                     if (
@@ -625,10 +626,9 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         and cid not in oldrefs
                     ):
                         oldrefs.append(cid)
-                        # N.B. no index is supplied, so ES will generate one
-                        self.index(
+                        # N.B. no index mapping is supplied, so ES will generate one
+                        self.elastic.index(
                             index=self.elastic.db_notification,
-                            consistency=self.consistency,
                             body={
                                 "type": "indirect",
                                 "recipient": cid,
