@@ -126,19 +126,6 @@ def parse_attachment(
     return None, None
 
 
-def pm_charsets(msg: email.message.Message) -> typing.Set[str]:
-    """
-    Figures out and returns all character sets for a message or message part
-    :param msg: The email or message part to analyze
-    :return: all found charsets
-    """
-    charsets = set({})
-    for c in msg.get_charsets():
-        if c is not None:
-            charsets.update([c])
-    return charsets
-
-
 def normalize_lid(lid: str) -> str:  # N.B. Also used by import-mbox.py
     """ Ensures that a List ID is in standard form, i.e. <a.b.c.d> """
     # If of format "list name" <foo.bar.baz>
@@ -172,6 +159,46 @@ def message_attachments(msg: email.message.Message) -> typing.Tuple[list, dict]:
             attachments.append(part_meta)
             contents[part_meta["hash"]] = part_file
     return attachments, contents
+
+
+class Body:
+    def __init__(self, part: email.message.MIMEPart):
+        self.content_type = part.get_content_type()
+        self.charsets = set([part.get_charset()])  # Part's charset
+        self.charsets.update(part.get_charsets())  # Parent charsets as fallback
+        self.character_set = "utf-8"
+        self.string = None
+        self.flowed = True if "format=flowed" in part.get("content-type", "") else False
+        contents = part.get_payload(decode=True)
+        if contents is not None:
+            for cs in self.charsets:
+                if cs:
+                    try:
+                        self.string = contents.decode(cs)
+                        self.character_set = cs
+                    except UnicodeDecodeError:
+                        pass
+            if not self.string:
+                self.string = contents.decode("utf-8", errors="replace")
+
+    def __str__(self):
+        return self.string or "None"
+
+    def __len__(self):
+        return len(self.string or "")
+
+    def encode(self, charset="utf-8", errors="strict"):
+        return self.string.encode(charset, errors=errors)
+
+    def unflow(self):
+        if self.string:
+            if self.flowed:
+                return formatflowed.convertToWrapped(
+                    self.string.encode(self.character_set, errors="ignore"),
+                    wrap_fixed=False,
+                    character_set=self.character_set,
+                )
+        return self.string
 
 
 class Archiver(object):  # N.B. Also used by import-mbox.py
@@ -216,9 +243,19 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         self.cropout = config.get("debug", {}).get("cropout")
         if parse_html:
             import html2text
+
             self.html2text = html2text.html2text
 
-    def message_body(self, msg: email.message.Message, verbose=False, ignore_body=None):
+    def message_body(
+        self, msg: email.message.Message, verbose=False, ignore_body=None
+    ) -> Body:
+        """
+            Fetches the proper text body from an email as an archiver.Body object
+        :param msg: The email or part of it to examine for proper body
+        :param verbose: Verbose output while parsing
+        :param ignore_body: Optional bodies to ignore while parsing
+        :return: archiver.Body object
+        """
         body = None
         first_html = None
         for part in msg.walk():
@@ -230,73 +267,36 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 Note: cannot use break here because firstHTML is needed if len(body) <= 1
             """
             try:
-                if not body and part.get_content_type() == "text/plain":
-                    body = part.get_payload(decode=True)
-                if not body and part.get_content_type() == "text/enriched":
-                    body = part.get_payload(decode=True)
+                if not body and part.get_content_type() in [
+                    "text/plain",
+                    "text/enriched",
+                ]:
+                    body = Body(part)
                 elif (
                     self.html
                     and not first_html
                     and part.get_content_type() == "text/html"
                 ):
-                    first_html = part.get_payload(decode=True)
+                    first_html = Body(part)
             except Exception as err:
                 print(err)
 
         # this requires a GPL lib, user will have to install it themselves
         if first_html and (
-            not body
+            body is None
             or len(body) <= 1
             or (ignore_body and str(body).find(str(ignore_body)) != -1)
         ):
-            body = self.html2text(
-                first_html.decode("utf-8", "ignore")
-                if type(first_html) is bytes
-                else first_html
-            )
-
-        # See issue#463
-        # This code will try at most one charset
-        # If the decode fails, it will use utf-8
-        if body is not None:
-            for charset in pm_charsets(msg):
-                try:
-                    body = body.decode(charset) if type(body) is bytes else body
-                    # at this point body can no longer be bytes
-                except UnicodeDecodeError:
-                    body = (
-                        body.decode("utf-8", errors="replace")
-                        if type(body) is bytes
-                        else body
-                    )
-                    # at this point body can no longer be bytes
-
+            content_type = "text/html"
+            body = first_html
+            body.string = self.html2text(body.string)
         return body
 
     def format_flowed(self, body, msg_metadata):
-        try:
-            if (
-                msg_metadata.get("content-type")
-                and msg_metadata.get("content-type", "").find("format=flowed") != -1
-            ):
-                body = formatflowed.convertToWrapped(
-                    bytes(body, "utf-8"), character_set="utf-8"
-                )
-            if isinstance(body, str):
-                body = body.encode("utf-8")
-        except UnicodeEncodeError:
-            try:
-                body = body.decode(chardet.detect(body)["encoding"])
-            except UnicodeDecodeError:
-                try:
-                    body = body.decode("latin-1")
-                except UnicodeDecodeError:
-                    try:
-                        if isinstance(body, str):
-                            body = body.encode("utf-8")
-                    except UnicodeEncodeError:
-                        body = None
-        return body
+        if body and body.flowed:
+            return formatflowed.decode(body.encode("utf-8"))
+        else:
+            return body
 
     # N.B. this is also called by import-mbox.py
     def compute_updates(
@@ -376,7 +376,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         # message_date calculations are all done, prepare the index entry
         date_as_string = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(epoch))
         body = self.message_body(msg, verbose=args.verbose, ignore_body=args.ibody)
-        body = self.format_flowed(body, msg_metadata)
 
         attachments, contents = message_attachments(msg)
         irt = ""
@@ -425,9 +424,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "private": private,
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
-                "body": body.decode("utf-8", "replace")
-                if type(body) is bytes
-                else body,
+                "body": body.unflow(),
                 "attachments": attachments,
             }
 

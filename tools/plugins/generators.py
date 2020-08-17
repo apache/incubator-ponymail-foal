@@ -202,7 +202,7 @@ def medium(msg, body, lid, _attachments, _raw_msg):
     """
 
     # Use text body
-    xbody = body if type(body) is bytes else body.encode('ascii', 'ignore')
+    xbody = body.encode('utf-8', 'ignore')
     # Use List ID
     xbody += bytes(lid, encoding='ascii')
     # Use Date header
@@ -250,7 +250,7 @@ def medium_original(msg, body, lid, _attachments, _raw_msg):
     """
 
     # Use text body
-    xbody = body if type(body) is bytes else body.encode('ascii', 'ignore')
+    xbody = body.encode('utf-8', 'ignore')
     # Use List ID
     xbody += lid  # WRONG: Should be: bytes(lid, 'ascii')
 
@@ -305,7 +305,7 @@ def cluster(msg, body, lid, attachments, _raw_msg):
     # Use text body
     if not body:  # Make sure body is not None, which will fail.
         body = ""
-    xbody = body if type(body) is bytes else body.encode('ascii', 'ignore')
+    xbody = body.encode('utf-8', 'ignore')
 
     # Crop out any trailing whitespace in body
     xbody = re.sub(b"\s+$", b"", xbody)
@@ -370,7 +370,7 @@ def legacy(msg, body, lid, _attachments, _raw_msg):
     except:
         pass
     mid = "%s@%s@%s" % (
-    hashlib.sha224(body if type(body) is bytes else body.encode('ascii', 'ignore')).hexdigest(), uid_mdate, lid)
+    hashlib.sha224(body if type(body) is bytes else body.encode('utf-8', 'ignore')).hexdigest(), uid_mdate, lid)
     return mid
 
 
