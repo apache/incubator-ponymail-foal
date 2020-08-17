@@ -216,6 +216,7 @@ class SlurpThread(Thread):
 
             for key in messages.iterkeys():
                 message = messages.get(key)
+                message_raw = messages.get_bytes(key)
                 # If --filter is set, discard any messages not matching by continuing to next email
                 if (
                     fromFilter
@@ -256,7 +257,7 @@ class SlurpThread(Thread):
                     continue
 
                 json, contents, _msgdata, _irt = archie.compute_updates(
-                    list_override, private, message
+                    args, list_override, private, message, message_raw
                 )
 
                 # Not sure this can ever happen
