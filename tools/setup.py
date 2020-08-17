@@ -128,6 +128,7 @@ wce = False
 shards = 0
 replicas = -1
 urlPrefix = None
+nonce = None
 
 # If called with --defaults (like from Docker), use default values
 if args.defaults:
@@ -142,6 +143,7 @@ if args.defaults:
     replicas = 0
     genname = "cluster"
     urlPrefix = ""
+    nonce = None
 
 # Accept CLI args, copy them
 if args.dbprefix:
