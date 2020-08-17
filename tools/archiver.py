@@ -497,20 +497,20 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             if contents:
                 for key in contents:
                     self.index(
-                        index=self.dbname + "-attachment",
+                        index=self.elastic.db_attachment,
                         id=key,
                         body={"source": contents[key]},
                     )
 
             self.index(
-                index=self.dbname + "-mbox",
+                index=self.elastic.db_mbox
                 id=ojson["mid"],
                 consistency=self.consistency,
                 body=ojson,
             )
 
             self.index(
-                index=self.dbname + "-source",
+                index=self.elastic.db_source,
                 id=sha3,
                 consistency=self.consistency,
                 body={
@@ -558,7 +558,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             and mlist.list_name
         ):
             self.index(
-                index=self.dbname + "-mailinglist",
+                index=self.elastic.db_mailinglist,
                 id=lid,
                 consistency=self.consistency,
                 body={
@@ -585,7 +585,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         oldrefs.append(cid)
                         # N.B. no index is supplied, so ES will generate one
                         self.index(
-                            index=self.dbname + "-notification",
+                            index=self.elastic.db_notification,
                             consistency=self.consistency,
                             body={
                                 "type": "direct",
@@ -627,9 +627,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         oldrefs.append(cid)
                         # N.B. no index is supplied, so ES will generate one
                         self.index(
-                            index=self.dbname,
+                            index=self.elastic.db_notification,
                             consistency=self.consistency,
-                            doc_type="notifications",
                             body={
                                 "type": "indirect",
                                 "recipient": cid,
