@@ -32,11 +32,11 @@ import re
 import sys
 import tempfile
 import time
+import urllib.parse
 from os import listdir
 from os.path import isdir, isfile, join
 from threading import Lock, Thread
 from urllib.request import urlopen
-import urllib.parse
 
 import archiver
 from plugins.elastic import Elastic
