@@ -187,6 +187,9 @@ class Body:
     def __len__(self):
         return len(self.string or "")
 
+    def assign(self, new_string):
+        self.string = new_string
+
     def encode(self, charset="utf-8", errors="strict"):
         return self.string.encode(charset, errors=errors)
 
@@ -287,9 +290,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             or len(body) <= 1
             or (ignore_body and str(body).find(str(ignore_body)) != -1)
         ):
-            content_type = "text/html"
             body = first_html
-            body.string = self.html2text(body.string)
+            body.assign(self.html2text(str(body)))
         return body
 
     def format_flowed(self, body, msg_metadata):
