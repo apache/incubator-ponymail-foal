@@ -42,9 +42,9 @@ from plugins.elastic import Elastic
 
 goodies = 0
 baddies = 0
-duplicates = {}  # detect if mid is re-used this run
+duplicates: dict = {}  # detect if mid is re-used this run
 block = Lock()
-lists = []  # N.B. the entries in this list depend on the import type:
+lists: list = []  # N.B. the entries in this list depend on the import type:
 # globDir: [filename, list-id]
 # modMbox: [list-id, mbox]
 # piperMail: [filename, list-id]
@@ -717,14 +717,17 @@ elif re.match(r"imaps?://", source):
 
     # fetch message-id => uid pairs from imap
 
-    if url.scheme == "imaps":
-        imap4 = imaplib.IMAP4_SSL(url.hostname, port)
+    if url.hostname is not None:
+        if url.scheme == "imap":
+            imap4 = imaplib.IMAP4(url.hostname, port)
+        elif url.scheme == 'imaps':
+            imap4 = imaplib.IMAP4_SSL(url.hostname, port)
     else:
-        imap4 = imaplib.IMAP4(url.hostname, port)
+        raise Exception("Hostname not found in IMAP source URL")
     imap4.login(user, password)
     imap4.select(folder, readonly=True)
-    results = imap4.uid("search", None, "ALL")
-    uids = b",".join(results[1][0].split())
+    results = imap4.uid("search", "ALL")
+    uids = b",".join(results[1][0].split()).decode('ascii')
     results = imap4.uid("fetch", uids, "(BODY[HEADER.FIELDS (MESSAGE-ID)])")
 
     mail = {}
@@ -774,12 +777,11 @@ elif re.match(r"imaps?://", source):
         del queue2[0:1024]
 
     # add new items to elasticsearch from imap
-
-    uids = []
+    new_uids = []
     for mid, uid in mail.items():
-        if not mid in db:
-            uids.append(uid)
-    lists.append([uids, listname, imap4])
+        if mid not in db:
+            new_uids.append(uid)
+    lists.append([new_uids, listname, imap4])
 else:
     # File based import??
     print("Doing file based import")
