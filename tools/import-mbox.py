@@ -760,7 +760,7 @@ elif re.match(r"imaps?://", source):
                 {
                     "_op_type": "delete",
                     "_index": es.db_mbox,
-                    "_type": "mbox",
+                    "_type": "_doc",
                     "_id": _id,
                 }
             )
