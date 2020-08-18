@@ -168,7 +168,7 @@ class Body:
         self.charsets.update(part.get_charsets())  # Parent charsets as fallback
         self.character_set = "utf-8"
         self.string = None
-        self.flowed = True if "format=flowed" in part.get("content-type", "") else False
+        self.flowed = "format=flowed" in part.get("content-type", "")
         contents = part.get_payload(decode=True)
         if contents is not None:
             for cs in self.charsets:
