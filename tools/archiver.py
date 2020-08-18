@@ -181,8 +181,8 @@ class Body:
             if not self.string:
                 self.string = contents.decode("utf-8", errors="replace")
 
-    def __str__(self):
-        return self.string or "None"
+    def __repr__(self):
+        return self.string
 
     def __len__(self):
         return len(self.string or "")
