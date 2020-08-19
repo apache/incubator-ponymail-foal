@@ -103,7 +103,7 @@ class Elastic:
         if es_engine_major == 2:
             pass
         elif es_engine_major in [5, 6, 7]:
-            self.wait_for_active_shards = config.get("elasticsearch", "fallback", fallback=1)
+            self.wait_for_active_shards = config.get("elasticsearch", "wait", fallback=1)
         else:
             raise Exception("Unexpected elasticsearch version ", es_engine_major)
 
