@@ -191,12 +191,13 @@ class Body:
     def encode(self, charset="utf-8", errors="strict"):
         return self.string.encode(charset, errors=errors)
 
-    def unflow(self, convert_lf = False):
+    def unflow(self, convert_lf=False):
         if self.string:
             if self.flowed:
                 # Convert lone LF to CRLF if found
                 if convert_lf:
-                    fixed_string = "\r\n".join([x.strip() for x in self.string.split("\n")])
+                    fixed_string = "\r\n".join([x.rstrip("\r") for x in self.string.split("\n")])
+                    conversion_was_needed = fixed_string != self.string
                 else:
                     fixed_string = self.string
                 flow_fixed = formatflowed.convertToWrapped(
@@ -204,6 +205,9 @@ class Body:
                     wrap_fixed=False,
                     character_set=self.character_set,
                 )
+                # If we "upconverted" from LF to CRLF, convert back after flow decoding
+                if convert_lf and conversion_was_needed:
+                    flow_fixed = "\n".join([x.rstrip("\r") for x in self.string.split("\n")])
                 return flow_fixed
         return self.string
 
