@@ -54,8 +54,6 @@ import traceback
 import typing
 import uuid
 
-import certifi
-import chardet
 import formatflowed
 import netaddr
 import yaml
@@ -193,14 +191,20 @@ class Body:
     def encode(self, charset="utf-8", errors="strict"):
         return self.string.encode(charset, errors=errors)
 
-    def unflow(self):
+    def unflow(self, convert_lf = False):
         if self.string:
             if self.flowed:
-                return formatflowed.convertToWrapped(
-                    self.string.encode(self.character_set, errors="ignore"),
+                # Convert lone LF to CRLF if found
+                if convert_lf:
+                    fixed_string = "\r\n".join([x.strip() for x in self.string.split("\n")])
+                else:
+                    fixed_string = self.string
+                flow_fixed = formatflowed.convertToWrapped(
+                    fixed_string.encode(self.character_set, errors="ignore"),
                     wrap_fixed=False,
                     character_set=self.character_set,
                 )
+                return flow_fixed
         return self.string
 
 
