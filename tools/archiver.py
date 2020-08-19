@@ -298,11 +298,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             body.assign(self.html2text(str(body)))
         return body
 
-    def format_flowed(self, body, msg_metadata):
-        if body and body.flowed:
-            return formatflowed.decode(body.encode("utf-8"))
-        else:
-            return body
 
     # N.B. this is also called by import-mbox.py
     def compute_updates(
