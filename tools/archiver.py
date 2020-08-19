@@ -192,6 +192,11 @@ class Body:
         return self.string.encode(charset, errors=errors)
 
     def unflow(self, convert_lf=False):
+        """Unflows text of type format=flowed.
+           By default, lines ending in LF (mbox imports) are not converted to CRLF, and thus
+           not unflowed. This is to be consistent with previous versions of Pony Mail, and
+           can be enabled for any new installations that that not reimaging their database.
+           """
         if self.string:
             if self.flowed:
                 # Convert lone LF to CRLF if found
