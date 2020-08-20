@@ -730,10 +730,6 @@ def main():
 
     if args.verbose:
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-    else:
-        # elasticsearch logs lots of warnings on retries/connection failure
-        # Also eliminates: 'Undecodable raw error response from server:' warning message
-        logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
     archie = Archiver(
         generator=args.generator or archiver_generator, parse_html=args.html2text
