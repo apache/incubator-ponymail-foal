@@ -71,7 +71,6 @@ archiver_generator = config["archiver"].get(
     "generator", "full"
 )  # Fall back to full hashing if nothing is set.
 logger = None
-ES_MAJOR = elasticsearch.VERSION[0]
 
 
 # If MailMan is enabled, import and set it up
