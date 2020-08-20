@@ -34,6 +34,5 @@ jobs:
 #        pytest
     - name: Test with Ponymail Unit tests
       run: |
-        sed -e 's/# cropout:/cropout:/' tools/ponymail.cfg.sample >tools/ponymail.cfg
         cd pmtests
         python runall.py --root ..
