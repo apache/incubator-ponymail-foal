@@ -245,7 +245,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
     """ Intercept index calls and fix up consistency argument """
 
     def index(self, **kwargs):
-        if ES_MAJOR in [5, 6, 7]:
+        if ES_MAJOR in [6, 7]:
             if kwargs.pop("consistency", None):  # drop the key if present
                 if self.wait_for_active_shards:  # replace with wait if defined
                     kwargs["wait_for_active_shards"] = self.wait_for_active_shards
@@ -487,16 +487,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 )
         else:
             self.elastic = plugins.elastic.Elastic()
-
-        # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
-        self.consistency = config["elasticsearch"].get("write", "quorum")
-        es_engine_major = self.elastic.engineMajor()
-        if es_engine_major == 2:
-            pass
-        elif es_engine_major in [5, 6, 7]:
-            self.wait_for_active_shards = config["elasticsearch"].get("wait", 1)
-        else:
-            raise Exception("Unexpected elasticsearch version ", es_engine_major)
 
         try:
             if contents:
