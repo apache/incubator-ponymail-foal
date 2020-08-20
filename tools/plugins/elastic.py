@@ -20,7 +20,6 @@
     also adds defaults for most methods
 """
 
-import yaml
 import sys
 import logging
 import certifi
