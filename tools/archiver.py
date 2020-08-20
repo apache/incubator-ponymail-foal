@@ -242,15 +242,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         "x-mailman-rule-misses",
     ]
 
-    """ Intercept index calls and fix up consistency argument """
-
-    def index(self, **kwargs):
-        if ES_MAJOR in [6, 7]:
-            if kwargs.pop("consistency", None):  # drop the key if present
-                if self.wait_for_active_shards:  # replace with wait if defined
-                    kwargs["wait_for_active_shards"] = self.wait_for_active_shards
-        return self.elastic.index(**kwargs)
-
     def __init__(self, generator=archiver_generator, parse_html=False, dump_dir=None):
         """ Just initialize ES. """
         self.html = parse_html
@@ -500,14 +491,12 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             self.index(
                 index=self.elastic.db_mbox,
                 id=ojson["mid"],
-                consistency=self.consistency,
                 body=ojson,
             )
 
             self.index(
                 index=self.elastic.db_source,
                 id=sha3,
-                consistency=self.consistency,
                 body={
                     "message-id": msg_metadata["message-id"],
                     "permalink": ojson["mid"],
@@ -555,7 +544,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             self.elastic.index(
                 index=self.elastic.db_mailinglist,
                 id=lid,
-                consistency=self.elastic.consistency,
                 body={
                     "list": lid,
                     "name": mlist.list_name,
@@ -581,7 +569,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         # N.B. no index is supplied, so ES will generate one
                         self.index(
                             index=self.elastic.db_notification,
-                            consistency=self.elastic.consistency,
                             body={
                                 "type": "direct",
                                 "recipient": cid,
