@@ -133,6 +133,7 @@ class Elastic:
 
     def index(self, **kwargs):
         kwargs["wait_for_active_shards"] = self.wait_for_active_shards
+        kwargs["doc_type"] = "_doc"
         return self.es.index(**kwargs)
 
     def update(self, **kwargs):
