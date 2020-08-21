@@ -481,19 +481,19 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         try:
             if contents:
                 for key in contents:
-                    self.index(
+                    self.elastic.index(
                         index=self.elastic.db_attachment,
                         id=key,
                         body={"source": contents[key]},
                     )
 
-            self.index(
+            self.elastic.index(
                 index=self.elastic.db_mbox,
                 id=ojson["mid"],
                 body=ojson,
             )
 
-            self.index(
+            self.elastic.index(
                 index=self.elastic.db_source,
                 id=sha3,
                 body={
@@ -566,7 +566,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     if doc:
                         oldrefs.append(cid)
                         # N.B. no index is supplied, so ES will generate one
-                        self.index(
+                        self.elastic.index(
                             index=self.elastic.db_notification,
                             body={
                                 "type": "direct",
