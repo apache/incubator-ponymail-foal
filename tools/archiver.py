@@ -58,30 +58,29 @@ import formatflowed
 import netaddr
 import yaml
 
+import plugins.ponymailconfig
 import plugins.generators
 import plugins.elastic
 import elasticsearch
 
 # Fetch config from same dir as archiver.py
-config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ponymail.yaml")
-config = yaml.safe_load(open(config_path))
+config = plugins.ponymailconfig.PonymailConfig()
 
 # Set some vars before we begin
-archiver_generator = config["archiver"].get(
-    "generator", "full"
-)  # Fall back to full hashing if nothing is set.
+archiver_generator = config.get("archiver", "generator", fallback="full")
+# Fall back to full hashing if nothing is set.
 logger = None
 
 
 # If MailMan is enabled, import and set it up
-if config.get("mailman") and config["mailman"].get("plugin"):
+if config.has_option("mailman", "plugin"):
     from mailman.interfaces.archiver import ArchivePolicy, IArchiver
     from zope.interface import implementer
 
     logger = logging.getLogger("mailman.archiver")
 
 # Access URL once archived
-aURL = config.get("archiver", {}).get("baseurl")
+aURL = config.get("archiver", "baseurl")
 
 
 def encode_base64(buff: bytes) -> str:
@@ -219,7 +218,7 @@ class Body:
 class Archiver(object):  # N.B. Also used by import-mbox.py
     """The general archiver class. Compatible with MailMan3 archiver classes."""
 
-    if config.get("mailman") and config["mailman"].get("plugin"):
+    if config.has_option("mailman", "plugin"):
         implementer(IArchiver)
 
     # This is a list of headers which are stored in msg_metadata
@@ -246,7 +245,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         self.html = parse_html
         self.generator = generator
         self.dump_dir = dump_dir
-        self.cropout = config.get("debug", {}).get("cropout")
+        self.cropout = config.get("debug", "cropout")
         if parse_html:
             import html2text
 
