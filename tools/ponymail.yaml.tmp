@@ -18,6 +18,10 @@
 # Pony Mail Configuration file
 
 
+##############################################################
+# THIS IS AN EXAMPLE FOR TESTING - RUN setup.py PLEASE       #
+##############################################################
+
 # Main ES configuration
 elasticsearch:
     hostname:               localhost
@@ -33,9 +37,11 @@ elasticsearch:
 archiver:
     #generator:             medium|full|cluster|dkim|other (dkim recommended)
     generator:              cluster
-    nonce:                  ~
+    # nonce:                optional secret salt ('pepper')
 
 debug:
     #cropout:               string to crop from list-id
+    # e.g. Strip out incubator except at top level
+    # cropout:                (\w+\.\w+)\.incubator\.apache\.org \1.apache.org
 
             
