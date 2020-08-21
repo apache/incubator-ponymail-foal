@@ -331,7 +331,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 lid = lid.replace(self.cropout, "")
 
         def default_empty_string(value):
-            return value and str(value) or ""
+            return str(value) if value else ""
 
         msg_metadata = dict([(k, default_empty_string(msg.get(k))) for k in self.keys])
         mid = (
@@ -466,6 +466,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
 
+        # TODO: this belongs in __init__ once that has access to args.dry
         if self.dump_dir:
             try:
                 self.elastic = plugins.elastic.Elastic()
