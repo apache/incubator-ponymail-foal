@@ -40,18 +40,15 @@ class PonymailConfig(object):
 
     def has_section(self, section):
         val = section in self.config
-#         print("?", section, val)
         return val
 
     def has_option(self, section, option):
-        val = section in self.config and option in self.config[section]
-#         print("?", section, option, val)
+        val = section in self.config and self.config[section] and option in self.config[section]
         return val
 
     def get(self, section, option, fallback=None):
-        try:
+        if self.has_option(section, option):
             val = self.config[section][option] or fallback
-        except KeyError:
+        else:
             val = fallback
-#         print(">", section, option, fallback, val)
         return val
