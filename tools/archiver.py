@@ -475,10 +475,9 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
 
-        # TODO: this belongs in __init__ once that has access to args.dry
         if self.dump_dir:
             try:
-                self.elastic = plugins.elastic.Elastic()
+                elastic = plugins.elastic.Elastic()
             except elasticsearch.exceptions.ElasticsearchException as e:
                 print(e)
                 print(
@@ -486,25 +485,25 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     % self.dump_dir
                 )
         else:
-            self.elastic = plugins.elastic.Elastic()
+            elastic = plugins.elastic.Elastic()
 
         try:
             if contents:
                 for key in contents:
-                    self.elastic.index(
-                        index=self.elastic.db_attachment,
+                    elastic.index(
+                        index=elastic.db_attachment,
                         id=key,
                         body={"source": contents[key]},
                     )
 
-            self.elastic.index(
-                index=self.elastic.db_mbox,
+            elastic.index(
+                index=elastic.db_mbox,
                 id=ojson["mid"],
                 body=ojson,
             )
 
-            self.elastic.index(
-                index=self.elastic.db_source,
+            elastic.index(
+                index=elastic.db_source,
                 id=sha3,
                 body={
                     "message-id": msg_metadata["message-id"],
@@ -550,8 +549,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             and mlist.description
             and mlist.list_name
         ):
-            self.elastic.index(
-                index=self.elastic.db_mailinglist,
+            elastic.index(
+                index=elastic.db_mailinglist,
                 id=lid,
                 body={
                     "list": lid,
@@ -571,13 +570,13 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             if dm:
                 cid = dm.group(1)
                 mid = dm.group(2)
-                if self.elastic.exists(index=self.elastic.db_account, id=cid):
-                    doc = self.elastic.get(index=self.elastic.db_account, id=cid)
+                if elastic.exists(index=elastic.db_account, id=cid):
+                    doc = elastic.get(index=elastic.db_account, id=cid)
                     if doc:
                         oldrefs.append(cid)
                         # N.B. no index is supplied, so ES will generate one
-                        self.elastic.index(
-                            index=self.elastic.db_notification,
+                        elastic.index(
+                            index=elastic.db_notification,
                             body={
                                 "type": "direct",
                                 "recipient": cid,
@@ -605,8 +604,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 cid = im.group(1)
                 mid = im.group(2)
                 # TODO: Fix this to work with pibbles
-                if self.elastic.exists(index=self.elastic.db_mbox, id=cid):
-                    doc = self.elastic.get(index=self.elastic.db_mbox, id=cid)
+                if elastic.exists(index=elastic.db_mbox, id=cid):
+                    doc = elastic.get(index=elastic.db_mbox, id=cid)
 
                     # does the user want to be notified of indirect replies?
                     if (
@@ -618,8 +617,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     ):
                         oldrefs.append(cid)
                         # N.B. no index mapping is supplied, so ES will generate one
-                        self.elastic.index(
-                            index=self.elastic.db_notification,
+                        elastic.index(
+                            index=elastic.db_notification,
                             body={
                                 "type": "indirect",
                                 "recipient": cid,
