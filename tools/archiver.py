@@ -56,7 +56,6 @@ import uuid
 
 import formatflowed
 import netaddr
-import yaml
 
 import plugins.ponymailconfig
 import plugins.generators
@@ -67,8 +66,6 @@ import elasticsearch
 config = plugins.ponymailconfig.PonymailConfig()
 
 # Set some vars before we begin
-archiver_generator = config.get("archiver", "generator", fallback="full")
-# Fall back to full hashing if nothing is set.
 logger = None
 
 
@@ -250,32 +247,32 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         "x-mailman-rule-misses",
     ]
 
-    def __init__(self, generator=archiver_generator, parse_html=False, dump_dir=None):
+    def __init__(self, generator=None, parse_html=False, ignore_body=None, verbose=False):
         """ Just initialize ES. """
         self.html = parse_html
-        self.generator = generator
-        self.dump_dir = dump_dir
+        # Fall back to full hashing if nothing is set.
+        self.generator = generator or config.get("archiver", "generator", fallback="full")
         self.cropout = config.get("debug", "cropout")
-        if parse_html:
+        self.verbose = verbose
+        self.ignore_body = ignore_body
+        if self.html:
             import html2text
 
             self.html2text = html2text.html2text
 
     def message_body(
-        self, msg: email.message.Message, verbose=False, ignore_body=None
+        self, msg: email.message.Message
     ) -> typing.Optional[Body]:
         """
             Fetches the proper text body from an email as an archiver.Body object
         :param msg: The email or part of it to examine for proper body
-        :param verbose: Verbose output while parsing
-        :param ignore_body: Optional bodies to ignore while parsing
         :return: archiver.Body object
         """
         body = None
         first_html = None
         for part in msg.walk():
             # can be called from importer
-            if verbose:
+            if self.verbose:
                 print("Content-Type: %s" % part.get_content_type())
             """
                 Find the first body part and the first HTML part
@@ -300,7 +297,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         if first_html and (
             body is None
             or len(body) <= 1
-            or (ignore_body and str(body).find(str(ignore_body)) != -1)
+            or (self.ignore_body and str(body).find(str(self.ignore_body)) != -1)
         ):
             body = first_html
             body.assign(self.html2text(str(body)))
@@ -310,14 +307,12 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
     # N.B. this is also called by import-mbox.py
     def compute_updates(
         self,
-        args,
         lid: typing.Optional[str],
         private: bool,
         msg: email.message.Message,
         raw_msg: bytes,
     ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str]]:
         """Determine what needs to be sent to the archiver.
-        :param args: Command line arguments for the archiver
         :param lid: The list id
         :param private: Whether privately archived email or not (bool)
         :param msg: The message object
@@ -384,7 +379,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             epoch = email.utils.mktime_tz(message_date)
         # message_date calculations are all done, prepare the index entry
         date_as_string = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(epoch))
-        body = self.message_body(msg, verbose=args.verbose, ignore_body=args.ibody)
+        body = self.message_body(msg)
 
         attachments, contents = message_attachments(msg)
         irt = ""
@@ -464,7 +459,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             private = True
 
         ojson, contents, msg_metadata, irt = self.compute_updates(
-            args, lid, private, msg, raw_message
+            lid, private, msg, raw_message
         )
         sha3 = hashlib.sha3_256(raw_message).hexdigest()
         if not ojson:
@@ -475,14 +470,14 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
 
-        if self.dump_dir:
+        if args.dump:
             try:
                 elastic = plugins.elastic.Elastic()
             except elasticsearch.exceptions.ElasticsearchException as e:
                 print(e)
                 print(
                     "ES connection failed, but dumponfail specified, dumping to %s"
-                    % self.dump_dir
+                    % args.dump
                 )
         else:
             elastic = plugins.elastic.Elastic()
@@ -732,7 +727,7 @@ def main():
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     archie = Archiver(
-        generator=args.generator or archiver_generator, parse_html=args.html2text
+        generator=args.generator, parse_html=args.html2text, ignore_body=args.ibody, verbose=args.verbose
     )
     # use binary input so parser can use appropriate charset
     input_stream = sys.stdin.buffer

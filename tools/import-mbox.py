@@ -67,7 +67,6 @@ fileToLID = {}
 interactive = False
 extension = ".mbox"
 piperWeirdness = False
-parseHTML = False
 resendTo = None
 timeout = 600
 fromFilter = None
@@ -75,17 +74,9 @@ dedup = False
 dedupped = 0
 noMboxo = False  # Don't skip MBoxo patch
 
-# Fetch config and set up ES
-es = Elastic()
-# We need the index name for bulk actions
-dbname = es.getdbname()
-
 rootURL = ""
 
-
 def bulk_insert(name, json, xes, dtype, wc="quorum"):
-    if args.dry:
-        return
 
     sys.stderr.flush()
 
@@ -127,10 +118,9 @@ class SlurpThread(Thread):
         ml = ""
         mboxfile = ""
         filename = ""
-        if args.generator:
-            archie = archiver.Archiver(generator=args.generator, parse_html=parseHTML)
-        else:
-            archie = archiver.Archiver(parse_html=parseHTML)
+        archie = archiver.Archiver(
+            generator=args.generator, parse_html=args.html2text, ignore_body=args.ibody, verbose=args.verbose
+        )
 
         while len(lists) > 0:
             self.printid("%u elements left to slurp" % len(lists))
@@ -258,7 +248,7 @@ class SlurpThread(Thread):
                     continue
 
                 json, contents, _msgdata, _irt = archie.compute_updates(
-                    args, list_override, private, message, message_raw
+                    list_override, private, message, message_raw
                 )
 
                 # Not sure this can ever happen
@@ -352,7 +342,7 @@ class SlurpThread(Thread):
                                     id=key,
                                     body={"source": contents[key]},
                                 )
-                    if len(ja) >= 40:
+                    if len(ja) >= 40 and not args.dry:
                         bulk_insert(self.name, ja, es, "mbox")
                         ja = []
 
@@ -382,11 +372,11 @@ class SlurpThread(Thread):
 
             goodies += count
             baddies += bad
-            if len(ja) > 0:
+            if len(ja) > 0 and not args.dry:
                 bulk_insert(self.name, ja, es, "mbox")
             ja = []
 
-            if len(jas) > 0:
+            if len(jas) > 0 and not args.dry:
                 bulk_insert(self.name, jas, es, "source")
             jas = []
         self.printid("Done, %u elements left to slurp" % len(lists))
@@ -557,8 +547,6 @@ if args.dedup:
     dedup = args.dedup
 if args.ext:
     extension = args.ext[0]
-if args.html2text:
-    parseHTML = True
 if args.fromfilter:
     fromFilter = args.fromfilter[0]
 if args.nomboxo:
@@ -575,9 +563,6 @@ if args.timeout:
     timeout = args.timeout[0]
 baddies = 0
 
-# No point continuing if the index does not exist
-print("Checking that the database index %s exists ... " % dbname)
-
 # elasticsearch logs lots of warnings on retries/connection failure
 logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
@@ -592,6 +577,14 @@ if args.verbose:
 if args.dry:
     print("Dry-run; continuing to check input data")
 else:
+    # Fetch config and set up ES
+    es = Elastic()
+    # We need the index name for bulk actions
+    dbname = es.getdbname()
+
+    # No point continuing if the index does not exist
+    print("Checking that the database index %s exists ... " % dbname)
+
     # Need to check the index before starting bulk operations
     try:
         if not es.indices.exists(index=es.db_mbox):
@@ -601,10 +594,6 @@ else:
     except Exception as err:
         print("Error: unable to check if the index %s exists!: %s" % (es.db_mbox, err))
         sys.exit(1)
-
-if args.generator:
-    archiver.archiver_generator = args.generator
-
 
 def glob_dir(d):
     dirs = [f for f in listdir(d) if isdir(join(d, f))]
