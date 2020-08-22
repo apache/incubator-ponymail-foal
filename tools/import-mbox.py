@@ -327,7 +327,7 @@ class SlurpThread(Thread):
                                 "mid"
                             ],  # needed for bulk-insert only, not needed in database
                             "message-id": json["message-id"],
-                            "source": archie.mbox_source(raw_msg),
+                            "source": archiver.mbox_source(raw_msg),
                         }
                     except Exception as e:
                         self.printid(
