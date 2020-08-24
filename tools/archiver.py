@@ -167,10 +167,10 @@ def message_attachments(msg: email.message.Message) -> typing.Tuple[list, dict]:
 class Body:
     def __init__(self, part: email.message.Message):
         self.content_type = part.get_content_type()
-        self.charsets = set([part.get_charset()])  # Part's charset
-        self.charsets.update(part.get_charsets())  # Parent charsets as fallback
-        self.character_set = "utf-8"
-        self.string = None
+        self.charsets = set([part.get_content_charset()])  # Part's charset
+        self.charsets.update([part.get_charsets()[0]])  # Parent charset as fallback if any/different
+        self.character_set = "us-ascii"
+        self.string: typing.Optional[str] = None
         self.flowed = "format=flowed" in part.get("content-type", "")
         contents = part.get_payload(decode=True)
         if contents is not None:
@@ -182,7 +182,7 @@ class Body:
                     except UnicodeDecodeError:
                         pass
             if not self.string:
-                self.string = contents.decode("utf-8", errors="replace")
+                self.string = contents.decode("us-ascii", errors="replace")
 
     def __repr__(self):
         return self.string
