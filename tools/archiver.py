@@ -142,6 +142,11 @@ def normalize_lid(lid: str) -> str:  # N.B. Also used by import-mbox.py
         lid = m.group(1)
     # Belt-and-braces: remove possible extraneous chars
     lid = "<%s>" % lid.strip(" <>").replace("@", ".")
+    # Replace invalid characters with underscores so as to not invalidate doc IDs.
+    lid = re.sub(
+        r"[^-+~_<>.a-zA-Z0-9@]", "_", lid
+    )
+    # Finally, ensure we have a loosely valid list ID value
     if not re.match(r"^<.+\..+>$", lid):
         print("Invalid list-id %s" % lid)
         sys.exit(-1)
