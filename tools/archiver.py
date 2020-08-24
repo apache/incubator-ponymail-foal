@@ -84,6 +84,7 @@ def encode_base64(buff: bytes) -> str:
     """ Convert bytes to base64 as text string (no newlines) """
     return base64.standard_b64encode(buff).decode("ascii", "ignore")
 
+
 def mbox_source(b: bytes) -> str:
     # Common method shared with import-mbox
     try:
@@ -92,7 +93,6 @@ def mbox_source(b: bytes) -> str:
     except UnicodeError:
         # No, so must use base64 to avoid corruption on re-encoding
         return encode_base64(b)
-
 
 
 def parse_attachment(
@@ -168,7 +168,9 @@ class Body:
     def __init__(self, part: email.message.Message):
         self.content_type = part.get_content_type()
         self.charsets = set([part.get_content_charset()])  # Part's charset
-        self.charsets.update([part.get_charsets()[0]])  # Parent charset as fallback if any/different
+        self.charsets.update(
+            [part.get_charsets()[0]]
+        )  # Parent charset as fallback if any/different
         self.character_set = "us-ascii"
         self.string: typing.Optional[str] = None
         self.flowed = "format=flowed" in part.get("content-type", "")
@@ -206,7 +208,9 @@ class Body:
             if self.flowed:
                 # Convert lone LF to CRLF if found
                 if convert_lf:
-                    fixed_string = "\r\n".join([x.rstrip("\r") for x in self.string.split("\n")])
+                    fixed_string = "\r\n".join(
+                        [x.rstrip("\r") for x in self.string.split("\n")]
+                    )
                     conversion_was_needed = fixed_string != self.string
                 else:
                     fixed_string = self.string
@@ -217,7 +221,9 @@ class Body:
                 )
                 # If we "upconverted" from LF to CRLF, convert back after flow decoding
                 if convert_lf and conversion_was_needed:
-                    flow_fixed = "\n".join([x.rstrip("\r") for x in self.string.split("\n")])
+                    flow_fixed = "\n".join(
+                        [x.rstrip("\r") for x in self.string.split("\n")]
+                    )
                 return flow_fixed
         return self.string
 
@@ -247,11 +253,15 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         "x-mailman-rule-misses",
     ]
 
-    def __init__(self, generator=None, parse_html=False, ignore_body=None, verbose=False):
+    def __init__(
+        self, generator=None, parse_html=False, ignore_body=None, verbose=False
+    ):
         """ Just initialize ES. """
         self.html = parse_html
         # Fall back to full hashing if nothing is set.
-        self.generator = generator or config.get("archiver", "generator", fallback="full")
+        self.generator = generator or config.get(
+            "archiver", "generator", fallback="full"
+        )
         self.cropout = config.get("debug", "cropout")
         self.verbose = verbose
         self.ignore_body = ignore_body
@@ -260,9 +270,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
             self.html2text = html2text.html2text
 
-    def message_body(
-        self, msg: email.message.Message
-    ) -> typing.Optional[Body]:
+    def message_body(self, msg: email.message.Message) -> typing.Optional[Body]:
         """
             Fetches the proper text body from an email as an archiver.Body object
         :param msg: The email or part of it to examine for proper body
@@ -302,7 +310,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             body = first_html
             body.assign(self.html2text(str(body)))
         return body
-
 
     # N.B. this is also called by import-mbox.py
     def compute_updates(
@@ -428,7 +435,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "private": private,
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
-                "body": body.unflow() if body else '',
+                "body": body.unflow() if body else "",
                 "attachments": attachments,
             }
 
@@ -492,9 +499,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     )
 
             elastic.index(
-                index=elastic.db_mbox,
-                id=ojson["mid"],
-                body=ojson,
+                index=elastic.db_mbox, id=ojson["mid"], body=ojson,
             )
 
             elastic.index(
@@ -727,7 +732,10 @@ def main():
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     archie = Archiver(
-        generator=args.generator, parse_html=args.html2text, ignore_body=args.ibody, verbose=args.verbose
+        generator=args.generator,
+        parse_html=args.html2text,
+        ignore_body=args.ibody,
+        verbose=args.verbose,
     )
     # use binary input so parser can use appropriate charset
     input_stream = sys.stdin.buffer
