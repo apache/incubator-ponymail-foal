@@ -31,6 +31,7 @@
 import os.path
 import yaml
 
+
 class PonymailConfig(object):
 
     def __init__(self):
