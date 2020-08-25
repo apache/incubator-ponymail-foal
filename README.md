@@ -17,7 +17,7 @@ Work is underway on the following items:
 
 ### Migration disclaimer:
 _While compatible with the original Pony Mail, this will not be a drop-in replacement.
-Migration of the old database will be needed, and there may be edge cases where 
+Migration of the old database will be needed, and there will be cases where 
 re-imaging a database from scratch (re-importing from mbox files as opposed to migrating 
 your ElasticSearch database) will not produce the exact same permalinks as before, if 
 the input options don't match exactly. For lists with a List-ID header present in all 
