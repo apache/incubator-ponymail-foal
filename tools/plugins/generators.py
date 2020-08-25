@@ -151,7 +151,7 @@ def dkim(_msg, _body, lid, _attachments, raw_msg):
 # Full generator: uses the entire email (including server-dependent data)
 # Used by default until August 2020.
 # See 'dkim' for recommended generation.
-def full(_msg, _body, lid, _attachments, raw_msg):
+def full(msg, _body, lid, _attachments, _raw_msg):
     """
     Full generator: uses the entire email
     (including server-dependent data)
@@ -159,15 +159,15 @@ def full(_msg, _body, lid, _attachments, raw_msg):
     but different copies of the message are likely to have different headers, thus ids
 
     Parameters:
-    msg - the parsed message (not used)
+    msg - the parsed message
     _body - the parsed text content (not used)
     lid - list id
     _attachments - list of attachments (not used)
-    raw_msg - the original message bytes
+    raw_msg - the original message bytes (not used)
 
     Returns: "<hash>@<lid>" where hash is sha224 of message bytes
     """
-    mid = "%s@%s" % (hashlib.sha224(raw_msg).hexdigest(), lid)
+    mid = "%s@%s" % (hashlib.sha224(msg.as_bytes()).hexdigest(), lid)
     return mid
 
 
