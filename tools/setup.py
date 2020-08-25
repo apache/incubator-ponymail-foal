@@ -23,6 +23,11 @@ import sys
 import yaml
 
 
+if sys.version_info <= (3, 7):
+    print("This script requires Python 3.8 or higher")
+    sys.exit(-1)
+
+
 hostname = ""
 port = 0
 dbname = ""
@@ -63,10 +68,6 @@ def create_indices():
 
         print(f"Index {dbname}-{index} created! %s " % res)
 
-
-if sys.version_info <= (3, 7):
-    print("This script requires Python 3.8 or higher")
-    sys.exit(-1)
 
 # Check for all required python packages
 wanted_pkgs = [
