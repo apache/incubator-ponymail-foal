@@ -70,7 +70,7 @@ parser.add_argument(
 )
 parser.add_argument("--dbhost", dest="dbhost", type=str, help="ES backend hostname")
 parser.add_argument("--dbport", dest="dbport", type=str, help="DB port")
-parser.add_argument("--dbname", dest="dbname", type=str, help="ES DB name")
+parser.add_argument("--dbname", dest="dbname", type=str, help="ES DB prefix")
 parser.add_argument("--dbshards", dest="dbshards", type=int, help="DB Shard Count")
 parser.add_argument(
     "--dbreplicas", dest="dbreplicas", type=int, help="DB Replica Count"
