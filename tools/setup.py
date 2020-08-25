@@ -155,6 +155,12 @@ parser.add_argument(
     type=str,
     help="Document ID Generator to use (legacy, medium, cluster, full)",
 )
+parser.add_argument(
+    "--nonce",
+    dest="nonce",
+    type=str,
+    help="Cryptographic nonce to use if generator is DKIM/RFC-6376 (--generator dkim)",
+)
 args = parser.parse_args()
 
 print("Welcome to the Pony Mail setup script!")
@@ -208,6 +214,8 @@ if args.generator:
             + "\n"
         )
         sys.exit(-1)
+if args.generator == 'dkim' and args.nonce is not None:
+    nonce = args.nonce
 
 hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
 if not hostname:
@@ -263,7 +271,7 @@ while genname == "":
     except ValueError:
         pass
 
-if genname == "dkim":
+if genname == "dkim" and nonce is None:
     print(
         "DKIM hasher chosen. It is recommended you set a cryptographic nonce for this generator, though not required."
     )
