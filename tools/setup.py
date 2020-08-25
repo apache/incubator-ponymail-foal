@@ -97,7 +97,7 @@ parser.add_argument(
     "--noindex",
     dest="noi",
     action="store_true",
-    help="Don't make an ES index, assume it exists",
+    help="Don't create ElasticSearch indices, assume they exist",
 )
 parser.add_argument(
     "--nocloud", dest="nwc", action="store_true", help="Do not enable word cloud"
