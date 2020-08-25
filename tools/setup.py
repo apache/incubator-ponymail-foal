@@ -202,21 +202,16 @@ while wc == "":
         wce = True
 
 while genname == "":
-    gens = ["legacy", "medium", "cluster", "full", "dkim"]
+    gens = ["dkim", "full"]
     print("Please select a document ID generator:")
     print(
-        "1  LEGACY: The original document generator for v/0.1-0.8 (no longer recommended)"
+        "1  [RECOMMENDED] DKIM/RFC-6376: Short SHA3 hash useful for cluster setups with permalink usage"
     )
     print(
-        "2  MEDIUM: The medium comprehensive generator for v/0.9 (no longer recommended)"
-    )
-    print("3  REDUNDANT: Near-full message digest, discard MTA trail")
-    print("4  FULL: Full message digest with MTA trail")
-    print(
-        "5  [RECOMMENDED] DKIM/RFC-6376: Short SHA3 hash useful for cluster setups with permalink usage"
+        "2  FULL: Full message digest with MTA trail. Not recommended for clustered setups."
     )
     try:
-        gno = int(input("Please select a generator [1-5]: "))
+        gno = int(input("Please select a generator [1-2]: "))
         if gno <= len(gens) and gens[gno - 1]:
             genname = gens[gno - 1]
     except ValueError:
@@ -459,7 +454,7 @@ elasticsearch:
     #backup:                database name
 
 archiver:
-    #generator:             medium|full|cluster|dkim|other (dkim recommended)
+    #generator:             dkim|full (dkim recommended)
     generator:              %s
     nonce:                  %s
 
