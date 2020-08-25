@@ -172,35 +172,43 @@ if args.generator:
         sys.stderr.write("Invalid generator specified. Must be one of: " + ", ".join(supported_generators) + "\n")
         sys.exit(-1)
 
-while hostname == "":
-    hostname = input(
-        "What is the hostname of the ElasticSearch server? (e.g. localhost): "
-    )
+hostname = input(
+    "What is the hostname of the ElasticSearch server? [localhost]: "
+)
+if not hostname:
+    hostname = "localhost"
 
-while urlPrefix == None:
-    urlPrefix = input("Database URL prefix if any (hit enter if none): ")
+urlPrefix = input("Database URL prefix if any (hit enter if none): ")
 
-while port < 1:
+while port < 1 or port > 65536:
     try:
-        port = int(input("What port is ElasticSearch listening on? (normally 9200): "))
+        port = input("What port is ElasticSearch listening on? [9200]: ")
+        if not port:
+            port = 9200
+        port = int(port)
     except ValueError:
         pass
 
-while dbname == "":
-    dbname = input("What would you like to call the mail index (e.g. ponymail): ")
+dbname = input("What would you like to call the mail index [ponymail]: ")
+if not dbname:
+    dbname = "ponymail"
 
-while mlserver == "":
-    mlserver = input(
-        "What is the hostname of the outgoing mailserver? (e.g. mail.foo.org): "
-    )
+mlserver = input(
+    "What is the hostname of the outgoing mailserver hostname? [localhost]: "
+)
+if not mlserver:
+    mlserver = "localhost"
 
-while mldom == "":
-    mldom = input(
-        "Which domains would you accept mail to from web-replies? (e.g. foo.org or *): "
-    )
+mldom = input(
+    "Which domains would you accept mail to from web-replies? [*]: "
+)
+if not mldom:
+    mldom = "*"
 
-while wc == "":
-    wc = input("Would you like to enable the word cloud feature? (Y/N): ")
+while wc.lower() not in ["y", "n"]:
+    wc = input("Would you like to enable the word cloud feature? (Y/N) [Y]: ").lower()
+    if not wc:
+        wc = "y"
     if wc.lower() == "y":
         wce = True
 
@@ -213,7 +221,10 @@ while genname == "":
         "2  FULL: Full message digest with MTA trail. Not recommended for clustered setups."
     )
     try:
-        gno = int(input("Please select a generator [1-2]: "))
+        gno = input("Please select a generator (1 or 2) [1]: ")
+        if not gno:
+            gno = 1
+        gno = int(gno)
         if gno <= len(supported_generators) and supported_generators[gno - 1]:
             genname = supported_generators[gno - 1]
     except ValueError:
@@ -233,13 +244,19 @@ if genname == "dkim":
 
 while shards < 1:
     try:
-        shards = int(input("How many shards for the ElasticSearch index? "))
+        shards = input("How many shards for the ElasticSearch index? [3]: ")
+        if not shards:
+            shards = 3
+        shards = int(shards)
     except ValueError:
         pass
 
 while replicas < 0:
     try:
-        replicas = int(input("How many replicas for each shard? "))
+        replicas = input("How many replicas for each shard? [1]: ")
+        if not replicas:
+            replicas = 1
+        replicas = int(replicas)
     except ValueError:
         pass
 
