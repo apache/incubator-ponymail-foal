@@ -54,7 +54,10 @@ def create_indices():
             )
             sys.exit(0)
         else:
-            print("Error: Existing ElasticSearch indices with prefix '%s' already exist!" % dbname)
+            print(
+                "Error: Existing ElasticSearch indices with prefix '%s' already exist!"
+                % dbname
+            )
             sys.exit(-1)
 
     print(f"Creating indices {dbname}-*...")
@@ -199,12 +202,14 @@ if args.generator:
     if args.generator in supported_generators:
         genname = args.generator
     else:
-        sys.stderr.write("Invalid generator specified. Must be one of: " + ", ".join(supported_generators) + "\n")
+        sys.stderr.write(
+            "Invalid generator specified. Must be one of: "
+            + ", ".join(supported_generators)
+            + "\n"
+        )
         sys.exit(-1)
 
-hostname = input(
-    "What is the hostname of the ElasticSearch server? [localhost]: "
-)
+hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
 if not hostname:
     hostname = "localhost"
 
@@ -229,9 +234,7 @@ mlserver = input(
 if not mlserver:
     mlserver = "localhost"
 
-mldom = input(
-    "Which domains would you accept mail to from web-replies? [*]: "
-)
+mldom = input("Which domains would you accept mail to from web-replies? [*]: ")
 if not mldom:
     mldom = "*"
 
