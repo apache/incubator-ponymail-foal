@@ -127,6 +127,7 @@ shards = 0
 replicas = -1
 urlPrefix = None
 nonce = None
+supported_generators = ["dkim", "full"]
 
 # If called with --defaults (like from Docker), use default values
 if args.defaults:
@@ -165,7 +166,11 @@ if args.dbshards:
 if args.dbreplicas:
     replicas = args.dbreplicas
 if args.generator:
-    genname = args.generator
+    if args.generator in supported_generators:
+        genname = args.generator
+    else:
+        sys.stderr.write("Invalid generator specified. Must be one of: " + ", ".join(supported_generators) + "\n")
+        sys.exit(-1)
 
 while hostname == "":
     hostname = input(
@@ -200,7 +205,6 @@ while wc == "":
         wce = True
 
 while genname == "":
-    gens = ["dkim", "full"]
     print("Please select a document ID generator:")
     print(
         "1  [RECOMMENDED] DKIM/RFC-6376: Short SHA3 hash useful for cluster setups with permalink usage"
@@ -210,8 +214,8 @@ while genname == "":
     )
     try:
         gno = int(input("Please select a generator [1-2]: "))
-        if gno <= len(gens) and gens[gno - 1]:
-            genname = gens[gno - 1]
+        if gno <= len(supported_generators) and supported_generators[gno - 1]:
+            genname = supported_generators[gno - 1]
     except ValueError:
         pass
 
