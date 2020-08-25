@@ -812,8 +812,6 @@ def main():
         if args.private:
             is_public = False
         if "list-id" in msg:
-            if not msg.get("archived-at"):
-                msg.add_header("archived-at", email.utils.formatdate())
             list_data = collections.namedtuple(
                 "importmsg",
                 [
