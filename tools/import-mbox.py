@@ -38,6 +38,7 @@ from os.path import isdir, isfile, join
 from threading import Lock, Thread
 from urllib.request import urlopen
 
+
 import archiver
 from plugins.elastic import Elastic
 
@@ -208,6 +209,7 @@ class SlurpThread(Thread):
             for key in messages.iterkeys():
                 message = messages.get(key)
                 message_raw = messages.get_bytes(key)
+                sha3 = hashlib.sha3_256(message_raw).hexdigest()
                 # If --filter is set, discard any messages not matching by continuing to next email
                 if (
                     fromFilter
@@ -313,9 +315,8 @@ class SlurpThread(Thread):
                     try:  # temporary hack to try and find an encoding issue
                         # needs to be replaced by proper exception handling
                         json_source = {
-                            "mid": json[
-                                "mid"
-                            ],  # needed for bulk-insert only, not needed in database
+                            "permalink": json["mid"],
+                            "mid": sha3,
                             "message-id": json["message-id"],
                             "source": archiver.mbox_source(raw_msg),
                         }
