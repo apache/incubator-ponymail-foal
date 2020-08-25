@@ -17,11 +17,9 @@
 import argparse
 import importlib.util
 import logging
-import os
 import os.path
 import shutil
 import sys
-import yaml
 
 if sys.version_info <= (3, 7):
     print("This script requires Python 3.8 or higher")
