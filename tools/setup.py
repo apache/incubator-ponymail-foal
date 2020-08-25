@@ -66,7 +66,7 @@ parser.add_argument(
     "--clobber",
     dest="clobber",
     action="store_true",
-    help="Allow overwrite of ponymail.cfg & ../site/api/lib/config.lua (default: create *.tmp if either exists)",
+    help="Allow overwrite of ponymail.yaml & ../site/api/lib/config.lua (default: create *.tmp if either exists)",
 )
 parser.add_argument("--dbhost", dest="dbhost", type=str, help="ES backend hostname")
 parser.add_argument("--dbport", dest="dbport", type=str, help="DB port")
