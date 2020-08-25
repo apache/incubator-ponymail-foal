@@ -22,6 +22,48 @@ import shutil
 import sys
 import yaml
 
+
+hostname = ""
+port = 0
+dbname = ""
+mlserver = ""
+mldom = ""
+wc = ""
+genname = ""
+wce = False
+shards = 0
+replicas = -1
+urlPrefix = None
+nonce = None
+supported_generators = ["dkim", "full"]
+
+
+def create_indices():
+    """Creates new indices for a fresh pony mail installation, it possible"""
+    # Check if index already exists
+    if es.indices.exists(dbname + "-mbox"):
+        if args.soe:
+            print(
+                "ElasticSearch indices with prefix '%s' already exists and SOE set, exiting quietly"
+                % dbname
+            )
+            sys.exit(0)
+        else:
+            print("Error: Existing ElasticSearch indices with prefix '%s' already exist!" % dbname)
+            sys.exit(-1)
+
+    print(f"Creating indices {dbname}-*...")
+
+    settings = {"number_of_shards": shards, "number_of_replicas": replicas}
+    mappings = yaml.safe_load(open("mappings.yaml", "r"))
+    for index, mappings in mappings.items():
+        res = es.indices.create(
+            index=f"{dbname}-{index}", body={"mappings": mappings, "settings": settings}
+        )
+
+        print(f"Index {dbname}-{index} created! %s " % res)
+
+
 if sys.version_info <= (3, 7):
     print("This script requires Python 3.8 or higher")
     sys.exit(-1)
@@ -115,20 +157,6 @@ print("Welcome to the Pony Mail setup script!")
 print("Let's start by determining some settings...")
 print("")
 
-
-hostname = ""
-port = 0
-dbname = ""
-mlserver = ""
-mldom = ""
-wc = ""
-genname = ""
-wce = False
-shards = 0
-replicas = -1
-urlPrefix = None
-nonce = None
-supported_generators = ["dkim", "full"]
 
 # If called with --defaults (like from Docker), use default values
 if args.defaults:
@@ -263,32 +291,6 @@ while replicas < 0:
 
 print("Okay, I got all I need, setting up Pony Mail...")
 
-
-def createIndex():
-    # Check if index already exists
-    if es.indices.exists(dbname + "-mbox"):
-        if args.soe:
-            print(
-                "ElasticSearch indices with prefix '%s' already exists and SOE set, exiting quietly"
-                % dbname
-            )
-            sys.exit(0)
-        else:
-            print("Error: Existing ElasticSearch indices with prefix '%s' already exist!" % dbname)
-            sys.exit(-1)
-
-    print(f"Creating indices {dbname}-*...")
-
-    settings = {"number_of_shards": shards, "number_of_replicas": replicas}
-    mappings = yaml.safe_load(open("mappings.yaml", "r"))
-    for index, mappings in mappings.items():
-        res = es.indices.create(
-            index=f"{dbname}-{index}", body={"mappings": mappings, "settings": settings}
-        )
-
-        print(f"Index {dbname}-{index} created! %s " % res)
-
-
 # we need to connect to database to determine the engine version
 es = Elasticsearch(
     [{"host": hostname, "port": port, "use_ssl": False, "url_prefix": urlPrefix}],
@@ -330,7 +332,7 @@ if DB_MAJOR == 0:  # not known
 
 if not args.noi:
     try:
-        createIndex()
+        create_indices()
     except ElasticsearchException as e:
         print("Index creation failed: %s" % e)
         sys.exit(1)
