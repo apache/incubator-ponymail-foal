@@ -1,0 +1,126 @@
+account:
+  properties:
+    cid:
+      type: keyword
+    credentials:
+      properties:
+        altemail:
+          type: object
+        email:
+          type: keyword
+        fullname:
+          type: keyword
+        uid:
+          type: keyword
+    internal:
+      properties:
+        cookie:
+          type: keyword
+        ip:
+          type: keyword
+        oauth_used:
+          type: keyword
+    request_id:
+      type: keyword
+attachment:
+  properties:
+    source:
+      type: binary
+mailinglist:
+  properties:
+    description:
+      type: keyword
+    list:
+      type: keyword
+    name:
+      type: keyword
+mbox:
+  properties:
+    '@import_timestamp':
+      format: yyyy/MM/dd HH:mm:ss||yyyy/MM/dd
+      type: date
+    attachments:
+      properties:
+        content_type:
+          type: keyword
+        filename:
+          type: keyword
+        hash:
+          type: keyword
+        size:
+          type: long
+    body:
+      type: text
+    cc:
+      type: text
+    date:
+      format: yyyy/MM/dd HH:mm:ss
+      store: true
+      type: date
+    epoch:
+      type: long
+    from:
+      type: text
+    from_raw:
+      type: keyword
+    in-reply-to:
+      type: keyword
+    list:
+      type: text
+    list_raw:
+      type: keyword
+    message-id:
+      type: keyword
+    mid:
+      type: keyword
+    permalink:
+      type: keyword
+    private:
+      type: boolean
+    references:
+      type: text
+    subject:
+      fielddata: true
+      type: text
+    to:
+      type: text
+notification:
+  properties:
+    date:
+      format: yyyy/MM/dd HH:mm:ss
+      store: true
+      type: date
+    epoch:
+      type: long
+    from:
+      type: text
+    in-reply-to:
+      type: keyword
+    list:
+      type: text
+    message-id:
+      type: keyword
+    mid:
+      type: text
+    private:
+      type: boolean
+    recipient:
+      type: keyword
+    seen:
+      type: long
+    subject:
+      type: keyword
+    to:
+      type: text
+    type:
+      type: keyword
+source:
+  properties:
+    message-id:
+      type: keyword
+    mid:
+      type: keyword
+    permalink:
+      type: keyword
+    source:
+      type: binary

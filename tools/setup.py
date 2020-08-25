@@ -20,6 +20,7 @@ import logging
 import os.path
 import shutil
 import sys
+import yaml
 
 if sys.version_info <= (3, 7):
     print("This script requires Python 3.8 or higher")
@@ -279,104 +280,7 @@ def createIndex():
     print(f"Creating indices {dbname}-*...")
 
     settings = {"number_of_shards": shards, "number_of_replicas": replicas}
-
-    mappings = {
-        "mbox": {
-            "properties": {
-                "@import_timestamp": {
-                    "type": "date",
-                    "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd",
-                },
-                "attachments": {
-                    "properties": {
-                        "content_type": {"type": "keyword",},
-                        "filename": {"type": "keyword",},
-                        "hash": {"type": "keyword",},
-                        "size": {"type": "long"},
-                    }
-                },
-                "body": {"type": "text"},
-                "cc": {"type": "text"},
-                "date": {
-                    "type": "date",
-                    "store": True,
-                    "format": "yyyy/MM/dd HH:mm:ss",
-                },
-                "epoch": {"type": "long",},  # number of seconds since the epoch
-                "from": {"type": "text"},
-                "from_raw": {"type": "keyword",},
-                "in-reply-to": {"type": "keyword",},
-                "list": {"type": "text"},
-                "list_raw": {"type": "keyword",},
-                "message-id": {"type": "keyword",},
-                "mid": {"type": "keyword"},
-                "private": {"type": "boolean"},
-                "permalink": {"type": "keyword"},
-                "references": {"type": "text"},
-                "subject": {"type": "text", "fielddata": True},
-                "to": {"type": "text"},
-            }
-        },
-        "attachment": {"properties": {"source": {"type": "binary"}}},
-        "source": {
-            "properties": {
-                "source": {"type": "binary"},
-                "message-id": {"type": "keyword",},
-                "permalink": {"type": "keyword"},
-                "mid": {"type": "keyword"},
-            }
-        },
-        "mailinglist": {
-            "properties": {
-                "description": {"type": "keyword",},
-                "list": {"type": "keyword",},
-                "name": {"type": "keyword",},
-            }
-        },
-        "account": {
-            "properties": {
-                "cid": {"type": "keyword",},
-                "credentials": {
-                    "properties": {
-                        "altemail": {"type": "object"},
-                        "email": {"type": "keyword",},
-                        "fullname": {"type": "keyword",},
-                        "uid": {"type": "keyword",},
-                    }
-                },
-                "internal": {
-                    "properties": {
-                        "cookie": {"type": "keyword",},
-                        "ip": {"type": "keyword",},
-                        "oauth_used": {"type": "keyword",},
-                    }
-                },
-                "request_id": {"type": "keyword",},
-            }
-        },
-        "notification": {
-            "properties": {
-                "date": {
-                    "type": "date",
-                    "store": True,
-                    "format": "yyyy/MM/dd HH:mm:ss",
-                },
-                "epoch": {"type": "long"},
-                "from": {"type": "text",},
-                "in-reply-to": {"type": "keyword",},
-                "list": {"type": "text",},
-                "message-id": {"type": "keyword",},
-                "mid": {"type": "text",},
-                "private": {"type": "boolean"},
-                "recipient": {"type": "keyword",},
-                "seen": {"type": "long"},
-                "subject": {"type": "keyword",},
-                "to": {"type": "text",},
-                "type": {"type": "keyword",},
-            }
-        },
-    }
-
+    mappings = yaml.safe_load(open("mappings.yaml", "r"))
     for index, mappings in mappings.items():
         res = es.indices.create(
             index=f"{dbname}-{index}", body={"mappings": mappings, "settings": settings}
