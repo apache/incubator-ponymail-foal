@@ -7,12 +7,23 @@ This repository aims to contain the next generation of Apache Pony Mail,
 a pure python version of Apache Pony Mail with support for ElasticSearch 6.x and above.
 
 
-### Roadmap
+## Roadmap
 Work is underway on the following items:
 
 - Improved archiver and import tools   **[DONE]**
 - New UI for the end user              **[DONE]**
 - 100% python backend, no mod_lua required. **[COMING SOON]**
+
+## Installation Guide
+Work is under way to write an installation guide for this.
+As several components are not finished or in working order yet, this is pending.
+
+### Current setup requirements:
+
+- Linux or other UNIX based operating system (Windows has not been tested, but might work).
+- Python 3.8 or higher with dependencies from `requirements.txt`.
+- Web server with proxy capabilities for the UI.
+- ElasticSearch 6.x or higher, 7.x recommended.
 
 
 ### Migration disclaimer:
