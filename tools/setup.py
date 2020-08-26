@@ -226,7 +226,7 @@ if args.generator:
             + "\n"
         )
         sys.exit(-1)
-if args.generator == 'dkim' and args.nonce is not None:
+if args.generator == "dkim" and args.nonce is not None:
     nonce = args.nonce
 
 hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
