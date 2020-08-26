@@ -20,6 +20,8 @@ account:
           type: keyword
         oauth_used:
           type: keyword
+        oauth_data:
+          type: object
     request_id:
       type: keyword
 attachment:
