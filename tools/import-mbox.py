@@ -555,7 +555,7 @@ if args.nomboxo:
 else:
     # Temporary patch to fix Python email package limitation
     # It must be removed when the Python package is fixed
-    from mboxo_patch import MboxoFactory, MboxoReader
+    from plugins.mboxo_patch import MboxoFactory, MboxoReader
 
 if args.resend:
     resendTo = args.resend[0]
