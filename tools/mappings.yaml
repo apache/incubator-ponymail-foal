@@ -119,6 +119,14 @@ notification:
       type: text
     type:
       type: keyword
+session:
+  properties:
+    cookie:
+      type: keyword
+    updated:
+      type: long
+    cid:
+      type: keyword
 source:
   properties:
     message-id:
