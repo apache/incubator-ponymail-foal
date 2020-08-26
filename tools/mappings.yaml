@@ -1,3 +1,6 @@
+# This is the Pony Mail (Foal) field mapping data for setting up new indices.
+# It is used solely by setup.py during the setup process, and should not be
+# edited prior to installation.
 account:
   properties:
     cid:
