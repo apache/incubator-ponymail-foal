@@ -22,10 +22,21 @@ import shutil
 import sys
 import yaml
 
-
-if sys.version_info <= (3, 7):
-    print("This script requires Python 3.8 or higher")
+# Needs 3.4 or higher to work
+if sys.version_info <= (3, 3):
+    print("This script requires Python 3.4 or higher in order to work!")
     sys.exit(-1)
+
+# Backend needs 3.8 or higher, warn if not found.
+if sys.version_info <= (3, 7):
+    print(
+        "Warning: Pony Mail Foal requires Python 3.8 or higher for backend operations."
+    )
+    print(
+        "You will be able to run the setup using this version (%u.%u), but will need >=3.8"
+        % (sys.version_info.major, sys.version_info.minor)
+    )
+    print("for operating the UI backend server.")
 
 
 hostname = ""
@@ -163,6 +174,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+print("")
 print("Welcome to the Pony Mail setup script!")
 print("Let's start by determining some settings...")
 print("")
