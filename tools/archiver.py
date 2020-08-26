@@ -410,7 +410,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     logger.warning(
                         "Could not generate MID: %s. MSGID: %s",
                         err,
-                        msg_metadata.get("message-id", "?"),
+                        msg_metadata.get("message-id", "?").strip(),
                     )
                 mid = pmid
 
