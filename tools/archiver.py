@@ -407,7 +407,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             except Exception as err:
                 if logger:
                     # N.B. use .get just in case there is no message-id
-                    logger.warning(
+                    logger.info(
                         "Could not generate MID: %s. MSGID: %s",
                         err,
                         msg_metadata.get("message-id", "?").strip(),
