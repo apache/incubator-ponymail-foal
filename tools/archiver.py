@@ -432,6 +432,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "subject": msg_metadata["subject"],
                 "message-id": msg_metadata["message-id"],
                 "mid": mid,
+                "dbid": hashlib.sha3_256(raw_msg).hexdigest(),
                 "cc": msg_metadata.get("cc"),
                 "epoch": epoch,
                 "list": lid,
@@ -473,7 +474,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         ojson, contents, msg_metadata, irt = self.compute_updates(
             lid, private, msg, raw_message
         )
-        sha3 = hashlib.sha3_256(raw_message).hexdigest()
         if not ojson:
             _id = msg.get("message-id") or msg.get("Subject") or msg.get("Date")
             raise Exception("Could not parse message %s for %s" % (_id, lid))
@@ -509,7 +509,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
             elastic.index(
                 index=elastic.db_source,
-                id=sha3,
+                id=ojson["dbid"],
                 body={
                     "message-id": msg_metadata["message-id"],
                     "permalink": ojson["mid"],
@@ -532,7 +532,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                             "id": ojson["mid"],
                             "mbox": ojson,
                             "mbox_source": {
-                                "id": sha3,
+                                "id": ojson["dbid"],
                                 "permalink": ojson["mid"],
                                 "message-id": msg_metadata["message-id"],
                                 "source": mbox_source(raw_message),

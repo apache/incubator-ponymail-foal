@@ -215,7 +215,6 @@ class SlurpThread(Thread):
                     file = MboxoReader(file)
                 message_raw = file.read()
                 file.close()
-                sha3 = hashlib.sha3_256(message_raw).hexdigest()
                 # If --filter is set, discard any messages not matching by continuing to next email
                 if (
                     fromFilter
@@ -315,7 +314,7 @@ class SlurpThread(Thread):
                         # needs to be replaced by proper exception handling
                         json_source = {
                             "permalink": json["mid"],
-                            "mid": sha3,
+                            "mid": json["dbid"],
                             "message-id": json["message-id"],
                             "source": archiver.mbox_source(message_raw),
                         }
