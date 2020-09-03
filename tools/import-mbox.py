@@ -208,7 +208,13 @@ class SlurpThread(Thread):
 
             for key in messages.iterkeys():
                 message = messages.get(key)
-                message_raw = messages.get_bytes(key)
+                file = messages.get_file(key, True)
+                # If the parsed data is filtered, also need to filter the raw input
+                # so the source agrees with the summary info
+                if message.__class__.__name__ == "MboxoFactory":
+                    file = MboxoReader(file)
+                message_raw = file.read()
+                file.close()
                 sha3 = hashlib.sha3_256(message_raw).hexdigest()
                 # If --filter is set, discard any messages not matching by continuing to next email
                 if (
@@ -295,13 +301,6 @@ class SlurpThread(Thread):
                         continue
 
                 if json:
-                    file = messages.get_file(key, True)
-                    # If the parsed data is filtered, also need to filter the raw input
-                    # so the source agrees with the summary info
-                    if message.__class__.__name__ == "MboxoFactory":
-                        file = MboxoReader(file)
-                    raw_msg = file.read()
-                    file.close()
                     if args.dups:
                         try:
                             duplicates[json["mid"]].append(
@@ -318,7 +317,7 @@ class SlurpThread(Thread):
                             "permalink": json["mid"],
                             "mid": sha3,
                             "message-id": json["message-id"],
-                            "source": archiver.mbox_source(raw_msg),
+                            "source": archiver.mbox_source(message_raw),
                         }
                     except Exception as e:
                         self.printid(
