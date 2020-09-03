@@ -31,18 +31,20 @@ config: typing.Optional[dict] = None
 
 # Headers from RFC 4871, the precursor to RFC 6376
 rfc4871_subset = {
-    "from", "sender", "reply-to", "subject", "date", "message-id",
-    "to", "cc", "mime-version", "content-type",
-    "content-transfer-encoding", "content-id", "content-description",
-    "resent-date", "resent-from", "resent-sender", "resent-to",
-    "resent-cc", "resent-message-id", "in-reply-to", "references",
-    "list-id", "list-help", "list-unsubscribe", "list-subscribe",
-    "list-post", "list-owner", "list-archive", "dkim-signature"
+    b"from", b"sender", b"reply-to", b"subject", b"date",
+    b"message-id", b"to", b"cc", b"mime-version", b"content-type",
+    b"content-transfer-encoding", b"content-id",
+    b"content-description", b"resent-date", b"resent-from",
+    b"resent-sender", b"resent-to", b"resent-cc",
+    b"resent-message-id", b"in-reply-to", b"references", b"list-id",
+    b"list-help", b"list-unsubscribe", b"list-subscribe",
+    b"list-post", b"list-owner", b"list-archive", b"dkim-signature"
 }
 
 # Authenticity headers from RFC 8617
 rfc4871_and_rfc8617_subset = rfc4871_subset | {
-    "arc-authentication-results", "arc-message-signature", "arc-seal"
+    b"arc-authentication-results", b"arc-message-signature",
+    b"arc-seal"
 }
 
 
