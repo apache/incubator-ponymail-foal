@@ -189,9 +189,9 @@ if args.defaults:
     mldom = "example.org"
     wc = "Y"
     wce = True
-    shards = 1
-    replicas = 0
-    genname = "cluster"
+    shards = 3
+    replicas = 1
+    genname = "dkim"
     urlPrefix = ""
     nonce = None
 
