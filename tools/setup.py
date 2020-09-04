@@ -28,7 +28,7 @@ if sys.version_info <= (3, 3):
     sys.exit(-1)
 
 # Backend needs 3.8 or higher, warn if not found.
-if sys.version_info <= (3, 7):
+if sys.version_info < (3, 8, 0):
     print(
         "Warning: Pony Mail Foal requires Python 3.8 or higher for backend operations."
     )
