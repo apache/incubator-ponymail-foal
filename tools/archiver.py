@@ -400,7 +400,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if body is not None or attachments:
             pmid = mid
-            all_mids = set()  # Use a set to avoid duplicates
+            id_set = set()  # Use a set to avoid duplicates
             for generator in self.generator.split(" "):
                 if generator:
                     try:
@@ -416,7 +416,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                                 msg_metadata.get("message-id", "?").strip(),
                             )
                         mid = pmid
-                    all_mids.add(mid)
+                    id_set.add(mid)
 
             if "in-reply-to" in msg_metadata:
                 try:
@@ -429,7 +429,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         irt = irt.strip()
                 except ValueError:
                     irt = ""
-            all_mids = list(all_mids)  # Convert back to list
+            all_mids = list(id_set)  # Convert to list
             document_id = all_mids[0]
             output_json = {
                 "from_raw": msg_metadata["from"],
