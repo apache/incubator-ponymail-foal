@@ -229,11 +229,13 @@ if args.generator:
 if args.generator == "dkim" and args.nonce is not None:
     nonce = args.nonce
 
-hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
 if not hostname:
-    hostname = "localhost"
+    hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
+    if not hostname:
+        hostname = "localhost"
 
-urlPrefix = input("Database URL prefix if any (hit enter if none): ")
+if urlPrefix is None:
+    urlPrefix = input("Database URL prefix if any (hit enter if none): ")
 
 while port < 1 or port > 65536:
     try:
@@ -244,19 +246,22 @@ while port < 1 or port > 65536:
     except ValueError:
         pass
 
-dbname = input("What would you like to call the mail index [ponymail]: ")
 if not dbname:
-    dbname = "ponymail"
+    dbname = input("What would you like to call the mail index [ponymail]: ")
+    if not dbname:
+        dbname = "ponymail"
 
-mlserver = input(
-    "What is the hostname of the outgoing mailserver hostname? [localhost]: "
-)
 if not mlserver:
-    mlserver = "localhost"
+    mlserver = input(
+        "What is the hostname of the outgoing mailserver hostname? [localhost]: "
+    )
+    if not mlserver:
+        mlserver = "localhost"
 
-mldom = input("Which domains would you accept mail to from web-replies? [*]: ")
 if not mldom:
-    mldom = "*"
+    mldom = input("Which domains would you accept mail to from web-replies? [*]: ")
+    if not mldom:
+        mldom = "*"
 
 while wc.lower() not in ["y", "n"]:
     wc = input("Would you like to enable the word cloud feature? (Y/N) [Y]: ").lower()
@@ -283,7 +288,7 @@ while genname == "":
     except ValueError:
         pass
 
-if genname == "dkim" and nonce is None:
+if genname == "dkim" and (nonce is None and not args.defaults):
     print(
         "DKIM hasher chosen. It is recommended you set a cryptographic nonce for this generator, though not required."
     )
