@@ -400,19 +400,23 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if body is not None or attachments:
             pmid = mid
-            try:
-                mid = plugins.generators.generate(
-                    self.generator, msg, body, lid, attachments, raw_msg
-                )
-            except Exception as err:
-                if logger:
-                    # N.B. use .get just in case there is no message-id
-                    logger.info(
-                        "Could not generate MID: %s. MSGID: %s",
-                        err,
-                        msg_metadata.get("message-id", "?").strip(),
-                    )
-                mid = pmid
+            all_mids = set()  # Use a set to avoid duplicates
+            for generator in self.generator.split(" "):
+                if generator:
+                    try:
+                        mid = plugins.generators.generate(
+                            generator, msg, body, lid, attachments, raw_msg
+                        )
+                    except Exception as err:
+                        if logger:
+                            # N.B. use .get just in case there is no message-id
+                            logger.info(
+                                "Could not generate MID: %s. MSGID: %s",
+                                err,
+                                msg_metadata.get("message-id", "?").strip(),
+                            )
+                        mid = pmid
+                    all_mids.add(mid)
 
             if "in-reply-to" in msg_metadata:
                 try:
@@ -425,13 +429,16 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         irt = irt.strip()
                 except ValueError:
                     irt = ""
+            all_mids = list(all_mids)  # Convert back to list
+            document_id = all_mids[0]
             output_json = {
                 "from_raw": msg_metadata["from"],
                 "from": msg_metadata["from"],
                 "to": msg_metadata["to"],
                 "subject": msg_metadata["subject"],
                 "message-id": msg_metadata["message-id"],
-                "mid": mid,
+                "mid": document_id,
+                "permalinks": all_mids,
                 "dbid": hashlib.sha3_256(raw_msg).hexdigest(),
                 "cc": msg_metadata.get("cc"),
                 "epoch": epoch,

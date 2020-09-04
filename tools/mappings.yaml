@@ -78,7 +78,7 @@ mbox:
       type: keyword
     mid:
       type: keyword
-    permalink:
+    permalinks:
       type: keyword
     private:
       type: boolean
