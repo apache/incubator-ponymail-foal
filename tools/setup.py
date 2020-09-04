@@ -214,7 +214,7 @@ if args.nwc:
     wc = False
 if args.dbshards:
     shards = args.dbshards
-if args.dbreplicas:
+if not args.dbreplicas is None: # Allow for 0 value
     replicas = args.dbreplicas
 if args.generator:
     if args.generator in supported_generators:
