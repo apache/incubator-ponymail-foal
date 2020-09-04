@@ -143,9 +143,7 @@ def normalize_lid(lid: str) -> str:  # N.B. Also used by import-mbox.py
     # Belt-and-braces: remove possible extraneous chars
     lid = "<%s>" % lid.strip(" <>").replace("@", ".")
     # Replace invalid characters with underscores so as to not invalidate doc IDs.
-    lid = re.sub(
-        r"[^-+~_<>.a-zA-Z0-9@]", "_", lid
-    )
+    lid = re.sub(r"[^-+~_<>.a-zA-Z0-9@]", "_", lid)
     # Finally, ensure we have a loosely valid list ID value
     if not re.match(r"^<.+\..+>$", lid):
         print("Invalid list-id %s" % lid)
@@ -172,24 +170,39 @@ def message_attachments(msg: email.message.Message) -> typing.Tuple[list, dict]:
 class Body:
     def __init__(self, part: email.message.Message):
         self.content_type = part.get_content_type()
-        self.charsets = set([part.get_content_charset()])  # Part's charset
-        self.charsets.update(
-            [part.get_charsets()[0]]
-        )  # Parent charset as fallback if any/different
-        self.character_set = "us-ascii"
+        self.charsets = [part.get_content_charset()]  # Part's charset
+        parent_charset = part.get_charsets()[0]
+        if parent_charset and parent_charset != self.charsets[0]:
+            self.charsets.append(
+                parent_charset
+            )  # Parent charset as fallback if any/different
+        self.character_set = None
+        self.has_charset = False
         self.string: typing.Optional[str] = None
         self.flowed = "format=flowed" in part.get("content-type", "")
-        contents = part.get_payload(decode=True)
-        if contents is not None:
-            for cs in self.charsets:
-                if cs:
+        self.bytes = part.get_payload(decode=True)
+        if self.bytes is not None:
+            valid_encodings = [x for x in self.charsets if x]
+            if valid_encodings:
+                for cs in valid_encodings:
                     try:
-                        self.string = contents.decode(cs)
+                        self.string = self.bytes.decode(cs)
                         self.character_set = str(cs)
+                        self.has_charset = True
+                        break
                     except UnicodeDecodeError:
                         pass
             if not self.string:
-                self.string = contents.decode("us-ascii", errors="replace")
+                self.string = self.bytes.decode("us-ascii", errors="replace")
+                if valid_encodings:
+                    self.character_set = "us-ascii"
+                # If no character encoding, but we find non-ASCII chars, assume bytes were UTF-8
+                elif len(self.bytes) != len(self.bytes.decode("us-ascii", "ignore")):
+                    part.set_charset("utf-8")
+                    self.bytes = part.get_payload(decode=True)
+                    # Set the .string, but not a character set, as we don't know it for sure.
+                    # This is mainly so the older generators won't barf.
+                    self.string = self.bytes.decode("utf-8", "replace")
 
     def __repr__(self):
         return self.string
@@ -200,8 +213,8 @@ class Body:
     def assign(self, new_string):
         self.string = new_string
 
-    def encode(self, charset="utf-8", errors="strict"):
-        return self.string.encode(charset, errors=errors)
+    def encode(self, encoding="utf-8", errors="strict"):
+        return self.string.encode(encoding=encoding, errors=errors)
 
     def unflow(self, convert_lf=False):
         """Unflows text of type format=flowed.
@@ -405,7 +418,12 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 if generator:
                     try:
                         mid = plugins.generators.generate(
-                            generator, msg, body, lid, attachments, raw_msg
+                            generator,
+                            msg,
+                            body if body.character_set else body.bytes,
+                            lid,
+                            attachments,
+                            raw_msg,
                         )
                     except Exception as err:
                         if logger:
@@ -431,6 +449,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     irt = ""
             all_mids = list(id_set)  # Convert to list
             document_id = all_mids[0]
+
             output_json = {
                 "from_raw": msg_metadata["from"],
                 "from": msg_metadata["from"],

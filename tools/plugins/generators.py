@@ -234,6 +234,8 @@ def medium(msg, body, lid, _attachments, _raw_msg):
 # as the archived-at may change from node to node (and will change if not in the raw mbox file)
 # Also the lid is not included in the hash, so the hash does not change if the lid is overridden
 #
+
+
 def cluster(msg, body, lid, attachments, _raw_msg):
     """
     Use data that is guaranteed to be the same across cluster setups
@@ -268,16 +270,15 @@ def cluster(msg, body, lid, attachments, _raw_msg):
     # Use text body
     if not body:  # Make sure body is not None, which will fail.
         body = ""
-    xbody = body.encode('utf-8', 'ignore')
+    xbody = body if type(body) is bytes else body.encode('utf-8', errors='ignore')
 
     # Crop out any trailing whitespace in body
     xbody = re.sub(b"\s+$", b"", xbody)
 
     # Use Message-Id (or '' if missing)
-    xbody += bytes(msg.get('Message-Id', ''), encoding='ascii')
+    xbody += bytes(msg.get('message-id', ''), encoding='ascii')
 
     # Use Date header. Don't use archived-at, as the archiver sets this if not present.
-    mdate = None
     mdatestring = "(null)"  # Default to null, ONLY changed if replicable across imports
     try:
         mdate = email.utils.parsedate_tz(msg.get('date'))
