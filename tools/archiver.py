@@ -420,7 +420,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         mid = plugins.generators.generate(
                             generator,
                             msg,
-                            body if body.character_set else body.bytes,
+                            body if body and body.character_set else body and body.bytes or "",
                             lid,
                             attachments,
                             raw_msg,
