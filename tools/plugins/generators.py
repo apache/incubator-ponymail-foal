@@ -159,13 +159,15 @@ def full(msg, _body, lid, _attachments, _raw_msg):
     (including server-dependent data)
     The id is almost certainly unique,
     but different copies of the message are likely to have different headers, thus ids
+    WARNING: the archiver by default adds an archived-at header with the current time.
+    This is included in the hash, so messages will get different Permalinks if reloaded from source
 
     Parameters:
     msg - the parsed message
     _body - the parsed text content (not used)
     lid - list id
     _attachments - list of attachments (not used)
-    raw_msg - the original message bytes (not used)
+    _raw_msg - the original message bytes (not used)
 
     Returns: "<hash>@<lid>" where hash is sha224 of message bytes
     """
