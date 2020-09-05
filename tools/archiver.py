@@ -192,12 +192,15 @@ class Body:
                         break
                     except UnicodeDecodeError:
                         pass
+            # If no character set was defined, the email MUST be US-ASCII by RFC822 defaults
+            # This isn't always the case, as we're about to discover.
             if not self.string:
-                self.string = self.bytes.decode("us-ascii", errors="replace")
-                if valid_encodings:
-                    self.character_set = "us-ascii"
-                # If no character encoding, but we find non-ASCII chars, assume bytes were UTF-8
-                elif len(self.bytes) != len(self.bytes.decode("us-ascii", "ignore")):
+                try:
+                    self.string = self.bytes.decode("us-ascii", errors="strict")
+                    if valid_encodings:
+                        self.character_set = "us-ascii"
+                except UnicodeDecodeError:
+                    # If us-ascii strict fails, it's probably undeclared UTF-8.
                     # Set the .string, but not a character set, as we don't know it for sure.
                     # This is mainly so the older generators won't barf.
                     self.string = self.bytes.decode("utf-8", "replace")
