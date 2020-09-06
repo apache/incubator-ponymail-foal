@@ -21,6 +21,7 @@ import plugins.aaa
 """ Generic preferences endpoint for Pony Mail codename Foal"""
 """ This is incomplete, but will work for anonymous tests. """
 
+
 async def process(
     server: plugins.server.BaseServer, session: dict, indata: dict
 ) -> dict:
