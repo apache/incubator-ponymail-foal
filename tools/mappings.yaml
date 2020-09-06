@@ -68,6 +68,8 @@ mbox:
       type: text
     from_raw:
       type: keyword
+    html_as_source:
+      type: boolean
     in-reply-to:
       type: keyword
     list:
