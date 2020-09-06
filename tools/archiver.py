@@ -201,9 +201,11 @@ class Body:
                     if valid_encodings:
                         self.character_set = "us-ascii"
                 except UnicodeDecodeError:
-                    # If us-ascii strict fails, it's probably undeclared UTF-8.
+                    # If us-ascii strict fails, it's probably undeclared UTF-8 (it happens!).
                     # Set the .string, but not a character set, as we don't know it for sure.
-                    # This is mainly so the older generators won't barf.
+                    # This is mainly so the older generators won't barf, as the generator will
+                    # be fed the message body as a bytes object if no encoding is set, while
+                    # the resulting metadoc will always use the string version.
                     self.string = self.bytes.decode("utf-8", "replace")
 
     def __repr__(self):
