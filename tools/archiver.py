@@ -425,7 +425,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             # it would be UTF-8 bytes in cases of charset-less message bodies. It would
             # also be nothing in case of html-only emails where html2text is not enabled.
             generator_body = body if body and body.character_set else body and body.bytes or ""
-            if body.html_as_source:
+            if body and body.html_as_source:
                 generator_body = ""
             for generator in self.generator.split(" "):
                 if generator:
@@ -481,7 +481,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
                 "body": body.unflow() if body else "",
-                "html_source_only": body.html_as_source,
+                "html_source_only": body and body.html_as_source or False,
                 "attachments": attachments,
             }
 
