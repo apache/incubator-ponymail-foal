@@ -2055,6 +2055,7 @@ function listview_header(state, json) {
 
 function listview_list_lists(state, json) {
     let lists = document.getElementById('list_picker_ul');
+    let searching = (state && state.search === true) ? true : false;
     if (state && state.to) {
         let tab = undefined;
         let tabs = lists.childNodes;
@@ -2075,8 +2076,7 @@ function listview_list_lists(state, json) {
     }
     if (lists) {
     	lists.innerHTML = "";
-    
-	    let searching = (state && state.search === true) ? true : false;
+
     	if (isHash(json.lists) && json.lists[current_domain]) {
         	lists_sorted = [];
         	for (var list in json.lists[current_domain]) {
