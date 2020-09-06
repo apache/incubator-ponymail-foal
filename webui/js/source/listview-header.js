@@ -246,7 +246,7 @@ function switch_list(list, from) {
       window.history.pushState({}, null, newhref);
     }
 
-    console.log("Switching list ...");
+    console.log("Switching list to %s...".format(listid));
     listview_list_lists({to: from ? listid : undefined});
     post_prime({cached: true, from: from});
 }
