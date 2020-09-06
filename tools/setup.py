@@ -226,7 +226,7 @@ if args.generator:
             + "\n"
         )
         sys.exit(-1)
-if args.generator == "dkim" and args.nonce is not None:
+if any(x == "dkim" for x in args.generator.split(' ')) and args.nonce is not None:
     nonce = args.nonce
 
 if not hostname:
