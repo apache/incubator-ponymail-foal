@@ -425,6 +425,26 @@ if not os.path.exists("../site/js/config.js") and os.path.exists(
 ):
     shutil.copy("../site/js/config.js.sample", "../site/js/config.js")
 
+print("Writing UI backend configuration file ponymail.yaml")
+with open("../server/ponymail.yaml", "w") as f:
+    f.write("""
+server:
+  port: 8080             # Port to bind to
+  bind: 127.0.0.1        # IP to bind to - typically 127.0.0.1 for localhost or 0.0.0.0 for all IPs
+
+
+database:
+  server: %s      # The hostname of the ElasticSearch database
+  port: %u             # ES Port
+  secure: false          # Whether TLS is enabled on ES
+  url_prefix: ~          # URL prefix, if proxying to ES
+  db_prefix: %s    # DB prefix, usually 'ponymail'
+  max_hits: 15000        # Maximum number of emails to process in a search
+
+tasks:
+  refresh_rate:  150     # Background indexer run interval, in seconds
+""" % (hostname,  port, dbname))
+
 
 print("All done, Pony Mail should...work now :)")
 print(
