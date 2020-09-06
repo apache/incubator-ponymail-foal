@@ -8,6 +8,8 @@ is not yet complete, in part due to waiting for OAuth to be completed.
 This backend should not yet be used for private email archives unless 
 restricted behind some form of external/parent authentication mechanism.
 
+Note that replying via the UI is not yet supported, nor are logins.
+
 
 ## How to run:
 - Install the Pony Mail service through `tools/setup.py` first. 
