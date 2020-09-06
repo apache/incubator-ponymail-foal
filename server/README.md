@@ -1,6 +1,6 @@
 # Pony Mail Foal - Backend UI Server
 
-This is the (as of yet incomplete) backedn server for the Foal UI.
+This is the (as of yet incomplete) backend server for the Foal UI.
 While it works on all-public archives with searching, threads, emails
 and sources, the AAA (Access, Authentication and Authorization) plugin 
 is not yet complete, in part due to waiting for OAuth to be completed.
