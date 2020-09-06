@@ -217,7 +217,7 @@ if args.dbshards:
 if args.dbreplicas is not None: # Allow for 0 value
     replicas = args.dbreplicas
 if args.generator:
-    if args.generator in supported_generators:
+    if all(x in supported_generators for x in args.generator.split(' ')):
         genname = args.generator
     else:
         sys.stderr.write(
