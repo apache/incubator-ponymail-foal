@@ -177,7 +177,6 @@ class Body:
                 parent_charset
             )  # Parent charset as fallback if any/different
         self.character_set = None
-        self.has_charset = False
         self.string: typing.Optional[str] = None
         self.flowed = "format=flowed" in part.get("content-type", "")
         self.bytes = part.get_payload(decode=True)
@@ -189,7 +188,6 @@ class Body:
                     try:
                         self.string = self.bytes.decode(cs)
                         self.character_set = str(cs)
-                        self.has_charset = True
                         break
                     except UnicodeDecodeError:
                         pass
