@@ -181,6 +181,7 @@ class Body:
         self.string: typing.Optional[str] = None
         self.flowed = "format=flowed" in part.get("content-type", "")
         self.bytes = part.get_payload(decode=True)
+        self.html_as_source = False
         if self.bytes is not None:
             valid_encodings = [x for x in self.charsets if x]
             if valid_encodings:
@@ -312,8 +313,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 ]:
                     body = Body(part)
                 elif (
-                    self.html
-                    and not first_html
+                    not first_html
                     and part.get_content_type() == "text/html"
                 ):
                     first_html = Body(part)
@@ -327,7 +327,12 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             or (self.ignore_body and str(body).find(str(self.ignore_body)) != -1)
         ):
             body = first_html
-            body.assign(self.html2text(str(body)))
+            body.html_as_source = True
+
+            # Convert HTML to text if mod is installed and enabled, otherwise keep the source as-is
+            if self.html:
+                body.assign(self.html2text(str(body)))
+                body.html_as_source = False
         return body
 
     # N.B. this is also called by import-mbox.py
@@ -415,13 +420,20 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         if body is not None or attachments:
             pmid = mid
             id_set = set()  # Use a set to avoid duplicates
+            # The body used for generators differ from the body put into the meta doc,
+            # for historical reasons. In the older generators where it is actively used,
+            # it would be UTF-8 bytes in cases of charset-less message bodies. It would
+            # also be nothing in case of html-only emails where html2text is not enabled.
+            generator_body = body if body and body.character_set else body and body.bytes or ""
+            if body.html_as_source:
+                generator_body = ""
             for generator in self.generator.split(" "):
                 if generator:
                     try:
                         mid = plugins.generators.generate(
                             generator,
                             msg,
-                            body if body and body.character_set else body and body.bytes or "",
+                            generator_body,
                             lid,
                             attachments,
                             raw_msg,
@@ -469,6 +481,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
                 "body": body.unflow() if body else "",
+                "html_source_only": body.html_as_source,
                 "attachments": attachments,
             }
 
