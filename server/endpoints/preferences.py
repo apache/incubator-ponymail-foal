@@ -17,13 +17,14 @@
 
 import plugins.server
 import plugins.aaa
+import plugins.session
 
 """ Generic preferences endpoint for Pony Mail codename Foal"""
 """ This is incomplete, but will work for anonymous tests. """
 
 
 async def process(
-    server: plugins.server.BaseServer, session: dict, indata: dict
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict
 ) -> dict:
     prefs = {"login": {}}
     lists = {}
@@ -38,6 +39,14 @@ async def process(
                     lists[ldomain] = {}
                 lists[ldomain][lname] = entry["count"]
     prefs["lists"] = lists
+    if session and session.credentials:
+        prefs['login'] = {
+            "credentials": {
+                "uid": session.credentials.uid,
+                "email": session.credentials.email,
+                "fullname": session.credentials.name,
+            }
+        }
 
     return prefs
 
