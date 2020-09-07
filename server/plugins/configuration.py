@@ -16,9 +16,12 @@ class TaskConfig:
 
 class OAuthConfig:
     authoritative_domains: list
+    google_client_id: str
 
     def __init__(self, subyaml: dict):
         self.authoritative_domains = subyaml.get('authoritative_domains', [])
+        self.google_client_id = subyaml.get('google_client_id', '')
+
 
 class DBConfig:
     hostname: str
