@@ -35,6 +35,7 @@ from elasticsearch.helpers import async_scan
 
 import plugins.aaa
 import plugins.session
+import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
@@ -165,7 +166,7 @@ async def get_email(
                     doc = anonymize(doc)
                 doc["_source"]["id"] = doc["_source"]["mid"]
                 return doc["_source"]
-        except session.database.DBError:
+        except plugins.database.DBError:
             pass
     elif messageid:
         res = await session.database.search(
@@ -202,7 +203,7 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     try:
         doc = await session.database.get(index=doctype, id=permalink)
         return doc
-    except session.database.DBError:
+    except plugins.database.DBError:
         pass
     res = await session.database.search(
         index=doctype,
