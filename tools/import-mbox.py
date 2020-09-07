@@ -313,7 +313,7 @@ class SlurpThread(Thread):
                     try:  # temporary hack to try and find an encoding issue
                         # needs to be replaced by proper exception handling
                         json_source = {
-                            "permalink": json["mid"],
+                            "permalinks": json["permalinks"],
                             "mid": json["dbid"],
                             "message-id": json["message-id"],
                             "source": archiver.mbox_source(message_raw),
