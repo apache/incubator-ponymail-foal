@@ -37,10 +37,17 @@ class SessionCredentials:
     provider: str
     authoritative: bool
     admin: bool
+    oauth_data: dict
 
     def __init__(self, doc: typing.Dict = None):
         if doc:
-            pass
+            self.uid = doc.get('uid', '')
+            self.name = doc.get('name', '')
+            self.email = doc.get('email', '')
+            self.provider = doc.get('provider', 'generic')
+            self.authoritative = doc.get('authoritative', False)
+            self.admin = doc.get('admin', False)
+            self.oauth_data = doc.get('oauth_data', {})
         else:
             self.uid = ""
             self.name = ""
@@ -48,6 +55,7 @@ class SessionCredentials:
             self.provider = "generic"
             self.authoritative = False
             self.admin = False
+            self.oauth_data = {}
 
 
 class SessionObject:
