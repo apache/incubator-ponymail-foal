@@ -12,7 +12,7 @@ Work is underway on the following items:
 
 - Improved archiver and import tools   **[DONE]**
 - New UI for the end user              **[DONE]**
-- 100% python backend, no mod_lua required. **[COMING SOON]**
+- 100% python backend, no mod_lua required. **[IN PROGRESS]**
 
 ## Installation Guide
 Work is under way to write an installation guide for this.
