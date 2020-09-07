@@ -11,10 +11,10 @@ This is the (as of yet incomplete) backend server for the Foal UI.
 - Searching with keywords, quotes, +/- inclusion/exclusion
 - Rudimentary AAA (logged in with an authoritative OAuth gives read access to everyting)
 - Persistent user sessions across restarts of the server
+- OAuth logins (Google + Generic for now)
 
 
 ### What doesn't work
-- Advanced AAA
 - Composing replies
 - Preferences
 - Notifications/favorites
