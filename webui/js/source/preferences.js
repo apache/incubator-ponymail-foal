@@ -71,7 +71,7 @@ function init_preferences(state, json) {
         if (json.lists[current_domain] && json.lists[current_domain][current_list] != undefined) {
           post_prime(state);
         } else {// otherwise, bork
-          if (current_list.length > 0 && Object.keys(json.lists[current_domain]).length > 0) {
+          if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
             let eml = document.getElementById('emails');
             eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
             eml.inject(new HTML('br'));
