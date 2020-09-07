@@ -14,6 +14,12 @@ class TaskConfig:
         self.refresh_rate = int(subyaml.get("refresh_rate", 150))
 
 
+class OAuthConfig:
+    authoritative_domains: list
+
+    def __init__(self, subyaml: dict):
+        self.authoritative_domains = subyaml.get('authoritative_domains', [])
+
 class DBConfig:
     hostname: str
     port: int
@@ -35,11 +41,13 @@ class Configuration:
     server: ServerConfig
     database: DBConfig
     tasks: TaskConfig
+    oauth: OAuthConfig
 
     def __init__(self, yml: dict):
         self.server = ServerConfig(yml.get("server", {}))
         self.database = DBConfig(yml.get("database", {}))
         self.tasks = TaskConfig(yml.get("tasks", {}))
+        self.oauth = OAuthConfig(yml.get("oauth", {}))
 
 
 class InterData:
