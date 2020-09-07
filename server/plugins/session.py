@@ -26,6 +26,7 @@ import aiohttp.web
 
 import plugins.database
 import plugins.server
+import copy
 
 PYPONY_MAX_SESSION_AGE = 86400 * 7  # Max 1 week between visits before voiding a session
 
@@ -100,7 +101,9 @@ async def get_session(
         if (now - x_session.last_accessed) > PYPONY_MAX_SESSION_AGE:
             del server.data.sessions[session_id]
         else:
-            session = x_session
+            # Make a copy so we don't have a race condition with the database pool object
+            # In case the session is used twice within the same loop
+            session = copy.copy(x_session)
     if not session:
         session = SessionObject(server)
     session.database = await server.dbpool.get()
