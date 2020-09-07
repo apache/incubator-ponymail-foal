@@ -53,7 +53,7 @@ async def process(
                     server,
                     cid,
                     uid=uid,
-                    name=rv.get("name"),
+                    name=rv.get("name") or rv.get("fullname"),
                     email=rv.get("email"),
                     # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
                     # Required for access to private emails
