@@ -345,6 +345,29 @@ async def get_list_stats(session, maxage="90d", admin=False):
 async def get_years(session, query_defuzzed):
     """ Fetches the oldest and youngest email, returns the years between them """
 
+    # Fetch any private lists included in search results
+    fuzz_private_only= dict(query_defuzzed)
+    fuzz_private_only['filter'] = [{"term": {"private": True}}]
+    res = await session.database.search(
+        index=session.database.dbs.mbox,
+        size=0,
+        body={
+            "query": {"bool": fuzz_private_only},
+            "aggs": {"listnames": {"terms": {"field": "list_raw", "size": 10000}}},
+        },
+    )
+    private_lists_found = []
+    for entry in res["aggregations"]["listnames"]["buckets"]:
+        listname = entry["key"].lower().strip("<>")
+        private_lists_found.append(listname)
+
+    # If we can access all private lists found, or if no private lists, we can do a complete search.
+    # If not, we adjust the search here to only include public emails
+    for listname in private_lists_found:
+        if not plugins.aaa.can_access_list(session, listname):
+            query_defuzzed['filter'] = [{"term": {"private": False}}]
+            break
+
     # Get oldest doc
     res = await session.database.search(
         index=session.database.dbs.mbox,
