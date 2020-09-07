@@ -169,14 +169,16 @@ async def set_session(server: plugins.server.BaseServer, cid, **credentials):
     session = SessionObject(server, last_accessed=time.time(), cookie=session_id, cid=cid)
     session.credentials = SessionCredentials(credentials)
     server.data.sessions[session_id] = session
-    # Grab temporary DB handle
+
+    # Grab temporary DB handle since session objects at init do not have this
+    # We just need this to be able to save the session in ES.
     session.database = await server.dbpool.get()
 
     # Save session and account data
     await save_session(session)
     await save_credentials(session)
 
-    # Put DB handle back
+    # Put DB handle back into the pool
     server.dbpool.put_nowait(session.database)
     return cookie["ponymail"].OutputString()
 
