@@ -1,4 +1,11 @@
-# Google OAuth plugin
+"""
+Google OAuth plugin:
+Requires ponymail.yaml to have an oauth section like so:
+
+oauth:
+  google_client_id:    your-client-id-here
+
+"""
 import plugins.server
 import plugins.session
 
