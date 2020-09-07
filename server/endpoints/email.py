@@ -32,7 +32,14 @@ async def process(
     indata: dict,
 ) -> dict:
 
+    # First, assume permalink and look up the email based on that
     email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
+
+    # If not found via permalink, it might be message-id instead, so try that
+    if email is None:
+        email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
+
+    # If email was found, process the request if we are allowed to display it
     if email and isinstance(email, dict):
         if plugins.aaa.can_access_email(session, email):
             # Are we fetching an attachment?
