@@ -28,7 +28,7 @@ async def process(
     session: plugins.session.SessionObject,
     indata: dict,
 ) -> dict:
-    email = await plugins.mbox.get_email(session, id=indata.get("id"))
+    email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
     if not email:
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
     if email and isinstance(email, dict):

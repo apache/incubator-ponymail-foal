@@ -30,7 +30,7 @@ async def process(
     indata: dict,
 ) -> aiohttp.web.Response:
 
-    email = await plugins.mbox.get_email(session, id=indata.get("id"))
+    email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
     if email and isinstance(email, dict):
         if plugins.aaa.can_access_email(session, email):
             source = await plugins.mbox.get_source(session, permalink=email["mid"])
