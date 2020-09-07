@@ -45,9 +45,13 @@ An example Apache HTTPd configuration could be (for plain-text HTTP):
     ServerName archives.example.com        
     ServerAdmin webmaster@localhost
     DocumentRoot /var/www/foal/webui/
+    # PathInfo is needed for threads
+    AcceptPathInfo On
     ProxyPass /api/ http://localhost:8080/api/
     <Directory /var/www/foal/webui/>
         Require all granted
+        # MultiViews means you can shorten threads to https://localhost/thread/blablabla
+        Options +MultiViews
     </Directory>
 </VirtualHost>
 ``` 
