@@ -75,7 +75,7 @@ function init_preferences(state, json) {
             let eml = document.getElementById('emails');
             eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
             eml.inject(new HTML('br'));
-            eml.inject(new HTML('a', {href: 'oauth.html'}, "Click here to log in via OAuth"));
+            eml.inject(new HTML('a', {href: 'oauth.html', onclick:'location.href="oauth.html";'}, "Click here to log in via OAuth"));
           } else {
             console.log(current_domain);
             let first_list = Object.keys(json.lists[current_domain])[0];
