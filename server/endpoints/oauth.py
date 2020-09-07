@@ -22,6 +22,7 @@ import plugins.session
 import plugins.oauthGeneric
 import typing
 import aiohttp.web
+import hashlib
 
 
 async def process(
@@ -43,22 +44,29 @@ async def process(
             if not uid:
                 uid = rv.get("email")
             if uid:
+                cid = hashlib.shake_128(
+                    ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode(
+                        "ascii", "ignore"
+                    )
+                ).hexdigest(16)
                 cookie = await plugins.session.set_session(
                     server,
+                    cid,
                     uid=uid,
                     name=rv.get("name"),
                     email=rv.get("email"),
                     # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
                     # Required for access to private emails
-                    authoritative=rv.get('oauth_domain', 'generic') in server.config.oauth.authoritative_domains,
+                    authoritative=rv.get("oauth_domain", "generic")
+                    in server.config.oauth.authoritative_domains,
+                    oauth_provider=rv.get("oauth_domain", "generic"),
                     oauth_data=rv,
                 )
                 # This could be improved upon, instead of a raw response return value
                 return aiohttp.web.Response(
-                    headers={
-                        'set-cookie': cookie,
-                        'content-type': 'application/json'
-                    }, status=200, text='{"okay": true}'
+                    headers={"set-cookie": cookie, "content-type": "application/json"},
+                    status=200,
+                    text='{"okay": true}',
                 )
 
 
