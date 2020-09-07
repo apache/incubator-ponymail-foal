@@ -115,5 +115,5 @@ async def set_session(server: plugins.server.BaseServer, **credentials):
     session = SessionObject(server)
     session.credentials = SessionCredentials(credentials)
     server.data.sessions[session_id] = session
+    return cookie.output(header='').lstrip()
 
-    return cookie.output()
