@@ -48,6 +48,16 @@ async def process(
             }
         }
 
+    # Logging out??
+    if indata.get('logout'):
+        # Remove session from ElasticSearch
+        await plugins.session.remove_session(session)
+
+        # If stored in memory, remove from there.
+        if session.cookie in server.data.sessions:
+            del server.data.sessions[session.cookie]
+        session.credentials = None
+
     return prefs
 
 
