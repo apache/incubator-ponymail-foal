@@ -71,3 +71,15 @@ class Database:
             index = self.dbs.mbox
         res = await self.client.get(index=index, **kwargs)
         return res
+
+    async def delete(self, index="", **kwargs):
+        if not index:
+            index = self.dbs.session
+        res = await self.client.delete(index=index, **kwargs)
+        return res
+
+    async def index(self, index="", **kwargs):
+        if not index:
+            index = self.dbs.session
+        res = await self.client.index(index=index, **kwargs)
+        return res
