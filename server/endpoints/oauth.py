@@ -35,39 +35,42 @@ async def process(
     code = indata.get("code")
     oauth_token = indata.get("oauth_token")
 
+    rv = None
+
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
     if state and code and oauth_token:
-        rv: typing.Optional[dict] = plugins.oauthGeneric.process(indata, session)
-        if rv:
-            # Get UID, fall back to using email address
-            uid = rv.get("uid")
-            if not uid:
-                uid = rv.get("email")
-            if uid:
-                cid = hashlib.shake_128(
-                    ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode(
-                        "ascii", "ignore"
-                    )
-                ).hexdigest(16)
-                cookie = await plugins.session.set_session(
-                    server,
-                    cid,
-                    uid=uid,
-                    name=rv.get("name") or rv.get("fullname"),
-                    email=rv.get("email"),
-                    # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
-                    # Required for access to private emails
-                    authoritative=rv.get("oauth_domain", "generic")
-                    in server.config.oauth.authoritative_domains,
-                    oauth_provider=rv.get("oauth_domain", "generic"),
-                    oauth_data=rv,
+        rv: typing.Optional[dict] = await plugins.oauthGeneric.process(indata, session, server)
+
+    if rv:
+        # Get UID, fall back to using email address
+        uid = rv.get("uid")
+        if not uid:
+            uid = rv.get("email")
+        if uid:
+            cid = hashlib.shake_128(
+                ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode(
+                    "ascii", "ignore"
                 )
-                # This could be improved upon, instead of a raw response return value
-                return aiohttp.web.Response(
-                    headers={"set-cookie": cookie, "content-type": "application/json"},
-                    status=200,
-                    text='{"okay": true}',
-                )
+            ).hexdigest(16)
+            cookie = await plugins.session.set_session(
+                server,
+                cid,
+                uid=uid,
+                name=rv.get("name") or rv.get("fullname"),
+                email=rv.get("email"),
+                # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
+                # Required for access to private emails
+                authoritative=rv.get("oauth_domain", "generic")
+                in server.config.oauth.authoritative_domains,
+                oauth_provider=rv.get("oauth_domain", "generic"),
+                oauth_data=rv,
+            )
+            # This could be improved upon, instead of a raw response return value
+            return aiohttp.web.Response(
+                headers={"set-cookie": cookie, "content-type": "application/json"},
+                status=200,
+                text='{"okay": true}',
+            )
 
 
 def register(server: plugins.server.BaseServer):
