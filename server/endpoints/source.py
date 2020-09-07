@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Simple endpoint that returns an email or an attachment from one"""
+"""Simple endpoint that returns an email source"""
 
 import plugins.server
 import plugins.session
