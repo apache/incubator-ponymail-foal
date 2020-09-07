@@ -145,7 +145,7 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
         if len(should) > 0:
             must.append(
                 {
-                    "multi_match": {
+                    "query_string": {
                         "fields": ["subject", "from", "body"],
                         "query": " AND ".join(should),
                     }
@@ -154,7 +154,7 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
         if len(shouldnot) > 0:
             must_not.append(
                 {
-                    "multi_match": {
+                    "query_string": {
                         "fields": ["subject", "from", "body"],
                         "query": " AND ".join(shouldnot),
                     }
@@ -172,4 +172,5 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
 
     if len(must_not) > 0:
         thebool["must_not"] = must_not
+
     return thebool
