@@ -1,14 +1,29 @@
 # Pony Mail Foal - Backend UI Server
 
 This is the (as of yet incomplete) backend server for the Foal UI.
-While it works on all-public archives with searching, threads, emails
-and sources, the AAA (Access, Authentication and Authorization) plugin 
-is not yet complete, in part due to waiting for OAuth to be completed.
 
-This backend should not yet be used for private email archives unless 
-restricted behind some form of external/parent authentication mechanism.
+## Progress
 
-Note that replying via the UI is not yet supported, nor are logins.
+### What works
+- The "phone book" (front page)
+- Browsing threads on a list
+- Viewing single threads, emails and sources
+- Searching with keywords, quotes, +/- inclusion/exclusion
+- Rudimentary AAA (logged in with an authoritative OAuth gives read access to everyting)
+
+
+### What doesn't work
+- Advanced AAA
+- Permanent sessions across restarts
+- Composing replies
+- Preferences
+- Notifications/favorites
+
+
+While rudimentary AAA works, the backend should not yet be used for private 
+email archives unless restricted behind some form of external/parent 
+authentication mechanism.
+
 
 
 ## How to run:
