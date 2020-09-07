@@ -24,13 +24,13 @@ import plugins.mbox
 import aiohttp.web
 import plugins.aaa
 import base64
-
+import typing
 
 async def process(
     server: plugins.server.BaseServer,
     session: plugins.session.SessionObject,
     indata: dict,
-) -> dict:
+) -> typing.Union[dict, aiohttp.web.Response]:
 
     # First, assume permalink and look up the email based on that
     email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
