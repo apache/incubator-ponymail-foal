@@ -20,6 +20,7 @@
 import plugins.server
 import plugins.session
 import plugins.oauthGeneric
+import plugins.oauthGoogle
 import typing
 import aiohttp.web
 import hashlib
@@ -33,12 +34,17 @@ async def process(
 
     state = indata.get("state")
     code = indata.get("code")
+    id_token = indata.get('id_token')
     oauth_token = indata.get("oauth_token")
 
     rv = None
 
+    # Google OAuth - currently fetches email address only
+    if oauth_token and oauth_token.startswith("https://www.googleapis.com/") and id_token:
+        rv: typing.Optional[dict] = await plugins.oauthGoogle.process(indata, session, server)
+
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
-    if state and code and oauth_token:
+    elif state and code and oauth_token:
         rv: typing.Optional[dict] = await plugins.oauthGeneric.process(indata, session, server)
 
     if rv:
