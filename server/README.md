@@ -10,11 +10,11 @@ This is the (as of yet incomplete) backend server for the Foal UI.
 - Viewing single threads, emails and sources
 - Searching with keywords, quotes, +/- inclusion/exclusion
 - Rudimentary AAA (logged in with an authoritative OAuth gives read access to everyting)
+- Persistent user sessions across restarts of the server
 
 
 ### What doesn't work
 - Advanced AAA
-- Permanent sessions across restarts
 - Composing replies
 - Preferences
 - Notifications/favorites
