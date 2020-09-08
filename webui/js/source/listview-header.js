@@ -35,6 +35,11 @@ function listview_header(state, json) {
     } else {
       list_title += ", past month";
     }
+
+    if (json.searchParams.q && json.searchParams.q.length || (json.searchParams.d||"").match(/=/)) {
+        list_title = "Custom search";
+    }
+
     document.getElementById('listview_title').innerText = list_title + ":";
     let download = new HTML('button', { title: 'Download as mbox archive', download: 'true'}, new HTML('span', {class: 'glyphicon glyphicon-save'}, " "));
     document.getElementById('listview_title').inject(download);
