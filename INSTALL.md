@@ -1,5 +1,16 @@
 # Installation instructions
 
+<!-- toc -->
+
+- [Basic requirements](#basic-requirements)
+- [Installation steps:](#installation-steps)
+- [Archiving new emails via Postfix or the likes](#archiving-new-emails-via-postfix-or-the-likes)
+- [Setting up OAuth](#setting-up-oauth)
+  * [Setting up Google OAuth](#setting-up-google-oauth)
+  * [Setting up GitHub OAuth](#setting-up-github-oauth)
+
+<!-- tocstop -->
+
 ## Basic requirements
 - Linux or other UNIX-like operating system
 - ElastichSearch 6.x or higher (7.x recommended) installed
