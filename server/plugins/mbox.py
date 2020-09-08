@@ -39,7 +39,7 @@ import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
-mbox_cache_privacy = {}
+mbox_cache_privacy: typing.Dict[str, bool] = {}
 
 
 def extract_name(addr):
@@ -83,7 +83,7 @@ async def find_parent(session, doc: typing.Dict[str, str]):
     # max 50 steps up in the hierarchy
     while step < 50:
         step = step + 1
-        irt: str = doc["in-reply-to"] if "in-reply-to" in doc else None
+        irt: typing.Optional[str] = doc["in-reply-to"] if "in-reply-to" in doc else None
         if not irt:
             break  # Shouldn't happen because irt is always present currently
         # Extract the reference, if any
@@ -152,6 +152,7 @@ async def get_email(
     irt=None,
     source=False,
 ):
+    assert session.database, "Database not connected!"
     doctype = session.database.dbs.mbox
     if source:
         doctype = session.database.dbs.source
@@ -199,6 +200,7 @@ async def get_email(
 
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None):
+    assert session.database, "Database not connected!"
     doctype = session.database.dbs.source
     try:
         doc = await session.database.get(index=doctype, id=permalink)
@@ -258,6 +260,7 @@ async def query(
     """
     docs = []
     hits = 0
+    assert session.database, "Database not connected!"
     async for hit in async_scan(
         client=session.database.client,
         query={
@@ -417,16 +420,16 @@ def find_root_subject(threads, hashdict, root_email, osubject=None):
 
 def construct_threads(emails: typing.List[typing.Dict]):
     """Turns a list of emails into a nested thread structure"""
-    threads = []
+    threads: typing.List[dict] = []
     authors = {}
-    hashdict = {}
+    hashdict: typing.Dict[str, dict] = {}
     for cur_email in sorted(emails, key=lambda x: x["epoch"]):
         author = cur_email.get("from")
         if author not in authors:
             authors[author] = 0
         authors[author] += 1
-        subject = cur_email.get("subject").replace("\n", "")  # Crop multi-line subjects
-        tsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + cur_email.get("list_raw")
+        subject = cur_email.get("subject", "").replace("\n", "")  # Crop multi-line subjects
+        tsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + cur_email.get("list_raw", "<a.b.c.d>")
         parent = find_root_subject(threads, hashdict, cur_email, tsubject)
         xemail = {
             "children": [],
