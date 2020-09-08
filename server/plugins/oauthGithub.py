@@ -31,7 +31,11 @@ async def process(
             "https://api.github.com/user",
             headers={"authorization": "token %s" % m.group(1)},
         )
+
         js = rv.json()
         js["oauth_domain"] = "github.com"
+        # Full name and email address might not always be available to us. Fake it till you make it.
+        js["name"] = js["name"] or js["login"]
+        js["email"] = js["email"] or "%s@users.github.com" % js["login"]
         return js
     return None
