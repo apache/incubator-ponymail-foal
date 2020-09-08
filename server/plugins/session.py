@@ -98,6 +98,8 @@ async def get_session(
             )
             if "ponymail" in cookies:
                 session_id = cookies["ponymail"].value
+                if not all(c in 'abcdefg1234567890-' for c in session_id):
+                    session_id = None
                 break
 
     # Do we have the session in local memory?
