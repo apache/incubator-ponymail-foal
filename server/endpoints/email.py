@@ -21,6 +21,7 @@
 import plugins.server
 import plugins.session
 import plugins.mbox
+import plugins.database
 import aiohttp.web
 import plugins.aaa
 import base64
@@ -70,8 +71,8 @@ async def process(
                                 return aiohttp.web.Response(
                                     headers=headers, status=200, body=blob
                                 )
-                        except Exception as e:
-                            print(e) # TODO report error
+                        except plugins.database.DBError:
+                            pass  # attachment not found
                 return aiohttp.web.Response(
                     headers={}, status=404, text="Attachment not found"
                 )
