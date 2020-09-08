@@ -27,6 +27,7 @@ script:
   - mypy --ignore-missing-imports tools/import-mbox.py
   - mypy --ignore-missing-imports server/main.py
   - mypy --ignore-missing-imports server/plugins/*.py
+  - mypy --ignore-missing-imports server/endpoints/*.py
 
 jobs:
   include:
