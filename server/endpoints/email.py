@@ -62,7 +62,7 @@ async def process(
                             ] = f"attachment; filename=\"{entry.get('filename')}\""
                         try:
                             attachment = await session.database.get(
-                                itype="attachment", id=indata.get("file")
+                                index=session.database.dbs.attachment, id=indata.get("file")
                             )
                             if attachment:
                                 blob = base64.decodebytes(
