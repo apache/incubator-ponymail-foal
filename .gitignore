@@ -8,6 +8,7 @@ __pycache__/
 
 # Local configuration files
 tools/ponymail.yaml
+server/ponymail.yaml
 
 # Distribution / packaging
 .Python
