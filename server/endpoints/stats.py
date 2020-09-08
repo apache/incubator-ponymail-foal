@@ -83,6 +83,7 @@ async def process(
         "search_list": f"<{xlist}.{xdomain}>",
         "domain": xdomain,
         "list": f"{xlist}@{xdomain}",
+        "searchParams": indata,
     }
 
 
