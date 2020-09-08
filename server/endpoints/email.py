@@ -71,15 +71,12 @@ async def process(
                                     headers=headers, status=200, body=blob
                                 )
                         except Exception as e:
-                            print(e)
+                            print(e) # TODO report error
                 return aiohttp.web.Response(
                     headers={}, status=404, text="Attachment not found"
                 )
 
-        else:
-            return aiohttp.web.Response(headers={}, status=404, text="Email not found")
-    else:
-        return aiohttp.web.Response(headers={}, status=404, text="Email not found")
+    return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 
 
 def register(server: plugins.server.BaseServer):
