@@ -26,6 +26,7 @@ script:
   - mypy --ignore-missing-imports tools/archiver.py
   - mypy --ignore-missing-imports tools/import-mbox.py
   - mypy --ignore-missing-imports server/main.py
+  - mypy --ignore-missing-imports server/plugins/*.py
 
 jobs:
   include:
