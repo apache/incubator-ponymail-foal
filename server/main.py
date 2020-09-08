@@ -56,7 +56,7 @@ class Server(plugins.server.BaseServer):
         self.server = None
 
         # Make a pool of 15 database connections for async queries
-        for n in range(1, 15):
+        for _ in range(1, 15):
             self.dbpool.put_nowait(plugins.database.Database(self.config.database))
 
         # Load each URL endpoint
