@@ -308,9 +308,9 @@ a.dropdown-toggle {
     width: 42px;
     height: 42px;
     float: left;
-    border-radius: 50%;
-    margin-left: -4px;
-    margin-top: 4px;
+    border-radius: 6px;
+    margin-left: -7px;
+    margin-top: 0px;
     background-color: #FFF;
     border: 2.5px solid #FFF;
     margin-bottom: -12px;
