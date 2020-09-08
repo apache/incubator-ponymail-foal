@@ -14,6 +14,17 @@ class TaskConfig:
         self.refresh_rate = int(subyaml.get("refresh_rate", 150))
 
 
+class UIConfig:
+    wordcloud:      bool
+    mailhost:       str
+    sender_domains: str
+
+    def __init__(self, subyaml: dict):
+        self.wordcloud = bool(subyaml.get('wordcloud', False))
+        self.mailhost = subyaml.get('mailhost', '')  # Default to nothing (disabled)
+        self.sender_domains = subyaml.get('sender_domains', '')  # Default to nothing (disabled)
+
+
 class OAuthConfig:
     authoritative_domains: list
     google_client_id: str
@@ -49,12 +60,14 @@ class Configuration:
     database: DBConfig
     tasks: TaskConfig
     oauth: OAuthConfig
+    ui: UIConfig
 
     def __init__(self, yml: dict):
         self.server = ServerConfig(yml.get("server", {}))
         self.database = DBConfig(yml.get("database", {}))
         self.tasks = TaskConfig(yml.get("tasks", {}))
         self.oauth = OAuthConfig(yml.get("oauth", {}))
+        self.ui = UIConfig(yml.get("ui", {}))
 
 
 class InterData:
