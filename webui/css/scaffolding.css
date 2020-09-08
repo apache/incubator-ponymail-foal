@@ -291,7 +291,7 @@ a.dropdown-toggle {
     width: 36px;
     height: 36px;
     float: left;
-    border-radius: 50%;
+    border-radius: 15%;
 }
 
 .gravatar_sm {
