@@ -291,6 +291,8 @@ a.dropdown-toggle {
     width: 36px;
     height: 36px;
     float: left;
+    margin-left: 1px;
+    margin-top: -1px;
     border-radius: 15%;
 }
 
