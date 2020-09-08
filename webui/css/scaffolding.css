@@ -288,11 +288,11 @@ a.dropdown-toggle {
 
 /* Gravatar icons */
 .gravatar {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     float: left;
     margin-left: 1px;
-    margin-top: -1px;
+    margin-top: 0px;
     border-radius: 15%;
 }
 
