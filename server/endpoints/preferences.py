@@ -26,8 +26,8 @@ import plugins.session
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict
 ) -> dict:
-    prefs = {"login": {}}
-    lists = {}
+    prefs: dict = {"login": {}}
+    lists: dict = {}
     for ml, entry in server.data.lists.items():
         if "@" in ml:
             lname, ldomain = ml.split("@", 1)

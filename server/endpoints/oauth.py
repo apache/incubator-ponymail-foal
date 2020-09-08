@@ -37,15 +37,15 @@ async def process(
     id_token = indata.get('id_token')
     oauth_token = indata.get("oauth_token")
 
-    rv = None
+    rv: typing.Optional[dict] = None
 
     # Google OAuth - currently fetches email address only
     if oauth_token and oauth_token.startswith("https://www.googleapis.com/") and id_token:
-        rv: typing.Optional[dict] = await plugins.oauthGoogle.process(indata, session, server)
+        rv = await plugins.oauthGoogle.process(indata, session, server)
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
     elif state and code and oauth_token:
-        rv: typing.Optional[dict] = await plugins.oauthGeneric.process(indata, session, server)
+        rv = await plugins.oauthGeneric.process(indata, session, server)
 
     if rv:
         # Get UID, fall back to using email address
@@ -78,6 +78,7 @@ async def process(
                 text='{"okay": true}',
             )
 
+    return {"okay": False, "message": "Could not process OAuth login!"}
 
 def register(server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

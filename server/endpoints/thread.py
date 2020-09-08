@@ -21,13 +21,13 @@ import plugins.server
 import plugins.session
 import plugins.mbox
 import plugins.defuzzer
-
+import typing
 
 async def process(
     server: plugins.server.BaseServer,
     session: plugins.session.SessionObject,
     indata: dict,
-) -> dict:
+) -> typing.Optional[dict]:
     email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
     if not email:
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
