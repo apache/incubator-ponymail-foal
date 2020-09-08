@@ -33,6 +33,13 @@ var pm_config = {
             fullname_key: 'name',
             email_key: 'email',
             client_id: '41983040784-s1gl269f0p537r22h8eai2pdr1a94pfg.apps.googleusercontent.com'
+        },
+        github: {
+            name: "GitHub OAuth",
+            oauth_portal: "https://github.com/login/oauth/authorize",
+            client_id: "your-client-id-here",
+            scope: "user:email",
+            construct: true
         }
     },
     indexMode: 'table', // front page view mode:
