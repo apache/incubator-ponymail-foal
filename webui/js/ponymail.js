@@ -2771,10 +2771,10 @@ async function render_email(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}/api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {href: link, target: '_blank'}, attachment.filename);
             alinks.push(a);
-            let fs = " ${attachment.size} bytes";
+            let fs = ` ${attachment.size} bytes`;
             if (attachment.size >= 1024) fs = ` ${Math.floor(attachment.size/1024)} KB`;
             if (attachment.size >= 1024*1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
             alinks.push (fs);
@@ -2846,7 +2846,7 @@ async function render_email_chatty(state, json) {
     // Attachments?
     if (json.attachments && json.attachments.length > 0) {
         let attach_field = new HTML('div', {class: 'email_kv'});
-        let attach_key = new HTML('div', {class: 'email_key'}, "Attachment(s):   ");
+        let attach_key = new HTML('div', {class: 'email_key'}, "Attachment(s):");
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
