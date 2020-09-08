@@ -457,6 +457,11 @@ tasks:
 
 # Fill in OAuth data as needed
 oauth:
+# If using OAuth, set the authoritative domains here. These are the OAuth domains that 
+# will provide access to private emails.
+#  authoritative_domains:
+#    - googleapis.com  # OAuth via google is authoritative
+#    - github.com      # GitHub OAuth is authoritative
   google_client_id:     ~
   github_client_id:     ~
   github_client_secret: ~
