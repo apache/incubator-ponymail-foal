@@ -211,7 +211,8 @@ if args.mldom:
 if args.wc:
     wc = args.wc
 if args.nwc:
-    wc = False
+    wc = "n"
+    wce = False
 if args.dbshards:
     shards = args.dbshards
 if args.dbreplicas is not None: # Allow for 0 value
@@ -425,8 +426,13 @@ if not os.path.exists("../site/js/config.js") and os.path.exists(
 ):
     shutil.copy("../site/js/config.js.sample", "../site/js/config.js")
 
-print("Writing UI backend configuration file ponymail.yaml")
-with open("../server/ponymail.yaml", "w") as f:
+server_cfg  = "../server/ponymail.yaml"
+if not args.clobber and os.path.exists(server_cfg):
+    print("%s exists and clobber is not set" % server_cfg)
+    server_cfg = "../server/ponymail.yaml.tmp"
+
+print("Writing UI backend configuration file %s" % server_cfg)
+with open(server_cfg, "w") as f:
     f.write("""
 server:
   port: 8080             # Port to bind to
