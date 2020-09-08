@@ -47,7 +47,9 @@ async def process(
 
     for msg in results:
         msg["gravatar"] = plugins.mbox.gravatar(msg)
-    wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
+    wordcloud = None
+    if server.config.ui.wordcloud:
+        wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
     first_year, last_year = await plugins.mbox.get_years(session, query_defuzzed_nodate)
 
     tstruct, authors = await server.runners.run(plugins.mbox.construct_threads, results)
