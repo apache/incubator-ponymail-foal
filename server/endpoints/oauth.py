@@ -41,10 +41,10 @@ async def process(
     rv: typing.Optional[dict] = None
 
     # Google OAuth - currently fetches email address only
-    if oauth_token and oauth_token.startswith("https://www.googleapis.com/") and id_token:
+    if indata.get('key', '') == 'google' and id_token:
         rv = await plugins.oauthGoogle.process(indata, session, server)
 
-    # GitHub OAuth - currently fetches email address only
+    # GitHub OAuth - Fetches name and email
     if indata.get('key', '') == 'github' and code:
         rv = await plugins.oauthGithub.process(indata, session, server)
 
