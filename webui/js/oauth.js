@@ -126,6 +126,7 @@ function oauthWelcome(args) {
         }
         if (args.match(/id_token=/)) {
             key = 'google'
+            args += "&key=google";
         }
         if (key && key.length > 0 && pm_config.oauth[key]) {
             document.getElementById('oauthtypes').innerHTML = "Logging you in, hang on..!"
