@@ -68,9 +68,11 @@ class SessionObject:
     last_accessed: int
     credentials: typing.Optional[SessionCredentials]
     database: typing.Optional[plugins.database.Database]
+    server: plugins.server.BaseServer
 
     def __init__(self, server: plugins.server.BaseServer, **kwargs):
         self.database = None
+        self.server = server
         if not kwargs:
             now = int(time.time())
             self.created = now
