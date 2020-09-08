@@ -10,6 +10,10 @@ __pycache__/
 tools/ponymail.yaml
 server/ponymail.yaml
 
+# Local temporary configuration files
+tools/ponymail.yaml.tmp
+server/ponymail.yaml.tmp
+
 # Distribution / packaging
 .Python
 build/
