@@ -38,6 +38,13 @@ function listview_header(state, json) {
     document.getElementById('listview_title').innerText = list_title + ":";
     let download = new HTML('button', { title: 'Download as mbox archive', download: 'true'}, new HTML('span', {class: 'glyphicon glyphicon-save'}, " "));
     document.getElementById('listview_title').inject(download);
+    download.addEventListener('click', () => {
+        dl_url = pm_config.apiURL + 'api/mbox.lua?';
+        for (let key in json.searchParams || {}) {
+            dl_url += key + "=" + encodeURIComponent(json.searchParams[key]) + "&";
+        }
+        location.href = dl_url;
+    });
     
     let chevrons = document.getElementById('listview_chevrons');
     let per_page = calc_per_page();
