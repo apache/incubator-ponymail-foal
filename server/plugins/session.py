@@ -111,15 +111,16 @@ async def get_session(
             del server.data.sessions[session_id]
         else:
 
-            # Do we need to update the timestamp in ES?
-            if (now - x_session.last_accessed) > FOAL_SAVE_SESSION_INTERVAL:
-                x_session.last_accessed = now
-                await save_session(x_session)
-
             # Make a copy so we don't have a race condition with the database pool object
             # In case the session is used twice within the same loop
             session = copy.copy(x_session)
             session.database = await server.dbpool.get()
+
+            # Do we need to update the timestamp in ES?
+            if (now - session.last_accessed) > FOAL_SAVE_SESSION_INTERVAL:
+                session.last_accessed = now
+                await save_session(session)
+
             return session
 
     # If not in local memory, start a new session object
