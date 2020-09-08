@@ -18,6 +18,7 @@ This is the (as of yet incomplete) backend server for the Foal UI.
 - Composing replies
 - Preferences
 - Notifications/favorites
+- Mbox downloads
 
 
 While rudimentary AAA works, the backend should not yet be used for private 
