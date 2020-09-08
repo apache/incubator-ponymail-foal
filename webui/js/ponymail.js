@@ -1958,7 +1958,8 @@ function listview_flat_element(eml, idx) {
     
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
-    if (authorName.length == 0) authorName = "(No author?)";
+    let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
+    if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
     let author = new HTML('span', { class: "listview_email_author"}, authorName);
     element.inject(author);
     
@@ -2354,7 +2355,8 @@ function listview_threaded_element(thread, idx) {
     
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
-    if (authorName.length == 0) authorName = "(No author?)";
+    let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
+    if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
     let author = new HTML('span', { class: "listview_email_author"}, authorName);
     element.inject(author);
     
@@ -2824,6 +2826,8 @@ async function render_email_chatty(state, json) {
     let author_field = new HTML('div', {class: 'chatty_author'});
     let gravatar = new HTML('img', { class:"chatty_gravatar", src: "https://secure.gravatar.com/avatar/%s.jpg?s=96&r=g&d=mm".format(json.gravatar)});
     let author_name = json.from.replace(/\s*<.+>/, "").replace(/"/g, '');
+    let author_email = json.from.match(/\s*<(.+@.+)>\s*/);
+    if (author_name.length == 0) author_name = author_email ? author_email[1] : "(No author?)";
     let author_nametag = new HTML('div', {class: 'chatty_author_name'}, [
                                   new HTML('b', {}, author_name),
                                   " - %s".format(ldate)

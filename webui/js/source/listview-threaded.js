@@ -114,7 +114,8 @@ function listview_threaded_element(thread, idx) {
     
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
-    if (authorName.length == 0) authorName = "(No author?)";
+    let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
+    if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
     let author = new HTML('span', { class: "listview_email_author"}, authorName);
     element.inject(author);
     
