@@ -447,6 +447,11 @@ database:
   db_prefix: %s    # DB prefix, usually 'ponymail'
   max_hits: 15000        # Maximum number of emails to process in a search
 
+ui:
+  wordcloud:       %s
+  mailhost:        %s
+  sender_domains:  %s
+
 tasks:
   refresh_rate:  150     # Background indexer run interval, in seconds
 
@@ -456,7 +461,7 @@ oauth:
   github_client_id:     ~
   github_client_secret: ~
 
-""" % (hostname,  port, dbname))
+""" % (hostname,  port, dbname, "true" if wce else "false", mlserver, mldom))
 
 
 print("All done, Pony Mail should...work now :)")
