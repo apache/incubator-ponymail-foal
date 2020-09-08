@@ -139,7 +139,7 @@ class SlurpThread(Thread):
                 block.release()
 
             stime = time.time()
-            dFile = False
+            delete_file = False
             if imap:
                 imap4 = mla[2]
 
@@ -167,7 +167,7 @@ class SlurpThread(Thread):
                             tmpfile.flush()
                             tmpfile.close()
                             tmpname = tmpfile.name
-                            dFile = True  # Slated for deletion upon having been read
+                            delete_file = True  # Slated for deletion upon having been read
                             self.printid("%s -> %u bytes" % (tmpname, len(bmd)))
                     except Exception as err:
                         self.printid("This wasn't a gzip file: %s" % err)
@@ -358,7 +358,7 @@ class SlurpThread(Thread):
                 self.printid(
                     "Parsed %u records (failed: %u) from %s" % (count, bad, filename)
                 )
-                if dFile:
+                if delete_file:
                     os.unlink(tmpname)
             elif imap:
                 self.printid("Parsed %u records (failed: %u) from imap" % (count, bad))
