@@ -1,5 +1,6 @@
 """
     Github OAuth plugin.
+    This follows the workflow described at: https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps
     To make this work, please set up an application at https://github.com/settings/applications/
     copy the client ID and secret to your ponymail.yaml's oauth configuration, as such:
     oauth:
