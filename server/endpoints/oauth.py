@@ -21,6 +21,7 @@ import plugins.server
 import plugins.session
 import plugins.oauthGeneric
 import plugins.oauthGoogle
+import plugins.oauthGithub
 import typing
 import aiohttp.web
 import hashlib
@@ -42,6 +43,11 @@ async def process(
     # Google OAuth - currently fetches email address only
     if oauth_token and oauth_token.startswith("https://www.googleapis.com/") and id_token:
         rv = await plugins.oauthGoogle.process(indata, session, server)
+
+    # GitHub OAuth - currently fetches email address only
+    if indata.get('key', '') == 'github' and code:
+        rv = await plugins.oauthGithub.process(indata, session, server)
+
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
     elif state and code and oauth_token:
