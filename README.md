@@ -21,7 +21,7 @@ As several components are not finished or in working order yet, this is pending.
 ### Current setup requirements:
 
 - Linux or other UNIX based operating system (Windows has not been tested, but might work).
-- Python 3.8 or higher with dependencies from `requirements.txt`.
+- Python 3.7.3 or higher with dependencies from `requirements.txt`.
 - Web server with proxy capabilities for the UI.
 - ElasticSearch 6.x or higher, 7.x recommended.
 
