@@ -443,6 +443,13 @@ database:
 
 tasks:
   refresh_rate:  150     # Background indexer run interval, in seconds
+
+# Fill in OAuth data as needed
+oauth:
+  google_client_id:     ~
+  github_client_id:     ~
+  github_client_secret: ~
+
 """ % (hostname,  port, dbname))
 
 
