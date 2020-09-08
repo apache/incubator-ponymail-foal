@@ -2825,6 +2825,11 @@ async function render_email_chatty(state, json) {
     }
     let text = new HTML('pre', {class: 'chatty_body'}, chatty_body);
     div.inject(text);
+
+    // Private text?
+    if (json.private === true) {
+      text.style.backgroundImage = "url(images/private.png)";
+    }
     
     // Attachments?
     if (json.attachments && json.attachments.length > 0) {
