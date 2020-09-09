@@ -54,7 +54,7 @@ class Database:
                 {
                     "host": config.hostname,
                     "port": config.port,
-                    "url_prefix": config.db_prefix,
+                    "url_prefix": config.url_prefix,
                     "use_ssl": config.secure,
                 },
             ]

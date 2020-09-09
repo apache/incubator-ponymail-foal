@@ -44,7 +44,7 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
             {
                 "host": database.hostname,
                 "port": database.port,
-                "url_prefix": database.db_prefix,
+                "url_prefix": database.url_prefix,
                 "use_ssl": database.secure,
             },
         ]
@@ -99,7 +99,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
             {
                 "host": database.hostname,
                 "port": database.port,
-                "url_prefix": database.db_prefix,
+                "url_prefix": database.url_prefix,
                 "use_ssl": database.secure,
             },
         ]
