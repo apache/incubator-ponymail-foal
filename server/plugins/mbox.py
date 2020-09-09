@@ -159,14 +159,11 @@ async def get_email(
     # Older indexes may need a match instead of a strict terms agg in order to find
     # emails in DBs that may have been incorrectly analyzed.
     aggtype = "match"
+    doc = None
+    docs = None
     if permalink:
         try:
             doc = await session.database.get(index=doctype, id=permalink)
-            if doc and plugins.aaa.can_access_email(session, doc):
-                if not session.credentials:
-                    doc = anonymize(doc)
-                doc["_source"]["id"] = doc["_source"]["mid"]
-                return doc["_source"]
         # Email not found through primary ID, look for other permalinks?
         except plugins.database.DBError:
             res = await session.database.search(
@@ -175,12 +172,7 @@ async def get_email(
                 body={"query": {"bool": {"must": [{aggtype: {"permalinks": permalink}}]}}},
             )
             if len(res["hits"]["hits"]) == 1:
-                doc = res["hits"]["hits"][0]["_source"]
-                doc["id"] = doc["mid"]
-                if plugins.aaa.can_access_email(session, doc):
-                    if not session.credentials:
-                        doc = anonymize(doc)
-                    return doc
+                doc = res["hits"]["hits"][0]
     elif messageid:
         res = await session.database.search(
             index=doctype,
@@ -188,26 +180,36 @@ async def get_email(
             body={"query": {"bool": {"must": [{aggtype: {"message-id": messageid}}]}}},
         )
         if len(res["hits"]["hits"]) == 1:
-            doc = res["hits"]["hits"][0]["_source"]
-            doc["id"] = doc["mid"]
-            if plugins.aaa.can_access_email(session, doc):
-                if not session.credentials:
-                    doc = anonymize(doc)
-                return doc
+            doc = res["hits"]["hits"][0]
     elif irt:
         res = await session.database.search(
             index=doctype,
             size=250,
             body={"query": {"bool": {"must": [{aggtype: {"in-reply-to": irt}}]}}},
         )
-        docs = []
-        for doc in res["hits"]["hits"]:
-            if plugins.aaa.can_access_email(session, doc):
+        docs = res["hits"]["hits"]
+
+    # Did we find a single doc?
+    if doc and isinstance(doc, dict):
+        doc = doc['_source']
+        doc['id'] = doc['mid']
+        if doc and plugins.aaa.can_access_email(session, doc):
+            if not session.credentials:
+                doc = anonymize(doc)
+            return doc
+
+    # multi-doc return?
+    elif docs is not None and isinstance(docs, list):
+        docs_returned = []
+        for doc in docs:
+            doc = doc['_source']
+            doc['id'] = doc['mid']
+            if doc and plugins.aaa.can_access_email(session, doc):
                 if not session.credentials:
                     doc = anonymize(doc)
-                doc["_source"]["id"] = doc["_source"]["mid"]
-                docs.append(doc["_source"])
-        return docs
+                docs_returned.append(doc)
+        return docs_returned
+    # no doc?
     return None
 
 
