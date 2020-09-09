@@ -425,7 +425,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if body is not None or attachments:
             pmid = mid
-            id_set = set()  # Use a set to avoid duplicates
+            id_set = list()
             # The body used for generators differ from the body put into the meta doc,
             # for historical reasons. In the older generators where it is actively used,
             # it would be UTF-8 bytes in cases of charset-less message bodies. It would
@@ -453,7 +453,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                                 msg_metadata.get("message-id", "?").strip(),
                             )
                         mid = pmid
-                    id_set.add(mid)
+                    if mid not in id_set:
+                        id_set.append(mid)
 
             if "in-reply-to" in msg_metadata:
                 try:
@@ -466,8 +467,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                         irt = irt.strip()
                 except ValueError:
                     irt = ""
-            all_mids = list(id_set)  # Convert to list
-            document_id = all_mids[0]
+            document_id = id_set[0]
 
             output_json = {
                 "from_raw": msg_metadata["from"],
@@ -476,7 +476,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "subject": msg_metadata["subject"],
                 "message-id": msg_metadata["message-id"],
                 "mid": document_id,
-                "permalinks": all_mids,
+                "permalinks": id_set,
                 "dbid": hashlib.sha3_256(raw_msg).hexdigest(),
                 "cc": msg_metadata.get("cc"),
                 "epoch": epoch,
