@@ -50,7 +50,6 @@ async def main():
     if dkim_txt.lower() == 'n':
         do_dkim = False
 
-
     # Define index names for new ES
     dbname_mbox = new_dbprefix + "-mbox"
     dbname_source = new_dbprefix + "-source"
@@ -74,7 +73,16 @@ async def main():
         index=old_dbname,
     ):
         list_id = doc['_source']['list_raw'].strip("<>")
-        source = await es.get(index=old_dbname, doc_type="mbox_source", id=doc['_id'])
+        try:
+            source = await es.get(index=old_dbname, doc_type="mbox_source", id=doc['_id'])
+        # If we hit a 404 on a source, we have to fake an empty document, as we don't know the source.
+        except:
+            print("Source for %s was not found, faking it..." % doc['_id'])
+            source = {
+                '_source': {
+                    'source': ""
+                }
+            }
         source_text: str = source['_source']['source']
         if ':' not in source_text:  # Base64
             source_text = base64.b64decode(source_text)
