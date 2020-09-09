@@ -8,6 +8,7 @@
 - [Setting up OAuth](#setting-up-oauth)
   * [Setting up Google OAuth](#setting-up-google-oauth)
   * [Setting up GitHub OAuth](#setting-up-github-oauth)
+- [Setting up web replies](#setting-up-web-replies)
 
 <!-- tocstop -->
 
@@ -105,3 +106,24 @@ respectively.
 
 When you've done that, you must currently also edit `webui/js/config.js` and set the 
 `client_id` for GitHub to the correct value.
+
+## Setting up web replies
+It is possible to reply to emails on a list via the web interface, provided you have enabled
+this feature. To do so, you must set a `mailhost` option as well as designate certain 
+domains and subdomains as allowed recipients of email. This is done in the `server/ponymail.yaml`
+file, under ui:
+~~~yaml
+ui:
+  wordcloud: true
+  mailhost: smtp.mydomain.tld:25
+  sender_domains: mydomain.tld *.mydomain.tld
+~~~
+
+You may use wildcards in your domain names, as per standard GLOB/fnmatch rules, 
+separating each entry with a single space:
+- to allow email for list@mydomain.tld, sender_domains must include `mydomain.tld`
+- to allow email for list@sub.mydomain.tld, you should add `sub.mydomain.tld`
+- to allow email for all lists at any subdomain under mydomain.tld, you should add `*.mydomain.tld`
+
+Only users logged in via authoritative OAuth will be able to compose replies via the
+web interface.
