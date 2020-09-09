@@ -38,11 +38,11 @@ async def process(
     mailhost = server.config.ui.mailhost
     mailport = 25
     if ':' in mailhost:
-        mailhost, mailport = mailhost.split(':', 1)
-        mailport = int(mailport)
+        mailhost, _mailport = mailhost.split(':', 1)
+        mailport = int(_mailport)
 
     # Figure out if recipient list is on allowed list
-    to = indata.get('to')
+    to = indata.get('to', '')
     mldomain = to.strip("<>").split('@')[-1]
     allowed_to_send = False
     for allowed_domain in server.config.ui.sender_domains.split(' '):

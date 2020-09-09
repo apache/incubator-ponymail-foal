@@ -61,6 +61,7 @@ async def process(
                                 "Content-Disposition"
                             ] = f"attachment; filename=\"{entry.get('filename')}\""
                         try:
+                            assert session.database, "Database not connected!"
                             attachment = await session.database.get(
                                 index=session.database.dbs.attachment, id=indata.get("file")
                             )
