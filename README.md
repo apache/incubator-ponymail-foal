@@ -15,8 +15,7 @@ Work is underway on the following items:
 - 100% python backend, no mod_lua required. **[IN PROGRESS]**
 
 ## Installation Guide
-Work is under way to write an installation guide for this.
-As several components are not finished or in working order yet, this is pending.
+Please see the [installation documentation](INSTALL.md) for setup instructions.
 
 ### Current setup requirements:
 
