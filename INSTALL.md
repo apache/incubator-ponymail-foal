@@ -33,7 +33,8 @@ cd tools/
 python3 setup.py
 cd ..
 ~~~
-- Import any mailboxes you need to, using `tools/import-mbox.py`
+- Import any mailboxes you need to, using `tools/import-mbox.py` OR migrate your old Pony Mail database
+  using the [Foal migrator](MIGRATING.md). 
 - Install the server requirements:
 ~~~shell script
 cd server/
