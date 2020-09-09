@@ -22,7 +22,7 @@ Please see the [installation documentation](INSTALL.md) for setup instructions.
 - Linux or other UNIX based operating system (Windows has not been tested, but might work).
 - Python 3.7.3 or higher with dependencies from `requirements.txt`.
 - Web server with proxy capabilities for the UI.
-- ElasticSearch 6.x or higher, 7.x recommended.
+- ElasticSearch 7.x or higher.
 
 
 ### Migration disclaimer:

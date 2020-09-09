@@ -14,7 +14,7 @@
 
 ## Basic requirements
 - Linux or other UNIX-like operating system
-- ElasticSearch 6.x or higher (7.x recommended) installed
+- ElasticSearch 7.x or higher installed
 - Python 3.7.3 or higher
 - PipEnv program (typically `apt install pipenv` or `yum install pipenv` etc)
 - A web server of your choice with proxy capabilities
