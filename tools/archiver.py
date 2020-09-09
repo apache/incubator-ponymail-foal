@@ -62,6 +62,10 @@ import plugins.generators
 import plugins.elastic
 import elasticsearch
 
+# This is what we will default to if we are presented with emails without character sets and US-ASCII doesn't work.
+# UTF-8 is a superset encompassing all of US-ASCII, so should be safe to use and produce the most reliable results.
+DEFAULT_CHARACTER_SET = 'utf-8'
+
 # Fetch config from same dir as archiver.py
 config = plugins.ponymailconfig.PonymailConfig()
 
@@ -204,7 +208,7 @@ class Body:
                     # This is mainly so the older generators won't barf, as the generator will
                     # be fed the message body as a bytes object if no encoding is set, while
                     # the resulting metadoc will always use the string version.
-                    self.string = self.bytes.decode("utf-8", "replace")
+                    self.string = self.bytes.decode(DEFAULT_CHARACTER_SET, "replace")
 
     def __repr__(self):
         return self.string
@@ -215,7 +219,7 @@ class Body:
     def assign(self, new_string):
         self.string = new_string
 
-    def encode(self, encoding="utf-8", errors="strict"):
+    def encode(self, encoding=DEFAULT_CHARACTER_SET, errors="strict"):
         return self.string.encode(encoding=encoding, errors=errors)
 
     def unflow(self, convert_lf=False):
@@ -226,6 +230,8 @@ class Body:
            """
         if self.string:
             if self.flowed:
+                # Use provider character set or fall back to our sane default.
+                character_set = self.character_set or DEFAULT_CHARACTER_SET
                 # Convert lone LF to CRLF if found
                 if convert_lf:
                     fixed_string = "\r\n".join(
@@ -235,9 +241,9 @@ class Body:
                 else:
                     fixed_string = self.string
                 flow_fixed = formatflowed.convertToWrapped(
-                    fixed_string.encode(self.character_set, errors="ignore"),
+                    fixed_string.encode(character_set, errors="ignore"),
                     wrap_fixed=False,
-                    character_set=self.character_set,
+                    character_set=character_set,
                 )
                 # If we "upconverted" from LF to CRLF, convert back after flow decoding
                 if convert_lf and conversion_was_needed:
