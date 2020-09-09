@@ -167,8 +167,20 @@ async def get_email(
                     doc = anonymize(doc)
                 doc["_source"]["id"] = doc["_source"]["mid"]
                 return doc["_source"]
+        # Email not found through primary ID, look for other permalinks?
         except plugins.database.DBError:
-            pass
+            res = await session.database.search(
+                index=doctype,
+                size=1,
+                body={"query": {"bool": {"must": [{aggtype: {"permalinks": permalink}}]}}},
+            )
+            if len(res["hits"]["hits"]) == 1:
+                doc = res["hits"]["hits"][0]["_source"]
+                doc["id"] = doc["mid"]
+                if plugins.aaa.can_access_email(session, doc):
+                    if not session.credentials:
+                        doc = anonymize(doc)
+                    return doc
     elif messageid:
         res = await session.database.search(
             index=doctype,
