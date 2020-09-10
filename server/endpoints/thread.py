@@ -40,6 +40,8 @@ async def process(
 
     email["children"] = thread
     emails.append(email)
+    for email in emails:
+        plugins.mbox.trim_email(email, external=True)
     return {
         "thread": email,
         "emails": emails,
