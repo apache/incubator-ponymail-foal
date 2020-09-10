@@ -37,7 +37,10 @@ class ExecutorPool:
             print("[Runner] Waiting for task %r to finish" % func)
         while runner.running():
             await asyncio.sleep(0.01)
-        rv = runner.result()
+        try:
+            rv = runner.result()
+        except Exception as e:
+            rv = e
         if DEBUG:
             print("[Runner] Done with task %r, put runner back in queue" % func)
         if isinstance(rv, BaseException):
