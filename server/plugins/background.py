@@ -202,11 +202,11 @@ async def run_tasks(server: plugins.server.BaseServer):
         async with ProgTimer("Gathering list of archived mailing lists"):
             try:
                 server.data.lists = await get_lists(server.config.database)
-            except plugins.database.DBError:
-                print("Could not fetch lists - database down or not connected?!")
+            except plugins.database.DBError as e:
+                print("Could not fetch lists - database down or not connected: %s" % e)
         async with ProgTimer("Gathering bi-weekly activity stats"):
             try:
                 server.data.activity = await get_public_activity(server.config.database)
-            except plugins.database.DBError:
-                print("Could not fetch activity data - database down or not connected?!")
+            except plugins.database.DBError as e:
+                print("Could not fetch activity data - database down or not connected: %s" % e)
         await asyncio.sleep(server.config.tasks.refresh_rate)
