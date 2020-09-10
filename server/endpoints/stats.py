@@ -47,6 +47,7 @@ async def process(
 
     for msg in results:
         msg["gravatar"] = plugins.mbox.gravatar(msg)
+
     wordcloud = None
     if server.config.ui.wordcloud:
         wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
@@ -71,6 +72,10 @@ async def process(
                 "gravatar": plugins.mbox.gravatar(author),
             }
         )
+
+    # Trim email data so as to reduce download sizes
+    for msg in results:
+        plugins.mbox.trim_email(msg, external=True)
 
     return {
         "firstYear": first_year,
