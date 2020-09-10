@@ -133,4 +133,8 @@ web interface.
 By default, API errors will include a full traceback for debugging purposes. If you wish to 
 instead have this be printed to the system journal (`stderr`), you can set the `traceback`
 option to `false` in `server/ponymail.yaml`. This will instead print an error ID to the user, 
-corresponding to a traceback in stderr.
+corresponding to a traceback in stderr. 
+
+If the error ID is, for instance, `a06f7d4b-3a82-4ecf`, you can find the corresponding traceback
+by grepping your programs output. If you are running Foal as a systemd service, you could find 
+the traceback with: `journalctl --no-pager -u yourservicename | grep a06f7d4b-3a82-4ecf`
