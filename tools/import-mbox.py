@@ -312,7 +312,7 @@ class SlurpThread(Thread):
 
                     # Mark that we imported this email
                     json["notes"] = [x for x in json["notes"] if "ARCHIVE:" not in x]  # Pop archiver.py note
-                    json["notes"].append(["IMPORT: Email imported at %u" % time.time()])
+                    json["notes"].append(["IMPORT: Email imported as %s at %u" % (json["mid"], time.time())])
 
                     try:  # temporary hack to try and find an encoding issue
                         # needs to be replaced by proper exception handling
