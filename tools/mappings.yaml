@@ -37,9 +37,6 @@ mailinglist:
       type: keyword
 mbox:
   properties:
-    '@import_timestamp':
-      format: yyyy/MM/dd HH:mm:ss||yyyy/MM/dd
-      type: date
     attachments:
       properties:
         content_type:
