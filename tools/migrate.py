@@ -17,11 +17,11 @@ async def bulk_push(json):
     js_arr = []
     for entry in json:
         bulk_op = {
-                "_op_type": "index",
-                "_index": entry['index'],
-                "_id": entry['id'],
-                "_source": entry['body'],
-            }
+            "_op_type": "index",
+            "_index": entry['index'],
+            "_id": entry['id'],
+            "_source": entry['body'],
+        }
         js_arr.append(
             bulk_op
         )
@@ -68,10 +68,10 @@ async def main():
     bulk_array = []
 
     async for doc in async_scan(
-        client=es,
-        query={"query": {"match_all": {}}},
-        doc_type="mbox",
-        index=old_dbname,
+            client=es,
+            query={"query": {"match_all": {}}},
+            doc_type="mbox",
+            index=old_dbname,
     ):
         list_id = doc['_source']['list_raw'].strip("<>")
         try:
@@ -111,11 +111,11 @@ async def main():
         if isinstance(notes, str):
             notes = list(notes)
         notes.append("MIGRATE: Document migrated from Pony Mail to Pony Mail Foal at %u, "
-                                       "using foal migrator v/%s" % (now, MIGRATION_MAGIC_NUMBER))
+                     "using foal migrator v/%s" % (now, MIGRATION_MAGIC_NUMBER))
         # If we re-indexed the document, make a note of that as well.
         if do_dkim:
             notes.append("REINDEX: Document re-indexed with DKIM_ID at %u, "
-                                           "from %s to %s" % (now, dkim_id, old_id))
+                         "from %s to %s" % (now, dkim_id, old_id))
         doc['_source']['notes'] = notes
 
         # Copy to new DB
@@ -144,9 +144,10 @@ async def main():
             # stringify time left
             time_left_str = "%u seconds" % time_left
             if time_left > 60:
-                time_left_str = "%u minute(s), %u second(s)" % ( int(time_left/60), time_left % 60)
+                time_left_str = "%u minute(s), %u second(s)" % (int(time_left / 60), time_left % 60)
             if time_left > 3600:
-                time_left_str = "%u hour(s), %u minute(s), %u second(s)" % ( int(time_left/3600), int(time_left%3600/60), time_left % 60)
+                time_left_str = "%u hour(s), %u minute(s), %u second(s)" % (
+                int(time_left / 3600), int(time_left % 3600 / 60), time_left % 60)
 
             print("Processed %u emails, %u remain. ETA: %s (at %u emails per second)" %
                   (processed, (no_emails - processed), time_left_str, docs_per_second)
@@ -158,10 +159,10 @@ async def main():
     no_att = count['count']
     print("Transferring %u attachments..." % no_att)
     async for doc in async_scan(
-        client=es,
-        query={"query": {"match_all": {}}},
-        doc_type="attachment",
-        index=old_dbname,
+            client=es,
+            query={"query": {"match_all": {}}},
+            doc_type="attachment",
+            index=old_dbname,
     ):
         # Copy to new DB
         await new_es.index(index=dbname_attachment, doc_type='_doc', id=doc['_id'], body=doc['_source'])
@@ -176,9 +177,10 @@ async def main():
             # stringify time left
             time_left_str = "%u seconds" % time_left
             if time_left > 60:
-                time_left_str = "%u minute(s), %u second(s)" % ( int(time_left/60), time_left % 60)
+                time_left_str = "%u minute(s), %u second(s)" % (int(time_left / 60), time_left % 60)
             if time_left > 3600:
-                time_left_str = "%u hour(s), %u minute(s), %u second(s)" % ( int(time_left/3600), int(time_left%3600/60), time_left % 60)
+                time_left_str = "%u hour(s), %u minute(s), %u second(s)" % (
+                int(time_left / 3600), int(time_left % 3600 / 60), time_left % 60)
 
             print("Processed %u emails, %u remain. ETA: %s (at %u attachments per second)" %
                   (processed, (no_att - processed), time_left_str, docs_per_second)
@@ -187,6 +189,7 @@ async def main():
     await es.close()
     await new_es.close()
     print("All done, enjoy!")
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
