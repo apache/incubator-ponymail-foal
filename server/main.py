@@ -124,6 +124,8 @@ class Server(plugins.server.BaseServer):
                     return aiohttp.web.Response(
                         headers=headers, status=404, text="Content not found"
                     )
+            # If a handler hit an exception, we need to print that exception somewhere,
+            # either to the web client or stderr:
             except:
                 if session.database:
                     self.dbpool.put_nowait(session.database)
