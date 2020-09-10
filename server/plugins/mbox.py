@@ -308,7 +308,7 @@ async def query(
         client=session.database.client,
         query={
             "query": {"bool": query_defuzzed},
-            "sort": [{"epoch": {"order": "asc"}}],
+            "sort": [{"epoch": {"order": "desc"}}],
         },
     ):
         doc = hit["_source"]
