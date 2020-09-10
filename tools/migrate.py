@@ -7,6 +7,9 @@ import time
 import base64
 import hashlib
 
+# Increment this number whenever breaking changes happen in the migration workflow:
+MIGRATION_MAGIC_NUMBER = "1"
+
 # ES connections
 es = None
 new_es = None
