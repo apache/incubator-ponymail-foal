@@ -42,6 +42,13 @@ PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
 
+def trim_email(doc):
+    """Trims away document fields not used by the UI"""
+    for header in doc.keys():
+        if header.startswith('_'):
+            del doc[header]
+
+
 def extract_name(addr):
     """ Extract name and email from from: header """
     m = re.match(r"^([^<]+)\s*<(.+)>$", addr)
@@ -196,6 +203,7 @@ async def get_email(
         if doc and plugins.aaa.can_access_email(session, doc):
             if not session.credentials:
                 doc = anonymize(doc)
+            trim_email(doc)
             return doc
 
     # multi-doc return?
@@ -207,6 +215,7 @@ async def get_email(
             if doc and plugins.aaa.can_access_email(session, doc):
                 if not session.credentials:
                     doc = anonymize(doc)
+                trim_email(doc)
                 docs_returned.append(doc)
         return docs_returned
     # no doc?
@@ -289,6 +298,7 @@ async def query(
                 doc = anonymize(doc)
             if shorten:
                 doc["body"] = (doc["body"] or "")[:200]
+            trim_email(doc)
             docs.append(doc)
             hits += 1
             if hits > query_limit:
