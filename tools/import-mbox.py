@@ -310,6 +310,8 @@ class SlurpThread(Thread):
                                 json["message-id"] + " in " + filename
                             ]
 
+                    # Mark that we imported this email
+                    json["notes"] = ["IMPORT: Email imported at %u" % int(time.time())]
                     try:  # temporary hack to try and find an encoding issue
                         # needs to be replaced by proper exception handling
                         json_source = {

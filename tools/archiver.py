@@ -489,6 +489,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "body": body.unflow() if body else "",
                 "html_source_only": body and body.html_as_source or False,
                 "attachments": attachments,
+                "notes": ["ARCHIVE: Email archived at %u" % int(time.time())]
             }
 
         return output_json, contents, msg_metadata, irt
