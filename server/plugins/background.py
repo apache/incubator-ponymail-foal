@@ -10,6 +10,7 @@ from elasticsearch_dsl import Search
 
 import plugins.configuration
 import plugins.server
+import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
@@ -55,6 +56,7 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
         "match", private=False
     )
     s.aggs.bucket("per_list", "terms", field="list_raw")
+
 
     res = await client.search(
         index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
@@ -198,7 +200,13 @@ async def run_tasks(server: plugins.server.BaseServer):
     """
     while True:
         async with ProgTimer("Gathering list of archived mailing lists"):
-            server.data.lists = await get_lists(server.config.database)
+            try:
+                server.data.lists = await get_lists(server.config.database)
+            except plugins.database.DBError:
+                print("Could not fetch lists - database down or not connected?!")
         async with ProgTimer("Gathering bi-weekly activity stats"):
-            server.data.activity = await get_public_activity(server.config.database)
+            try:
+                server.data.activity = await get_public_activity(server.config.database)
+            except plugins.database.DBError:
+                print("Could not fetch activity data - database down or not connected?!")
         await asyncio.sleep(server.config.tasks.refresh_rate)
