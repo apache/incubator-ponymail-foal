@@ -4,7 +4,8 @@ _Next generation suite of services and tools for Apache Pony Mail_
 ![CI Status](https://img.shields.io/travis/apache/incubator-ponymail-foal?style=plastic)
 
 This repository aims to contain the next generation of Apache Pony Mail,
-a pure python version of Apache Pony Mail with support for ElasticSearch 6.x and above.
+a pure python version of Apache Pony Mail with support for ElasticSearch 
+7.x and above.
 
 
 ## Roadmap
@@ -12,7 +13,7 @@ Work is underway on the following items:
 
 - Improved archiver and import tools   **[DONE]**
 - New UI for the end user              **[DONE]**
-- 100% python backend, no mod_lua required. **[IN PROGRESS]**
+- 100% python backend, no mod_lua required. **[MOSTLY DONE]**
 
 ## Installation Guide
 Please see the [installation documentation](INSTALL.md) for setup instructions.
