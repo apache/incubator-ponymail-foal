@@ -44,5 +44,7 @@ class ExecutorPool:
         if DEBUG:
             print("[Runner] Done with task %r, put runner back in queue" % func)
         if isinstance(rv, BaseException):
+            if DEBUG:
+                print("[Runner] Task %r encountered an exception during run." % func)
             raise rv
         return rv
