@@ -44,6 +44,7 @@ mbox_cache_privacy: typing.Dict[str, bool] = {}
 used_ui_fields = [
     "private",
     "list",
+    "list_raw",
     "attachments",
     "from",
     "message-id",
