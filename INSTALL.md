@@ -128,3 +128,9 @@ separating each entry with a single space:
 
 Only users logged in via authoritative OAuth will be able to compose replies via the
 web interface.
+
+## Hiding tracebacks from users
+By default, API errors will include a full traceback for debugging purposes. If you wish to 
+instead have this be printed to the system journal (`stderr`), you can set the `traceback`
+option to `false` in `server/ponymail.yaml`. This will instead print an error ID to the user, 
+corresponding to a traceback in stderr.

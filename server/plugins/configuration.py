@@ -18,11 +18,15 @@ class UIConfig:
     wordcloud:      bool
     mailhost:       str
     sender_domains: str
+    traceback:      bool
 
     def __init__(self, subyaml: dict):
         self.wordcloud = bool(subyaml.get('wordcloud', False))
         self.mailhost = subyaml.get('mailhost', '')  # Default to nothing (disabled)
         self.sender_domains = subyaml.get('sender_domains', '')  # Default to nothing (disabled)
+        # Default to spitting out traceback to web clients
+        # Set to false in yaml to redirect to stderr instead.
+        self.traceback = subyaml.get('traceback', True)
 
 
 class OAuthConfig:

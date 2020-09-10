@@ -451,6 +451,7 @@ ui:
   wordcloud:       %s
   mailhost:        %s
   sender_domains:  %s
+  traceback:       true
 
 tasks:
   refresh_rate:  150     # Background indexer run interval, in seconds

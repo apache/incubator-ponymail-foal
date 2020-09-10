@@ -27,6 +27,7 @@ import traceback
 
 import aiohttp.web
 import yaml
+import uuid
 
 import plugins.background
 import plugins.configuration
@@ -132,9 +133,19 @@ class Server(plugins.server.BaseServer):
                 err = "\n".join(
                     traceback.format_exception(exc_type, exc_value, exc_traceback)
                 )
-                return aiohttp.web.Response(
-                    headers=headers, status=500, text="API error occurred: " + err
-                )
+                if self.config.ui.traceback:
+                    return aiohttp.web.Response(
+                        headers=headers, status=500, text="API error occurred: " + err
+                    )
+                else:
+                    eid = str(uuid.uuid4())[:18]
+                    sys.stderr.write("API Endpoint %s got into trouble (%s): \n" % (request.path, eid))
+                    for line in err.split("\n"):
+                        sys.stderr.write("%s: %s\n" % (eid, line))
+                    return aiohttp.web.Response(
+                        headers=headers, status=500, text="API error occurred. The application journal will have "
+                                                          "information. Error ID: %s" % eid
+                    )
         else:
             return aiohttp.web.Response(
                 headers=headers, status=404, text="API Endpoint not found!"
