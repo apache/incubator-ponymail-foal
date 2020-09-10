@@ -36,8 +36,13 @@
 
 #modal.modal_error > #modal_content {
     background-color: #fefefe;
+    background-image: url(/images/jim.png);
+    background-repeat: no-repeat;
+    background-size: 64px;
+    background-position: 6px 6px;
     margin: 15% auto;
     padding: 20px;
+    padding-left: 74px;
     border: 1px solid #888;
     border-radius: 4px;
     border-top: 8px solid #c04331;
