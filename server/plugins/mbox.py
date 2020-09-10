@@ -41,11 +41,30 @@ PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
+used_ui_fields = [
+    "private",
+    "list",
+    "attachments",
+    "from",
+    "message-id",
+    "mid",
+    "body",
+    "epoch",
+    "subject",
+    "id",
+    "gravatar"
+]
 
-def trim_email(doc):
+
+def trim_email(doc, external=False):
     """Trims away document fields not used by the UI"""
-    for header in doc.keys():
+    for header in list(doc.keys()):
+        # Remove meta data fields which start with an underscore
         if header.startswith('_'):
+            del doc[header]
+
+        # Remove other fields not used by the UI, if for external consumption
+        elif external and header not in used_ui_fields:
             del doc[header]
 
 
@@ -481,3 +500,4 @@ def gravatar(eml):
     mailaddr = email.utils.parseaddr(header_from)[1]
     ghash = hashlib.md5(mailaddr.encode("utf-8")).hexdigest()
     return ghash
+
