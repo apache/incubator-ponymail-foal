@@ -87,6 +87,8 @@ mbox:
       type: text
     to:
       type: text
+    notes:
+      type: text
 notification:
   properties:
     date:
