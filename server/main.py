@@ -133,11 +133,16 @@ class Server(plugins.server.BaseServer):
                 err = "\n".join(
                     traceback.format_exception(exc_type, exc_value, exc_traceback)
                 )
+                # By default, we print the traceback to the user, for easy debugging.
                 if self.config.ui.traceback:
                     return aiohttp.web.Response(
-                        headers=headers, status=500, text="API error occurred: " + err
+                        headers=headers, status=500, text="API error occurred: \n" + err
                     )
+                # If client traceback is disabled, we print it to stderr instead, but leave an
+                # error ID for the client to report back to the admin. Every line of the traceback
+                # will have this error ID at the beginning of the line, for easy grepping.
                 else:
+                    # We only need a short ID here, let's pick 18 chars.
                     eid = str(uuid.uuid4())[:18]
                     sys.stderr.write("API Endpoint %s got into trouble (%s): \n" % (request.path, eid))
                     for line in err.split("\n"):
