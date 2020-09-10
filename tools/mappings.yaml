@@ -87,8 +87,10 @@ mbox:
       type: text
     to:
       type: text
-    notes:
+    _notes:
       type: text
+    _archived_at:
+      type: long
 notification:
   properties:
     date:

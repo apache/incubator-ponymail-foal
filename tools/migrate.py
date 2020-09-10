@@ -109,7 +109,7 @@ async def main():
         doc['_source']['dbid'] = hashlib.sha3_256(source_text).hexdigest()
 
         # Append migration details to notes field in doc
-        notes = doc['_source'].get('notes', [])
+        notes = doc['_source'].get('_notes', [])
         # We want a list, not a single string
         if isinstance(notes, str):
             notes = list(notes)
@@ -119,7 +119,7 @@ async def main():
         if do_dkim:
             notes.append("REINDEX: Document re-indexed with DKIM_ID at %u, "
                          "from %s to %s" % (now, dkim_id, old_id))
-        doc['_source']['notes'] = notes
+        doc['_source']['_notes'] = notes
 
         # Copy to new DB
         bulk_array.append({
