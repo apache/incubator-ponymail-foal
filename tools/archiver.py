@@ -359,6 +359,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 the digested email as a dict, its attachments, its metadata fields and any
                 in-reply-to data found.
         """
+        notes = []  # Put debug notes in here, for later...
 
         if not lid:
             lid = normalize_lid(msg.get("list-id"))
@@ -407,11 +408,13 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             )
 
         if not message_date:
+            epoch = time.time()
+            notes.append(["BADDATE: Email date missing or invalid, setting to %u" % epoch])
             print(
                 "Date (%s) seems totally wrong, using current UNIX epoch instead."
                 % message_date
             )
-            epoch = time.time()
+
         else:
             epoch = email.utils.mktime_tz(message_date)
         # message_date calculations are all done, prepare the index entry
@@ -469,6 +472,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     irt = ""
             document_id = id_set[0]
 
+            notes.append(["ARCHIVE: Email archived as %s at %u" % (document_id, time.time())])
+
             output_json = {
                 "from_raw": msg_metadata["from"],
                 "from": msg_metadata["from"],
@@ -489,7 +494,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "body": body.unflow() if body else "",
                 "html_source_only": body and body.html_as_source or False,
                 "attachments": attachments,
-                "notes": ["ARCHIVE: Email archived at %u" % int(time.time())]
+                "notes": notes,
             }
 
         return output_json, contents, msg_metadata, irt
