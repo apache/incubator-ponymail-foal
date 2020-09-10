@@ -81,7 +81,7 @@ class Server(plugins.server.BaseServer):
 
         # Define response headers first...
         headers = {
-            "Server": "PyPony/%s" % PONYMAIL_FOAL_VERSION,
+            "Server": "Apache Pony Mail (Foal/%s)" % PONYMAIL_FOAL_VERSION,
         }
 
         # Figure out who is going to handle this request, if any
