@@ -52,7 +52,7 @@ class Server(plugins.server.BaseServer):
         self.data = plugins.configuration.InterData()
         self.handlers = dict()
         self.dbpool = asyncio.Queue()
-        self.runners = plugins.offloader.ExecutorPool(threads=10)
+        self.runners = plugins.offloader.ExecutorPool()
         self.server = None
 
         # Make a pool of 15 database connections for async queries
