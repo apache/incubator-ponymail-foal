@@ -106,16 +106,17 @@ async def main():
         doc['_source']['dbid'] = hashlib.sha3_256(source_text).hexdigest()
 
         # Append migration details to notes field in doc
-        doc['_source']['notes'] = doc['_source'].get('notes', [])
+        notes = doc['_source'].get('notes', [])
         # We want a list, not a single string
-        if isinstance(doc['_source']['notes'], str):
-            doc['_source']['notes'] = [doc['_source']['notes']]
-        doc['_source']['notes'].append("MIGRATE: Document migrated from Pony Mail to Pony Mail Foal at %u, "
+        if isinstance(notes, str):
+            notes = list(notes)
+        notes.append("MIGRATE: Document migrated from Pony Mail to Pony Mail Foal at %u, "
                                        "using foal migrator v/%s" % (now, MIGRATION_MAGIC_NUMBER))
         # If we re-indexed the document, make a note of that as well.
         if do_dkim:
-            doc['_source']['notes'].append("REINDEX: Document re-indexed with DKIM_ID at %u, "
+            notes.append("REINDEX: Document re-indexed with DKIM_ID at %u, "
                                            "from %s to %s" % (now, dkim_id, old_id))
+        doc['_source']['notes'] = notes
 
         # Copy to new DB
         bulk_array.append({
