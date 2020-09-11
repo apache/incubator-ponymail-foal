@@ -53,7 +53,8 @@ used_ui_fields = [
     "epoch",
     "subject",
     "id",
-    "gravatar"
+    "gravatar",
+    "children",
 ]
 
 
