@@ -63,7 +63,6 @@ import plugins.elastic
 import elasticsearch
 
 # This is what we will default to if we are presented with emails without character sets and US-ASCII doesn't work.
-# UTF-8 is a superset encompassing all of US-ASCII, so should be safe to use and produce the most reliable results.
 DEFAULT_CHARACTER_SET = 'utf-8'
 
 # Fetch config from same dir as archiver.py
