@@ -1,4 +1,5 @@
 # Apache Pony Mail Foal
+<img src="https://github.com/apache/incubator-ponymail-foal/blob/master/webui/images/foal.png" width="72" align="left"/>
 _Next generation suite of services and tools for Apache Pony Mail_
 
 ![CI Status](https://img.shields.io/travis/apache/incubator-ponymail-foal?style=plastic)
