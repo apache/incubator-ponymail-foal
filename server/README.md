@@ -12,13 +12,12 @@ This is the (as of yet incomplete) backend server for the Foal UI.
 - Rudimentary AAA (logged in with an authoritative OAuth gives read access to everyting)
 - Persistent user sessions across restarts of the server
 - OAuth logins (Google, Github + Generic for now)
-
+- Composing replies
+- Mbox downloads
 
 ### What doesn't work
-- Composing replies
 - Preferences
 - Notifications/favorites
-- Mbox downloads
 
 
 While rudimentary AAA works, the backend should not yet be used for private 
