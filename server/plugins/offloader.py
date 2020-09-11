@@ -25,6 +25,7 @@ DEBUG = False
 
 class ExecutorPool:
     """A pool of runners for offloading blocking processes to threads, so that async processing can continue"""
+
     def __init__(self, threads=None):
         # If no thread count is specified, will default to: min(32, os.cpu_count() + 4)
         self.threads = concurrent.futures.ThreadPoolExecutor(max_workers=threads)
