@@ -27,6 +27,7 @@ import binascii
 import datetime
 import email.utils
 import hashlib
+
 # Main imports
 import re
 import typing
@@ -62,7 +63,7 @@ def trim_email(doc, external=False):
     """Trims away document fields not used by the UI"""
     for header in list(doc.keys()):
         # Remove meta data fields which start with an underscore
-        if header.startswith('_'):
+        if header.startswith("_"):
             del doc[header]
 
         # Remove other fields not used by the UI, if for external consumption
@@ -197,7 +198,9 @@ async def get_email(
             res = await session.database.search(
                 index=doctype,
                 size=1,
-                body={"query": {"bool": {"must": [{aggtype: {"permalinks": permalink}}]}}},
+                body={
+                    "query": {"bool": {"must": [{aggtype: {"permalinks": permalink}}]}}
+                },
             )
             if len(res["hits"]["hits"]) == 1:
                 doc = res["hits"]["hits"][0]
@@ -219,8 +222,8 @@ async def get_email(
 
     # Did we find a single doc?
     if doc and isinstance(doc, dict):
-        doc = doc['_source']
-        doc['id'] = doc['mid']
+        doc = doc["_source"]
+        doc["id"] = doc["mid"]
         if doc and plugins.aaa.can_access_email(session, doc):
             if not session.credentials:
                 doc = anonymize(doc)
@@ -231,8 +234,8 @@ async def get_email(
     elif docs is not None and isinstance(docs, list):
         docs_returned = []
         for doc in docs:
-            doc = doc['_source']
-            doc['id'] = doc['mid']
+            doc = doc["_source"]
+            doc["id"] = doc["mid"]
             if doc and plugins.aaa.can_access_email(session, doc):
                 if not session.credentials:
                     doc = anonymize(doc)
@@ -260,10 +263,11 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
         doc = res["hits"]["hits"][0]
         doc["id"] = doc["_id"]
         # Check for base64-encoded source
-        if ':' not in doc['_source']['source']:
+        if ":" not in doc["_source"]["source"]:
             try:
-                doc['_source']['source'] = base64.standard_b64decode(doc['_source']['source'])\
-                    .decode('utf-8', 'replace')
+                doc["_source"]["source"] = base64.standard_b64decode(
+                    doc["_source"]["source"]
+                ).decode("utf-8", "replace")
             except binascii.Error:
                 pass  # If it wasn't base64 after all, just return as is
         return doc
@@ -395,8 +399,8 @@ async def get_years(session, query_defuzzed):
     """ Fetches the oldest and youngest email, returns the years between them """
 
     # Fetch any private lists included in search results
-    fuzz_private_only= dict(query_defuzzed)
-    fuzz_private_only['filter'] = [{"term": {"private": True}}]
+    fuzz_private_only = dict(query_defuzzed)
+    fuzz_private_only["filter"] = [{"term": {"private": True}}]
     res = await session.database.search(
         index=session.database.dbs.mbox,
         size=0,
@@ -414,7 +418,7 @@ async def get_years(session, query_defuzzed):
     # If not, we adjust the search here to only include public emails
     for listname in private_lists_found:
         if not plugins.aaa.can_access_list(session, listname):
-            query_defuzzed['filter'] = [{"term": {"private": False}}]
+            query_defuzzed["filter"] = [{"term": {"private": False}}]
             break
 
     # Get oldest doc
@@ -455,8 +459,14 @@ class ThreadConstructor:
             if author not in self.authors:
                 self.authors[author] = 0
             self.authors[author] += 1
-            subject = cur_email.get("subject", "").replace("\n", "")  # Crop multi-line subjects
-            tsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + cur_email.get("list_raw", "<a.b.c.d>")
+            subject = cur_email.get("subject", "").replace(
+                "\n", ""
+            )  # Crop multi-line subjects
+            tsubject = (
+                PYPONY_RE_PREFIX.sub("", subject)
+                + "_"
+                + cur_email.get("list_raw", "<a.b.c.d>")
+            )
             parent = self.find_root_subject(cur_email, tsubject)
             xemail = {
                 "children": [],
@@ -491,7 +501,9 @@ class ThreadConstructor:
         if osubject:
             rsubject = osubject
         else:
-            rsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
+            rsubject = (
+                PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
+            )
         if rsubject and rsubject in self.hashed_by_subject:
             return self.hashed_by_subject[rsubject]
         return None
@@ -506,4 +518,3 @@ def gravatar(eml):
     mailaddr = email.utils.parseaddr(header_from)[1]
     ghash = hashlib.md5(mailaddr.encode("utf-8")).hexdigest()
     return ghash
-
