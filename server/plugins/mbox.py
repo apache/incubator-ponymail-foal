@@ -444,7 +444,7 @@ class ThreadConstructor:
     def __init__(self, emails: typing.List[typing.Dict]):
         self.emails = emails
         self.threads: typing.List[dict] = []
-        self.authors = {}
+        self.authors: typing.Dict[str, int] = {}
         self.hashed_by_msg_id: typing.Dict[str, dict] = {}
         self.hashed_by_subject: typing.Dict[str, dict] = {}
 
