@@ -439,57 +439,61 @@ async def get_years(session, query_defuzzed):
     return oldest, youngest
 
 
-def find_root_subject(threads, hashdict, root_email, osubject=None):
-    """Finds the discussion origin of an email, if present"""
-    irt = root_email.get("in-reply-to")
-    subject = root_email.get("subject")
-    subject = subject.replace("\n", "")  # Crop multi-line subjects
+class ThreadConstructor:
+    def __init__(self, emails: typing.List[typing.Dict]):
+        self.emails = emails
+        self.threads: typing.List[dict] = []
+        self.authors = {}
+        self.hashed_by_msg_id: typing.Dict[str, dict] = {}
+        self.hashed_by_subject: typing.Dict[str, dict] = {}
 
-    # First, the obvious - look for an in-reply-to in our existing dict with a matching subject
-    if irt and irt in hashdict:
-        if hashdict[irt].get("subject") == subject:
-            return hashdict[irt]
+    def construct(self):
+        """Turns a flat array of emails into a nested structure of threads"""
+        for cur_email in sorted(self.emails, key=lambda x: x["epoch"]):
+            author = cur_email.get("from")
+            if author not in self.authors:
+                self.authors[author] = 0
+            self.authors[author] += 1
+            subject = cur_email.get("subject", "").replace("\n", "")  # Crop multi-line subjects
+            tsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + cur_email.get("list_raw", "<a.b.c.d>")
+            parent = self.find_root_subject(cur_email, tsubject)
+            xemail = {
+                "children": [],
+                "tid": cur_email.get("mid"),
+                "subject": subject,
+                "tsubject": tsubject,
+                "epoch": cur_email.get("epoch"),
+                "nest": 1,
+            }
+            if not parent:
+                self.threads.append(xemail)
+            else:
+                xemail["nest"] = parent["nest"] + 1
+                parent["children"].append(xemail)
+            self.hashed_by_msg_id[cur_email.get("message-id", "??")] = xemail
+            if tsubject not in self.hashed_by_subject:
+                self.hashed_by_subject[tsubject] = xemail
+        return self.threads, self.authors
 
-    # If that failed, we break apart our subject
-    if osubject:
-        rsubject = osubject
-    else:
-        rsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
-    for thread in threads:
-        if thread.get("tsubject") == rsubject:
-            return thread
+    def find_root_subject(self, root_email, osubject=None):
+        """Finds the discussion origin of an email, if present"""
+        irt = root_email.get("in-reply-to")
+        subject = root_email.get("subject")
+        subject = subject.replace("\n", "")  # Crop multi-line subjects
 
-    return None
+        # First, the obvious - look for an in-reply-to in our existing dict with a matching subject
+        if irt and irt in self.hashed_by_msg_id:
+            if self.hashed_by_msg_id[irt].get("subject") == subject:
+                return self.hashed_by_msg_id[irt]
 
-
-def construct_threads(emails: typing.List[typing.Dict]):
-    """Turns a list of emails into a nested thread structure"""
-    threads: typing.List[dict] = []
-    authors = {}
-    hashdict: typing.Dict[str, dict] = {}
-    for cur_email in sorted(emails, key=lambda x: x["epoch"]):
-        author = cur_email.get("from")
-        if author not in authors:
-            authors[author] = 0
-        authors[author] += 1
-        subject = cur_email.get("subject", "").replace("\n", "")  # Crop multi-line subjects
-        tsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + cur_email.get("list_raw", "<a.b.c.d>")
-        parent = find_root_subject(threads, hashdict, cur_email, tsubject)
-        xemail = {
-            "children": [],
-            "tid": cur_email.get("mid"),
-            "subject": subject,
-            "tsubject": tsubject,
-            "epoch": cur_email.get("epoch"),
-            "nest": 1,
-        }
-        if not parent:
-            threads.append(xemail)
+        # If that failed, we break apart our subject
+        if osubject:
+            rsubject = osubject
         else:
-            xemail["nest"] = parent["nest"] + 1
-            parent["children"].append(xemail)
-        hashdict[cur_email.get("message-id", "??")] = xemail
-    return threads, authors
+            rsubject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
+        if rsubject and rsubject in self.hashed_by_subject:
+            return self.hashed_by_subject[rsubject]
+        return None
 
 
 def gravatar(eml):
