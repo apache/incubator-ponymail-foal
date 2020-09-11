@@ -7,6 +7,7 @@ from elasticsearch import AsyncElasticsearch
 import plugins.configuration
 import plugins.offloader
 
+
 class Endpoint:
     exec: typing.Callable
 

@@ -100,7 +100,7 @@ async def get_session(
             )
             if "ponymail" in cookies:
                 session_id = cookies["ponymail"].value
-                if not all(c in 'abcdefg1234567890-' for c in session_id):
+                if not all(c in "abcdefg1234567890-" for c in session_id):
                     session_id = None
                 break
 
@@ -145,18 +145,21 @@ async def get_session(
             # Get CID and fecth the account data
             cid = session_doc["_source"]["cid"]
             if cid:
-                account_doc = await session.database.get(session.database.dbs.account, id=cid)
-                creds = account_doc["_source"]['credentials']
-                internal = account_doc['_source']['internal']
+                account_doc = await session.database.get(
+                    session.database.dbs.account, id=cid
+                )
+                creds = account_doc["_source"]["credentials"]
+                internal = account_doc["_source"]["internal"]
 
                 # Set session data
                 session.cid = cid
                 session.last_accessed = last_update
                 creds["authoritative"] = (
-                    internal.get("oauth_provider") in server.config.oauth.authoritative_domains
+                    internal.get("oauth_provider")
+                    in server.config.oauth.authoritative_domains
                 )
-                creds['oauth_provider'] = internal.get('oauth_provider', 'generic')
-                creds['oauth_data'] = internal.get('oauth_data', {})
+                creds["oauth_provider"] = internal.get("oauth_provider", "generic")
+                creds["oauth_data"] = internal.get("oauth_data", {})
                 session.credentials = SessionCredentials(creds)
 
                 # Save in memory storage
@@ -172,7 +175,9 @@ async def set_session(server: plugins.server.BaseServer, cid, **credentials):
     session_id = str(uuid.uuid4())
     cookie: http.cookies.SimpleCookie = http.cookies.SimpleCookie()
     cookie["ponymail"] = session_id
-    session = SessionObject(server, last_accessed=time.time(), cookie=session_id, cid=cid)
+    session = SessionObject(
+        server, last_accessed=time.time(), cookie=session_id, cid=cid
+    )
     session.credentials = SessionCredentials(credentials)
     server.data.sessions[session_id] = session
 
@@ -206,10 +211,7 @@ async def save_session(session: SessionObject):
 async def remove_session(session: SessionObject):
     """Remove a session object in the ES database"""
     assert session.database, "Database not connected!"
-    await session.database.delete(
-        index=session.database.dbs.session,
-        id=session.cookie
-    )
+    await session.database.delete(index=session.database.dbs.session, id=session.cookie)
 
 
 async def save_credentials(session: SessionObject):
@@ -229,6 +231,6 @@ async def save_credentials(session: SessionObject):
             "internal": {
                 "oauth_provider": session.credentials.oauth_provider,
                 "oauth_data": session.credentials.oauth_data,
-            }
+            },
         },
     )

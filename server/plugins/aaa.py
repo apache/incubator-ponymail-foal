@@ -26,11 +26,11 @@ import plugins.session
 def can_access_email(session: plugins.session.SessionObject, email) -> bool:
     """Determine if an email can be accessed by the current user"""
     # If public email, it can always be accessed
-    if not email.get('private'):
+    if not email.get("private"):
         return True
     else:
         # If user can access the list, they can read the email
-        if can_access_list(session, email.get('list_raw')):
+        if can_access_list(session, email.get("list_raw")):
             return True
         # If no access to list and email is private, deny access to email.
         else:

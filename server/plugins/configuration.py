@@ -15,18 +15,20 @@ class TaskConfig:
 
 
 class UIConfig:
-    wordcloud:      bool
-    mailhost:       str
+    wordcloud: bool
+    mailhost: str
     sender_domains: str
-    traceback:      bool
+    traceback: bool
 
     def __init__(self, subyaml: dict):
-        self.wordcloud = bool(subyaml.get('wordcloud', False))
-        self.mailhost = subyaml.get('mailhost', '')  # Default to nothing (disabled)
-        self.sender_domains = subyaml.get('sender_domains', '')  # Default to nothing (disabled)
+        self.wordcloud = bool(subyaml.get("wordcloud", False))
+        self.mailhost = subyaml.get("mailhost", "")  # Default to nothing (disabled)
+        self.sender_domains = subyaml.get(
+            "sender_domains", ""
+        )  # Default to nothing (disabled)
         # Default to spitting out traceback to web clients
         # Set to false in yaml to redirect to stderr instead.
-        self.traceback = subyaml.get('traceback', True)
+        self.traceback = subyaml.get("traceback", True)
 
 
 class OAuthConfig:
@@ -36,10 +38,10 @@ class OAuthConfig:
     github_client_secret: str
 
     def __init__(self, subyaml: dict):
-        self.authoritative_domains = subyaml.get('authoritative_domains', [])
-        self.google_client_id = subyaml.get('google_client_id', '')
-        self.github_client_id = subyaml.get('github_client_id', '')
-        self.github_client_secret = subyaml.get('github_client_secret', '')
+        self.authoritative_domains = subyaml.get("authoritative_domains", [])
+        self.google_client_id = subyaml.get("google_client_id", "")
+        self.github_client_id = subyaml.get("github_client_id", "")
+        self.github_client_secret = subyaml.get("github_client_secret", "")
 
 
 class DBConfig:

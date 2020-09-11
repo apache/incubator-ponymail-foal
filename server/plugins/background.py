@@ -57,7 +57,6 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     )
     s.aggs.bucket("per_list", "terms", field="list_raw")
 
-
     res = await client.search(
         index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
     )
@@ -208,5 +207,8 @@ async def run_tasks(server: plugins.server.BaseServer):
             try:
                 server.data.activity = await get_public_activity(server.config.database)
             except plugins.database.DBError as e:
-                print("Could not fetch activity data - database down or not connected: %s" % e)
+                print(
+                    "Could not fetch activity data - database down or not connected: %s"
+                    % e
+                )
         await asyncio.sleep(server.config.tasks.refresh_rate)
