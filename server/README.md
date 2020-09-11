@@ -25,7 +25,6 @@ email archives unless restricted behind some form of external/parent
 authentication mechanism.
 
 
-
 ## How to run:
 - Install the Pony Mail service through `tools/setup.py` first. 
   This will create a ponymail.yaml for the backend server as well
