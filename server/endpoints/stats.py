@@ -53,7 +53,8 @@ async def process(
         wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
     first_year, last_year = await plugins.mbox.get_years(session, query_defuzzed_nodate)
 
-    tstruct, authors = await server.runners.run(plugins.mbox.construct_threads, results)
+    threads = plugins.mbox.ThreadConstructor(results)
+    tstruct, authors = await server.runners.run(threads.construct)
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
 
