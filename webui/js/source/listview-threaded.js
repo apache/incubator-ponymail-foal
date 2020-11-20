@@ -101,7 +101,7 @@ function listview_threaded_element(thread, idx) {
     let eml = find_email(thread.tid);
     if (!eml) { return; }
     
-    let link_wrapper = new HTML('a', {href:'thread.html/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
+    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
     
     let element = new HTML('div', { class: "listview_email_flat"}, " ");
     let date = new Date(eml.epoch*1000.0);
