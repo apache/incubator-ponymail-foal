@@ -57,7 +57,7 @@ function listview_flat(json, start) {
 
 function listview_flat_element(eml, idx) {
     
-    let link_wrapper = new HTML('a', {href:'thread.html/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u, true));'.format(idx)});
+    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u, true));'.format(idx)});
     
     let element = new HTML('div', { class: "listview_email_flat"}, " ");
     let date = new Date(eml.epoch*1000.0);
