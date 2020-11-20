@@ -1945,7 +1945,7 @@ function listview_flat(json, start) {
 
 function listview_flat_element(eml, idx) {
     
-    let link_wrapper = new HTML('a', {href:'thread.html/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u, true));'.format(idx)});
+    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u, true));'.format(idx)});
     
     let element = new HTML('div', { class: "listview_email_flat"}, " ");
     let date = new Date(eml.epoch*1000.0);
@@ -1989,6 +1989,7 @@ function listview_flat_element(eml, idx) {
     
     return link_wrapper;
 }
+
 
 /******************************************
  Fetched from source/listview-header.js
@@ -2342,7 +2343,7 @@ function listview_threaded_element(thread, idx) {
     let eml = find_email(thread.tid);
     if (!eml) { return; }
     
-    let link_wrapper = new HTML('a', {href:'thread.html/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
+    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
     
     let element = new HTML('div', { class: "listview_email_flat"}, " ");
     let date = new Date(eml.epoch*1000.0);
@@ -2752,7 +2753,7 @@ async function render_email(state, json) {
     let list_field = new HTML('div', {class: 'email_kv'});
     let list_key = new HTML('div', {class: 'email_key'}, "List: ");
     let list_value = new HTML('div', {class: 'email_value'},
-        new HTML('a', {href: 'list.html?%s'.format(listname)}, listname)
+        new HTML('a', {href: 'list?%s'.format(listname)}, listname)
         );
     list_field.inject([list_key, list_value]);
     div.inject(list_field);
@@ -2798,7 +2799,7 @@ async function render_email(state, json) {
     toolbar.inject(replybutton);
     
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread.html/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
     toolbar.inject(linkbutton);
     
     // Source-view button
@@ -2875,7 +2876,7 @@ async function render_email_chatty(state, json) {
     toolbar.inject(replybutton);
     
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread.html/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
     toolbar.inject(linkbutton);
     
     // Source-view button
@@ -3046,7 +3047,7 @@ function search(query, date) {
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
     GET(sURL, renderListView, {search: true, global: global});
     let listid = '%s@%s'.format(list, domain);
-    let newhref = "list.html?%s:%s:%s".format(listid, date, query);
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
       window.history.pushState({}, null, newhref);
     }
