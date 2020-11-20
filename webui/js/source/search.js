@@ -31,7 +31,7 @@ function search(query, date) {
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
     GET(sURL, renderListView, {search: true, global: global});
     let listid = '%s@%s'.format(list, domain);
-    let newhref = "list.html?%s:%s:%s".format(listid, date, query);
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
       window.history.pushState({}, null, newhref);
     }
