@@ -41,7 +41,7 @@ async function render_email(state, json) {
     let list_field = new HTML('div', {class: 'email_kv'});
     let list_key = new HTML('div', {class: 'email_key'}, "List: ");
     let list_value = new HTML('div', {class: 'email_value'},
-        new HTML('a', {href: 'list.html?%s'.format(listname)}, listname)
+        new HTML('a', {href: 'list?%s'.format(listname)}, listname)
         );
     list_field.inject([list_key, list_value]);
     div.inject(list_field);
@@ -87,7 +87,7 @@ async function render_email(state, json) {
     toolbar.inject(replybutton);
     
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread.html/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
     toolbar.inject(linkbutton);
     
     // Source-view button
@@ -164,7 +164,7 @@ async function render_email_chatty(state, json) {
     toolbar.inject(replybutton);
     
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread.html/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
     toolbar.inject(linkbutton);
     
     // Source-view button
