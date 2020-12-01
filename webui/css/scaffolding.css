@@ -1149,6 +1149,13 @@ a.disabled {
   text-indent: 1px;
 }
 
+
+.toolbar_button_admin {
+  background: #e5c30b;
+  color: #FFF !important;
+  text-indent: 1px;
+}
+
 pre {
   word-break:keep-all;
   word-wrap:normal;

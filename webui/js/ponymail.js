@@ -2882,6 +2882,10 @@ async function render_email_chatty(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', { href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid), title: "View raw source", class: 'btn toolbar_btn toolbar_button_source'}, new HTML('span', { class: 'glyphicon glyphicon-file'}, ' '));
     toolbar.inject(sourcebutton);
+
+    // Admin button?
+    let adminbutton = new HTML('a', { href: '#', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
+    toolbar.inject(adminbutton);
     
     text.inject(toolbar);
 }
