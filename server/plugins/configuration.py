@@ -33,12 +33,14 @@ class UIConfig:
 
 class OAuthConfig:
     authoritative_domains: list
+    admins: list
     google_client_id: str
     github_client_id: str
     github_client_secret: str
 
     def __init__(self, subyaml: dict):
         self.authoritative_domains = subyaml.get("authoritative_domains", [])
+        self.admins = subyaml.get("admins", [])
         self.google_client_id = subyaml.get("google_client_id", "")
         self.github_client_id = subyaml.get("github_client_id", "")
         self.github_client_secret = subyaml.get("github_client_secret", "")

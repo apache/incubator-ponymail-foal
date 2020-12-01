@@ -463,6 +463,8 @@ oauth:
 #  authoritative_domains:
 #    - googleapis.com  # OAuth via google is authoritative
 #    - github.com      # GitHub OAuth is authoritative
+#  admins:
+#    - foo@example.org
   google_client_id:     ~
   github_client_id:     ~
   github_client_secret: ~

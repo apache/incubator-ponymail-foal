@@ -160,6 +160,8 @@ async def get_session(
                 )
                 creds["oauth_provider"] = internal.get("oauth_provider", "generic")
                 creds["oauth_data"] = internal.get("oauth_data", {})
+                # We update admin boolean whenever we fetch session doc, as they may have changed in yaml but not in ES.
+                creds["admin"] = creds["authoritative"] and creds.get('email') in server.config.oauth.admins
                 session.credentials = SessionCredentials(creds)
 
                 # Save in memory storage
@@ -231,6 +233,7 @@ async def save_credentials(session: SessionObject):
             "internal": {
                 "oauth_provider": session.credentials.oauth_provider,
                 "oauth_data": session.credentials.oauth_data,
+                "admin": session.credentials.admin,
             },
         },
     )

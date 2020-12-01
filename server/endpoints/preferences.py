@@ -47,6 +47,8 @@ async def process(
                 "fullname": session.credentials.name,
             }
         }
+        if session.credentials.admin is True:
+            prefs['login']['credentials']['admin'] = True
 
     # Logging out??
     if indata.get('logout'):

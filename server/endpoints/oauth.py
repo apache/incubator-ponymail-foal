@@ -64,6 +64,8 @@ async def process(
                     "ascii", "ignore"
                 )
             ).hexdigest(16)
+            authoritative = rv.get("oauth_domain", "generic") in server.config.oauth.authoritative_domains
+            admin = authoritative and rv.get('email') in server.config.oauth.admins
             cookie = await plugins.session.set_session(
                 server,
                 cid,
@@ -72,10 +74,10 @@ async def process(
                 email=rv.get("email"),
                 # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
                 # Required for access to private emails
-                authoritative=rv.get("oauth_domain", "generic")
-                in server.config.oauth.authoritative_domains,
+                authoritative=authoritative,
                 oauth_provider=rv.get("oauth_domain", "generic"),
                 oauth_data=rv,
+                admin=admin
             )
             # This could be improved upon, instead of a raw response return value
             return aiohttp.web.Response(
