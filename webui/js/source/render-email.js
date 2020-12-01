@@ -164,16 +164,16 @@ async function render_email_chatty(state, json) {
     toolbar.inject(replybutton);
     
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", target: '_self', class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
     toolbar.inject(linkbutton);
     
     // Source-view button
-    let sourcebutton = new HTML('a', { href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid), title: "View raw source", class: 'btn toolbar_btn toolbar_button_source'}, new HTML('span', { class: 'glyphicon glyphicon-file'}, ' '));
+    let sourcebutton = new HTML('a', { href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid), target: '_self', title: "View raw source", class: 'btn toolbar_btn toolbar_button_source'}, new HTML('span', { class: 'glyphicon glyphicon-file'}, ' '));
     toolbar.inject(sourcebutton);
 
     // Admin button?
     if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
-        let adminbutton = new HTML('a', { href: '#', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
+        let adminbutton = new HTML('a', { href: 'admin/%s'.format(json.mid), target: '_self', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
         toolbar.inject(adminbutton);
     }
     
