@@ -172,8 +172,10 @@ async function render_email_chatty(state, json) {
     toolbar.inject(sourcebutton);
 
     // Admin button?
-    let adminbutton = new HTML('a', { href: '#', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
-    toolbar.inject(adminbutton);
+    if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
+        let adminbutton = new HTML('a', { href: '#', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
+        toolbar.inject(adminbutton);
+    }
     
     text.inject(toolbar);
 }
