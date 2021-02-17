@@ -253,6 +253,14 @@ class SlurpThread(Thread):
                     self.printid("No list id found for %s " % message["message-id"])
                     bad += 1
                     continue
+                
+                # If fetched from Pipermail, we have to revert/reconstruct From: headers sometimes,
+                # before we can pass it off to final archiving.
+                if args.pipermail and " at " in message.get("from"):
+                    m = re.match(r"^(\S+) at (\S+) \((.+)\)$", message["from"])
+                    if m:
+                        message.replace_header("from", "%s <%s@%s>" % (m.group(3), m.group(1), m.group(2)))
+
 
                 json, contents, _msgdata, _irt = archie.compute_updates(
                     list_override, private, message, message_raw
