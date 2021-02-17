@@ -655,7 +655,7 @@ if re.match(r"https?://", source):
                 "You need to specify a list ID with --lid when importing from Pipermail!"
             )
             sys.exit(-1)
-        ns = r"href=\"(\d+-[a-zA-Z]+\.txt(\.gz)?)\""
+        ns = r"href=\"(\d+(?:-[a-zA-Z]+)?\.txt(\.gz)?)\""
         qn = 0
         for mlist in re.finditer(ns, data):
             ml = mlist.group(1)
