@@ -450,7 +450,7 @@ database:
 ui:
   wordcloud:       %s
   mailhost:        %s
-  sender_domains:  %s
+  sender_domains:  "%s"
   traceback:       true
 
 tasks:
