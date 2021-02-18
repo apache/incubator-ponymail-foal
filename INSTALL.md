@@ -44,6 +44,26 @@ pipenv install -r requirements.txt
 ~~~shell script
 pipenv run python3 main.py
 ~~~
+- use a web server like httpd or nginx to serve UI and proxy to the API. A sample httpd configuration could be:
+~~~apache
+<VirtualHost *:80>
+    ServerName ponymail.example.org
+    DocumentRoot /var/www/ponymail-foal/webui/
+    ProxyPass /api/ http://localhost:8080/api/
+    AcceptPathInfo On
+</VirtualHost>
+~~~
+
+A sample nginx config could be:
+~~~nginx
+server {
+    root /var/www/ponymail-foal/webui/;
+    index index.html index.htm;
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080/api/;
+    }
+}
+~~~
 
 
 ## Archiving new emails via Postfix or the likes
