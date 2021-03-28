@@ -47,6 +47,7 @@ class OAuthConfig:
 
 
 class DBConfig:
+    dburl: str
     hostname: str
     port: int
     secure: bool
@@ -55,6 +56,7 @@ class DBConfig:
     max_hits: int
 
     def __init__(self, subyaml: dict):
+        self.dburl = str(subyaml.get("dburl", ""))
         self.hostname = str(subyaml.get("server", "localhost"))
         self.port = int(subyaml.get("port", 9200))
         self.secure = bool(subyaml.get("secure", False))
