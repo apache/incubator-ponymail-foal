@@ -7,12 +7,10 @@ __pycache__/
 *.so
 
 # Local configuration files
-tools/ponymail.yaml
-server/ponymail.yaml
+ponymail.yaml
 
 # Local temporary configuration files
-tools/ponymail.yaml.tmp
-server/ponymail.yaml.tmp
+ponymail.yaml.tmp
 
 # Distribution / packaging
 .Python
@@ -138,3 +136,7 @@ dmypy.json
 
 # PyCharm files
 .idea/
+
+# Pipenv files
+Pipfile
+Pipfile.lock
