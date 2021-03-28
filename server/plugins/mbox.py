@@ -32,7 +32,6 @@ import hashlib
 import re
 import typing
 
-from elasticsearch.helpers import async_scan
 
 import plugins.aaa
 import plugins.session
@@ -309,8 +308,7 @@ async def query(
     docs = []
     hits = 0
     assert session.database, "Database not connected!"
-    async for hit in async_scan(
-        client=session.database.client,
+    async for hit in session.database.scan(
         query={
             "query": {"bool": query_defuzzed},
             "sort": [{"epoch": {"order": "desc"}}],
