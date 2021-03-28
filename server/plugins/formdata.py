@@ -46,7 +46,7 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                         "multipart/form-data"
                         in request.headers.get("content-type", "").lower()
                     ):
-                        fh = request.headers.get("content-type")
+                        fh = request.headers.get("content-type", "" )
                         fb = fh.find("boundary=")
                         if fb > 0:
                             boundary = fh[fb + 9 :]
