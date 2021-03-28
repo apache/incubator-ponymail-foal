@@ -30,7 +30,7 @@ class UIConfig:
         # Default to spitting out traceback to web clients
         # Set to false in yaml to redirect to stderr instead.
         self.traceback = subyaml.get("traceback", True)
-        self.mgmt_enabled = subyaml.get("mgmtconsole", False)  # Whether to enable online mgmt component or not
+        self.mgmt_enabled = bool(subyaml.get("mgmtconsole", False))  # Whether to enable online mgmt component or not
 
 
 class OAuthConfig:
