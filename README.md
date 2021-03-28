@@ -16,7 +16,7 @@ Work is underway on the following items:
 - Improved archiver and import tools   **[DONE]**
 - New UI for the end user              **[DONE]**
 - Migration tools for moving to Foal   **[DONE]**
-- 100% python backend, no mod_lua required. **[MOSTLY DONE]**
+- 100% python backend, no mod_lua required. **[DONE]**
 
 ## Installation Guide
 Please see the [installation documentation](INSTALL.md) for setup instructions.
