@@ -61,14 +61,24 @@ class Elastic:
         self.db_mailinglist = self.dbname + '-mailinglist'
         self.db_version = 0
 
-        ssl = config.get('elasticsearch', 'ssl', fallback=False)
-        uri = config.get('elasticsearch', 'uri', fallback='')
-        auth = None
-        if config.has_option('elasticsearch', 'user'):
-            auth = (
-                config.get('elasticsearch', 'user'),
-                config.get('elasticsearch', 'password')
-            )
+        dburl = config.get('elasticsearch', 'dburl', fallback=None)
+        if not dburl:
+            ssl = config.get('elasticsearch', 'ssl', fallback=False)
+            uri = config.get('elasticsearch', 'uri', fallback='')
+            auth = None
+            if config.has_option('elasticsearch', 'user'):
+                auth = (
+                    config.get('elasticsearch', 'user'),
+                    config.get('elasticsearch', 'password')
+                )
+            dburl = {
+                "host": config.get('elasticsearch', 'hostname', fallback='localhost'),
+                "port": config.get('elasticsearch', 'port', fallback=9200),
+                "use_ssl": ssl,
+                "url_prefix": uri,
+                "auth": auth,
+                "ca_certs": certifi.where(),
+            }
 
         # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
         self.consistency = config.get("elasticsearch", "write", fallback="quorum")
@@ -85,14 +95,7 @@ class Elastic:
 
         self.es = Elasticsearch(
             [
-                {
-                    "host": config.get('elasticsearch', 'hostname', fallback='localhost'),
-                    "port": config.get('elasticsearch', 'port', fallback=9200),
-                    "use_ssl": ssl,
-                    "url_prefix": uri,
-                    "auth": auth,
-                    "ca_certs": certifi.where(),
-                }
+                dburl
             ],
             max_retries=5,
             retry_on_timeout=True,
