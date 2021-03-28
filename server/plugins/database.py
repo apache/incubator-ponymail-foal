@@ -49,19 +49,19 @@ class Database:
         self.config = config
         self.uuid = str(uuid.uuid4())
         self.dbs = DBNames(config.db_prefix)
-        dburl = self.config.dburl
-        if not dburl:
-            dburl = {
-                "host": config.hostname,
-                "port": config.port,
-                "url_prefix": config.url_prefix or "",
-                "use_ssl": config.secure,
-            }
-        self.client = elasticsearch.AsyncElasticsearch(
+        if self.config.dburl:
+            self.client = elasticsearch.AsyncElasticsearch([dburl,])
+        else:
+            self.client = elasticsearch.AsyncElasticsearch(
             [
-                dburl
+                {
+                    "host": config.hostname,
+                    "port": config.port,
+                    "url_prefix": config.url_prefix or "",
+                    "use_ssl": config.secure,
+                },
             ]
-        )
+            )
 
     async def search(self, index="", **kwargs):
         if not index:
