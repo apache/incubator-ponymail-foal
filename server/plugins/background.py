@@ -32,6 +32,22 @@ class ProgTimer:
         print("Done in %.2f seconds" % (time.time() - self.start))
 
 
+def es_connector(database: plugins.configuration.DBConfig) -> AsyncElasticsearch:
+    if database.dburl:
+        return AsyncElasticsearch([database.dburl])
+    else:
+        return AsyncElasticsearch(
+            [
+                {
+                    "host": database.hostname,
+                    "port": database.port,
+                    "url_prefix": database.url_prefix or "",
+                    "use_ssl": database.secure,
+                },
+            ]
+        )
+
+
 async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     """
 
@@ -40,16 +56,7 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
              public or private
     """
     lists = {}
-    client = AsyncElasticsearch(
-        [
-            {
-                "host": database.hostname,
-                "port": database.port,
-                "url_prefix": database.url_prefix or "",
-                "use_ssl": database.secure,
-            },
-        ]
-    )
+    client = es_connector(database)
 
     # Fetch aggregations of all public emails
     s = Search(using=client, index=database.db_prefix + "-mbox").query(
@@ -95,16 +102,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
     :param database: a PyPony database configuration
     :return: A dictionary with activity stats
     """
-    client = AsyncElasticsearch(
-        [
-            {
-                "host": database.hostname,
-                "port": database.port,
-                "url_prefix": database.url_prefix or "",
-                "use_ssl": database.secure,
-            },
-        ]
-    )
+    client = es_connector(database)
 
     # Fetch aggregations of all public emails
     s = (
