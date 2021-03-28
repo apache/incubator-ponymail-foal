@@ -19,6 +19,7 @@ class UIConfig:
     mailhost: str
     sender_domains: str
     traceback: bool
+    mgmt_enabled: bool
 
     def __init__(self, subyaml: dict):
         self.wordcloud = bool(subyaml.get("wordcloud", False))
@@ -29,6 +30,7 @@ class UIConfig:
         # Default to spitting out traceback to web clients
         # Set to false in yaml to redirect to stderr instead.
         self.traceback = subyaml.get("traceback", True)
+        self.mgmt_enabled = subyaml.get("mgmtconsole", False)  # Whether to enable online mgmt component or not
 
 
 class OAuthConfig:
