@@ -10,13 +10,13 @@ a pure python version of Apache Pony Mail with support for ElasticSearch
 7.x and above.
 
 
-## Roadmap
-Work is underway on the following items:
+## New features in Foal:
+Among other things, Foal sports the following new features:
 
-- Improved archiver and import tools   **[DONE]**
-- New UI for the end user              **[DONE]**
-- Migration tools for moving to Foal   **[DONE]**
-- 100% python backend, no mod_lua required. **[DONE]**
+- Improved archiver and import tools
+- New, sleeker UI for the end user
+- Migration tools for moving to Foal
+- 100% python backend, no Lua required
 
 ## Installation Guide
 Please see the [installation documentation](INSTALL.md) for setup instructions.
