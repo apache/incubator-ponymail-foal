@@ -50,7 +50,7 @@ class Database:
         self.uuid = str(uuid.uuid4())
         self.dbs = DBNames(config.db_prefix)
         if self.config.dburl:
-            self.client = elasticsearch.AsyncElasticsearch([dburl,])
+            self.client = elasticsearch.AsyncElasticsearch([self.config.dburl,])
         else:
             self.client = elasticsearch.AsyncElasticsearch(
             [
