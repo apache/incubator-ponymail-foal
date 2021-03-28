@@ -39,8 +39,7 @@ if sys.version_info < (3, 7, 3):
     print("for operating the UI backend server.")
 
 
-hostname = ""
-port = 0
+dburl = ""
 dbname = ""
 mlserver = ""
 mldom = ""
@@ -49,7 +48,6 @@ genname = ""
 wce = False
 shards = 0
 replicas = -1
-urlPrefix = None
 nonce = None
 supported_generators = ["dkim", "full"]
 
@@ -119,15 +117,13 @@ parser = argparse.ArgumentParser(description="Command line options.")
 parser.add_argument(
     "--defaults", dest="defaults", action="store_true", help="Use default settings"
 )
-parser.add_argument("--dbprefix", dest="dbprefix")
 parser.add_argument(
     "--clobber",
     dest="clobber",
     action="store_true",
     help="Allow overwrite of ponymail.yaml & ../site/api/lib/config.lua (default: create *.tmp if either exists)",
 )
-parser.add_argument("--dbhost", dest="dbhost", type=str, help="ES backend hostname")
-parser.add_argument("--dbport", dest="dbport", type=str, help="DB port")
+parser.add_argument("--dburl", dest="dburl", type=str, help="ES backend URL")
 parser.add_argument("--dbname", dest="dbname", type=str, help="ES DB prefix")
 parser.add_argument("--dbshards", dest="dbshards", type=int, help="DB Shard Count")
 parser.add_argument(
@@ -182,8 +178,7 @@ print("")
 
 # If called with --defaults (like from Docker), use default values
 if args.defaults:
-    hostname = "localhost"
-    port = 9200
+    dburl = "http://localhost:9200/"
     dbname = "ponymail"
     mlserver = "localhost"
     mldom = "example.org"
@@ -196,12 +191,8 @@ if args.defaults:
     nonce = None
 
 # Accept CLI args, copy them
-if args.dbprefix:
-    urlPrefix = args.dbprefix
-if args.dbhost:
-    hostname = args.dbhost
-if args.dbport:
-    port = int(args.dbport)
+if args.dburl:
+    dburl = args.dburl
 if args.dbname:
     dbname = args.dbname
 if args.mailserver:
@@ -230,22 +221,10 @@ if args.generator:
 if args.generator and any(x == "dkim" for x in args.generator.split(' ')) and args.nonce is not None:
     nonce = args.nonce
 
-if not hostname:
-    hostname = input("What is the hostname of the ElasticSearch server? [localhost]: ")
-    if not hostname:
-        hostname = "localhost"
-
-if urlPrefix is None:
-    urlPrefix = input("Database URL prefix if any (hit enter if none): ")
-
-while port < 1 or port > 65536:
-    try:
-        port = input("What port is ElasticSearch listening on? [9200]: ")
-        if not port:
-            port = 9200
-        port = int(port)
-    except ValueError:
-        pass
+if not dburl:
+    dburl = input("What is the URL of the ElasticSearch server? [http://localhost:9200/]: ")
+    if not dburl:
+        dburl = "http://localhost:9200/"
 
 if not dbname:
     dbname = input("What would you like to call the mail index [ponymail]: ")
@@ -323,7 +302,7 @@ print("Okay, I got all I need, setting up Pony Mail...")
 
 # we need to connect to database to determine the engine version
 es = Elasticsearch(
-    [{"host": hostname, "port": port, "use_ssl": False, "url_prefix": urlPrefix}],
+    [dburl],
     max_retries=5,
     retry_on_timeout=True,
 )
@@ -398,13 +377,8 @@ with open(ponymail_cfg, "w") as f:
 
 # Main ES configuration
 elasticsearch:
-    hostname:               %s
+    dburl:                  %s
     dbname:                 %s
-    port:                   %u
-    ssl:                    false
-    #uri:                   url_prefix
-    #user:                  username
-    #password:              password
     #wait:                  active shard count
     #backup:                database name
 
@@ -440,10 +414,7 @@ server:
 
 
 database:
-  server: %s      # The hostname of the ElasticSearch database
-  port: %u             # ES Port
-  secure: false          # Whether TLS is enabled on ES
-  url_prefix: ~          # URL prefix, if proxying to ES
+  dburl: %s      # The URL of the ElasticSearch database
   db_prefix: %s    # DB prefix, usually 'ponymail'
   max_hits: 15000        # Maximum number of emails to process in a search
 
