@@ -136,3 +136,21 @@ source:
       type: keyword
     source:
       type: binary
+auditlog:
+  properties:
+    id:
+      type: keyword
+    date:
+      format: yyyy/MM/dd HH:mm:ss
+      store: true
+      type: date
+    author:
+      type: keyword
+    remote:
+      type: keyword
+    action:
+      type: keyword
+    target:
+      type: keyword
+    log:
+      type: text
