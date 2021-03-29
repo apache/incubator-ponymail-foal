@@ -62,6 +62,53 @@ async def process(
                 )
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
+    # Editing an email in place
+    elif action == "edit":
+        new_from = indata.get("from")
+        new_subject = indata.get("subject")
+        new_list = "<" + indata.get("list").strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
+        private = True if indata.get("private", "no") == "yes" else False
+        new_body = indata.get("body")
+        email = await plugins.mbox.get_email(session, permalink=doc)
+        if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+            email["from_raw"] = new_from
+            email["from"] = new_from
+            email["subject"] = new_subject
+            email["private"] = private
+            origin_lid = email["list_raw"]
+            email["list"] = new_list
+            email["list_raw"] = new_list
+            email["body"] = new_body
+
+            # Save edited email
+            await session.database.index(
+                index=session.database.dbs.mbox, body=email, id=email["id"],
+            )
+
+            # Fetch source, mark as deleted (modified) and save
+            # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
+            source = await plugins.mbox.get_source(session, permalink=email["id"])
+            if source:
+                source["deleted"] = True
+                await session.database.index(
+                    index=session.database.dbs.source, body=source, id=email["id"],
+                )
+
+            await session.database.index(
+                index=session.database.dbs.auditlog,
+                body={
+                    "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
+                    "action": "edit",
+                    "remote": session.remote,
+                    "author": f"{session.credentials.uid}@{session.credentials.oauth_provider}",
+                    "target": doc,
+                    "lid": origin_lid,
+                    "log": f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {new_list})",
+                },
+            )
+            return aiohttp.web.Response(headers={}, status=200, text=f"Email successfully saved")
+        return aiohttp.web.Response(headers={}, status=404, text=f"Email not found!")
+
     return aiohttp.web.Response(headers={}, status=404, text=f"Unknown mgmt command requested")
 
 
