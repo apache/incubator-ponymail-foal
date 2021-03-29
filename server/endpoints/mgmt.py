@@ -87,8 +87,9 @@ async def process(
 
             # Fetch source, mark as deleted (modified) and save
             # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
-            source = await plugins.mbox.get_source(session, permalink=email["id"])
+            source = await plugins.mbox.get_source(session, permalink=email["id"], raw=True)
             if source:
+                source = source["_source"]
                 source["deleted"] = True
                 await session.database.index(
                     index=session.database.dbs.source, body=source, id=email["id"],

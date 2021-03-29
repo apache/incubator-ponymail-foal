@@ -247,7 +247,7 @@ async def get_email(
     return None
 
 
-async def get_source(session: plugins.session.SessionObject, permalink: str = None):
+async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
     assert session.database, "Database not connected!"
     doctype = session.database.dbs.source
     try:
@@ -263,6 +263,8 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     if len(res["hits"]["hits"]) == 1:
         doc = res["hits"]["hits"][0]
         doc["id"] = doc["_id"]
+        if raw:
+            return doc
         # Check for base64-encoded source
         if ":" not in doc["_source"]["source"]:
             try:
