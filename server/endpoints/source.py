@@ -25,9 +25,7 @@ import plugins.aaa
 
 
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> aiohttp.web.Response:
     # First, assume permalink and look up the email based on that
     email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
@@ -35,15 +33,13 @@ async def process(
     # If not found via permalink, it might be message-id instead, so try that
     if email is None:
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
-    
+
     if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
             source = await plugins.mbox.get_source(session, permalink=email["mid"])
             if source:
                 return aiohttp.web.Response(
-                    headers={"Content-Type": "text/plain"},
-                    status=200,
-                    text=source["_source"]["source"],
+                    headers={"Content-Type": "text/plain"}, status=200, text=source["_source"]["source"],
                 )
     return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 

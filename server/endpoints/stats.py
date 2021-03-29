@@ -30,19 +30,12 @@ import typing
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
 
-async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
-) -> dict:
+async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,) -> dict:
 
     query_defuzzed = plugins.defuzzer.defuzz(indata)
     query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
     results = await plugins.mbox.query(
-        session,
-        query_defuzzed,
-        query_limit=server.config.database.max_hits,
-        shorten=True,
+        session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
 
     for msg in results:
@@ -58,20 +51,13 @@ async def process(
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
 
-    all_authors = sorted(
-        [[author, count] for author, count in authors.items()], key=lambda x: x[1]
-    )
+    all_authors = sorted([[author, count] for author, count in authors.items()], key=lambda x: x[1])
     top10_authors = []
     for x in [x for x in reversed([x for x in all_authors])][:10]:
         author, count = x
         name, address = email.utils.parseaddr(author)
         top10_authors.append(
-            {
-                "email": address,
-                "name": name,
-                "count": count,
-                "gravatar": plugins.mbox.gravatar(author),
-            }
+            {"email": address, "name": name, "count": count, "gravatar": plugins.mbox.gravatar(author),}
         )
 
     # Trim email data so as to reduce download sizes
@@ -84,7 +70,7 @@ async def process(
         "hits": len(results),
         "numparts": len(authors),
         "no_threads": len(tstruct),
-        "emails": list(sorted(results, key=lambda x: x['epoch'])),
+        "emails": list(sorted(results, key=lambda x: x["epoch"])),
         "cloud": wordcloud,
         "participants": top10_authors,
         "thread_struct": tstruct,

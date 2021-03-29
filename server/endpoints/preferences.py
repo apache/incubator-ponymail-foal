@@ -23,9 +23,7 @@ import plugins.session
 """ This is incomplete, but will work for anonymous tests. """
 
 
-async def process(
-    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict
-) -> dict:
+async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict) -> dict:
     prefs: dict = {"login": {}}
     lists: dict = {}
     for ml, entry in server.data.lists.items():
@@ -40,7 +38,7 @@ async def process(
                 lists[ldomain][lname] = entry["count"]
     prefs["lists"] = lists
     if session and session.credentials:
-        prefs['login'] = {
+        prefs["login"] = {
             "credentials": {
                 "uid": session.credentials.uid,
                 "email": session.credentials.email,
@@ -48,10 +46,10 @@ async def process(
             }
         }
         if session.credentials.admin is True:
-            prefs['login']['credentials']['admin'] = True
+            prefs["login"]["credentials"]["admin"] = True
 
     # Logging out??
-    if indata.get('logout'):
+    if indata.get("logout"):
         # Remove session from ElasticSearch
         await plugins.session.remove_session(session)
 

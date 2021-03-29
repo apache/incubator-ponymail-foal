@@ -20,9 +20,7 @@
 import plugins.server
 
 
-async def process(
-    server: plugins.server.BaseServer, session: dict, indata: dict
-) -> dict:
+async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> dict:
     return server.data.activity
 
 

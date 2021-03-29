@@ -26,15 +26,11 @@ import aiohttp.web
 
 
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     query_defuzzed = plugins.defuzzer.defuzz(indata)
-    results = await plugins.mbox.query(
-        session, query_defuzzed, query_limit=server.config.database.max_hits,
-    )
+    results = await plugins.mbox.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
 
     sources = []
     for email in results:
@@ -58,10 +54,7 @@ async def process(
 
     # Return mbox archive with filename
     return aiohttp.web.Response(
-        headers={
-            "Content-Type": "application/mbox",
-            "Content-Disposition": f"attachment; filename={dlfile}",
-        },
+        headers={"Content-Type": "application/mbox", "Content-Disposition": f"attachment; filename={dlfile}",},
         status=200,
         text="\n\n".join(sources),
     )

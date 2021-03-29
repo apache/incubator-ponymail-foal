@@ -28,26 +28,23 @@ import hashlib
 
 
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     state = indata.get("state")
     code = indata.get("code")
-    id_token = indata.get('id_token')
+    id_token = indata.get("id_token")
     oauth_token = indata.get("oauth_token")
 
     rv: typing.Optional[dict] = None
 
     # Google OAuth - currently fetches email address only
-    if indata.get('key', '') == 'google' and id_token:
+    if indata.get("key", "") == "google" and id_token:
         rv = await plugins.oauthGoogle.process(indata, session, server)
 
     # GitHub OAuth - Fetches name and email
-    if indata.get('key', '') == 'github' and code:
+    if indata.get("key", "") == "github" and code:
         rv = await plugins.oauthGithub.process(indata, session, server)
-
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
     elif state and code and oauth_token:
@@ -60,12 +57,10 @@ async def process(
             uid = rv.get("email")
         if uid:
             cid = hashlib.shake_128(
-                ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode(
-                    "ascii", "ignore"
-                )
+                ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode("ascii", "ignore")
             ).hexdigest(16)
             authoritative = rv.get("oauth_domain", "generic") in server.config.oauth.authoritative_domains
-            admin = authoritative and rv.get('email') in server.config.oauth.admins
+            admin = authoritative and rv.get("email") in server.config.oauth.admins
             cookie = await plugins.session.set_session(
                 server,
                 cid,
@@ -77,16 +72,15 @@ async def process(
                 authoritative=authoritative,
                 oauth_provider=rv.get("oauth_domain", "generic"),
                 oauth_data=rv,
-                admin=admin
+                admin=admin,
             )
             # This could be improved upon, instead of a raw response return value
             return aiohttp.web.Response(
-                headers={"set-cookie": cookie, "content-type": "application/json"},
-                status=200,
-                text='{"okay": true}',
+                headers={"set-cookie": cookie, "content-type": "application/json"}, status=200, text='{"okay": true}',
             )
 
     return {"okay": False, "message": "Could not process OAuth login!"}
+
 
 def register(server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

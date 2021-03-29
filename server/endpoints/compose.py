@@ -26,9 +26,7 @@ import aiohttp.web
 
 
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     if not server.config.ui.mailhost:
@@ -37,15 +35,15 @@ async def process(
     # Figure out outgoing MTA
     mailhost = server.config.ui.mailhost
     mailport = 25
-    if ':' in mailhost:
-        mailhost, _mailport = mailhost.split(':', 1)
+    if ":" in mailhost:
+        mailhost, _mailport = mailhost.split(":", 1)
         mailport = int(_mailport)
 
     # Figure out if recipient list is on allowed list
-    to = indata.get('to', '')
-    mldomain = to.strip("<>").split('@')[-1]
+    to = indata.get("to", "")
+    mldomain = to.strip("<>").split("@")[-1]
     allowed_to_send = False
-    for allowed_domain in server.config.ui.sender_domains.split(' '):
+    for allowed_domain in server.config.ui.sender_domains.split(" "):
         if fnmatch.fnmatch(mldomain, allowed_domain):
             allowed_to_send = True
             break
@@ -54,22 +52,22 @@ async def process(
 
     # If logged in and everything, prep for dispatch
     if session.credentials and session.credentials.authoritative:
-        subject = indata.get('subject')
-        body = indata.get('body')
-        irt = indata.get('in-repl-to')
-        references = indata.get('references')
+        subject = indata.get("subject")
+        body = indata.get("body")
+        irt = indata.get("in-repl-to")
+        references = indata.get("references")
 
         if to and subject and body:
             msg = email.message.EmailMessage()
             if irt:
-                msg['in-reply-to'] = irt
+                msg["in-reply-to"] = irt
             if references:
-                msg['references'] = references
-            msg['from'] = "%s <%s>" % (session.credentials.name, session.credentials.email)
-            msg['to'] = to
-            msg['subject'] = subject
-            msg['X-Sender'] = "Apache Pony Mail Foal Composer v/0.1"
-            msg.set_charset('utf-8')
+                msg["references"] = references
+            msg["from"] = "%s <%s>" % (session.credentials.name, session.credentials.email)
+            msg["to"] = to
+            msg["subject"] = subject
+            msg["X-Sender"] = "Apache Pony Mail Foal Composer v/0.1"
+            msg.set_charset("utf-8")
             msg.set_content(body)
             await aiosmtplib.send(msg, hostname=mailhost, port=mailport)
             return {"okay": True, "message": "Message dispatched!"}

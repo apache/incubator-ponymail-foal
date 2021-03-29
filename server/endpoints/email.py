@@ -27,10 +27,9 @@ import plugins.aaa
 import base64
 import typing
 
+
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     # First, assume permalink and look up the email based on that
@@ -57,26 +56,18 @@ async def process(
                             "Content-Length": str(entry.get("size")),
                         }
                         if "image/" not in ct and "text/" not in ct:
-                            headers[
-                                "Content-Disposition"
-                            ] = f"attachment; filename=\"{entry.get('filename')}\""
+                            headers["Content-Disposition"] = f"attachment; filename=\"{entry.get('filename')}\""
                         try:
                             assert session.database, "Database not connected!"
                             attachment = await session.database.get(
                                 index=session.database.dbs.attachment, id=indata.get("file")
                             )
                             if attachment:
-                                blob = base64.decodebytes(
-                                    attachment["_source"].get("source").encode("utf-8")
-                                )
-                                return aiohttp.web.Response(
-                                    headers=headers, status=200, body=blob
-                                )
+                                blob = base64.decodebytes(attachment["_source"].get("source").encode("utf-8"))
+                                return aiohttp.web.Response(headers=headers, status=200, body=blob)
                         except plugins.database.DBError:
                             pass  # attachment not found
-                return aiohttp.web.Response(
-                    headers={}, status=404, text="Attachment not found"
-                )
+                return aiohttp.web.Response(headers={}, status=404, text="Attachment not found")
 
     return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 

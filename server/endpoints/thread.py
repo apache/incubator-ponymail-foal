@@ -23,18 +23,15 @@ import plugins.mbox
 import plugins.defuzzer
 import typing
 
+
 async def process(
-    server: plugins.server.BaseServer,
-    session: plugins.session.SessionObject,
-    indata: dict,
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Optional[dict]:
     email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
     if not email:
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
     if email and isinstance(email, dict):
-        thread, emails, pdocs = await plugins.mbox.fetch_children(
-            session, email, short=True
-        )
+        thread, emails, pdocs = await plugins.mbox.fetch_children(session, email, short=True)
     else:
         return None
 
