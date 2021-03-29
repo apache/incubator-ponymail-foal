@@ -13,6 +13,9 @@ async function POST(url, formdata, state) {
 
 // Deletes (hides) an email from the archives
 async function admin_hide_email() {
+    if (!confirm("Are you sure you wish to remove this email from the archives?")) {
+        return
+    }
     formdata = JSON.stringify({
         action: "delete",
         document: admin_current_email
