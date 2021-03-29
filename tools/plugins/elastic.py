@@ -59,6 +59,7 @@ class Elastic:
         self.db_session = self.dbname + '-session'
         self.db_notification = self.dbname + '-notification'
         self.db_mailinglist = self.dbname + '-mailinglist'
+        self.db_auditlog = self.dbname + '-auditlog'
         self.db_version = 0
 
         dburl = config.get('elasticsearch', 'dburl', fallback=None)
