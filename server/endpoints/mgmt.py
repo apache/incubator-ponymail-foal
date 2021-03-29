@@ -25,6 +25,7 @@ import typing
 import aiohttp.web
 import time
 
+
 async def process(
     server: plugins.server.BaseServer,
     session: plugins.session.SessionObject,
@@ -65,6 +66,7 @@ async def process(
                 )
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
+
 
 def register(server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)
