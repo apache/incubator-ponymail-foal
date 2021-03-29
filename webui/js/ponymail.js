@@ -2483,7 +2483,7 @@ async function admin_save_email() {
 function admin_email_preview(stats, json) {
     admin_current_email = json.mid;
     let cp = document.getElementById("panel");
-    let div = new HTML('div');
+    let div = new HTML('div', { style: { margin: '5px'}});
     cp.inject(div);
 
     div.inject(new HTML('h1', {}, "Editing email " + json.mid + ":"));
@@ -2551,12 +2551,14 @@ function admin_email_preview(stats, json) {
     div.inject(text);
 
     let btn_edit = new HTML('button', {onclick: "admin_save_email();"}, "Save changes to archive");
-    let btn_hide = new HTML('button', {onclick: "admin_hide_email();", style: {marginLeft: "24px", color: 'red'}}, "Remove email from archives*");
+    let btn_hide = new HTML('button', {onclick: "admin_hide_email();", style: {marginLeft: "36px", color: 'red'}}, "Remove email from archives");
     div.inject(new HTML('br'));
     div.inject(btn_edit);
     div.inject(btn_hide);
     div.inject(new HTML('br'));
-    div.inject(new HTML('small', {}, "* Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
+    div.inject(new HTML('small', {}, "Modifying emails will remove the option to view their sources via the web interface, as the source may contain traces that reveal the edit."))
+    div.inject(new HTML('br'));
+    div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
 }
 
 function admin_init() {
@@ -3036,7 +3038,7 @@ async function render_email_chatty(state, json) {
 
     // Admin button?
     if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
-        let adminbutton = new HTML('a', { href: 'admin/%s'.format(json.mid), target: '_self', title: "Administrative control", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
+        let adminbutton = new HTML('a', { href: 'admin/%s'.format(json.mid), target: '_self', title: "Modify email", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
         toolbar.inject(adminbutton);
     }
     
