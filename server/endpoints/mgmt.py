@@ -28,7 +28,7 @@ import time
 
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
-) -> typing.Optional[dict]:
+) -> typing.Union[dict, aiohttp.web.Response]:
     action = indata.get("action")
     docs = indata.get("documents", [])
     doc = indata.get("document")
@@ -62,6 +62,7 @@ async def process(
                 )
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
+    return aiohttp.web.Response(headers={}, status=404, text=f"Unknown mgmt command requested")
 
 
 def register(server: plugins.server.BaseServer):
