@@ -66,7 +66,7 @@ async def process(
     elif action == "edit":
         new_from = indata.get("from")
         new_subject = indata.get("subject")
-        new_list = "<" + indata.get("list").strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
+        new_list = "<" + indata.get("list", "").strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
         private = True if indata.get("private", "no") == "yes" else False
         new_body = indata.get("body")
         email = await plugins.mbox.get_email(session, permalink=doc)
