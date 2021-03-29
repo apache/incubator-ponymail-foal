@@ -301,6 +301,7 @@ async def query(
     query_defuzzed,
     query_limit=10000,
     shorten=False,
+    hide_deleted=True,
 ):
     """
     Advanced query and grab for stats.py
@@ -315,6 +316,9 @@ async def query(
         },
     ):
         doc = hit["_source"]
+        # If email was delete/hidden and we're not doing an admin query, ignore it
+        if hide_deleted and doc.get("deleted", False):
+            continue
         doc["id"] = doc["mid"]
         if plugins.aaa.can_access_email(session, doc):
             if not session.credentials:
