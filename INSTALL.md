@@ -102,6 +102,20 @@ oauth:
     - myoauthprovider.tld
 ~~~
 
+For administrative access to certain features, such as deleting/moving email via the UI,
+you can set a list of people who, via an authoritative oauth provider, will have access to
+this, as such:
+
+~~~yaml
+oauth:
+  authoritative_domains:
+    - googleapis.com
+  admins:
+    - humbedooh@gmail.com
+    - example@gmail.com
+~~~
+
+
 Currently, you will also need to enable or tweak your `webui/js/config.js` file to match your 
 choice of OAuth providers, though that is subject to change.
 
