@@ -878,6 +878,18 @@ a .listview_email_threaded {
 
 
 
+.email_kv_edit {
+  width: 100%;
+  float: left;
+  height: 32px;
+  position: relative;
+  min-width: 370px;
+  background: #EEE;
+  border-bottom: 0.75px solid #CCC9;
+  z-index: 1;
+}
+
+
 .email_kv {
   width: 100%;
   float: left;
