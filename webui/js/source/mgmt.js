@@ -145,7 +145,7 @@ function admin_init() {
         }
         // Email handling?
         else {
-            GET('%sapi/email.lua?id=%s'.format(apiURL, mid), admin_email_preview, null);
+            GET('%sapi/email.json?id=%s'.format(apiURL, mid), admin_email_preview, null);
         }
     }
 }
