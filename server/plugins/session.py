@@ -129,7 +129,7 @@ async def get_session(
     # If not in local memory, start a new session object
     session = SessionObject(server)
     session.database = await server.dbpool.get()
-    session.remote = request.remote
+    session.remote = request.remote or "??"
 
     # If a cookie was supplied, look for a session object in ES
     if session_id and session.database:
