@@ -90,10 +90,10 @@ function admin_email_preview(stats, json) {
 
     // Private email?
     let priv_field = new HTML('div', {class: 'email_kv_edit'});
-    let priv_key = new HTML('div', {class: 'email_key'}, "Private: ");
+    let priv_key = new HTML('div', {class: 'email_key'}, "Visibility: ");
     let priv_value = new HTML('select', {id:'email_private'});
-    priv_value.inject(new HTML('option', {value: 'no', style: {color: 'green'}, selected: json.private ? null : "selected"}, "No"));
-    priv_value.inject(new HTML('option', {value: 'yes', style: {color: 'red'}, selected: json.private ? "selected" : null}, "Yes"));
+    priv_value.inject(new HTML('option', {value: 'no', style: {color: 'green'}, selected: json.private ? null : "selected"}, "Public"));
+    priv_value.inject(new HTML('option', {value: 'yes', style: {color: 'red'}, selected: json.private ? "selected" : null}, "Private"));
     priv_field.inject([priv_key, priv_value]);
     div.inject(priv_field);
 
