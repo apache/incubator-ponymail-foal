@@ -143,6 +143,8 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
     emails = []
     for doc in docs or []:
         # Make sure email is accessible
+        if doc.get("deleted"):
+            continue
         if plugins.aaa.can_access_email(session, doc):
             if doc["mid"] not in pdocs:
                 mykids, myemails, pdocs = await fetch_children(
