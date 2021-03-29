@@ -141,7 +141,7 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
 
     thread = []
     emails = []
-    for doc in docs:
+    for doc in docs or []:
         # Make sure email is accessible
         if plugins.aaa.can_access_email(session, doc):
             if doc["mid"] not in pdocs:
