@@ -36,7 +36,7 @@ async def process(
     if email is None:
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
     
-    if email and isinstance(email, dict):
+    if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
             source = await plugins.mbox.get_source(session, permalink=email["mid"])
             if source:

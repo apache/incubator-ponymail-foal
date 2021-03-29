@@ -41,7 +41,7 @@ async def process(
         email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
 
     # If email was found, process the request if we are allowed to display it
-    if email and isinstance(email, dict):
+    if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
             # Are we fetching an attachment?
             if not indata.get("attachment"):
