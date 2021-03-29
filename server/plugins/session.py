@@ -68,6 +68,7 @@ class SessionObject:
     last_accessed: int
     credentials: typing.Optional[SessionCredentials]
     database: typing.Optional[plugins.database.Database]
+    remote: str
     server: plugins.server.BaseServer
 
     def __init__(self, server: plugins.server.BaseServer, **kwargs):
@@ -80,6 +81,7 @@ class SessionObject:
             self.credentials = None
             self.cookie = str(uuid.uuid4())
             self.cid = None
+            self.remote = "??"
         else:
             self.last_accessed = kwargs.get("last_accessed", 0)
             self.credentials = SessionCredentials(kwargs.get("credentials"))
@@ -115,6 +117,7 @@ async def get_session(
             # In case the session is used twice within the same loop
             session = copy.copy(x_session)
             session.database = await server.dbpool.get()
+            session.remote = request.remote
 
             # Do we need to update the timestamp in ES?
             if (now - session.last_accessed) > FOAL_SAVE_SESSION_INTERVAL:
@@ -126,6 +129,7 @@ async def get_session(
     # If not in local memory, start a new session object
     session = SessionObject(server)
     session.database = await server.dbpool.get()
+    session.remote = request.remote
 
     # If a cookie was supplied, look for a session object in ES
     if session_id and session.database:
