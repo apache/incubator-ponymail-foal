@@ -150,5 +150,7 @@ auditlog:
       type: keyword
     target:
       type: keyword
+    lid:
+      type: keyword
     log:
       type: text
