@@ -24,7 +24,6 @@ import plugins.defuzzer
 import plugins.auditlog
 import typing
 import aiohttp.web
-import time
 
 
 async def process(
