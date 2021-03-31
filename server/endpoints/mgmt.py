@@ -34,8 +34,9 @@ async def process(
     doc = indata.get("document")
     if not docs and doc:
         docs = [doc]
-    if not session.credentials.admin or not server.config.ui.mgmt_enabled:
+    if not session.credentials or not session.credentials.admin or not server.config.ui.mgmt_enabled:
         return aiohttp.web.Response(headers={}, status=403, text="You need administrative access to use this feature.")
+    assert session.database, "No session database connection could be found!"
 
     # Viewing audit log?
     if action == "log":
@@ -44,7 +45,9 @@ async def process(
         out = []
         async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True):
             out.append(entry)
-        return out
+        return {
+            "entries": out
+        }
 
     # Deleting/hiding a document?
     elif action == "delete":
@@ -57,7 +60,7 @@ async def process(
                 await session.database.index(
                     index=session.database.dbs.mbox, body=email, id=email["id"],
                 )
-                lid = email.get("list_raw")
+                lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
@@ -65,11 +68,12 @@ async def process(
     elif action == "edit":
         new_from = indata.get("from")
         new_subject = indata.get("subject")
-        new_list = indata.get("list")
+        new_list = indata.get("list", "")
         private = True if indata.get("private", "no") == "yes" else False
-        new_body = indata.get("body")
+        new_body = indata.get("body", "")
 
         # Check for consistency so we don't pollute the database
+        assert isinstance(doc, str) and doc, "Document ID is missing or invalid"
         assert isinstance(new_from, str), "Author field must be a text string!"
         assert isinstance(new_subject, str), "Subject field must be a text string!"
         assert isinstance(new_list, str), "List ID field must be a text string!"
