@@ -570,18 +570,19 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             )
 
             # Write to audit log
-            elastic.index(
-                index=elastic.db_auditlog,
-                body={
-                    "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
-                    "action": "index",
-                    "remote": "internal",
-                    "author": "archiver.py",
-                    "target": ojson["mid"],
-                    "lid": lid,
-                    "log": f"Indexed email {ojson['message-id']} for {lid} as {ojson['mid']}",
-                }
-            )
+            if elastic.indices.exists(index=elastic.db_auditlog):
+                elastic.index(
+                    index=elastic.db_auditlog,
+                    body={
+                        "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
+                        "action": "index",
+                        "remote": "internal",
+                        "author": "archiver.py",
+                        "target": ojson["mid"],
+                        "lid": lid,
+                        "log": f"Indexed email {ojson['message-id']} for {lid} as {ojson['mid']}",
+                    }
+                )
 
         # If we have a dump dir and ES failed, push to dump dir instead as a JSON object
         # We'll leave it to another process to pick up the slack.
