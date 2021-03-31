@@ -26,7 +26,16 @@ import time
 
 
 class AuditLogEntry:
-    _keys: tuple = ("id", "date", "action", "remote", "author","target", "lid", "log", )
+    _keys: tuple = (
+        "id",
+        "date",
+        "action",
+        "remote",
+        "author",
+        "target",
+        "lid",
+        "log",
+    )
 
     def __init__(self, doc):
         for key in self._keys:
@@ -34,13 +43,12 @@ class AuditLogEntry:
                 setattr(self, key, doc[key])
 
 
-async def view(session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False) -> typing.List[dict]:
+async def view(
+    session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False
+) -> typing.List[dict]:
     """ Returns N entries from the audit log, paginated """
     res = await session.database.search(
-        index=session.database.dbs.auditlog,
-        size=num_entries,
-        from_=page*num_entries,
-        sort="date:desc",
+        index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
     )
     for doc in res["hits"]["hits"]:
         doc["_source"]["id"] = doc["_id"]
@@ -48,6 +56,7 @@ async def view(session: plugins.session.SessionObject, page: int = 0, num_entrie
             yield doc["_source"]
         else:
             yield AuditLogEntry(doc["_source"])
+
 
 async def add_entry(session: plugins.session.SessionObject, action: str, target: str, lid: str, log: str):
     """ Adds an entry to the audit log"""
