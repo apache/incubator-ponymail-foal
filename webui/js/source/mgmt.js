@@ -135,6 +135,49 @@ function admin_email_preview(stats, json) {
     div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
 }
 
+function admin_audit_view(state, json) {
+    let cp = document.getElementById("panel");
+    let div = new HTML('div', { style: { margin: '5px'}});
+    cp.inject(div);
+
+    div.inject(new HTML('h1', {}, "Audit log:"));
+    if (json.entries && json.entries.length > 0) {
+        let table = new HTML('table', {border: "1", class:"auditlog_entries"});
+        let trh = new HTML('tr');
+        let headers = ['Date', 'Author','Remote','Action','Target', 'Log'];
+        for (let i = 0; i < headers.length; i++) {
+            let th = new HTML('th', {}, headers[i] + ":");
+            trh.inject(th);
+        }
+        table.inject(trh)
+        for (let i = 0; i < json.entries.length; i++) {
+            let entry = json.entries[i];
+            let tr = new HTML('tr', {class: "auditlog_entry"});
+            for (let i = 0; i < headers.length; i++) {
+                let key = headers[i].toLowerCase();
+                let value = entry[key];
+                if (key == 'target') {
+                    value = new HTML('a', {href: "/admin/" +value}, value);
+                }
+                if (key == 'action') {
+                    let action_colors = {
+                        edit: 'blue',
+                        delete: 'red',
+                        default: 'black'
+                    };
+                    value = new HTML('spam', {style: {color: action_colors[value] ? action_colors[value] : action_colors['default']}}, value);
+                }
+                let th = new HTML('td', {}, value);
+                tr.inject(th);
+            }
+            table.inject(tr);
+        }
+        div.inject(table);
+    } else {
+        div.inject("Audit log is empty");
+    }
+
+}
 function admin_init() {
     let mid = location.href.split('/').pop();
     // Specific email/list handling?
@@ -147,5 +190,7 @@ function admin_init() {
         else {
             GET('%sapi/email.json?id=%s'.format(apiURL, mid), admin_email_preview, null);
         }
+    } else { // View audit log
+        GET('%sapi/mgmt.json?action=log'.format(apiURL), admin_audit_view, null);
     }
 }

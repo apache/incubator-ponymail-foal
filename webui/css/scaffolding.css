@@ -1180,3 +1180,19 @@ pre {
 .chatty_body a {
     word-break: break-all !important;
   }
+
+.auditlog_entry:nth-child(odd) {
+    background: #EEE;
+}
+
+.auditlog_entry:nth-child(even) {
+    background: #F8F8F8;
+}
+
+.auditlog_entry td {
+    padding: 2px;
+}
+
+.auditlog_entries th {
+    padding: 2px;
+}
