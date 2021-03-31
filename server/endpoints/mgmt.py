@@ -41,6 +41,7 @@ async def process(
     if action == "delete":
         delcount = 0
         for doc in docs:
+            assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.mbox.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = True
