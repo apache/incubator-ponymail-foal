@@ -1,4 +1,7 @@
 let admin_current_email = null;
+let audit_entries = []
+let audit_page = 0;
+let audit_size = 30;
 
 async function POST(url, formdata, state) {
     const resp = await fetch(url, {
@@ -136,20 +139,28 @@ function admin_email_preview(stats, json) {
 }
 
 function admin_audit_view(state, json) {
+    let headers = ['Date', 'Author','Remote','Action','Target', 'Log'];
     let cp = document.getElementById("panel");
-    let div = new HTML('div', { style: { margin: '5px'}});
-    cp.inject(div);
-
-    div.inject(new HTML('h1', {}, "Audit log:"));
-    if (json.entries && json.entries.length > 0) {
-        let table = new HTML('table', {border: "1", class:"auditlog_entries"});
-        let trh = new HTML('tr');
-        let headers = ['Date', 'Author','Remote','Action','Target', 'Log'];
-        for (let i = 0; i < headers.length; i++) {
-            let th = new HTML('th', {}, headers[i] + ":");
-            trh.inject(th);
+    let div = document.getElementById('auditlog_entries');
+    if (!div) {
+        div = new HTML('div', { id: "auditlog", style: { margin: '5px'}});
+        cp.inject(div);
+        div.inject(new HTML('h1', {}, "Audit log:"));
+    }
+    let table = document.getElementById('auditlog_entries');
+    if (json.entries && json.entries.length > 0 || table) {
+        if (!table) {
+            table = new HTML('table', {border: "1", id: "auditlog_entries", class:"auditlog_entries"});
+            let trh = new HTML('tr');
+            for (let i = 0; i < headers.length; i++) {
+                let th = new HTML('th', {}, headers[i] + ":");
+                trh.inject(th);
+            }
+            table.inject(trh)
+            div.inject(table);
+            let btn = new HTML('button', {onclick: "admin_audit_next();"}, "Load more entries");
+            div.inject(btn);
         }
-        table.inject(trh)
         for (let i = 0; i < json.entries.length; i++) {
             let entry = json.entries[i];
             let tr = new HTML('tr', {class: "auditlog_entry"});
@@ -172,12 +183,16 @@ function admin_audit_view(state, json) {
             }
             table.inject(tr);
         }
-        div.inject(table);
     } else {
         div.inject("Audit log is empty");
     }
-
 }
+
+function admin_audit_next() {
+    audit_page++;
+    GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
+}
+
 function admin_init() {
     let mid = location.href.split('/').pop();
     // Specific email/list handling?
@@ -191,6 +206,6 @@ function admin_init() {
             GET('%sapi/email.json?id=%s'.format(apiURL, mid), admin_email_preview, null);
         }
     } else { // View audit log
-        GET('%sapi/mgmt.json?action=log'.format(apiURL), admin_audit_view, null);
+        GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
     }
 }
