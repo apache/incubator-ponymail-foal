@@ -69,6 +69,13 @@ async def process(
         new_list = "<" + indata.get("list", "").strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
         private = True if indata.get("private", "no") == "yes" else False
         new_body = indata.get("body")
+
+        # Check for consistency so we don't pollute the database
+        assert isinstance(new_from, str), "Author field must be a text string!"
+        assert isinstance(new_subject, str), "Subject field must be a text string!"
+        assert isinstance(new_list, str), "List ID field must be a text string!"
+        assert isinstance(new_body, str), "Email body must be a text string!"
+
         email = await plugins.mbox.get_email(session, permalink=doc)
         if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
             email["from_raw"] = new_from
