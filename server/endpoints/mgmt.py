@@ -38,8 +38,17 @@ async def process(
     if not session.credentials.admin or not server.config.ui.mgmt_enabled:
         return aiohttp.web.Response(headers={}, status=403, text="You need administrative access to use this feature.")
 
+    # Viewing audit log?
+    if action == "log":
+        numentries = int(indata.get("size", 50))
+        page = int(indata.get("page", 0))
+        out = []
+        async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True):
+            out.append(entry)
+        return out
+
     # Deleting/hiding a document?
-    if action == "delete":
+    elif action == "delete":
         delcount = 0
         for doc in docs:
             assert isinstance(doc, str), "Document ID must be a string"
