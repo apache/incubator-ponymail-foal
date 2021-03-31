@@ -44,13 +44,22 @@ class AuditLogEntry:
 
 
 async def view(
-    session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False
+    session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False, filter: typing.List[str] = []
 ) -> typing.AsyncGenerator:
     """ Returns N entries from the audit log, paginated """
     assert session.database, "No database connection could be found!"
-    res = await session.database.search(
-        index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
-    )
+    if not filter:
+        res = await session.database.search(
+            index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
+        )
+    else:
+        res = await session.database.search(
+            index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
+            body={
+                "query": {"bool": {"must": [{"terms": {"action": filter}}]}}
+            },
+        )
+
     for doc in res["hits"]["hits"]:
         doc["_source"]["id"] = doc["_id"]
         if raw:
