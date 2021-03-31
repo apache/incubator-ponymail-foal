@@ -21,6 +21,7 @@ import plugins.server
 import plugins.session
 import plugins.mbox
 import plugins.defuzzer
+import plugins.auditlog
 import typing
 import aiohttp.web
 import time
@@ -49,18 +50,7 @@ async def process(
                     index=session.database.dbs.mbox, body=email, id=email["id"],
                 )
                 lid = email.get("list_raw")
-                await session.database.index(
-                    index=session.database.dbs.auditlog,
-                    body={
-                        "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
-                        "action": "delete",
-                        "remote": session.remote,
-                        "author": f"{session.credentials.uid}@{session.credentials.oauth_provider}",
-                        "target": doc,
-                        "lid": lid,
-                        "log": f"Removed email {doc} from {lid} archives",
-                    },
-                )
+                await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
     # Editing an email in place
@@ -106,18 +96,9 @@ async def process(
                     index=session.database.dbs.source, body=source, id=email["id"],
                 )
 
-            await session.database.index(
-                index=session.database.dbs.auditlog,
-                body={
-                    "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
-                    "action": "edit",
-                    "remote": session.remote,
-                    "author": f"{session.credentials.uid}@{session.credentials.oauth_provider}",
-                    "target": doc,
-                    "lid": origin_lid,
-                    "log": f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})",
-                },
-            )
+            await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
+                                             log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})")
+
             return aiohttp.web.Response(headers={}, status=200, text=f"Email successfully saved")
         return aiohttp.web.Response(headers={}, status=404, text=f"Email not found!")
 
