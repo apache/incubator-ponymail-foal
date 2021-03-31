@@ -43,7 +43,7 @@ async def process(
         numentries = int(indata.get("size", 50))
         page = int(indata.get("page", 0))
         out = []
-        async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True):
+        async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True, filter=("edit", "delete",)):
             out.append(entry)
         return {
             "entries": out
