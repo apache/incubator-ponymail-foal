@@ -66,7 +66,7 @@ async def process(
     elif action == "edit":
         new_from = indata.get("from")
         new_subject = indata.get("subject")
-        new_list = "<" + indata.get("list", "").strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
+        new_list = indata.get("list")
         private = True if indata.get("private", "no") == "yes" else False
         new_body = indata.get("body")
 
@@ -76,6 +76,9 @@ async def process(
         assert isinstance(new_list, str), "List ID field must be a text string!"
         assert isinstance(new_body, str), "Email body must be a text string!"
 
+        # Convert List-ID after verification
+        lid = "<" + new_list.strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
+
         email = await plugins.mbox.get_email(session, permalink=doc)
         if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
             email["from_raw"] = new_from
@@ -83,8 +86,8 @@ async def process(
             email["subject"] = new_subject
             email["private"] = private
             origin_lid = email["list_raw"]
-            email["list"] = new_list
-            email["list_raw"] = new_list
+            email["list"] = lid
+            email["list_raw"] = lid
             email["body"] = new_body
 
             # Save edited email
@@ -111,7 +114,7 @@ async def process(
                     "author": f"{session.credentials.uid}@{session.credentials.oauth_provider}",
                     "target": doc,
                     "lid": origin_lid,
-                    "log": f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {new_list})",
+                    "log": f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})",
                 },
             )
             return aiohttp.web.Response(headers={}, status=200, text=f"Email successfully saved")
