@@ -45,8 +45,9 @@ class AuditLogEntry:
 
 async def view(
     session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False
-) -> typing.List[dict]:
+) -> typing.AsyncGenerator:
     """ Returns N entries from the audit log, paginated """
+    assert session.database, "No database connection could be found!"
     res = await session.database.search(
         index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
     )
@@ -66,7 +67,8 @@ async def add_entry(session: plugins.session.SessionObject, action: str, target:
         log = f"Removed email {target} from {lid} archives"
     if not log and action == "edit":
         log = f"Modified email {target} from {lid} archives"
-
+    assert session.credentials, "No session credentials could be found!"
+    assert session.database, "Session not connected to database!"
     await session.database.index(
         index=session.database.dbs.auditlog,
         body={
