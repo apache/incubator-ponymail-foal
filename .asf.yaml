@@ -1,4 +1,5 @@
 github:
+  description: "Apache Pony Mail Foal (Next Generation Suite)"
   features:
     # Enable issue management
     issues: true
