@@ -30,7 +30,7 @@ pipenv install -r requirements.txt
 - Run the setup process:
 ~~~shell script
 cd tools/
-python3 setup.py
+pipenv run python3 setup.py
 cd ..
 ~~~
 - Import any mailboxes you need to, using `tools/import-mbox.py` OR migrate your old Pony Mail database
