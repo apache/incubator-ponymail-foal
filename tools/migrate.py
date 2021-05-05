@@ -135,7 +135,7 @@ async def main():
 
         if len(bulk_array) > 100:
             await bulk_push(bulk_array)
-            bulk_array = []
+            bulk_array[:] = []
 
         processed += 1
         if processed % 500 == 0:
@@ -155,6 +155,10 @@ async def main():
             print("Processed %u emails, %u remain. ETA: %s (at %u emails per second)" %
                   (processed, (no_emails - processed), time_left_str, docs_per_second)
                   )
+
+    # There may be some docs left over to push
+    if bulk_array:
+        await bulk_push(bulk_array)
 
     start_time = time.time()
     processed = 0
