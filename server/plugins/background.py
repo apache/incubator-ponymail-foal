@@ -40,12 +40,13 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     """
     lists = {}
     db = plugins.database.Database(database)
+    limit = 8192
 
     # Fetch aggregations of all public emails
-    s = Search(using=db.client, index=database.db_prefix + "-mbox").query(
-        "match", private=False
+    s = Search(using=db.client, index=database.db_prefix + "-mbox").filter(
+        "term", private=False
     )
-    s.aggs.bucket("per_list", "terms", field="list_raw")
+    s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
 
     res = await db.search(
         index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
@@ -59,10 +60,10 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
         }
 
     # Ditto, for private emails
-    s = Search(using=db.client, index=database.db_prefix + "-mbox").query(
-        "match", private=True
+    s = Search(using=db.client, index=database.db_prefix + "-mbox").filter(
+        "term", private=True
     )
-    s.aggs.bucket("per_list", "terms", field="list_raw")
+    s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
 
     res = await db.search(
         index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
