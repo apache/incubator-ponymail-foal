@@ -32,6 +32,9 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
             can_access = True
             if entry.get("private", False):
                 can_access = plugins.aaa.can_access_list(session, ml)
+            if server.config.ui.focus_domain:
+                if ldomain != session.host:
+                    continue
             if can_access:
                 if ldomain not in lists:
                     lists[ldomain] = {}

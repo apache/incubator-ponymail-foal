@@ -20,6 +20,7 @@ class UIConfig:
     sender_domains: str
     traceback: bool
     mgmt_enabled: bool
+    focus_domain: bool
 
     def __init__(self, subyaml: dict):
         self.wordcloud = bool(subyaml.get("wordcloud", False))
@@ -31,6 +32,7 @@ class UIConfig:
         # Set to false in yaml to redirect to stderr instead.
         self.traceback = subyaml.get("traceback", True)
         self.mgmt_enabled = bool(subyaml.get("mgmtconsole", False))  # Whether to enable online mgmt component or not
+        self.focus_domain = bool(subyaml.get("focus_domain", False))
 
 
 class OAuthConfig:
