@@ -391,7 +391,7 @@ debug:
     #cropout:               string to crop from list-id
 
             """
-        % (hostname, dbname, port, genname, nonce or "~")
+        % (dburl, dbname, genname, nonce or "~")
     )
 
 print("Copying sample JS config to config.js (if needed)...")
@@ -440,7 +440,7 @@ oauth:
   github_client_id:     ~
   github_client_secret: ~
 
-""" % (hostname,  port, dbname, "true" if wce else "false", mlserver, mldom))
+""" % (dburl, dbname, "true" if wce else "false", mlserver, mldom))
 
 
 print("All done, Pony Mail should...work now :)")
