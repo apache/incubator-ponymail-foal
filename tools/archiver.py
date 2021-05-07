@@ -257,6 +257,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
     """The general archiver class. Compatible with MailMan3 archiver classes."""
 
     if config.has_option("mailman", "plugin"):
+        name = "ponymail"
         implementer(IArchiver)
 
     # This is a list of headers which are stored in msg_metadata
@@ -499,13 +500,13 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         return output_json, contents, msg_metadata, irt
 
-    def archive_message(self, args, mlist, msg, raw_message):
+    def archive_message(self, mlist, msg, dry=False, dump=False):
         """Send the message to the archiver.
 
-        :param args: Command line args (verbose, ibody)
         :param mlist: The IMailingList object.
         :param msg: The message object.
-        :param raw_message: Raw message bytes
+        :param dry: Whether to actually archive.
+        :param dump: Whether to dump on failure.
 
         :return (lid, mid)
         """
@@ -523,6 +524,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         ):
             private = True
 
+        if hasattr(msg, "original_content"):
+            raw_message = msg.original_content
+        else:
+            raw_message = msg.to_bytes()
+
         ojson, contents, msg_metadata, irt = self.compute_updates(
             lid, private, msg, raw_message
         )
@@ -530,18 +536,18 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             _id = msg.get("message-id") or msg.get("Subject") or msg.get("Date")
             raise Exception("Could not parse message %s for %s" % (_id, lid))
 
-        if args.dry:
+        if dry:
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
 
-        if args.dump:
+        if dump:
             try:
                 elastic = plugins.elastic.Elastic()
             except elasticsearch.exceptions.ElasticsearchException as e:
                 print(e)
                 print(
                     "ES connection failed, but dumponfail specified, dumping to %s"
-                    % args.dump
+                    % dump
                 )
         else:
             elastic = plugins.elastic.Elastic()
@@ -570,7 +576,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             )
 
             # Write to audit log
-            if elastic.indices.exists(index=elastic.db_auditlog):
+            try:
+                auditlog_exists = elastic.indices.exists(index=elastic.db_auditlog)
+            except elasticsearch.exceptions.AuthorizationException:
+                auditlog_exists = False
+            if auditlog_exists:
                 elastic.index(
                     index=elastic.db_auditlog,
                     body={
@@ -588,12 +598,12 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         # We'll leave it to another process to pick up the slack.
         except Exception as err:
             print(err)
-            if args.dump:
+            if dump:
                 print(
                     "Pushing to ES failed, but dumponfail specified, dumping JSON docs"
                 )
                 uid = uuid.uuid4()
-                mbox_path = os.path.join(args.dump, "%s.json" % uid)
+                mbox_path = os.path.join(dump, "%s.json" % uid)
                 with open(mbox_path, "w") as f:
                     json.dump(
                         {
@@ -898,7 +908,7 @@ def main():
             )
 
             try:
-                lid, mid = archie.archive_message(args, list_data, msg, raw_message)
+                lid, mid = archie.archive_message(list_data, msg, dry=args.dry, dump=args.dump)
                 print(
                     "%s: Done archiving to %s as %s!"
                     % (email.utils.formatdate(), lid, mid)
