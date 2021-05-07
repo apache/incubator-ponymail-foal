@@ -908,6 +908,7 @@ def main():
             )
 
             try:
+                msg.original_content = raw_message
                 lid, mid = archie.archive_message(list_data, msg, dry=args.dry, dump=args.dump)
                 print(
                     "%s: Done archiving to %s as %s!"
