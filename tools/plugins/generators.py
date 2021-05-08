@@ -23,7 +23,8 @@ For older ID generators, see generators_old.py
 import base64
 import hashlib
 import typing
-import plugins.generators_old
+
+from . import generators_old
 
 # For optional nonce
 config: typing.Optional[dict] = None
@@ -177,9 +178,9 @@ def full(msg, _body, lid, _attachments, _raw_msg):
 __GENERATORS = {
     'dkim': dkim,
     'full': full,
-    'medium': plugins.generators_old.medium,
-    'cluster': plugins.generators_old.cluster,
-    'legacy': plugins.generators_old.legacy,
+    'medium': generators_old.medium,
+    'cluster': generators_old.cluster,
+    'legacy': generators_old.legacy,
 }
 
 

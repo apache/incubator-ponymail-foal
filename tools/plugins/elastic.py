@@ -24,7 +24,7 @@ import sys
 import logging
 import certifi
 import os
-import plugins.ponymailconfig
+from . import ponymailconfig
 
 try:
     from elasticsearch import Elasticsearch, helpers
@@ -48,7 +48,7 @@ class Elastic:
 
     def __init__(self, dbname=None):
         # Fetch config
-        config = plugins.ponymailconfig.PonymailConfig()
+        config = ponymailconfig.PonymailConfig()
 
         # Set default names for all indices we use
         self.dbname = config.get('elasticsearch', 'dbname', fallback='ponymail')

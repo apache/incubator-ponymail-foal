@@ -54,19 +54,24 @@ import traceback
 import typing
 import uuid
 
+import elasticsearch
 import formatflowed
 import netaddr
 
-import plugins.ponymailconfig
-import plugins.generators
-import plugins.elastic
-import elasticsearch
+if not __package__:
+    from plugins import ponymailconfig
+    from plugins import generators
+    from plugins.elastic import Elastic
+else:
+    from .plugins import ponymailconfig
+    from .plugins import generators
+    from .plugins.elastic import Elastic
 
 # This is what we will default to if we are presented with emails without character sets and US-ASCII doesn't work.
 DEFAULT_CHARACTER_SET = 'utf-8'
 
 # Fetch config from same dir as archiver.py
-config = plugins.ponymailconfig.PonymailConfig()
+config = ponymailconfig.PonymailConfig()
 
 # Set some vars before we begin
 logger = None
@@ -438,7 +443,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             for generator in self.generator.split(" "):
                 if generator:
                     try:
-                        mid = plugins.generators.generate(
+                        mid = generators.generate(
                             generator,
                             msg,
                             generator_body,
@@ -536,7 +541,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if args.dump:
             try:
-                elastic = plugins.elastic.Elastic()
+                elastic = Elastic()
             except elasticsearch.exceptions.ElasticsearchException as e:
                 print(e)
                 print(
@@ -544,7 +549,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     % args.dump
                 )
         else:
-            elastic = plugins.elastic.Elastic()
+            elastic = elastic.Elastic()
 
         try:
             if contents:
@@ -568,7 +573,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     "source": mbox_source(raw_message),
                 },
             )
-
             # Write to audit log
             if elastic.indices.exists(index=elastic.db_auditlog):
                 elastic.index(

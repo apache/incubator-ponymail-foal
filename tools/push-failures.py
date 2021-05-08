@@ -21,9 +21,13 @@
 import argparse
 import json
 import os
-import plugins.elastic
 
-elastic = plugins.elastic.Elastic()
+if not __package__:
+    from plugins.elastic import Elastic
+else:
+    from .plugins.elastic import Elastic
+
+elastic = Elastic()
 
 parser = argparse.ArgumentParser(description="Command line options.")
 parser.add_argument(
