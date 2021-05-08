@@ -48,8 +48,7 @@ genname = ""
 wce = False
 shards = 0
 replicas = -1
-nonce = None
-supported_generators = ["dkim", "full"]
+supported_generators = ["blakey", "full"]
 
 
 def create_indices():
@@ -162,12 +161,6 @@ parser.add_argument(
     type=str,
     help="Document ID Generator to use (legacy, medium, cluster, full)",
 )
-parser.add_argument(
-    "--nonce",
-    dest="nonce",
-    type=str,
-    help="Cryptographic nonce to use if generator is DKIM/RFC-6376 (--generator dkim)",
-)
 args = parser.parse_args()
 
 print("")
@@ -186,9 +179,8 @@ if args.defaults:
     wce = True
     shards = 3
     replicas = 1
-    genname = "dkim"
+    genname = "blakey"
     urlPrefix = ""
-    nonce = None
 
 # Accept CLI args, copy them
 if args.dburl:
@@ -218,8 +210,6 @@ if args.generator:
             + "\n"
         )
         sys.exit(-1)
-if args.generator and any(x == "dkim" for x in args.generator.split(' ')) and args.nonce is not None:
-    nonce = args.nonce
 
 if not dburl:
     dburl = input("What is the URL of the ElasticSearch server? [http://localhost:9200/]: ")
@@ -253,7 +243,7 @@ while wc.lower() not in ["y", "n"]:
 while genname == "":
     print("Please select a document ID generator:")
     print(
-        "1  [RECOMMENDED] DKIM/RFC-6376: Short SHA3 hash useful for cluster setups with permalink usage"
+        "1  [RECOMMENDED] BLAKEY: Short BLAKE3 hash, fast and useful for short permalinks"
     )
     print(
         "2  FULL: Full message digest with MTA trail. Not recommended for clustered setups."
@@ -267,18 +257,6 @@ while genname == "":
             genname = supported_generators[gno - 1]
     except ValueError:
         pass
-
-if genname == "dkim" and (nonce is None and not args.defaults):
-    print(
-        "DKIM hasher chosen. It is recommended you set a cryptographic nonce for this generator, though not required."
-    )
-    print(
-        "If you set a nonce, you will need this same nonce for future installations if you intend to preserve "
-    )
-    print("permalinks from imported messages.")
-    nonce = (
-        input("Enter your nonce or hit [enter] to continue without a nonce: ") or None
-    )
 
 while shards < 1:
     try:
@@ -383,15 +361,14 @@ elasticsearch:
     #backup:                database name
 
 archiver:
-    #generator:             dkim|full (dkim recommended)
+    #generator:             blakey|full (blakey recommended)
     generator:              %s
-    nonce:                  %s
 
 debug:
     #cropout:               string to crop from list-id
 
             """
-        % (dburl, dbname, genname, nonce or "~")
+        % (dburl, dbname, genname)
     )
 
 print("Copying sample JS config to config.js (if needed)...")

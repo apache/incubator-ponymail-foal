@@ -47,11 +47,11 @@ async def main():
     old_dbname = input("What is the database name for the old Pony Mail emails? [ponymail]: ") or "ponymail"
     new_dbprefix = input("What is the database prefix for the new Pony Mail emails? [ponymail]: ") or "ponymail"
 
-    do_dkim = True
-    dkim_txt = input("Do you wish to perform DKIM re-indexing of all emails? This will still preserve old permalinks "
+    do_blakey = True
+    blakey_txt = input("Do you wish to perform blakey re-indexing of all emails? This will still preserve old permalinks "
                      "(y/n) [y]: ") or "y"
-    if dkim_txt.lower() == 'n':
-        do_dkim = False
+    if blakey_txt.lower() == 'n':
+        do_blakey = False
 
     # Define index names for new ES
     dbname_mbox = new_dbprefix + "-mbox"
@@ -92,12 +92,12 @@ async def main():
             source_text = base64.b64decode(source_text)
         else:  # bytify
             source_text = source_text.encode('utf-8', 'ignore')
-        if do_dkim:
-            dkim_id = plugins.generators.dkim(None, None, list_id, None, source_text)
+        if do_blakey:
+            blakey_id = plugins.generators.blakey(None, None, list_id, None, source_text)
             old_id = doc['_id']
-            doc['_source']['mid'] = dkim_id
+            doc['_source']['mid'] = blakey_id
             doc['_source']['permalinks'] = [
-                dkim_id,
+                blakey_id,
                 old_id
             ]
         else:
@@ -116,9 +116,9 @@ async def main():
         notes.append("MIGRATE: Document migrated from Pony Mail to Pony Mail Foal at %u, "
                      "using foal migrator v/%s" % (now, MIGRATION_MAGIC_NUMBER))
         # If we re-indexed the document, make a note of that as well.
-        if do_dkim:
-            notes.append("REINDEX: Document re-indexed with DKIM_ID at %u, "
-                         "from %s to %s" % (now, dkim_id, old_id))
+        if do_blakey:
+            notes.append("REINDEX: Document re-indexed with blakey at %u, "
+                         "from %s to %s" % (now, blakey_id, old_id))
         doc['_source']['_notes'] = notes
 
         # Copy to new DB
