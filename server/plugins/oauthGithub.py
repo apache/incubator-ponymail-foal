@@ -18,12 +18,12 @@ async def process(formdata, session, server: plugins.server.BaseServer) -> typin
     formdata["client_id"] = server.config.oauth.github_client_id
     formdata["client_secret"] = server.config.oauth.github_client_secret
     headers = {"Accept": "application/json"}
-    with aiohttp.client.request(
+    async with aiohttp.client.request(
         "POST", "https://github.com/login/oauth/access_token", headers=headers, data=formdata
     ) as rv:
         resp = await rv.json()
         if "access_token" in resp:
-            with aiohttp.client.request(
+            async with aiohttp.client.request(
                 "GET", "https://api.github.com/user", headers={"authorization": "token %s" % resp["access_token"]}
             ) as orv:
                 js = await orv.json()
