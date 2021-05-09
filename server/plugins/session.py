@@ -31,7 +31,7 @@ import typing
 
 FOAL_MAX_SESSION_AGE = 86400 * 7  # Max 1 week between visits before voiding a session
 FOAL_SAVE_SESSION_INTERVAL = 3600  # Update sessions on disk max once per hour
-
+DATABSE_NOT_CONNECTED = "Database not connected!"
 
 class SessionCredentials:
     uid: str
@@ -211,7 +211,7 @@ async def set_session(server: plugins.server.BaseServer, cid, **credentials):
 
 async def save_session(session: SessionObject):
     """Save a session object in the ES database"""
-    assert session.database, "Database not connected!"
+    assert session.database, DATABSE_NOT_CONNECTED
     await session.database.index(
         index=session.database.dbs.session,
         id=session.cookie,
@@ -225,13 +225,13 @@ async def save_session(session: SessionObject):
 
 async def remove_session(session: SessionObject):
     """Remove a session object in the ES database"""
-    assert session.database, "Database not connected!"
+    assert session.database, DATABSE_NOT_CONNECTED
     await session.database.delete(index=session.database.dbs.session, id=session.cookie)
 
 
 async def save_credentials(session: SessionObject):
     """Save a user account object in the ES database"""
-    assert session.database, "Database not connected!"
+    assert session.database, DATABSE_NOT_CONNECTED
     assert session.credentials, "Session object without credentials, cannot save!"
     await session.database.index(
         index=session.database.dbs.account,
