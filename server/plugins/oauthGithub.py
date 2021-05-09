@@ -19,17 +19,15 @@ async def process(
 ) -> typing.Optional[dict]:
     formdata["client_id"] = server.config.oauth.github_client_id
     formdata["client_secret"] = server.config.oauth.github_client_secret
-
-    with aiohttp.client.request("POST", "https://github.com/login/oauth/access_token", data=formdata) as rv:
-        txt = await rv.read()
-        m = re.search(r"access_token=([a-f0-9]+)", txt)
-
-        if m:
-            with aiohttp.client.request("GET", "https://api.github.com/user", headers={"authorization": "token %s" % m.group(1)}) as rv:
-                js = rv.json()
+    headers = {'Accept': 'application/json'}
+    with aiohttp.client.request("POST", "https://github.com/login/oauth/access_token", headers=headers, data=formdata) as rv:
+        resp = await rv.json()
+        if 'access_token' in resp:
+            with aiohttp.client.request("GET", "https://api.github.com/user", headers={"authorization": "token %s" % resp['access_token']}) as orv:
+                js = await orv.json()
                 js["oauth_domain"] = "github.com"
                 # Full name and email address might not always be available to us. Fake it till you make it.
-                js["name"] = js["name"] or js["login"]
-                js["email"] = js["email"] or "%s@users.github.com" % js["login"]
+                js["name"] = js.get("name", js["login"])
+                js["email"] = js.get("email", "%s@users.github.com" % js["login"])
                 return js
     return None
