@@ -9,7 +9,7 @@
 """
 
 import re
-import requests
+import aiohttp.client
 import plugins.server
 import typing
 
@@ -20,22 +20,16 @@ async def process(
     formdata["client_id"] = server.config.oauth.github_client_id
     formdata["client_secret"] = server.config.oauth.github_client_secret
 
-    rv = await server.runners.run(
-        requests.post, "https://github.com/login/oauth/access_token", data=formdata
-    )
-    m = re.search(r"access_token=([a-f0-9]+)", rv.text)
+    with aiohttp.client.request("POST", "https://github.com/login/oauth/access_token", data=formdata) as rv:
+        txt = await rv.read()
+        m = re.search(r"access_token=([a-f0-9]+)", txt)
 
-    if m:
-        rv = await server.runners.run(
-            requests.get,
-            "https://api.github.com/user",
-            headers={"authorization": "token %s" % m.group(1)},
-        )
-
-        js = rv.json()
-        js["oauth_domain"] = "github.com"
-        # Full name and email address might not always be available to us. Fake it till you make it.
-        js["name"] = js["name"] or js["login"]
-        js["email"] = js["email"] or "%s@users.github.com" % js["login"]
-        return js
+        if m:
+            with aiohttp.client.request("GET", "https://api.github.com/user", headers={"authorization": "token %s" % m.group(1)}) as rv:
+                js = rv.json()
+                js["oauth_domain"] = "github.com"
+                # Full name and email address might not always be available to us. Fake it till you make it.
+                js["name"] = js["name"] or js["login"]
+                js["email"] = js["email"] or "%s@users.github.com" % js["login"]
+                return js
     return None
