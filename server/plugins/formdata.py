@@ -6,6 +6,7 @@ import aiohttp.web
 import multipart
 
 PYPONY_MAX_PAYLOAD = 256 * 1024
+ERRONEOUS_PAYLOAD = "Erroneous payload received"
 
 
 async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
@@ -30,7 +31,7 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                         )  # json data MUST be an dictionary object, {...}
                         indata.update(js)
                     except ValueError:
-                        raise ValueError("Erroneous payload received")
+                        raise ValueError(ERRONEOUS_PAYLOAD)
                 elif body_type == "form":
                     if (
                         request.headers.get("content-type", "").lower()
@@ -40,7 +41,7 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                             for key, val in urllib.parse.parse_qsl(body):
                                 indata[key] = val
                         except ValueError:
-                            raise ValueError("Erroneous payload received")
+                            raise ValueError(ERRONEOUS_PAYLOAD)
                     # If multipart, turn our body into a BytesIO object and use multipart on it
                     elif (
                         "multipart/form-data"
@@ -59,7 +60,7 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                                     ):
                                         indata[part.name] = part.value
                                 except ValueError:
-                                    raise ValueError("Erroneous payload received")
+                                    raise ValueError(ERRONEOUS_PAYLOAD)
             finally:
                 pass
     return indata
