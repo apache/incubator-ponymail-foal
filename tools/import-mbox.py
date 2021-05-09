@@ -39,8 +39,12 @@ from threading import Lock, Thread
 from urllib.request import urlopen
 
 
-import archiver
-from plugins.elastic import Elastic
+if not __package__:
+    import archiver
+    from plugins.elastic import Elastic
+else:
+    from . import archiver
+    from .plugins.elastic import Elastic
 
 goodies = 0
 baddies = 0
@@ -565,7 +569,10 @@ if args.nomboxo:
 else:
     # Temporary patch to fix Python email package limitation
     # It must be removed when the Python package is fixed
-    from plugins.mboxo_patch import MboxoFactory, MboxoReader
+    if not __package__:
+        from plugins.mboxo_patch import MboxoFactory, MboxoReader
+    else:
+        from .plugins.mboxo_patch import MboxoFactory, MboxoReader
 
 if args.resend:
     resendTo = args.resend[0]
