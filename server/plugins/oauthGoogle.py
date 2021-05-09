@@ -6,7 +6,7 @@ oauth:
   google_client_id:    your-client-id-here
 
 """
-import google.auth.transport.requests
+import google.auth.transport.urllib3
 import google.oauth2.id_token
 import plugins.server
 import plugins.session
@@ -14,7 +14,7 @@ import plugins.session
 
 async def process(formdata, session, server: plugins.server.BaseServer):
     js = None
-    request = google.auth.transport.requests.Request()
+    request = google.auth.transport.urllib3.Request()
     # This is a synchronous process, so we offload it to an async runner in order to let the main loop continue.
     id_info = await server.runners.run(
         google.oauth2.id_token.verify_oauth2_token,
