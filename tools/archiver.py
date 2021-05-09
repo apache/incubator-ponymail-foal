@@ -549,7 +549,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     % args.dump
                 )
         else:
-            elastic = elastic.Elastic()
+            elastic = Elastic()
 
         try:
             if contents:
