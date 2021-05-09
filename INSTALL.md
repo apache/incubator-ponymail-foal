@@ -27,6 +27,10 @@
 cd foal/
 pipenv install -r requirements.txt
 ~~~
+- Install any desired optional dependencies, for example:
+  - html2text (GNU GPL 3) - convert HTML to plain text
+  - mailman (GPLv3+) - interface with Mailman lists
+  - zope (Zope Public Licence 2.1) - required for Mailman integration
 - Run the setup process:
 ~~~shell script
 cd tools/
