@@ -574,7 +574,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 },
             )
             # Write to audit log
-            if elastic.indices.exists(index=elastic.db_auditlog):
+            try:
+                auditlog_exists = elastic.indices.exists(index=elastic.db_auditlog)
+            except elasticsearch.exceptions.AuthorizationException:
+                auditlog_exists = False
+            if auditlog_exists:
                 elastic.index(
                     index=elastic.db_auditlog,
                     body={

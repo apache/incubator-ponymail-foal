@@ -63,7 +63,7 @@ def medium(msg, body, lid, _attachments, _raw_msg):
     try:
         mdate = email.utils.parsedate_tz(msg.get('date'))
     except:
-        pass
+        mdate = None
     # In keeping with preserving the past, we have kept this next section(s).
     # For all intents and purposes, this is not a proper way of maintaining
     # a consistent ID in case of missing dates. It is recommended to use
