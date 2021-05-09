@@ -189,7 +189,7 @@ def generator(name):
         return __GENERATORS[name]
     except KeyError:
         print("WARN: generator %s not found, defaulting to 'legacy'" % name)
-        return plugins.generators_old.legacy
+        return generators_old.legacy
 
 
 def generate(name, msg, body, lid, attachments, raw_msg):
