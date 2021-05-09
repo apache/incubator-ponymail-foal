@@ -38,6 +38,7 @@ import plugins.session
 import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
+DATABASE_NOT_CONNECTED = "Database not connected!"
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
@@ -182,7 +183,7 @@ async def get_email(
     irt=None,
     source=False,
 ):
-    assert session.database, "Database not connected!"
+    assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.mbox
     if source:
         doctype = session.database.dbs.source
@@ -248,7 +249,7 @@ async def get_email(
 
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
-    assert session.database, "Database not connected!"
+    assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.source
     try:
         doc = await session.database.get(index=doctype, id=permalink)
@@ -312,7 +313,7 @@ async def query(
     """
     docs = []
     hits = 0
-    assert session.database, "Database not connected!"
+    assert session.database, DATABASE_NOT_CONNECTED
     async for hit in session.database.scan(
         query={
             "query": {"bool": query_defuzzed},
