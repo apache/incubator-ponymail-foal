@@ -110,10 +110,12 @@ class Elastic:
         # Mimic ES hierarchy: es.indices.xyz()
         self.indices = _indices_wrap(self)
 
-    def libraryVersion(self):
+    @staticmethod
+    def libraryVersion():
         return ES_VERSION
 
-    def libraryMajor(self):
+    @staticmethod
+    def libraryMajor():
         return ES_VERSION[0]
 
     def engineVersion(self):
