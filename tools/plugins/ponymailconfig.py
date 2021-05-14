@@ -32,7 +32,7 @@ import os.path
 import yaml
 
 
-class PonymailConfig(object):
+class PonymailConfig:
 
     def __init__(self):
         # Get ../ponymail.yaml

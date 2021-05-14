@@ -189,7 +189,7 @@ class Elastic:
         return self.es.clear_scroll(*args, **kwargs)
 
 
-class _indices_wrap(object):
+class _indices_wrap:
     """
         Wrapper for the ES indices methods we use
     """
