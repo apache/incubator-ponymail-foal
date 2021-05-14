@@ -77,7 +77,6 @@ class Server(plugins.server.BaseServer):
         self, request: aiohttp.web.BaseRequest
     ) -> aiohttp.web.Response:
         """Generic handler for all incoming HTTP requests"""
-        resp: aiohttp.web.Response
 
         # Define response headers first...
         headers = {
@@ -118,12 +117,11 @@ class Server(plugins.server.BaseServer):
                     jsout = await self.runners.run(json.dumps, output, indent=2)
                     headers["Content-Length"] = str(len(jsout))
                     return aiohttp.web.Response(headers=headers, status=200, text=jsout)
-                elif isinstance(output, aiohttp.web.Response):
+                if isinstance(output, aiohttp.web.Response):
                     return output
-                else:
-                    return aiohttp.web.Response(
-                        headers=headers, status=404, text="Content not found"
-                    )
+                return aiohttp.web.Response(
+                    headers=headers, status=404, text="Content not found"
+                )
             # If a handler hit an exception, we need to print that exception somewhere,
             # either to the web client or stderr:
             except:
@@ -143,22 +141,21 @@ class Server(plugins.server.BaseServer):
                 # If client traceback is disabled, we print it to stderr instead, but leave an
                 # error ID for the client to report back to the admin. Every line of the traceback
                 # will have this error ID at the beginning of the line, for easy grepping.
-                else:
-                    # We only need a short ID here, let's pick 18 chars.
-                    eid = str(uuid.uuid4())[:18]
-                    sys.stderr.write("API Endpoint %s got into trouble (%s): \n" % (request.path, eid))
-                    for line in err.split("\n"):
-                        sys.stderr.write("%s: %s\n" % (eid, line))
-                    return aiohttp.web.Response(
-                        headers=headers, status=500, text="API error occurred. The application journal will have "
-                                                          "information. Error ID: %s" % eid
-                    )
+                # We only need a short ID here, let's pick 18 chars.
+                eid = str(uuid.uuid4())[:18]
+                sys.stderr.write("API Endpoint %s got into trouble (%s): \n" % (request.path, eid))
+                for line in err.split("\n"):
+                    sys.stderr.write("%s: %s\n" % (eid, line))
+                return aiohttp.web.Response(
+                    headers=headers, status=500, text="API error occurred. The application journal will have "
+                                                      "information. Error ID: %s" % eid
+                )
         else:
             return aiohttp.web.Response(
                 headers=headers, status=404, text="API Endpoint not found!"
             )
 
-    async def server_loop(self, loop: asyncio.AbstractEventLoop):  # Note, loop never used.
+    async def server_loop(self, _loop: asyncio.AbstractEventLoop):  # Note, loop never used.
         self.server = aiohttp.web.Server(self.handle_request)
         runner = aiohttp.web.ServerRunner(self.server)
         await runner.setup()
