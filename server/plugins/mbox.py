@@ -76,9 +76,8 @@ def extract_name(addr):
     m = re.match(r"^([^<]+)\s*<(.+)>$", addr)
     if m:
         return [m.group(1), m.group(2)]
-    else:
-        addr = addr.strip("<>")
-        return [addr, addr]
+    addr = addr.strip("<>")
+    return [addr, addr]
 
 
 def anonymize(doc):
@@ -89,7 +88,7 @@ def anonymize(doc):
         ptr = doc["_source"]
 
     if "from" in ptr:
-        frname, fremail = extract_name(ptr["from"])
+        _frname, fremail = extract_name(ptr["from"])
         ptr["md5"] = hashlib.md5(
             bytes(fremail.lower(), encoding="ascii", errors="replace")
         ).hexdigest()
@@ -124,8 +123,7 @@ async def find_parent(session, doc: typing.Dict[str, str]):
         # Did we find something, and can the user access it?
         if not newdoc or not plugins.aaa.can_access_email(session, newdoc):
             break
-        else:
-            doc = newdoc
+        doc = newdoc
     return doc
 
 
@@ -148,7 +146,7 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
             continue
         if plugins.aaa.can_access_email(session, doc):
             if doc["mid"] not in pdocs:
-                mykids, myemails, pdocs = await fetch_children(
+                mykids, _myemails, pdocs = await fetch_children(
                     session, doc, counter, pdocs, short=short
                 )
                 if short:
@@ -282,6 +280,7 @@ def get_list(session, listid, fr=None, to=None, limit=10000):
     """
     Loads emails from a specified list.
     If fr and to are not specified, loads the last 30 days.
+    TODO: use fr and to
     """
     res = session.DB.ES.search(
         index=session.DB.dbs.mbox,
@@ -366,8 +365,7 @@ def is_public(session: plugins.session.SessionObject, listname):
         listname = f"{lname}@{ldomain}"
     if listname in session.server.data.lists:
         return not session.server.data.lists[listname]["private"]
-    else:
-        return False  # Default to not public
+    return False  # Default to not public
 
 
 async def get_list_stats(session, maxage="90d", admin=False):

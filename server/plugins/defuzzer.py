@@ -40,7 +40,7 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
     if "s" in formdata and "e" in formdata:
         syear, smonth = formdata["s"].split("-")
         eyear, emonth = formdata["e"].split("-")
-        estart, eend = calendar.monthrange(int(eyear), int(emonth))
+        _estart, eend = calendar.monthrange(int(eyear), int(emonth))
         daterange = {
             "gt": "%04u/%02u/01 00:00:00" % (int(syear), int(smonth)),
             "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), eend),

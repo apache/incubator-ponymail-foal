@@ -30,8 +30,8 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                             js, dict
                         )  # json data MUST be an dictionary object, {...}
                         indata.update(js)
-                    except ValueError:
-                        raise ValueError(ERRONEOUS_PAYLOAD)
+                    except ValueError as e:
+                        raise ValueError(ERRONEOUS_PAYLOAD) from e
                 elif body_type == "form":
                     if (
                         request.headers.get("content-type", "").lower()
@@ -40,8 +40,8 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                         try:
                             for key, val in urllib.parse.parse_qsl(body):
                                 indata[key] = val
-                        except ValueError:
-                            raise ValueError(ERRONEOUS_PAYLOAD)
+                        except ValueError as e:
+                            raise ValueError(ERRONEOUS_PAYLOAD) from e
                     # If multipart, turn our body into a BytesIO object and use multipart on it
                     elif (
                         "multipart/form-data"
@@ -59,8 +59,8 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                                         len(body),
                                     ):
                                         indata[part.name] = part.value
-                                except ValueError:
-                                    raise ValueError(ERRONEOUS_PAYLOAD)
+                                except ValueError as e:
+                                    raise ValueError(ERRONEOUS_PAYLOAD) from e
             finally:
                 pass
     return indata

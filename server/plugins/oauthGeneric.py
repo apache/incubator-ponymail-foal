@@ -3,7 +3,7 @@ import re
 import aiohttp.client
 
 
-async def process(formdata, session, server):
+async def process(formdata, _session, _server):
     js = None
     m = re.match(r"https?://(.+)/", formdata["oauth_token"])
     if m:

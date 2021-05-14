@@ -4,7 +4,6 @@ import re
 import sys
 import time
 
-from elasticsearch import AsyncElasticsearch
 from elasticsearch_dsl import Search
 
 import plugins.configuration

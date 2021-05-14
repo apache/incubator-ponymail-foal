@@ -12,7 +12,7 @@ import plugins.server
 import plugins.session
 
 
-async def process(formdata, session, server: plugins.server.BaseServer):
+async def process(formdata, _session, server: plugins.server.BaseServer):
     js = None
     request = google.auth.transport.urllib3.Request()
     # This is a synchronous process, so we offload it to an async runner in order to let the main loop continue.

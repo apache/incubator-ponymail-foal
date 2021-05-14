@@ -27,7 +27,6 @@ import aiohttp.web
 import plugins.database
 import plugins.server
 import copy
-import typing
 
 FOAL_MAX_SESSION_AGE = 86400 * 7  # Max 1 week between visits before voiding a session
 FOAL_SAVE_SESSION_INTERVAL = 3600  # Update sessions on disk max once per hour

@@ -28,19 +28,12 @@ def can_access_email(session: plugins.session.SessionObject, email) -> bool:
     # If public email, it can always be accessed
     if not email.get("private"):
         return True
-    else:
-        # If user can access the list, they can read the email
-        if can_access_list(session, email.get("list_raw")):
-            return True
-        # If no access to list and email is private, deny access to email.
-        else:
-            return False
+    # If user can access the list, they can read the email
+    return can_access_list(session, email.get("list_raw"))
 
-
-def can_access_list(session: plugins.session.SessionObject, listid) -> bool:
+def can_access_list(session: plugins.session.SessionObject, _listid) -> bool:
     """Determine if a list can be accessed by the current user"""
     # If logged in via a known oauth, we assume access for now...TO BE CHANGED
     if session.credentials and session.credentials.authoritative:
         return True
-    else:
-        return False
+    return False
