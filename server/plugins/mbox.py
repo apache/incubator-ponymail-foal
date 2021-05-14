@@ -394,7 +394,7 @@ async def get_list_stats(session, maxage="90d", admin=False):
         if (
             is_public(session, listname)
             or admin
-            or plugins.aaa.canViewList(session, listname)
+            or plugins.aaa.can_access_list(session, listname)
         ):
             # Change foo.bar.baz to foo@bar.baz
             listname = listname.replace(".", "@", 1)
