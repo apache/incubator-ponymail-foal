@@ -118,7 +118,7 @@ def parse_attachment(
         # In such cases, the get() method returns a Header not a string
         dispositions = str(cd).strip().split(";")
         cdtype = dispositions[0].lower()
-        if cdtype == "attachment" or cdtype == "inline":
+        if cdtype in ("attachment", "inline"):
             fd = part.get_payload(decode=True)
             # Allow for empty string
             if fd is None:
@@ -915,7 +915,7 @@ def main():
                 if args.verbose:
                     traceback.print_exc()
                 print("Archiving failed!: %s" % err)
-                raise Exception("Archiving to ES failed")
+                raise Exception("Archiving to ES failed") from err
         else:
             print("Nothing to import (no list-id found!)")
     except Exception as err:
