@@ -13,12 +13,8 @@ import hashlib
 # Increment this number whenever breaking changes happen in the migration workflow:
 MIGRATION_MAGIC_NUMBER = "1"
 
-# ES connections
-old_es = None
-new_es = None
 
-
-async def bulk_push(json):
+async def bulk_push(json, es):
     """Pushes a bunch of objects to ES in a bulk operation"""
     js_arr = []
     for entry in json:
@@ -31,11 +27,10 @@ async def bulk_push(json):
         js_arr.append(
             bulk_op
         )
-    await helpers.async_bulk(new_es, js_arr)
+    await helpers.async_bulk(es, js_arr)
 
 
 async def main():
-    global old_es, new_es
     print("Welcome to the Apache Pony Mail -> Foal migrator.")
     print("This will copy your old database, adjust the structure, and insert the emails into your new foal database.")
     print("------------------------------------")
@@ -137,7 +132,7 @@ async def main():
         })
 
         if len(bulk_array) > 100:
-            await bulk_push(bulk_array)
+            await bulk_push(bulk_array, new_es)
             bulk_array[:] = []
 
         processed += 1
@@ -161,7 +156,7 @@ async def main():
 
     # There may be some docs left over to push
     if bulk_array:
-        await bulk_push(bulk_array)
+        await bulk_push(bulk_array, new_es)
 
     start_time = time.time()
     processed = 0
