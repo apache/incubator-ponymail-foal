@@ -123,7 +123,7 @@ def cluster(msg, body, lid, attachments, _raw_msg):
     xbody = body if type(body) is bytes else body.encode('utf-8', errors='ignore')
 
     # Crop out any trailing whitespace in body
-    xbody = re.sub(r"\s+$", b"", xbody)
+    xbody = re.sub(b"\s+$", b"", xbody)
 
     # Use Message-Id (or '' if missing)
     xbody += bytes(msg.get('message-id', ''), encoding='ascii')
