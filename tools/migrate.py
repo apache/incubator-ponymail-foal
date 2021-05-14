@@ -14,7 +14,7 @@ import hashlib
 MIGRATION_MAGIC_NUMBER = "1"
 
 # ES connections
-es = None
+old_es = None
 new_es = None
 
 
@@ -35,7 +35,7 @@ async def bulk_push(json):
 
 
 async def main():
-    global es, new_es
+    global old_es, new_es
     print("Welcome to the Apache Pony Mail -> Foal migrator.")
     print("This will copy your old database, adjust the structure, and insert the emails into your new foal database.")
     print("------------------------------------")
@@ -44,7 +44,7 @@ async def main():
     if old_es_url == new_es_url:
         print("Old and new DB should not be the same, assuming error in input and exiting!")
         return
-    es = AsyncElasticsearch([old_es_url])
+    old_es = AsyncElasticsearch([old_es_url])
     new_es = AsyncElasticsearch([new_es_url])
 
     old_dbname = input("What is the database name for the old Pony Mail emails? [ponymail]: ") or "ponymail"
@@ -65,7 +65,7 @@ async def main():
     start_time = time.time()
     now = start_time
     processed = 0
-    count = await es.count(index=old_dbname, doc_type="mbox")
+    count = await old_es.count(index=old_dbname, doc_type="mbox")
     no_emails = count['count']
 
     print("------------------------------------")
@@ -74,14 +74,14 @@ async def main():
     bulk_array = []
 
     async for doc in async_scan(
-            client=es,
+            client=old_es,
             query={"query": {"match_all": {}}},
             doc_type="mbox",
             index=old_dbname,
     ):
         list_id = doc['_source']['list_raw'].strip("<>")
         try:
-            source = await es.get(index=old_dbname, doc_type="mbox_source", id=doc['_id'])
+            source = await old_es.get(index=old_dbname, doc_type="mbox_source", id=doc['_id'])
         # If we hit a 404 on a source, we have to fake an empty document, as we don't know the source.
         except:
             print("Source for %s was not found, faking it..." % doc['_id'])
@@ -165,11 +165,11 @@ async def main():
 
     start_time = time.time()
     processed = 0
-    count = await es.count(index=old_dbname, doc_type="attachment")
+    count = await old_es.count(index=old_dbname, doc_type="attachment")
     no_att = count['count']
     print("Transferring %u attachments..." % no_att)
     async for doc in async_scan(
-            client=es,
+            client=old_es,
             query={"query": {"match_all": {}}},
             doc_type="attachment",
             index=old_dbname,
@@ -196,7 +196,7 @@ async def main():
                   (processed, (no_att - processed), time_left_str, docs_per_second)
                   )
 
-    await es.close()
+    await old_es.close()
     await new_es.close()
     print("All done, enjoy!")
 
