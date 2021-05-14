@@ -23,7 +23,6 @@
 import sys
 import logging
 import certifi
-import os
 from . import ponymailconfig
 
 try:
