@@ -45,7 +45,7 @@ class Elastic:
     db_notification:    str
     db_mailinglist:     str
 
-    def __init__(self, dbname=None):
+    def __init__(self):
         # Fetch config
         config = ponymailconfig.PonymailConfig()
 
