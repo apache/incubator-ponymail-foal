@@ -23,7 +23,11 @@ Please see the [installation documentation](INSTALL.md) for setup instructions.
 
 ### Current setup requirements:
 
-- Linux or other UNIX based operating system (Windows has not been tested, but might work).
+- An operating system, such as:
+- - Linux
+- - FreeBSD
+- - Windows
+- - Mac OS
 - Python 3.7.3 or higher with dependencies from `requirements.txt`.
 - Web server with proxy capabilities for the UI.
 - ElasticSearch 7.x or higher.

@@ -40,6 +40,13 @@ import plugins.session
 PONYMAIL_FOAL_VERSION = "0.1.0"
 
 
+# Certain environments such as MinGW-w64 will not register as a TTY and uses buffered output.
+# In such cases, we need to force a flush of each print, or nothing will show.
+if not sys.stdout.buffer.isatty():
+    import functools
+    print = functools.partial(print, flush=True)
+
+
 class Server(plugins.server.BaseServer):
     """Main server class, responsible for handling requests and scheduling offloader threads """
 
