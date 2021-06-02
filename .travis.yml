@@ -37,4 +37,4 @@ jobs:
         - git clone https://github.com/apache/incubator-ponymail-unit-tests.git tests
         - pip install html2text
         - sed -e 's/# cropout:/cropout:/' tools/ponymail.yaml.example >tools/ponymail.yaml
-      script: cd tests && python3 runall.py --rootdir ../
+      script: cd tests && export python3 runall.py --rootdir ../ --gtype dkim full cluster
