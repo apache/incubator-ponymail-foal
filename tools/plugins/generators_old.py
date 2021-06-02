@@ -56,7 +56,10 @@ def medium(msg, body, lid, _attachments, _raw_msg):
     """
 
     # Use text body
-    xbody = body.encode('utf-8', 'ignore')
+    if not isinstance(body, bytes):
+        xbody = body.string.encode('utf-8')
+    else:
+        xbody = body
     # Use List ID
     xbody += bytes(lid, encoding='ascii')
     # Use Date header
