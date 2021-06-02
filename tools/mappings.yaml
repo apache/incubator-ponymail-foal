@@ -55,6 +55,8 @@ mbox:
       format: yyyy/MM/dd HH:mm:ss
       store: true
       type: date
+    dbid:
+      type: keyword
     epoch:
       type: long
     from:
