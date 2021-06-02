@@ -118,7 +118,7 @@ def parse_attachment(
         # In such cases, the get() method returns a Header not a string
         dispositions = str(cd).strip().split(";")
         cdtype = dispositions[0].lower()
-        if cdtype in ("attachment", "inline"):
+        if cdtype in {"attachment", "inline"}:
             fd = part.get_payload(decode=True)
             # Allow for empty string
             if fd is None:
@@ -263,6 +263,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
     if config.has_option("mailman", "plugin"):
         implementer(IArchiver)
+        name = "foal"
 
     # This is a list of headers which are stored in msg_metadata
     keys = [
