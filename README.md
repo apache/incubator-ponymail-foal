@@ -17,6 +17,7 @@ Among other things, Foal sports the following new features:
 - New, sleeker UI for the end user
 - Migration tools for moving to Foal
 - 100% python backend, no Lua required
+- In-place editing of emails via web UI
 
 ## Installation Guide
 Please see the [installation documentation](INSTALL.md) for setup instructions.
