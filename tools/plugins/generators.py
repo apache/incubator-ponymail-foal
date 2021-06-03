@@ -81,11 +81,8 @@ def full(msg, _body, lid, _attachments, _raw_msg):
 
 
 __GENERATORS = {
-    'dkimid': dkimid,
+    'dkim': dkimid,
     'full': full,
-    'medium': generators_old.medium,
-    'cluster': generators_old.cluster,
-    'legacy': generators_old.legacy,
 }
 
 
@@ -93,8 +90,8 @@ def generator(name):
     try:
         return __GENERATORS[name]
     except KeyError:
-        print("WARN: generator %s not found, defaulting to 'legacy'" % name)
-        return generators_old.legacy
+        print("WARN: generator %s not found, defaulting to 'dkim'" % name)
+        return dkimid
 
 
 def generate(name, msg, body, lid, attachments, raw_msg):
