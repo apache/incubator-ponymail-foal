@@ -36,5 +36,5 @@ Please see the [installation documentation](INSTALL.md) for setup instructions.
 
 ### Migration disclaimer:
 _While compatible with the original Pony Mail, this will not be a drop-in replacement.
-Migration of the old database is required, and several older ID generators have been
-dropped in favor of collision-secure generators._
+Migration of the old database is required, and most of the older ID generators have 
+been dropped in favor of collision-secure generators._
