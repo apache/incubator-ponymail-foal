@@ -108,7 +108,7 @@ async def main():
         else:  # bytify
             source_text = source_text.encode('utf-8', 'ignore')
         if do_dkim:
-            dkim_id = generators.dkim(None, None, list_id, None, source_text)
+            dkim_id = generators.dkimid(None, None, list_id, None, source_text)
             old_id = doc['_id']
             doc['_source']['mid'] = dkim_id
             doc['_source']['permalinks'] = [
