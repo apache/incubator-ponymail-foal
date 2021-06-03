@@ -160,7 +160,7 @@ parser.add_argument(
     "--generator",
     dest="generator",
     type=str,
-    help="Document ID Generator to use (legacy, medium, cluster, full)",
+    help="Document ID Generator to use (dkim, full)",
 )
 parser.add_argument(
     "--nonce",
