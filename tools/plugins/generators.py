@@ -50,6 +50,8 @@ def dkimid(_msg, _body, lid, _attachments, raw_msg):
     >>> dkimid(None, None, None, None, b"")
     '8fgp2do75oqo6qd08vs4p7dpp1gj4vjn'
     """
+    if isinstance(lid, str):
+        lid = lid.encode("utf-8", errors="replace")
     return dkim_id.dkim_id(raw_msg, lid)
 
 
