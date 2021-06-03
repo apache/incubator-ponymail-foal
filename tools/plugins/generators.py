@@ -20,16 +20,13 @@ This file contains the various newer generation ID generators for Pony Mail's ar
 For older ID generators, see generators_old.py
 """
 
-import base64
 import hashlib
 import typing
 
 if not __package__:
     import dkim_id
-    import generators_old
 else:
     from . import dkim_id
-    from . import generators_old
 
 # DKIM-ID generator: uses DKIM canonicalisation
 # Recommended as default for clusters
