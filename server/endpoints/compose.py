@@ -54,7 +54,7 @@ async def process(
     if session.credentials and session.credentials.authoritative:
         subject = indata.get("subject")
         body = indata.get("body")
-        irt = indata.get("in-repl-to")
+        irt = indata.get("in-reply-to")
         references = indata.get("references")
 
         if to and subject and body:
