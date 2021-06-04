@@ -119,13 +119,13 @@ class Server(plugins.server.BaseServer):
                     self.dbpool.put_nowait(session.database)
                     self.dbpool.task_done()
                     session.database = None
+                if isinstance(output, aiohttp.web.Response):
+                    return output
                 headers["content-type"] = "application/json"
-                if output and not isinstance(output, aiohttp.web.Response):
+                if output:
                     jsout = await self.runners.run(json.dumps, output, indent=2)
                     headers["Content-Length"] = str(len(jsout))
                     return aiohttp.web.Response(headers=headers, status=200, text=jsout)
-                if isinstance(output, aiohttp.web.Response):
-                    return output
                 return aiohttp.web.Response(
                     headers=headers, status=404, text="Content not found"
                 )
