@@ -1,5 +1,5 @@
 
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   version: 1.0.0
   description: This is the API specifications for interacting with the Pony Mail (Foal) server backend
