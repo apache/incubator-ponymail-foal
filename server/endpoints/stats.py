@@ -49,10 +49,9 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
 
-    all_authors = sorted([[author, count] for author, count in authors.items()], key=lambda x: x[1])
+    all_authors = sorted(authors.items(), key=lambda x: -x[1]) # negative prefix for reverse sort
     top10_authors = []
-    for x in [x for x in reversed([x for x in all_authors])][:10]:
-        author, count = x
+    for author, count in all_authors[:10]:
         name, address = email.utils.parseaddr(author)
         top10_authors.append(
             {"email": address, "name": name, "count": count, "gravatar": plugins.mbox.gravatar(author),}
