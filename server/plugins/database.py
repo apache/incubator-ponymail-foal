@@ -45,6 +45,7 @@ class Database:
     client: elasticsearch.AsyncElasticsearch
     config: plugins.configuration.DBConfig
     dbs: DBNames
+    uuid: str
 
     def __init__(self, config: plugins.configuration.DBConfig):
         self.config = config
