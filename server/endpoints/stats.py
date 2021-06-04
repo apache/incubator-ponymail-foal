@@ -49,7 +49,7 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
 
-    all_authors = sorted(authors.items(), key=lambda x: -x[1]) # negative prefix for reverse sort
+    all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True) # sort in reverse by author count
     top10_authors = []
     for author, count in all_authors[:10]:
         name, address = email.utils.parseaddr(author)
