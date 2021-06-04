@@ -150,7 +150,6 @@ def rfc6376_relaxed_head(headers: Headers) -> Headers:
     >>> rfc6376_relaxed_head([[b"  \t.\r\n", b"\t\r\n\f"]])
     [[b'.', b'\x0c']]
     """
-    i: int
     output: Headers = []
     k: bytes
     v: bytes
@@ -265,7 +264,6 @@ def rfc6376_join(headers: Headers, body: Optional[bytes] = None) -> bytes:
     >>> rfc6376_join([[b'To', b' Recipient\r\n']], b'Body')
     b'To: Recipient\r\n\r\nBody'
     """
-    header: List[bytes]
     signable: bytes = b"".join([b":".join(header) for header in headers])
     if body is not None:
         # In some cases, the headers may not end with \r\n
