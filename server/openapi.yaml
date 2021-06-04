@@ -22,6 +22,52 @@ components:
       required:
       - message
       - okay
+    SearchRequest:
+      properties:
+        list:
+          description: The list part of the mailing list(s) to search. Can be * for wildcard search
+          example: dev
+          type: string
+        domain:
+          description: The domain part of the mailing list(s) to search.  Can be * for wildcard search
+          type: string
+          example: lists.example.org
+        date:
+          description: Optional year-month date to search within
+          type: string
+          example: "2020-08"
+        s:
+          description: Optional start year-month date to search from
+          type: string
+          example: "2019-01"
+        e:
+          description: Optional end year-month date to search to
+          type: string
+          example: "2021-12"
+        d:
+          description: Optional advanced date parameters. Uses gte (greater than or equal) or lte (less than or equal) to narrow results
+          example: "lte=2019-01"
+          type: string
+        q:
+          description: "Free text query to search for. Can use + or - to denote mandatory presence or absence of words"
+          type: string
+          example: "apples +oranges -bananas"
+        header_from:
+          description: "Optional From: header search for narrowing down results"
+          type: string
+          example: janedoe@example.org
+        header_subject:
+          description: "Optional Subject: header search for narrowing down results"
+          type: string
+          example: "weekly meeting on friday"
+        header_body:
+          description: "Optional body-only search parameters"
+          type: string
+          example: "This was a great idea"
+      required:
+      - list
+      - domain
+      - q
     SingleEmailRequest:
       properties:
         id:
@@ -167,6 +213,85 @@ components:
           description: Every single email in the thread, as an array
           items:
             $ref: '#/components/schemas/CompactEmailResponse'
+    StatsResponse:
+      properties:
+        firstYear:
+          description: The first year found in the search results
+          type: integer
+          example: 2018
+        lastYear:
+          description: The last (most recent) year found within the search results
+          type: integer
+          example: 2021
+        hits:
+          description: The total number of emails found in this search
+          type: integer
+          example: 134
+        numparts:
+          description: The total number of participants (authors) within the search result
+          type: integer
+          example: 28
+        no_threads:
+          description: The total number of distinct threads found within the search results
+          type: integer
+          example: 35
+        emails:
+          description: The emails found in this search, as a list of CompactEmailResponse objects
+          type: array
+          items:
+            $ref: '#/components/schemas/CompactEmailResponse'
+        cloud:
+          description: Word cloud as a word=count dictionary
+          type: object
+          example:
+            foo: 25
+            bar: 10
+            baz: 4
+        participants:
+          description: The participants (authors) within the search results, ranked by number of emails authored
+          type: array
+          example:
+            - 
+              email: foo@bar.baz
+              name: FOo Bar
+              count: 10
+              gravatar: "4fa3f0e42e603e5ae1ab627d6690e365"
+            -
+              email: jane@doe.example.org
+              name: Jane Doe
+              count: 5
+              gravatar: "7ddfb840a4db40a01ac99d29e82267b0"
+        search_list:
+          description: The raw List-ID (if any) of the search parameters
+          type: string
+          example: "<dev.lists.example.org>"
+        domain:
+          description: The domain part of the search parameters
+          type: string
+          example: lists.example.org
+        list:
+          description: The full list, in human readable format, of the search parameters
+          type: string
+          example: dev@lists.example.org
+        searchParams:
+          description: The search parameters used in this search
+          type: object
+          example:
+            d: "gte=2018-01"
+            q: "i like cake"
+            list: dev
+            domain: lists.example.irg
+        thread_struct:
+          description: The threaded representation of the search results, as a list of threads
+          type: array
+          example:
+            -
+              children:	[]
+              tid:	"1ng5htgrhkbzwzzb"
+              subject:	"Errored: apache/httpd#1037 (trunk - bafd719)"
+              tsubject:	"apache/httpd#1037 (trunk…_<dev.httpd.apache.org>"
+              epoch:	1596279300
+              nest:	1
     ErrorResponse:
       properties:
         error:
@@ -285,3 +410,101 @@ paths:
       security:
       - cookieAuth: []
       summary: Fetches an email thread based on a parent email
+  /api/source.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleEmailRequest'
+        description: Email details
+        required: true
+      responses:
+        '200':
+          content:
+            text/plain:
+              example: |
+                From dev-return-5233-apmail-asterixdb-dev-archive=asterixdb.apache.org@asterixdb.apache.org  Sat Sep 30 08:58:08 2017
+                Return-Path: <dev-return-5233-apmail-asterixdb-dev-archive=asterixdb.apache.org@asterixdb.apache.org>
+                Received: (qmail 50072 invoked by uid 500); 30 Sep 2017 08:58:08 -0000
+                Mailing-List: contact dev-help@asterixdb.apache.org; run by ezmlm
+                Precedence: bulk
+                List-Help: <mailto:dev-help@asterixdb.apache.org>
+                List-Unsubscribe: <mailto:dev-unsubscribe@asterixdb.apache.org>
+                List-Post: <mailto:dev@asterixdb.apache.org>
+                List-Id: <dev.asterixdb.apache.org>
+                Reply-To: dev@asterixdb.apache.org
+                Delivered-To: mailing list dev@asterixdb.apache.org
+                Received: (qmail 50057 invoked by uid 99); 30 Sep 2017 08:58:07 -0000
+                Received: from pnap-us-west-generic-nat.apache.org (HELO spamd3-us-west.apache.org) (209.188.14.142)
+                    by apache.org (qpsmtpd/0.29) with ESMTP; Sat, 30 Sep 2017 08:58:07 +0000
+                Received: from localhost (localhost [127.0.0.1])
+                	by spamd3-us-west.apache.org (ASF Mail Server at spamd3-us-west.apache.org) with ESMTP id 3A2C21808B9
+                	for <dev@asterixdb.apache.org>; Sat, 30 Sep 2017 08:58:07 +0000 (UTC)
+                X-Virus-Scanned: Debian amavisd-new at spamd3-us-west.apache.org
+                X-Spam-Flag: NO
+                X-Spam-Score: 1.5
+                X-Spam-Level: *
+                X-Spam-Status: No, score=1.5 tagged_above=-999 required=6.31
+                	tests=[KAM_LAZY_DOMAIN_SECURITY=1, KAM_LINKBAIT=0.5,
+                	RP_MATCHES_RCVD=-0.001, URIBL_BLOCKED=0.001] autolearn=disabled
+                Received: from mx1-lw-us.apache.org ([10.40.0.8])
+                	by localhost (spamd3-us-west.apache.org [10.40.0.10]) (amavisd-new, port 10024)
+                	with ESMTP id 3VgxbDG3zW9E for <dev@asterixdb.apache.org>;
+                	Sat, 30 Sep 2017 08:58:06 +0000 (UTC)
+                Received: from unhygienix.ics.uci.edu (unhygienix.ics.uci.edu [128.195.14.130])
+                	by mx1-lw-us.apache.org (ASF Mail Server at mx1-lw-us.apache.org) with ESMTP id 4D7025FCC1
+                	for <dev@asterixdb.apache.org>; Sat, 30 Sep 2017 08:58:06 +0000 (UTC)
+                Received: from obelix.ics.uci.edu (localhost [127.0.0.1])
+                	by unhygienix.ics.uci.edu (Postfix) with ESMTP id 539A4240E6E;
+                	Sat, 30 Sep 2017 01:57:19 -0700 (PDT)
+                Date: Sat, 30 Sep 2017 01:57:19 -0700 (PDT)
+                From: Asterix build server  <jenkins@asterix-jenkins.ics.uci.edu>
+                To: dev@asterixdb.apache.org
+                Message-ID: <521062724.28.1506761839312.JavaMail.jenkins@unhygienix.ics.uci.edu>
+                In-Reply-To: <1538859253.27.1506747931378.JavaMail.jenkins@unhygienix.ics.uci.edu>
+                References: <1538859253.27.1506747931378.JavaMail.jenkins@unhygienix.ics.uci.edu>
+                Subject: Jenkins build is still unstable: asterix-integration-tests ab8375ea
+                MIME-Version: 1.0
+                Content-Type: text/plain; charset=UTF-8
+                Content-Transfer-Encoding: 7bit
+                X-Instance-Identity: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0nz/YYRm0UEuhP+TWwX2ST1fizEpF7HpM4sPcYz2NS87f/HwLueejqBmJC4+jeepHXZ+Jv8mx/RZqsiFpmGNadfrVj5xdvYYYhL+LX6IsquitcGo4czObwwWQ3wInopyASEIqxRi7J6UytN3Fsh6s61qMC7piY42C6FKuqDH3vbnDkTLc8SDdMT9gWSyP9hQTcqcZ76QizLXas6NwvHmUjtNTpxcEsiEcY41b9rUv3810LUs6FQymbPzyZPhTmcRS8841AjfVUbWiSc3ElmKHNxrFA2JmK5S1/xyEeESEaeYHT7daGi2aR1P2G9XtRj5Oj4n7dKo/Xo3cznIN3NNtQIDAQAB
+                X-Jenkins-Job: asterix-integration-tests
+                X-Jenkins-Result: UNSTABLE
+                
+                See <https://asterix-jenkins.ics.uci.edu/job/asterix-integration-tests/changes>
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches the raw mbox source of an email
+  /api/stats.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+        description: Search parameters
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Searches the archives and returns the results that match
