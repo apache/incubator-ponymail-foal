@@ -16,7 +16,7 @@ components:
           example: Email dispatched
           type: string
         okay:
-          description: Boolean indiacting whether the desired action was completed or not
+          description: Boolean indicating whether the desired action was completed or not
           type: boolean
           example: true
       required:
