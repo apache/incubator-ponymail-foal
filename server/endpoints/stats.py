@@ -23,9 +23,7 @@ import plugins.mbox
 import plugins.defuzzer
 import plugins.offloader
 import re
-import collections
 import email.utils
-import typing
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
