@@ -219,10 +219,18 @@ components:
           description: The first year found in the search results
           type: integer
           example: 2018
+        firstMonth:
+          description: The first month found in the search results
+          type: integer
+          example: 1
         lastYear:
           description: The last (most recent) year found within the search results
           type: integer
           example: 2021
+        lastMonth:
+          description: The last (most recent) month found in the search results
+          type: integer
+          example: 11
         hits:
           description: The total number of emails found in this search
           type: integer

@@ -435,7 +435,7 @@ async def get_years(session, query_defuzzed):
     oldest = 1970
     if res["hits"]["hits"]:
         doc = res["hits"]["hits"][0]
-        oldest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"]).year
+        oldest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])
 
     # Get youngest doc
     res = await session.database.search(
@@ -444,9 +444,9 @@ async def get_years(session, query_defuzzed):
     youngest = 1970
     if res["hits"]["hits"]:
         doc = res["hits"]["hits"][0]
-        youngest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"]).year
+        youngest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])
 
-    return oldest, youngest
+    return oldest.year, youngest.year, oldest.month, youngest.month
 
 
 class ThreadConstructor:

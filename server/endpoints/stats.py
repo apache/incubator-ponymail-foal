@@ -42,7 +42,7 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     wordcloud = None
     if server.config.ui.wordcloud:
         wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
-    first_year, last_year = await plugins.mbox.get_years(session, query_defuzzed_nodate)
+    first_year, last_year, first_month, last_month = await plugins.mbox.get_years(session, query_defuzzed_nodate)
 
     threads = plugins.mbox.ThreadConstructor(results)
     tstruct, authors = await server.runners.run(threads.construct)
@@ -64,6 +64,8 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     return {
         "firstYear": first_year,
         "lastYear": last_year,
+        "firstMonth": first_month,
+        "lastMonth": last_month,
         "hits": len(results),
         "numparts": len(authors),
         "no_threads": len(tstruct),
