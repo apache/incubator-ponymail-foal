@@ -1,0 +1,287 @@
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  description: This is the API specifications for interacting with the Pony Mail (Foal) server backend
+  title: Apache Pony Mail Foal API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+components:
+  schemas:
+    ActionResponse:
+      properties:
+        message:
+          description: Response text in human readable format
+          example: Email dispatched
+          type: string
+        okay:
+          description: Boolean incidating whether the desired action was completed or not
+          type: boolean
+          example: true
+      required:
+      - message
+      - okay
+    SingleEmailRequest:
+      properties:
+        id:
+          description: The ID (document id or message-id) of the email to fetch
+          example: "5wnbldtbbcog0p259jnhvqbkc7nhjt71"
+          type: string
+      required:
+      - id
+    SingleEmailResponse:
+      properties:
+        from:
+          description: The sender address of the email
+          example: "Asterix build server  <jenkins@asterix-jenkins.ics.uci.edu>"
+          type: string
+        from_raw:
+          description: The sender address of the email (unedited by Foal)
+          example: "Asterix build server  <jenkins@asterix-jenkins.ics.uci.edu>"
+          type: string
+        to:
+          description: The recipient address of the email
+          example: dev@asterixdb.apache.org
+          type: string
+        subject:
+          description: The email subject
+          example: "Jenkins build is still unstable: asterix-integration-tests ab8375ea"
+          type: string
+        message-id:
+          description: The original (user-provided) Message-ID of the email
+          example: "<521062724.28.1506761839312.JavaMail.jenkins@unhygienix.ics.uci.edu>"
+          type: string
+        id:
+          description: The internal document ID of the email
+          example: r8cmj7vm5n8z5r3xda5ebd
+          type: string
+        mid:
+          description: The internal document ID of the email (backwards compat item)
+          example: r8cmj7vm5n8z5r3xda5ebd
+          type: string
+        epoch:
+          description: The timestamp of the email in UNIX epoch format
+          example: 1506761839
+          type: integer
+        list:
+          description: The list-ID header value
+          example: "<dev.asterixdb.apache.org>"
+          type: string
+        list_raw:
+          description: The unedited list-ID header value
+          example: "<dev.asterixdb.apache.org>"
+          type: string
+        date:
+          description: The Datetime of the email
+          example: 	"2017/09/30 08:57:19"
+          type: string
+        private:
+          description: Whether the email is privately archived or not
+          example: false
+          type: boolean
+        references:
+          description: "The References: header of the email"
+          example: "<1538859253.27.1506747931378.JavaMail.jenkins@unhygienix.ics.uci.edu>"
+          type: string
+        in-reply-to:
+          description: "The In-Reply-To: header of the email"
+          example: "<1538859253.27.1506747931378.JavaMail.jenkins@unhygienix.ics.uci.edu>"
+          type: string
+        body:
+          description: The message body of the email
+          example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
+          type: string
+        permalinks:
+          description: All IDs that this document is filed and accessible under
+          type: array
+          example: ["r8cmj7vm5n8z5r3xda5ebd","r67a4b2148dcb782e68da95e2601cce677ad9902ecc87d640508ed9be@<dev.asterixdb.apache.org>"]
+        dbid:
+          description: "The Unique (non-deduplicated) identifier for this email, SHA3-256 digest of the raw message"
+          example: "08c4e61930db221d869b186707c7177248d227d7372e8d1e4028880b9d214cf1"
+          type: string
+        gravatar:
+          description: The Gravatar ID (lowercased md5 digest of the sender address) of the sender
+          example: "69eea47c5083c2e4945a2704fc7b658c"
+          type: string
+    CompactEmailResponse:
+      properties:
+        from:
+          description: The sender address of the email
+          example: "Asterix build server  <jenkins@asterix-jenkins.ics.uci.edu>"
+          type: string
+        subject:
+          description: The email subject
+          example: "Jenkins build is still unstable: asterix-integration-tests ab8375ea"
+          type: string
+        message-id:
+          description: The original (user-provided) Message-ID of the email
+          example: "<521062724.28.1506761839312.JavaMail.jenkins@unhygienix.ics.uci.edu>"
+          type: string
+        id:
+          description: The internal document ID of the email
+          example: r8cmj7vm5n8z5r3xda5ebd
+          type: string
+        mid:
+          description: The internal document ID of the email (backwards compat item)
+          example: r8cmj7vm5n8z5r3xda5ebd
+          type: string
+        epoch:
+          description: The timestamp of the email in UNIX epoch format
+          example: 1506761839
+          type: integer
+        list:
+          description: The list-ID header value
+          example: "<dev.asterixdb.apache.org>"
+          type: string
+        list_raw:
+          description: The unedited list-ID header value
+          example: "<dev.asterixdb.apache.org>"
+          type: string
+        private:
+          description: Whether the email is privately archived or not
+          example: false
+          type: boolean
+        body:
+          description: The message body of the email
+          example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
+          type: string
+        gravatar:
+          description: The Gravatar ID (lowercased md5 digest of the sender address) of the sender
+          example: "69eea47c5083c2e4945a2704fc7b658c"
+          type: string
+        children:
+          description: Any child emails (replies)
+          items:
+            $ref: '#/components/schemas/CompactEmailResponse'
+          example: []
+          type: array
+    ThreadResponse:
+      properties:
+        thread:
+          type: object
+          description: The thread as a nested dictionary
+          $ref: '#/components/schemas/CompactEmailResponse'
+        emails:
+          type: array
+          description: Every single email in the thread, as an array
+          items:
+            $ref: '#/components/schemas/CompactEmailResponse'
+    ErrorResponse:
+      properties:
+        error:
+          description: Response text in human readable format
+          example: You do not have access to perform this action!
+          type: string
+      required:
+      - error
+    EmailComposition:
+      properties:
+        to:
+          description: Recipient address
+          example: dev@lists.example.org
+          type: string
+        subject:
+          description: Email subject
+          type: string
+          example: "RE: advanced debugging"
+        body:
+          description: Email message body
+          type: string
+          example: |
+            I think this is a great idea.
+            Let's chat on Monday.
+            With regards, Charles.
+        references:
+          description: Message ID of email this reply references (if not direct reply)
+          type: string
+          example: "<foo1234@dev.lists.example.org>"
+        in-reply-to:
+          description: Message ID of the email this is a direct reply to (if any)
+          type: string
+          example: "<foo1234@dev.lists.example.org>"
+      required:
+      - to
+      - subject
+      - body
+  securitySchemes:
+    cookieAuth:
+      in: cookie
+      name: ponymail
+      type: apiKey
+paths:
+  /api/compose.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailComposition'
+        description: Email details
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unexpected error
+      summary: Compose and dispatch an email to a list
+      security:
+      - cookieAuth: []
+  /api/email.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleEmailRequest'
+        description: Email details
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleEmailResponse'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches a single email and returns it as a JSON object
+  /api/thread.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleEmailRequest'
+        description: Email details
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadResponse'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches an email thread based on a parent email
