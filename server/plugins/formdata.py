@@ -24,7 +24,8 @@ import urllib.parse
 import aiohttp.web
 import multipart
 
-PYPONY_MAX_PAYLOAD = 256 * 1024
+PYPONY_MAX_PAYLOAD_KB = 256
+PYPONY_MAX_PAYLOAD = PYPONY_MAX_PAYLOAD_KB * 1024
 ERRONEOUS_PAYLOAD = "Erroneous payload received"
 
 
@@ -40,7 +41,7 @@ async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
                     request.content_length
                     and request.content_length > PYPONY_MAX_PAYLOAD
                 ):
-                    raise ValueError("Form data payload too large, max 256kb allowed")
+                    raise ValueError("Form data payload too large, max %dkb allowed" % PYPONY_MAX_PAYLOAD_KB)
                 body = await request.text()
                 if body_type == "json":
                     try:
