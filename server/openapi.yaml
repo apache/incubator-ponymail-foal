@@ -393,8 +393,30 @@ paths:
       security:
       - cookieAuth: []
       summary: Fetches a single email and returns it as a JSON object
-  # /api/mbox.json:
-  #   TBA
+  /api/mbox.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+        description: Search parameters
+        required: true
+      responses:
+        '200':
+          content:
+            text/plain:
+              example: "[mbox file contents]"
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Returns a list or a search result in mbox file format
   # /api/mgmt.json:
   #   TBA
   # /api/oauth.json:
