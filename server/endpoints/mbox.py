@@ -18,7 +18,7 @@
 """Endpoint for returning emails in mbox format as a single archive"""
 import plugins.server
 import plugins.session
-import plugins.mbox
+import plugins.messages
 import plugins.defuzzer
 import re
 import typing
@@ -30,11 +30,11 @@ async def process(
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     query_defuzzed = plugins.defuzzer.defuzz(indata)
-    results = await plugins.mbox.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
+    results = await plugins.messages.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
 
     sources = []
     for email in results:
-        source = await plugins.mbox.get_source(session, permalink=email["mid"])
+        source = await plugins.messages.get_source(session, permalink=email["mid"])
         if source:
             stext = source["_source"]["source"]
             # Convert to mboxrd format

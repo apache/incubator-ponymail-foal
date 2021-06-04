@@ -19,7 +19,7 @@
 
 import plugins.server
 import plugins.session
-import plugins.mbox
+import plugins.messages
 import plugins.defuzzer
 import plugins.auditlog
 import typing
@@ -54,7 +54,7 @@ async def process(
         delcount = 0
         for doc in docs:
             assert isinstance(doc, str), "Document ID must be a string"
-            email = await plugins.mbox.get_email(session, permalink=doc)
+            email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = True
                 await session.database.index(
@@ -82,7 +82,7 @@ async def process(
         # Convert List-ID after verification
         lid = "<" + new_list.strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
 
-        email = await plugins.mbox.get_email(session, permalink=doc)
+        email = await plugins.messages.get_email(session, permalink=doc)
         if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
             email["from_raw"] = new_from
             email["from"] = new_from
@@ -100,7 +100,7 @@ async def process(
 
             # Fetch source, mark as deleted (modified) and save
             # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
-            source = await plugins.mbox.get_source(session, permalink=email["id"], raw=True)
+            source = await plugins.messages.get_source(session, permalink=email["id"], raw=True)
             if source:
                 source = source["_source"]
                 source["deleted"] = True

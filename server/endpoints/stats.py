@@ -19,7 +19,7 @@
 """ THIS ONLY DEALS WITH PUBLIC EMAILS FOR NOW - AAA IS BEING WORKED ON"""
 import plugins.server
 import plugins.session
-import plugins.mbox
+import plugins.messages
 import plugins.defuzzer
 import plugins.offloader
 import re
@@ -32,19 +32,19 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
 
     query_defuzzed = plugins.defuzzer.defuzz(indata)
     query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
-    results = await plugins.mbox.query(
+    results = await plugins.messages.query(
         session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
 
     for msg in results:
-        msg["gravatar"] = plugins.mbox.gravatar(msg)
+        msg["gravatar"] = plugins.messages.gravatar(msg)
 
     wordcloud = None
     if server.config.ui.wordcloud:
-        wordcloud = await plugins.mbox.wordcloud(session, query_defuzzed)
-    first_year, last_year, first_month, last_month = await plugins.mbox.get_years(session, query_defuzzed_nodate)
+        wordcloud = await plugins.messages.wordcloud(session, query_defuzzed)
+    first_year, last_year, first_month, last_month = await plugins.messages.get_years(session, query_defuzzed_nodate)
 
-    threads = plugins.mbox.ThreadConstructor(results)
+    threads = plugins.messages.ThreadConstructor(results)
     tstruct, authors = await server.runners.run(threads.construct)
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
@@ -54,12 +54,12 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     for author, count in all_authors[:10]:
         name, address = email.utils.parseaddr(author)
         top10_authors.append(
-            {"email": address, "name": name, "count": count, "gravatar": plugins.mbox.gravatar(author),}
+            {"email": address, "name": name, "count": count, "gravatar": plugins.messages.gravatar(author),}
         )
 
     # Trim email data so as to reduce download sizes
     for msg in results:
-        plugins.mbox.trim_email(msg, external=True)
+        plugins.messages.trim_email(msg, external=True)
 
     return {
         "firstYear": first_year,

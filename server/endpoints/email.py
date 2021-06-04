@@ -20,7 +20,7 @@
 
 import plugins.server
 import plugins.session
-import plugins.mbox
+import plugins.messages
 import plugins.database
 import aiohttp.web
 import plugins.aaa
@@ -33,18 +33,18 @@ async def process(
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     # First, assume permalink and look up the email based on that
-    email = await plugins.mbox.get_email(session, permalink=indata.get("id"))
+    email = await plugins.messages.get_email(session, permalink=indata.get("id"))
 
     # If not found via permalink, it might be message-id instead, so try that
     if email is None:
-        email = await plugins.mbox.get_email(session, messageid=indata.get("id"))
+        email = await plugins.messages.get_email(session, messageid=indata.get("id"))
 
     # If email was found, process the request if we are allowed to display it
     if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
             # Are we fetching an attachment?
             if not indata.get("attachment"):
-                email["gravatar"] = plugins.mbox.gravatar(email)
+                email["gravatar"] = plugins.messages.gravatar(email)
                 return email
             else:
                 fid = indata.get("file")
