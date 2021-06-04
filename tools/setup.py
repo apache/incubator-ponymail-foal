@@ -38,7 +38,7 @@ if sys.version_info < (3, 7, 3):
     )
     print("for operating the UI backend server.")
 
-
+DEFAULT_DB_URL = "http://localhost:9200/"
 dburl = ""
 dbname = ""
 mlserver = ""
@@ -178,7 +178,7 @@ print("")
 
 # If called with --defaults (like from Docker), use default values
 if args.defaults:
-    dburl = "http://localhost:9200/"
+    dburl =  DEFAULT_DB_URL
     dbname = "ponymail"
     mlserver = "localhost"
     mldom = "example.org"
@@ -222,9 +222,9 @@ if args.generator and any(x == "dkim" for x in args.generator.split(' ')) and ar
     nonce = args.nonce
 
 if not dburl:
-    dburl = input("What is the URL of the ElasticSearch server? [http://localhost:9200/]: ")
+    dburl = input("What is the URL of the ElasticSearch server? [%s]: " % DEFAULT_DB_URL)
     if not dburl:
-        dburl = "http://localhost:9200/"
+        dburl =  DEFAULT_DB_URL
 
 if not dbname:
     dbname = input("What would you like to call the mail index [ponymail]: ")
