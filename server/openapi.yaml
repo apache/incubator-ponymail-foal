@@ -393,31 +393,16 @@ paths:
       security:
       - cookieAuth: []
       summary: Fetches a single email and returns it as a JSON object
-  /api/thread.json:
-    post:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SingleEmailRequest'
-        description: Email details
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThreadResponse'
-          description: 200 Response
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: unexpected error
-      security:
-      - cookieAuth: []
-      summary: Fetches an email thread based on a parent email
+  # /api/mbox.json:
+  #   TBA
+  # /api/mgmt.json:
+  #   TBA
+  # /api/oauth.json:
+  #   TBA
+  # /api/pminfo.json:
+  #   TBA
+  # /api/preferences.json:
+  #   TBA
   /api/source.json:
     post:
       requestBody:
@@ -516,3 +501,28 @@ paths:
       security:
       - cookieAuth: []
       summary: Searches the archives and returns the results that match
+  /api/thread.json:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleEmailRequest'
+        description: Email details
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreadResponse'
+          description: 200 Response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: unexpected error
+      security:
+      - cookieAuth: []
+      summary: Fetches an email thread based on a parent email
