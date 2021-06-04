@@ -42,7 +42,7 @@ DATABASE_NOT_CONNECTED = "Database not connected!"
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
-used_ui_fields = [
+USED_UI_FIELDS = [
     "private",
     "list",
     "list_raw",
@@ -67,7 +67,7 @@ def trim_email(doc, external=False):
             del doc[header]
 
         # Remove other fields not used by the UI, if for external consumption
-        elif external and header not in used_ui_fields:
+        elif external and header not in USED_UI_FIELDS:
             del doc[header]
 
 
