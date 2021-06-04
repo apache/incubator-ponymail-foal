@@ -120,7 +120,7 @@ components:
           type: string
         date:
           description: The Datetime of the email
-          example: 	"2017/09/30 08:57:19"
+          example: "2017/09/30 08:57:19"
           type: string
         private:
           description: Whether the email is privately archived or not
@@ -286,12 +286,12 @@ components:
           type: array
           example:
             -
-              children:	[]
-              tid:	"1ng5htgrhkbzwzzb"
-              subject:	"Errored: apache/httpd#1037 (trunk - bafd719)"
-              tsubject:	"apache/httpd#1037 (trunk…_<dev.httpd.apache.org>"
-              epoch:	1596279300
-              nest:	1
+              children: []
+              tid: "1ng5htgrhkbzwzzb"
+              subject: "Errored: apache/httpd#1037 (trunk - bafd719)"
+              tsubject: "apache/httpd#1037 (trunk…_<dev.httpd.apache.org>"
+              epoch: 1596279300
+              nest: 1
     ErrorResponse:
       properties:
         error:
