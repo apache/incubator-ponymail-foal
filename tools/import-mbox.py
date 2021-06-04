@@ -46,6 +46,7 @@ else:
     from . import archiver
     from .plugins.elastic import Elastic
 
+TIMEOUT_DEFAULT = 600
 goodies = 0
 baddies = 0
 duplicates: dict = {}  # detect if mid is re-used this run
@@ -73,7 +74,7 @@ interactive = False
 extension = ".mbox"
 piperWeirdness = False
 resendTo = None
-timeout = 600
+timeout = TIMEOUT_DEFAULT
 fromFilter = None
 dedup = False
 dedupped = 0
@@ -521,7 +522,7 @@ parser.add_argument(
     dest="timeout",
     type=int,
     nargs=1,
-    help="Optional timeout in secs for importing an mbox/maildir file (default is 600 seconds)",
+    help="Optional timeout in secs for importing an mbox/maildir file (default is %d seconds)" % TIMEOUT_DEFAULT,
 )
 parser.add_argument(
     "--filter",
