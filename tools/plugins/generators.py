@@ -21,7 +21,6 @@ For older ID generators, see generators_old.py
 """
 
 import hashlib
-import typing
 
 if not __package__:
     import dkim_id
