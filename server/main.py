@@ -121,9 +121,9 @@ class Server(plugins.server.BaseServer):
                     session.database = None
                 if isinstance(output, aiohttp.web.Response):
                     return output
-                headers["content-type"] = "application/json"
                 if output:
                     jsout = await self.runners.run(json.dumps, output, indent=2)
+                    headers["content-type"] = "application/json"
                     headers["Content-Length"] = str(len(jsout))
                     return aiohttp.web.Response(headers=headers, status=200, text=jsout)
                 return aiohttp.web.Response(
