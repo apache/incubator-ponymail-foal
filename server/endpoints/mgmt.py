@@ -69,7 +69,7 @@ async def process(
         new_from = indata.get("from")
         new_subject = indata.get("subject")
         new_list = indata.get("list", "")
-        private = True if indata.get("private", "no") == "yes" else False
+        private = indata.get("private", "no") == "yes"
         new_body = indata.get("body", "")
 
         # Check for consistency so we don't pollute the database
@@ -111,10 +111,10 @@ async def process(
             await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
                                              log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})")
 
-            return aiohttp.web.Response(headers={}, status=200, text=f"Email successfully saved")
-        return aiohttp.web.Response(headers={}, status=404, text=f"Email not found!")
+            return aiohttp.web.Response(headers={}, status=200, text="Email successfully saved")
+        return aiohttp.web.Response(headers={}, status=404, text="Email not found!")
 
-    return aiohttp.web.Response(headers={}, status=404, text=f"Unknown mgmt command requested")
+    return aiohttp.web.Response(headers={}, status=404, text="Unknown mgmt command requested")
 
 
 def register(server: plugins.server.BaseServer):
