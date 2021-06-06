@@ -29,7 +29,10 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
-    query_defuzzed = plugins.defuzzer.defuzz(indata)
+    try:
+        query_defuzzed = plugins.defuzzer.defuzz(indata)
+    except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
+        return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
 
     sources = []
