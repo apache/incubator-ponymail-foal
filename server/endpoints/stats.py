@@ -29,7 +29,7 @@ import aiohttp.web
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
 
-async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,) -> dict:
+async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,) -> typing.Union[dict, aiohttp.web.Response]:
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata)
