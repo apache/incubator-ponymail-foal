@@ -24,6 +24,7 @@ import plugins.defuzzer
 import plugins.offloader
 import re
 import email.utils
+import aiohttp.web
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
