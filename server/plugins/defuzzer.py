@@ -38,8 +38,10 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
         formdata["e"] = formdata["date"]
     # classic start and end month params
     if "s" in formdata and "e" in formdata:
-        syear, smonth = formdata["s"].split("-")
-        eyear, emonth = formdata["e"].split("-")
+        assert re.match(r"\d{4}-\d{1,2}$", formdata["s"]), "Keyword 's' must be of type YYYY-MM"
+        assert re.match(r"\d{4}-\d{1,2}$", formdata["e"]), "Keyword 'e' must be of type YYYY-MM"
+        syear, smonth = formdata["s"].split("-", 1)
+        eyear, emonth = formdata["e"].split("-", 1)
         _estart, eend = calendar.monthrange(int(eyear), int(emonth))
         daterange = {
             "gt": "%04u/%02u/01 00:00:00" % (int(syear), int(smonth)),
@@ -72,8 +74,8 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
         if m:
             dfr = m.group(1)
             dto = m.group(2)
-            syear, smonth, sday = dfr.split("-")
-            eyear, emonth, eday = dto.split("-")
+            syear, smonth, sday = dfr.split("-", 1)
+            eyear, emonth, eday = dto.split("-", 1)
             daterange = {
                 "gt": "%04u/%02u/%02u 00:00:00" % (int(syear), int(smonth), int(sday)),
                 "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), int(eday)),
