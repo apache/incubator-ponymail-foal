@@ -29,7 +29,9 @@ import aiohttp.web
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
 
-async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,) -> typing.Union[dict, aiohttp.web.Response]:
+async def process(
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
+) -> typing.Union[dict, aiohttp.web.Response]:
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata)
@@ -53,7 +55,7 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
     xlist = indata.get("list", "*")
     xdomain = indata.get("domain", "*")
 
-    all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True) # sort in reverse by author count
+    all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True)  # sort in reverse by author count
     top10_authors = []
     for author, count in all_authors[:10]:
         name, address = email.utils.parseaddr(author)
