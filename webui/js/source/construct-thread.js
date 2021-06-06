@@ -100,9 +100,13 @@ function construct_thread(thread, cid, nestlevel, included) {
 // Singular thread construction via permalinks
 function construct_single_thread(state, json) {
     current_json = json;
-    if (json && json.error) {
-        modal("An error occured", "Sorry, we hit a snag while trying to load the email(s): \n\n%s".format(json.error), "error");
-        return;
+    if (json) {
+        // Old schema has json.error filled on error, simplified schema has json.message filled and json.okay set to false
+        let error_message = json.okay === false ? json.message : json.error;
+        if (error_message) {
+            modal("An error occured", "Sorry, we hit a snag while trying to load the email(s): \n\n%s".format(error_message), "error");
+            return;
+        }
     }
     let div = document.getElementById('emails');
     div.innerHTML = "";
