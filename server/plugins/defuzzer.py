@@ -80,14 +80,11 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
             }
 
     # List parameter(s)
-    if "domain" in formdata:
-        fqdn = formdata["domain"]
-        listname = formdata.get("list", "*")
-    elif "list" in formdata:
-        listname, fqdn = formdata["list"].split("@", 1)
-    else:  # No domain or list at all? BORK!
-        listname = "*"
-        fqdn = "*"
+    fqdn = formdata.get("domain", "*")  # If left out entirely, assume wildcard search
+    listname = formdata.get("list", "*")  # If left out entirely, assume wildcard search
+    assert fqdn, "You must specify a domain part of the mailing list(s) to search, or * for wildcard search."
+    assert listname, "You must specify a list part of the mailing list(s) to search, or * for wildcard search."
+    assert '@' not in listname, "The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching."
     list_raw = "<%s.%s>" % (listname, fqdn)
 
     # Default is to look in a specific list
