@@ -384,6 +384,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/SingleEmailResponse'
           description: 200 Response
+        '404':
+          content:
+            text/plain:
+              example: "Email not found!"
+          description: 404 response if email not found
         default:
           content:
             application/json:
@@ -489,6 +494,11 @@ paths:
                 
                 See <https://asterix-jenkins.ics.uci.edu/job/asterix-integration-tests/changes>
           description: 200 Response
+        '404':
+          content:
+            text/plain:
+              example: "Email not found!"
+          description: 404 response if email not found
         default:
           content:
             application/json:
