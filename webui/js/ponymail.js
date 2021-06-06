@@ -66,7 +66,10 @@ async function escrow_check() {
 async function async_snap(error) {
     msg = await error.text();
     msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
-    modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s".format(error.status, error.url, msg), "error");
+    if (error.status === 404) {
+        msg += "\n\nYou may need to be logged in with additional permissions in order to view this resoruce.";
+    }
+    modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s%s".format(error.status, error.url, msg), "error");
 }
 
 
@@ -791,9 +794,13 @@ function construct_thread(thread, cid, nestlevel, included) {
 // Singular thread construction via permalinks
 function construct_single_thread(state, json) {
     current_json = json;
-    if (json && json.error) {
-        modal("An error occured", "Sorry, we hit a snag while trying to load the email(s): \n\n%s".format(json.error), "error");
-        return;
+    if (json) {
+        // Old schema has json.error filled on error, simplified schema has json.message filled and json.okay set to false
+        let error_message = json.okay === false ? json.message : json.error;
+        if (error_message) {
+            modal("An error occured", "Sorry, we hit a snag while trying to load the email(s): \n\n%s".format(error_message), "error");
+            return;
+        }
     }
     let div = document.getElementById('emails');
     div.innerHTML = "";
