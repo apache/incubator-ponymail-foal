@@ -60,7 +60,10 @@ async function escrow_check() {
 async function async_snap(error) {
     msg = await error.text();
     msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
-    modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s".format(error.status, error.url, msg), "error");
+    if (error.status === 404) {
+        msg += "\n\nYou may need to be logged in with additional permissions in order to view this resoruce.";
+    }
+    modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s%s".format(error.status, error.url, msg), "error");
 }
 
 
