@@ -302,9 +302,13 @@ components:
               nest: 1
     ErrorResponse:
       properties:
-        error:
+        okay:
+          description: Whether the action completed (will be false)
+          example: false
+          type: boolean
+        message:
           description: Response text in human readable format
-          example: You do not have access to perform this action!
+          example: The requested action could not be completed...
           type: string
       required:
       - error
@@ -524,12 +528,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatsResponse'
           description: 200 Response
-        default:
+        '500':
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: unexpected error
+            text/plain:
+              example: "The search could not be completed"
       security:
       - cookieAuth: []
       summary: Searches the archives and returns the results that match
