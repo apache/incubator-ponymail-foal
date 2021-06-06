@@ -30,8 +30,11 @@ PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
 async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,) -> dict:
 
-    query_defuzzed = plugins.defuzzer.defuzz(indata)
-    query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
+    try:
+        query_defuzzed = plugins.defuzzer.defuzz(indata)
+        query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
+    except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
+        return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(
         session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
