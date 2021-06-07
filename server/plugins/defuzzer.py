@@ -27,7 +27,7 @@ It turns a URL search query into an ES query
 """
 
 
-def defuzz(formdata: dict, nodate: bool = False) -> dict:
+def defuzz(formdata: dict, nodate: bool = False, list_override: str = None) -> dict:
     # Default to 30 day date range
     daterange = {"gt": "now-30d", "lt": "now+1d"}
 
@@ -84,6 +84,9 @@ def defuzz(formdata: dict, nodate: bool = False) -> dict:
     # List parameter(s)
     fqdn = formdata.get("domain", "*")  # If left out entirely, assume wildcard search
     listname = formdata.get("list", "*")  # If left out entirely, assume wildcard search
+    if list_override:  # Certain requests use the full list ID as a single variable. Allow for that if so.
+        assert list_override.count("@") == 1, "list_override must contain exactly one @ character"
+        listname, fqdn = list_override.split("@", 1)
     assert fqdn, "You must specify a domain part of the mailing list(s) to search, or * for wildcard search."
     assert listname, "You must specify a list part of the mailing list(s) to search, or * for wildcard search."
     assert '@' not in listname, "The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching."
