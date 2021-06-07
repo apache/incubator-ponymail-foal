@@ -33,7 +33,7 @@ async def process(
     domain = indata.get("domain", "_")
     
     try:
-        query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid)
+        query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
     except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
