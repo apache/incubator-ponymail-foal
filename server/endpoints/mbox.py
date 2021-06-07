@@ -29,8 +29,11 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
+    lid = indata.get("list", "_")
+    domain = indata.get("domain", "_")
+    
     try:
-        query_defuzzed = plugins.defuzzer.defuzz(indata)
+        query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid)
     except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(session, query_defuzzed, query_limit=server.config.database.max_hits,)
@@ -51,8 +54,8 @@ async def process(
             sources.append(mboxrd_source)
 
     # Figure out a sane filename
-    xlist = re.sub(r"[^-_.a-z0-9]+", "_", indata.get("list", "_"))
-    xdomain = re.sub(r"[^-_.a-z0-9]+", "_", indata.get("domain", "_"))
+    xlist = re.sub(r"[^-_.a-z0-9]+", "_", lid)
+    xdomain = re.sub(r"[^-_.a-z0-9]+", "_", domain)
     dlfile = f"{xlist}-{xdomain}.mbox"
 
     # Return mbox archive with filename
