@@ -27,7 +27,7 @@ It turns a URL search query into an ES query
 """
 
 
-def defuzz(formdata: dict, nodate: bool = False, list_override: str = None) -> dict:
+def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[str] = None) -> dict:
     # Default to 30 day date range
     daterange = {"gt": "now-30d", "lt": "now+1d"}
 
