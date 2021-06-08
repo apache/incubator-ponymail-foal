@@ -432,7 +432,7 @@ async def get_years(session, query_defuzzed):
         size=1,
         body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "asc"}},
     )
-    oldest = 1970
+    oldest = datetime.datetime.fromtimestamp(0)
     if res["hits"]["hits"]:
         doc = res["hits"]["hits"][0]
         oldest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])
@@ -441,7 +441,7 @@ async def get_years(session, query_defuzzed):
     res = await session.database.search(
         size=1, body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "desc"}}
     )
-    youngest = 1970
+    youngest = datetime.datetime.fromtimestamp(0)
     if res["hits"]["hits"]:
         doc = res["hits"]["hits"][0]
         youngest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])

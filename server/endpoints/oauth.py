@@ -43,7 +43,7 @@ async def process(
         rv = await plugins.oauthGoogle.process(indata, session, server)
 
     # GitHub OAuth - Fetches name and email
-    if indata.get("key", "") == "github" and code and server.config.oauth.github_client_id:
+    elif indata.get("key", "") == "github" and code and server.config.oauth.github_client_id:
         rv = await plugins.oauthGithub.process(indata, session, server)
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
