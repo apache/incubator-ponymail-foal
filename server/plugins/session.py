@@ -73,20 +73,19 @@ class SessionObject:
     def __init__(self, server: plugins.server.BaseServer, **kwargs):
         self.database = None
         self.server = server
-        if not kwargs:
-            now = int(time.time())
-            self.created = now
-            self.last_accessed = now
-            self.credentials = None
-            self.cookie = str(uuid.uuid4())
-            self.cid = None
-            self.host = "??"
-            self.remote = "??"
-        else:
+        self.created = int(time.time())
+        self.host = "??"
+        self.remote = "??"
+        if kwargs:
             self.last_accessed = kwargs.get("last_accessed", 0)
             self.credentials = SessionCredentials(kwargs.get("credentials"))
             self.cookie = kwargs.get("cookie", "___")
             self.cid = kwargs.get("cid")
+        else:
+            self.last_accessed = self.created
+            self.credentials = None
+            self.cookie = str(uuid.uuid4())
+            self.cid = None
 
 
 async def get_session(
