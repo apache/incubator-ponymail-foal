@@ -31,13 +31,13 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
+    key = indata.get("key", "")
     state = indata.get("state")
     code = indata.get("code")
     id_token = indata.get("id_token")
     oauth_token = indata.get("oauth_token")
 
     rv: typing.Optional[dict] = None
-    key: str = indata.get("key", "")
 
     # Google OAuth - currently fetches email address only
     if key == "google" and id_token and server.config.oauth.google_client_id:
