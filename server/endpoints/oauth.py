@@ -37,13 +37,14 @@ async def process(
     oauth_token = indata.get("oauth_token")
 
     rv: typing.Optional[dict] = None
+    key: str = indata.get("key", "")
 
     # Google OAuth - currently fetches email address only
-    if indata.get("key", "") == "google" and id_token and server.config.oauth.google_client_id:
+    if key == "google" and id_token and server.config.oauth.google_client_id:
         rv = await plugins.oauthGoogle.process(indata, session, server)
 
     # GitHub OAuth - Fetches name and email
-    elif indata.get("key", "") == "github" and code and server.config.oauth.github_client_id:
+    elif key == "github" and code and server.config.oauth.github_client_id:
         rv = await plugins.oauthGithub.process(indata, session, server)
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
