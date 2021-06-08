@@ -68,6 +68,7 @@ class SessionObject:
     credentials: typing.Optional[SessionCredentials]
     database: typing.Optional[plugins.database.Database]
     remote: str
+    host: str
     server: plugins.server.BaseServer
 
     def __init__(self, server: plugins.server.BaseServer, **kwargs):
