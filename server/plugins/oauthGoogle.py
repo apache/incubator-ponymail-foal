@@ -25,8 +25,8 @@ oauth:
   google_client_id:    your-client-id-here
 
 """
-import google.auth.transport.urllib3
-import google.oauth2.id_token
+import google.auth.transport.urllib3 # type: ignore
+import google.oauth2.id_token # type: ignore
 import plugins.server
 import plugins.session
 import urllib3
