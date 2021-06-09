@@ -25,12 +25,12 @@ before_script:
 script:
   - pip install -r server/requirements.txt
   - pip install -r requirements.txt
-  - mypy --install-types
-  - mypy --ignore-missing-imports tools/archiver.py
-  - mypy --ignore-missing-imports tools/import-mbox.py
-  - mypy --ignore-missing-imports server/main.py
-  - mypy --ignore-missing-imports server/plugins/*.py
-  - mypy --ignore-missing-imports server/endpoints/*.py
+  - mypy --cache-dir /tmp/ --install-types
+  - mypy --cache-dir /tmp/ --ignore-missing-imports tools/archiver.py
+  - mypy --cache-dir /tmp/ --ignore-missing-imports tools/import-mbox.py
+  - mypy --cache-dir /tmp/ --ignore-missing-imports server/main.py
+  - mypy --cache-dir /tmp/ --ignore-missing-imports server/plugins/*.py
+  - mypy --cache-dir /tmp/ --ignore-missing-imports server/endpoints/*.py
 
 jobs:
   include:
