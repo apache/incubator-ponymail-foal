@@ -258,6 +258,97 @@ class Body:
         return self.string
 
 
+def message_identifiers(header, reverse=False):
+    if "<" not in header:
+        return []
+    parts = header.split("<")
+    identifier_junks = parts[1:]
+    identifiers = []
+    for identifier_junk in identifier_junks:
+        identifier = identifier_junk.split(">").pop(0)
+        identifiers.append("<" + identifier + ">")
+    if reverse is True:
+        identifiers = list(reversed(identifiers))
+    return identifiers
+
+
+def get_parent_identifiers(ojson):
+    identifiers = []
+    for irt in message_identifiers(ojson.get("in-reply-to", ""), reverse=True):
+        identifiers.append(irt)
+    for ref in message_identifiers(ojson.get("references", ""), reverse=True):
+        identifiers.append(ref)
+    return identifiers
+
+
+def get_by_message_id(elastic, msgid):
+    data = elastic.es.search(index=elastic.db_mbox, body={
+        "query": {
+            "bool": {
+                "must": {"term": {"message-id": msgid}}
+            }
+        }
+    })
+    if data["hits"]["total"]["value"] == 1:
+        return data["hits"]["hits"][0]["_source"]
+    return None
+
+
+def get_parent_info(elastic, ojson):
+    parent_identifiers = get_parent_identifiers(ojson)
+    if not parent_identifiers:
+        return None
+    for parent_identifier in parent_identifiers:
+        parent_info = get_by_message_id(elastic, parent_identifier)
+        if parent_info is not None:
+            return parent_info
+    return None
+
+
+def get_previous_mid(elastic, forum, ojson):
+    latest = ojson.get("epoch", 1) - 1
+    data = elastic.es.search(index=elastic.db_mbox, body={
+        "query": {
+            "bool": {
+                "must": [
+                    {"range": {"epoch": {"lte": latest}}},
+                    {"term": {"forum": forum}},
+                    {"term": {"top": True}}
+                ]
+            }
+        },
+        "sort": [{"epoch": "desc"}],
+        "size": 1,
+        "_source": "mid",
+    })
+    for hit in data["hits"]["hits"]:
+        return hit["_source"]["mid"]
+    return None
+
+
+def add_thread_properties(elastic, mid, ojson, size):
+    forum = ojson.get("list", "").strip("<>").replace(".", "@", 1)
+
+    parent_info = get_parent_info(elastic, ojson)
+
+    if parent_info is None:
+        top = True
+        thread = mid
+        previous = get_previous_mid(elastic, forum, ojson)
+    else:
+        top = False
+        thread = parent_info.get("thread")
+        previous = parent_info["mid"]
+
+    ojson["forum"] = forum
+    ojson["previous"] = previous
+    ojson["size"] = size
+    ojson["thread"] = thread
+    ojson["top"] = top
+
+    return ojson
+
+
 class Archiver(object):  # N.B. Also used by import-mbox.py
     """The general archiver class. Compatible with MailMan3 archiver classes."""
 
@@ -554,6 +645,18 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 )
         else:
             elastic = Elastic()
+
+        if config.get("archiver", "threadinfo"):
+            try:
+                ojson = add_thread_properties(elastic, ojson["mid"], ojson, len(raw_message))
+            except Exception as err:
+                print("Could not add thread info", err)
+                if logger:
+                    logger.info("Could not add thread info %s" % (err,))
+            else:
+                print("Added thread info successfully", ojson["mid"])
+                if logger:
+                    logger.info("Added thread info successfully %s" % (ojson["mid"],))
 
         try:
             if contents:

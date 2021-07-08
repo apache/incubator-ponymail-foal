@@ -59,6 +59,8 @@ mbox:
       type: keyword
     epoch:
       type: long
+    forum:
+      type: keyword
     from:
       type: text
     from_raw:
@@ -77,6 +79,8 @@ mbox:
       type: keyword
     permalinks:
       type: keyword
+    previous:
+      type: keyword
     private:
       type: boolean
     references:
@@ -84,8 +88,12 @@ mbox:
     subject:
       fielddata: true
       type: text
+    thread:
+      type: keyword
     to:
       type: text
+    top:
+      type: boolean
     _notes:
       type: text
     _archived_at:
