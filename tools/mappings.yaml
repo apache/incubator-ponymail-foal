@@ -85,6 +85,8 @@ mbox:
       type: boolean
     references:
       type: text
+    size:
+      type: long
     subject:
       fielddata: true
       type: text
