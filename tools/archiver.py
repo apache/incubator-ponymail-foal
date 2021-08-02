@@ -283,7 +283,7 @@ def get_parent_identifiers(ojson):
     return identifiers
 
 
-def get_by_message_id(elastic, msgid, timeout=5):
+def get_by_message_id(elastic, msgid, timeout="5s"):
     data = elastic.es.search(index=elastic.db_mbox, body={
         "query": {
             "bool": {
@@ -310,7 +310,7 @@ def get_parent_info(elastic, ojson, timeout=5, limit=10):
     return None
 
 
-def get_previous_mid(elastic, ojson, timeout=5):
+def get_previous_mid(elastic, ojson, timeout="5s"):
     forum = ojson["forum"]
     latest = ojson.get("epoch", 1) - 1
     data = elastic.es.search(index=elastic.db_mbox, body={
@@ -332,11 +332,11 @@ def get_previous_mid(elastic, ojson, timeout=5):
     return None
 
 
-def add_thread_properties(elastic, ojson, timeout=5, limit=5):
+def add_thread_properties(elastic, ojson, timeout="5s", limit=5):
     parent_info = get_parent_info(elastic, ojson, timeout, limit)
     if parent_info is None:
         top = True
-        thread = mid
+        thread = ojson["mid"]
         previous = get_previous_mid(elastic, ojson, timeout)
     else:
         top = False
@@ -651,6 +651,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         if config.get("archiver", "threadinfo"):
             try:
                 timeout = int(config.get("archiver", "threadtimeout") or 5)
+                timeout = str(timeout) + "s"
                 limit = int(config.get("archiver", "threadparents") or 10)
                 ojson = add_thread_properties(elastic, ojson, timeout, limit)
             except Exception as err:
