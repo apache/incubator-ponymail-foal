@@ -176,3 +176,27 @@ corresponding to a traceback in stderr.
 If the error ID is, for instance, `a06f7d4b-3a82-4ecf`, you can find the corresponding traceback
 by grepping your programs output. If you are running Foal as a systemd service, you could find 
 the traceback with: `journalctl --no-pager -u yourservicename | grep a06f7d4b-3a82-4ecf`
+
+## Archiving options
+To enable the storage in elasticsearch of extra properties related to
+threading, the following configuation snippet can be used in the
+`server/ponymail.yaml` file:
+~~~yaml
+archiver:
+  threadinfo: yes
+  threadparents: 10
+  threadtimeout: 5
+~~~
+The `threadparents` value limits the number of existing messages that
+will be queried for thread information at archive time when a new
+message is received. The `threadtimeout` value limits the duration of
+each query to elasticsearch.
+
+Enabling `threadinfo` means that `top`, `thread`, and `previous`
+properties will be added to each stored message. The `top` property is
+a boolean, indicating whether or not the message is the start of a new
+thread. The `thread` property gives the generated Foal ID of the top
+of the current thread; this will be the same as the ID of the current
+message if `top` is true. The `previous` property gives the generated
+Foal ID of either the most recent parent message if the message is not
+the top of a thread, or the top of the most recent thread otherwise.

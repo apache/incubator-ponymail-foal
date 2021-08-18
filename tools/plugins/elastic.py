@@ -44,6 +44,7 @@ class Elastic:
     db_session:         str
     db_notification:    str
     db_mailinglist:     str
+    db_auditlog:        str
 
     def __init__(self):
         # Fetch config
