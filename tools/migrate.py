@@ -31,12 +31,14 @@ import base64
 import hashlib
 import multiprocessing
 import time
+import os
 
 # Increment this number whenever breaking changes happen in the migration workflow:
 MIGRATION_MAGIC_NUMBER = "2"
 
-# Max number of parallel conversions to perform before pushing
-MAX_PARALLEL_OPS = 12
+# Max number of parallel conversions to perform before pushing. 75-ish percent of max cores.
+cores = os.cpu_count()
+MAX_PARALLEL_OPS = max(min(int((cores + 1) * 0.75), cores-1), 1)
 
 
 class MultiDocProcessor:
@@ -205,6 +207,7 @@ def process_attachment(old_es, doc, dbname_attachment):
 async def main():
     print("Welcome to the Apache Pony Mail -> Foal migrator.")
     print("This will copy your old database, adjust the structure, and insert the emails into your new foal database.")
+    print("We will be utilizing %u cores for this operation." % MAX_PARALLEL_OPS)
     print("------------------------------------")
     old_es_url = (
         input("Enter the full URL (including http/https) of your old ES server: ") or "http://localhost:9200/"
