@@ -26,13 +26,10 @@ authentication mechanism.
 
 
 ## How to run:
-- Install the Pony Mail service through `tools/setup.py` first. 
-  This will create a ponymail.yaml for the backend server as well
-- install `pipenv`, for example via aptitude: `apt install pipenv`.
-- Install the environment for the server: `pipenv install -r requirements.txt`
-- Run the server: `pipenv run python3 main.py`
+See the [Installation documentation](https://github.com/apache/incubator-ponymail-foal/blob/master/INSTALL.md) 
+for instructions on how to install Foal.
 
-This should fire up a backend server on 127.0.0.1:8080. You can then proxy to 
+Once followed, this should fire up a backend server on 127.0.0.1:8080. You can then proxy to 
 that using a web server of your choice. The `/api/` URL of your online archive 
 should be passed straight to the backend, while the rest should be served from 
 the `webui/` directory in this repository.
