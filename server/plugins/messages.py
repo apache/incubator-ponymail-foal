@@ -308,7 +308,7 @@ async def query(
     hide_deleted=True,
 ):
     """
-    Advanced query and grab for stats.pyhttps://node1.db1.dinosource.co:8443/
+    Advanced query and grab for stats.py
     """
     docs = []
     hits = 0
