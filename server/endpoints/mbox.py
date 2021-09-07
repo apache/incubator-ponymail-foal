@@ -27,7 +27,7 @@ import aiohttp.web
 import asyncio.exceptions
 
 
-async def convert_source(session, email):
+async def convert_source(session: plugins.session.SessionObject, email: dict):
     source = await plugins.messages.get_source(session, permalink=email.get("dbid", email["mid"]))
     if source:
         source_as_text = source["_source"]["source"]
