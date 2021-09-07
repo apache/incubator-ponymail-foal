@@ -43,9 +43,6 @@ async def process(
         session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
 
-    for msg in results:
-        msg["gravatar"] = plugins.messages.gravatar(msg)
-
     wordcloud = None
     if server.config.ui.wordcloud:
         wordcloud = await plugins.messages.wordcloud(session, query_defuzzed)

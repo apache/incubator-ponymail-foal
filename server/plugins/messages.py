@@ -329,6 +329,9 @@ async def query(
             continue
         doc["id"] = doc["mid"]
         if plugins.aaa.can_access_email(session, doc):
+            # Calculate gravatars if not present in source
+            if not metadata_only and "gravatar" not in doc:
+                doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
             if shorten:

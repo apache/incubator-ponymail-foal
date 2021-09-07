@@ -568,11 +568,16 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     irt = ""
             document_id = id_set[0]
 
+            # Pre-calculate gravatar
+            mailaddr = email.utils.parseaddr(msg_metadata["from"])[1]
+            ghash = hashlib.md5(mailaddr.encode("utf-8")).hexdigest()
+
             notes.append(["ARCHIVE: Email archived as %s at %u" % (document_id, time.time())])
 
             output_json = {
                 "from_raw": msg_metadata["from"],
                 "from": msg_metadata["from"],
+                "gravatar": ghash,
                 "to": msg_metadata["to"],
                 "subject": msg_metadata["subject"],
                 "message-id": msg_metadata["message-id"],

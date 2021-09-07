@@ -29,6 +29,7 @@ else:
 
 import argparse
 import base64
+import email.utils
 import hashlib
 import multiprocessing
 import os
@@ -179,6 +180,12 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
 
     source["_source"]["permalinks"] = doc["_source"]["permalinks"]
     doc["_source"]["dbid"] = hashlib.sha3_256(source_text).hexdigest()
+
+    # Add in gravatar
+    header_from = doc["_source"]["from"]
+    mailaddr = email.utils.parseaddr(header_from)[1]
+    ghash = hashlib.md5(mailaddr.encode("utf-8")).hexdigest()
+    doc["_source"]["gravatar"] = ghash
 
     # Append migration details to notes field in doc
     notes = doc["_source"].get("_notes", [])
