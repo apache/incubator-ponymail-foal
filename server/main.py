@@ -115,10 +115,11 @@ class Server(plugins.server.BaseServer):
                 # Wait for endpoint response. This is typically JSON in case of success,
                 # but could be an exception (that needs a traceback) OR
                 # it could be a custom response, which we just pass along to the client.
-                if isinstance(handler, plugins.server.StreamingEndpoint):
-                    output = await handler.exec(self, request, session, indata)
-                elif isinstance(handler, plugins.server.Endpoint):
-                    output = await handler.exec(self, session, indata)
+                xhandler = self.handlers[handler]
+                if isinstance(xhandler, plugins.server.StreamingEndpoint):
+                    output = await xhandler.exec(self, request, session, indata)
+                elif isinstance(xhandler, plugins.server.Endpoint):
+                    output = await xhandler.exec(self, session, indata)
                 if session.database:
                     self.dbpool.put_nowait(session.database)
                     self.dbpool.task_done()
