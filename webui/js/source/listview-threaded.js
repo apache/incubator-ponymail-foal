@@ -108,7 +108,7 @@ function listview_threaded_element(thread, idx) {
     let now = new Date();
     
     // Add gravatar
-    let gravatar = new HTML('img', { class:"gravatar", src: "https://secure.gravatar.com/avatar/%s.jpg?s=96&r=g&d=mm".format(eml.gravatar)});
+    let gravatar = new HTML('img', { class:"gravatar", src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)});
     element.inject(gravatar);
     
     
