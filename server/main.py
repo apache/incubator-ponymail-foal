@@ -62,6 +62,7 @@ class Server(plugins.server.BaseServer):
         self.dbpool = asyncio.Queue()
         self.runners = plugins.offloader.ExecutorPool()
         self.server = None
+        self.streamlock = asyncio.Lock()
 
         # Make a pool of 15 database connections for async queries
         for _ in range(1, 15):
