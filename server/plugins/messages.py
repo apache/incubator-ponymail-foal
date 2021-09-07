@@ -257,7 +257,7 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     res = await session.database.search(
         index=doctype,
         size=1,
-        body={"query": {"bool": {"must": [{"match": {"permalinks": permalink}}]}}},
+        body={"query": {"bool": {"must": [{"match": {"permalink": permalink}}]}}},
     )
     if len(res["hits"]["hits"]) == 1:
         doc = res["hits"]["hits"][0]
