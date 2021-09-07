@@ -33,6 +33,6 @@ jobs:
 #        pytest
     - name: Test with Ponymail Unit tests
       run: |
-        sed -e '/incubator/s/# cropout:/cropout:/' tools/ponymail.yaml.example >tools/ponymail.yaml
+        sed -e '/incubator/s/# cropout:/cropout:/' tools/archiver.yaml.example >tools/archiver.yaml
         cd pmtests
         python runall.py --root ..
