@@ -44,7 +44,8 @@ async def process(
         if plugins.aaa.can_access_email(session, email):
             # Are we fetching an attachment?
             if not indata.get("attachment"):
-                email["gravatar"] = plugins.messages.gravatar(email)
+                if not email.get("gravatar"):
+                    email["gravatar"] = plugins.messages.gravatar(email)
                 return email
             else:
                 fid = indata.get("file")
