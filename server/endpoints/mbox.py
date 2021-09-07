@@ -40,7 +40,7 @@ async def process(
 
     sources = []
     for email in results:
-        source = await plugins.messages.get_source(session, permalink=email["mid"])
+        source = await plugins.messages.get_source(session, permalink=email.get("dbid", email["mid"]))
         if source:
             stext = source["_source"]["source"]
             # Convert to mboxrd format
