@@ -114,12 +114,15 @@ class Server(plugins.server.BaseServer):
                 # Wait for endpoint response. This is typically JSON in case of success,
                 # but could be an exception (that needs a traceback) OR
                 # it could be a custom response, which we just pass along to the client.
-                output = await self.handlers[handler].exec(self, session, indata)
+                if isinstance(handler, plugins.server.StreamingEndpoint):
+                    output = await handler.exec(self, request, session, indata)
+                elif isinstance(handler, plugins.server.Endpoint):
+                    output = await handler.exec(self, session, indata)
                 if session.database:
                     self.dbpool.put_nowait(session.database)
                     self.dbpool.task_done()
                     session.database = None
-                if isinstance(output, aiohttp.web.Response):
+                if isinstance(output, aiohttp.web.Response) or isinstance(output, aiohttp.web.StreamResponse):
                     return output
                 if output:
                     jsout = await self.runners.run(json.dumps, output, indent=2)
