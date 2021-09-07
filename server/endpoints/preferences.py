@@ -18,12 +18,16 @@
 import plugins.server
 import plugins.aaa
 import plugins.session
+import aiohttp.web
+import typing
 
 """ Generic preferences endpoint for Pony Mail codename Foal"""
 """ This is incomplete, but will work for anonymous tests. """
 
 
-async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict) -> dict:
+async def process(
+    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict
+) -> typing.Union[dict, aiohttp.web.Response]:
     prefs: dict = {"login": {}}
     lists: dict = {}
     for ml, entry in server.data.lists.items():
@@ -63,6 +67,14 @@ async def process(server: plugins.server.BaseServer, session: plugins.session.Se
         if session.cookie in server.data.sessions:
             del server.data.sessions[session.cookie]
         session.credentials = None
+        return aiohttp.web.Response(
+            headers={
+                "set-cookie": "ponymail=deleted; path=/api; expires=Thu, 01 Jan 1970 00:00:00 GMT",
+                "content-type": "application/json",
+            },
+            status=200,
+            text='{"okay": true}',
+        )
 
     return prefs
 
