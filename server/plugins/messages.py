@@ -386,7 +386,7 @@ async def get_list_stats(session, maxage="90d", admin=False):
     for entry in res["aggregations"]["listnames"]["buckets"]:
 
         # Normalize list name
-        listname = entry["key"].lower().strip("<>")
+        listname = entry["key"].lower()
 
         # Check access
         if (
@@ -395,7 +395,7 @@ async def get_list_stats(session, maxage="90d", admin=False):
             or plugins.aaa.can_access_list(session, listname)
         ):
             # Change foo.bar.baz to foo@bar.baz
-            listname = listname.replace(".", "@", 1)
+            listname = listname.strip("<>").replace(".", "@", 1)
             lists[listname] = entry["doc_count"]
     return lists
 
