@@ -427,7 +427,9 @@ async def get_years(session, query_defuzzed):
             private_lists_accessible.append(listname)
     
     # If we can't access all private lists found, either only public emails or lists we can access.
-    if private_lists_found != private_lists_accessible:
+    if not private_lists_accessible:  # No private lists accessible, just filter for public
+        query_defuzzed["filter"] = [{"term": {"private": False}}]
+    elif private_lists_found != private_lists_accessible:  # Some private lists, search for public OR those..
         query_defuzzed["filter"] = [
             {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
         ]
