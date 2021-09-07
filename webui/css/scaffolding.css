@@ -274,7 +274,7 @@ a.dropdown-toggle {
     width: 24px;
     height: 24px;
     line-height: 22px;
-    text-indent: -1px;
+    text-align: center;
     background: #EEE;
     color: #555;
     border: 1px outset #AAAA;
@@ -285,7 +285,7 @@ a.dropdown-toggle {
 }
 
 #listview_header button[download=true] {
-    background: #4B0;
+    background: #369;
     color: #FFF;
     margin-left: 8px;
 }
