@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import traceback
+import typing
 
 import aiohttp.web
 import yaml
@@ -83,7 +84,7 @@ class Server(plugins.server.BaseServer):
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
-    ) -> aiohttp.web.Response:
+    ) -> typing.Union[aiohttp.web.Response, aiohttp.web.StreamResponse]:
         """Generic handler for all incoming HTTP requests"""
 
         # Define response headers first...
