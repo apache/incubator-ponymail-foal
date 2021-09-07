@@ -308,7 +308,7 @@ async def query(
     hide_deleted=True,
 ):
     """
-    Advanced query and grab for stats.py
+    Advanced query and grab for stats.pyhttps://node1.db1.dinosource.co:8443/
     """
     docs = []
     hits = 0
@@ -416,7 +416,7 @@ async def get_years(session, query_defuzzed):
     )
     private_lists_found = []
     for entry in res["aggregations"]["listnames"]["buckets"]:
-        listname = entry["key"].lower().strip("<>")
+        listname = entry["key"].lower()
         private_lists_found.append(listname)
 
     # If we can access all private lists found, or if no private lists, we can do a complete search.
