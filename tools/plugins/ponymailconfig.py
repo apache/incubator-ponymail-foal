@@ -35,8 +35,8 @@ import yaml
 class PonymailConfig:
 
     def __init__(self):
-        # Get ../ponymail.yaml
-        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "ponymail.yaml")
+        # Get ../archiver.yaml
+        config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "archiver.yaml")
         self.config = yaml.safe_load(open(config_path))
 
     def has_section(self, section):

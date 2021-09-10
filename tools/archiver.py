@@ -26,7 +26,7 @@ Enable the module by adding the following to your mailman.cfg file::
 class: mailman_ponymail_plugin.Archiver
 enable: yes
 
-and by adding the following to ponymail.cfg:
+and by adding the following to archiver.yaml:
 
 [mailman]
 plugin: true
