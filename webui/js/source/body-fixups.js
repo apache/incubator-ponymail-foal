@@ -60,7 +60,7 @@ ponymail_diff_regex = new RegExp(
   "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
   "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
   "(" + // Then one or more of...
-    "^@@ .+[\r\n]+" + // positioning
+    "^@@@? .+[\r\n]+" + // positioning
     "(^ .*[\r\n]*$){0,3}" + // diff header
     "(^[-+ ].*[\r\n]*)+" + // actual diff
     "(^ .*[\r\n]*$){0,3}" + // diff trailer
