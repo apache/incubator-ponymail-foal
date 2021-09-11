@@ -124,7 +124,12 @@ function parseURL(state) {
     state.query = query;
     state.date = month;
   }
-  primeListView(state);
+  // If hitting the refresh button, don't refresh preferences, just do the search.
+  if (state.noprefs) {
+      post_prime(state);
+  } else {
+      primeListView(state);
+  }
 };
 
 

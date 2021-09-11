@@ -69,7 +69,7 @@ function listview_header(state, json) {
     let cforward = new HTML('button', { onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),  disabled: (first+per_page-1 >= blobs.length) ? 'true': null}, new HTML('span', {class: 'glyphicon glyphicon-chevron-right'}, " "));
     chevrons.inject(cforward);
     
-    let crefresh = new HTML('button', { onclick: 'parseURL();', title: 'Refresh results', style: {marginLeft: '8px'}}, new HTML('span', {class: 'glyphicon glyphicon-refresh'}, " "));
+    let crefresh = new HTML('button', { onclick: 'parseURL({noprefs: true});', title: 'Refresh results', style: {marginLeft: '8px'}}, new HTML('span', {class: 'glyphicon glyphicon-refresh'}, " "));
     chevrons.inject(crefresh);
     
     if (state && state.pos != undefined) {
