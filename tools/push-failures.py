@@ -54,7 +54,7 @@ for f in files:
                 mid = ojson["mbox"]["mid"]
             elastic.index(index=elastic.db_mbox, id=mid, body=ojson["mbox"])
 
-            elastic.index(index=elastic.db_source, id=ojson["mbox"]["dbid"], body=ojson["mbox_source"])
+            elastic.index(index=elastic.db_source, id=ojson["mbox_source"]["id"], body=ojson["mbox_source"])
 
             if "attachments" in ojson and ojson["attachments"]:
                 for k, v in ojson["attachments"].items():
