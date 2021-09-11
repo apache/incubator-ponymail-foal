@@ -20,6 +20,7 @@ import plugins.aaa
 import plugins.session
 import aiohttp.web
 import typing
+import fnmatch
 
 """ Generic preferences endpoint for Pony Mail codename Foal"""
 """ This is incomplete, but will work for anonymous tests. """
@@ -37,8 +38,8 @@ async def process(
             if entry.get("private", False):
                 can_access = plugins.aaa.can_access_list(session, ml)
             if server.config.ui.focus_domain != "*":
-                if server.config.ui.focus_domain.startswith("*."):
-                    if not ldomain.endswith(server.config.ui.focus_domain[1:]):
+                if '*' in server.config.ui.focus_domain:
+                    if not fnmatch.fnmatch(ldomain, server.config.ui.focus_domain)
                         continue
                 elif ldomain != (server.config.ui.focus_domain or session.host):
                     continue
