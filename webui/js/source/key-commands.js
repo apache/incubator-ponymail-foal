@@ -92,7 +92,7 @@ function hideWindows(force_all) {
     }
     
     // if viewing a single thread, disregard the collapses below - the won't make sense!
-    if (location.href.match(/thread\.html/)) return;
+    if (location.href.match(/thread(?:\.html)?/)) return;
     
     // Finally, check for other opened emails, close 'em all
     let placeholders = document.getElementsByClassName('email_placeholder');
