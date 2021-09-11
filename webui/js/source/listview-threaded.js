@@ -132,7 +132,7 @@ function listview_threaded_element(thread, idx) {
     let as = new HTML('div', {class: 'listview_email_as'});
     
     let suba = new HTML('a', {},  eml.subject === '' ? '(No subject)' : eml.subject);
-    if (current_json.name == '*' || current_json.domain == '*') {
+    if (current_json.list.match(/\*/) || current_json.domain == '*') {
         let kbd = new HTML('kbd', {class: 'listview_kbd'}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1))
         suba = [kbd, suba];
     }
