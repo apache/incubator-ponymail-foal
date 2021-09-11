@@ -39,7 +39,7 @@ async def process(
                 can_access = plugins.aaa.can_access_list(session, ml)
             if server.config.ui.focus_domain != "*":
                 if '*' in server.config.ui.focus_domain:
-                    if not fnmatch.fnmatch(ldomain, server.config.ui.focus_domain)
+                    if not fnmatch.fnmatch(ldomain, server.config.ui.focus_domain):
                         continue
                 elif ldomain != (server.config.ui.focus_domain or session.host):
                     continue
