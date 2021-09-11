@@ -35,8 +35,8 @@ elasticsearch:
     #backup:                database name
 
 archiver:
-    #generator:             medium|full|cluster|dkim|other (dkim recommended)
-    generator:              cluster
+    #generator:             full|dkim|other (dkim recommended)
+    generator:              dkim
     # nonce:                optional secret salt ('pepper')
 
 debug:
