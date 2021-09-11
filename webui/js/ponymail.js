@@ -304,7 +304,7 @@ ponymail_diff_regex = new RegExp(
   "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
   "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
   "(" + // Then one or more of...
-    "^@@ .+[\r\n]+" + // positioning
+    "^@@@? .+[\r\n]+" + // positioning
     "(^ .*[\r\n]*$){0,3}" + // diff header
     "(^[-+ ].*[\r\n]*)+" + // actual diff
     "(^ .*[\r\n]*$){0,3}" + // diff trailer
@@ -546,6 +546,7 @@ function toggle_quote(el) {
         quote.style.display = 'none';
     }
 }
+
 
 /******************************************
  Fetched from source/composer.js
@@ -1713,7 +1714,7 @@ function hideWindows(force_all) {
     }
     
     // if viewing a single thread, disregard the collapses below - the won't make sense!
-    if (location.href.match(/thread\.html/)) return;
+    if (location.href.match(/thread(?:\.html)?/)) return;
     
     // Finally, check for other opened emails, close 'em all
     let placeholders = document.getElementsByClassName('email_placeholder');
@@ -2056,7 +2057,7 @@ function listview_header(state, json) {
     let cforward = new HTML('button', { onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),  disabled: (first+per_page-1 >= blobs.length) ? 'true': null}, new HTML('span', {class: 'glyphicon glyphicon-chevron-right'}, " "));
     chevrons.inject(cforward);
     
-    let crefresh = new HTML('button', { onclick: 'parseURL();', title: 'Refresh results', style: {marginLeft: '8px'}}, new HTML('span', {class: 'glyphicon glyphicon-refresh'}, " "));
+    let crefresh = new HTML('button', { onclick: 'parseURL({noprefs: true});', title: 'Refresh results', style: {marginLeft: '8px'}}, new HTML('span', {class: 'glyphicon glyphicon-refresh'}, " "));
     chevrons.inject(crefresh);
     
     if (state && state.pos != undefined) {
@@ -2381,7 +2382,7 @@ function listview_threaded_element(thread, idx) {
     let as = new HTML('div', {class: 'listview_email_as'});
     
     let suba = new HTML('a', {},  eml.subject === '' ? '(No subject)' : eml.subject);
-    if (current_json.name == '*' || current_json.domain == '*') {
+    if (current_json.list.match(/\*/) || current_json.domain == '*') {
         let kbd = new HTML('kbd', {class: 'listview_kbd'}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1))
         suba = [kbd, suba];
     }
@@ -2874,7 +2875,12 @@ function parseURL(state) {
     state.query = query;
     state.date = month;
   }
-  primeListView(state);
+  // If hitting the refresh button, don't refresh preferences, just do the search.
+  if (state.noprefs) {
+      post_prime(state);
+  } else {
+      primeListView(state);
+  }
 };
 
 
