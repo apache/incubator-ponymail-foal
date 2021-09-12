@@ -76,6 +76,7 @@ config = ponymailconfig.PonymailConfig()
 # Set some vars before we begin
 logger = None
 
+normalize_lid = textlib.normalize_lid  # Unit test fallback
 
 # If MailMan is enabled, import and set it up
 if config.has_option("mailman", "plugin"):
