@@ -423,15 +423,23 @@ async def get_years(session, query_defuzzed):
     )
     private_lists_found = []
     for entry in res["aggregations"]["listnames"]["buckets"]:
-        listname = entry["key"].lower().strip("<>")
+        listname = entry["key"].lower()
         private_lists_found.append(listname)
 
     # If we can access all private lists found, or if no private lists, we can do a complete search.
-    # If not, we adjust the search here to only include public emails
+    # If not, we adjust the search here to only include public emails OR private lists we can access.
+    private_lists_accessible = []
     for listname in private_lists_found:
-        if not plugins.aaa.can_access_list(session, listname):
-            query_defuzzed["filter"] = [{"term": {"private": False}}]
-            break
+        if plugins.aaa.can_access_list(session, listname):
+            private_lists_accessible.append(listname)
+    
+    # If we can't access all private lists found, either only public emails or lists we can access.
+    if not private_lists_accessible:  # No private lists accessible, just filter for public
+        query_defuzzed["filter"] = [{"term": {"private": False}}]
+    elif private_lists_found != private_lists_accessible:  # Some private lists, search for public OR those..
+        query_defuzzed["filter"] = [
+            {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
+        ]
 
     # Get oldest doc
     res = await session.database.search(
