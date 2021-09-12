@@ -30,7 +30,7 @@ function renderCalendar(FY, FM, LY, LM) {
     
     let now = new Date();
     let CY = now.getFullYear();
-    let CM = now.getMonth();
+    let CM = now.getMonth() + 1;
     let SY = Math.min(LY, CY); // last year in calendar, considering current date
     // If Last Year is into the future, set Last Month to this one.
     if (LY > CY) {
