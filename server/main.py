@@ -24,6 +24,7 @@ import json
 import os
 import sys
 import traceback
+import typing
 
 import aiohttp.web
 import yaml
@@ -62,6 +63,7 @@ class Server(plugins.server.BaseServer):
         self.dbpool = asyncio.Queue()
         self.runners = plugins.offloader.ExecutorPool()
         self.server = None
+        self.streamlock = asyncio.Lock()
 
         # Make a pool of 15 database connections for async queries
         for _ in range(1, 15):
@@ -82,7 +84,7 @@ class Server(plugins.server.BaseServer):
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
-    ) -> aiohttp.web.Response:
+    ) -> typing.Union[aiohttp.web.Response, aiohttp.web.StreamResponse]:
         """Generic handler for all incoming HTTP requests"""
 
         # Define response headers first...
@@ -114,12 +116,16 @@ class Server(plugins.server.BaseServer):
                 # Wait for endpoint response. This is typically JSON in case of success,
                 # but could be an exception (that needs a traceback) OR
                 # it could be a custom response, which we just pass along to the client.
-                output = await self.handlers[handler].exec(self, session, indata)
+                xhandler = self.handlers[handler]
+                if isinstance(xhandler, plugins.server.StreamingEndpoint):
+                    output = await xhandler.exec(self, request, session, indata)
+                elif isinstance(xhandler, plugins.server.Endpoint):
+                    output = await xhandler.exec(self, session, indata)
                 if session.database:
                     self.dbpool.put_nowait(session.database)
                     self.dbpool.task_done()
                     session.database = None
-                if isinstance(output, aiohttp.web.Response):
+                if isinstance(output, aiohttp.web.Response) or isinstance(output, aiohttp.web.StreamResponse):
                     return output
                 if output:
                     jsout = await self.runners.run(json.dumps, output, indent=2)

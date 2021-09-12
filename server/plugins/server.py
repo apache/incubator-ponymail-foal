@@ -34,6 +34,13 @@ class Endpoint:
         self.exec = executor
 
 
+class StreamingEndpoint:
+    exec: typing.Callable
+
+    def __init__(self, executor):
+        self.exec = executor
+
+
 class BaseServer:
     """Main server class, base def"""
 
@@ -44,3 +51,4 @@ class BaseServer:
     database: AsyncElasticsearch
     dbpool: asyncio.Queue
     runners: plugins.offloader.ExecutorPool
+    streamlock: asyncio.Lock
