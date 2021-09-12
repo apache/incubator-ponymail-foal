@@ -60,11 +60,11 @@ import netaddr
 
 if not __package__:
     from plugins import ponymailconfig
-    from plugins import generators
+    from plugins import generators, textlib
     from plugins.elastic import Elastic
 else:
     from .plugins import ponymailconfig
-    from .plugins import generators
+    from .plugins import generators, textlib
     from .plugins.elastic import Elastic
 
 # This is what we will default to if we are presented with emails without character sets and US-ASCII doesn't work.
@@ -135,28 +135,6 @@ def parse_attachment(
                 attachment["hash"] = h
                 return attachment, b64  # Return meta data and contents separately
     return None, None
-
-
-def normalize_lid(lid: str) -> str:  # N.B. Also used by import-mbox.py
-    """ Ensures that a List ID is in standard form, i.e. <a.b.c.d> """
-    # If of format "list name" <foo.bar.baz>
-    # we crop away the description (#511)
-    m = re.match(r'".*"\s+(.+)', lid)
-    if m:
-        lid = m.group(1)
-    # Drop <> and anything before/after, if found
-    m = re.search(r"<(.+)>", lid)
-    if m:
-        lid = m.group(1)
-    # Belt-and-braces: remove possible extraneous chars
-    lid = "<%s>" % lid.strip(" <>").replace("@", ".")
-    # Replace invalid characters with underscores so as to not invalidate doc IDs.
-    lid = re.sub(r"[^-+~_<>.a-zA-Z0-9@]", "_", lid)
-    # Finally, ensure we have a loosely valid list ID value
-    if not re.match(r"^<.+\..+>$", lid):
-        print("Invalid list-id %s" % lid)
-        sys.exit(-1)
-    return lid
 
 
 def message_attachments(msg: email.message.Message) -> typing.Tuple[list, dict]:
@@ -458,7 +436,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         notes = []  # Put debug notes in here, for later...
 
         if not lid:
-            lid = normalize_lid(msg.get("list-id"))
+            lid = textlib.normalize_lid(msg.get("list-id"), strict=True)
+            assert lid is not None, f"Invalid list-id {lid} provided"
         if self.cropout:
             crops = self.cropout.split(" ")
             # Regex replace?
@@ -615,7 +594,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         :return (lid, mid)
         """
 
-        lid = normalize_lid(mlist.list_id)
+        lid = textlib.normalize_lid(mlist.list_id, strict=True)
+        assert lid is not None, f"Invalid list id {lid}"
 
         private = False
         if hasattr(mlist, "archive_public") and mlist.archive_public is True:
