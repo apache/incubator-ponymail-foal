@@ -33,6 +33,7 @@ import email.utils
 import hashlib
 import multiprocessing
 import os
+import re
 import time
 import sys
 
@@ -43,6 +44,25 @@ MIGRATION_MAGIC_NUMBER = "2"
 cores = len(os.sched_getaffinity(0))
 MAX_PARALLEL_OPS = max(min(int((cores + 1) * 0.75), cores - 1), 1)
 
+def normalize_lid(lid: str) -> str:
+    """ Ensures that a List ID is in standard form, i.e. <a.b.c.d> """
+    # If of format "list name" <foo.bar.baz>
+    # we crop away the description (#511)
+    m = re.match(r'".*"\s+(.+)', lid)
+    if m:
+        lid = m.group(1)
+    # Drop <> and anything before/after, if found
+    m = re.search(r"<(.+)>", lid)
+    if m:
+        lid = m.group(1)
+    # Belt-and-braces: remove possible extraneous chars
+    lid = "<%s>" % lid.strip(" <>").replace("@", ".")
+    # Replace invalid characters with underscores so as to not invalidate doc IDs.
+    lid = re.sub(r"[^-+~_<>.a-zA-Z0-9@]", "_", lid)
+    # Finally, ensure we have a loosely valid list ID value
+    if not re.match(r"^<.+\..+>$", lid):
+        print("Warning: Invalid list-id %s" % lid)
+    return lid
 
 class MultiDocProcessor:
     """MultiProcess document processor"""
@@ -173,7 +193,7 @@ def bulk_push(json, es, graceful=False):
 
 def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dkim):
     now = time.time()
-    list_id = doc["_source"]["list_raw"].strip("<>")
+    list_id = normalize_lid(doc["_source"]["list_raw"])
     try:
         source = old_es.get(index=old_dbname, doc_type="mbox_source", id=doc["_id"])
         # If we hit a 404 on a source, we have to fake an empty document, as we don't know the source.
