@@ -32,6 +32,10 @@ function renderCalendar(FY, FM, LY, LM) {
     let CY = now.getFullYear();
     let CM = now.getMonth();
     let SY = Math.min(LY, CY); // last year in calendar, considering current date
+    // If Last Year is into the future, set Last Month to this one.
+    if (LY > CY) {
+        LM = CM;
+    }
 
     let cdiv = new HTML('div', { class: 'sidebar_calendar' })
     let N = 0;
