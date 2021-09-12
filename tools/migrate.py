@@ -185,9 +185,11 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
         source_text = base64.b64decode(source_text)
     else:  # bytify
         source_text = source_text.encode("utf-8", "ignore")
+    archive_as_id = doc["_id"]
     if do_dkim:
         dkim_id = generators.dkimid(None, None, list_id, None, source_text)
         old_id = doc["_id"]
+        archive_as_id = dkim_id
         doc["_source"]["mid"] = dkim_id
         doc["_source"]["permalinks"] = [dkim_id, old_id]
     else:
@@ -218,7 +220,7 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
 
     # Copy to new DB
     return (
-        {"index": dbname_mbox, "id": doc["_id"], "body": doc["_source"]},
+        {"index": dbname_mbox, "id": archive_as_id, "body": doc["_source"]},
         {"index": dbname_source, "id": doc["_source"]["dbid"], "body": source["_source"]},
     )
 
