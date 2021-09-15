@@ -307,7 +307,8 @@ async def query(
     query_limit=10000,
     shorten=False,
     hide_deleted=True,
-    metadata_only=False
+    metadata_only=False,
+    epoch_order="desc"
 ):
     """
     Advanced query and grab for stats.py
@@ -317,7 +318,7 @@ async def query(
     assert session.database, DATABASE_NOT_CONNECTED
     es_query = {
         "query": {"bool": query_defuzzed},
-        "sort": [{"epoch": {"order": "desc"}}],
+        "sort": [{"epoch": {"order": epoch_order}}],
     }
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
