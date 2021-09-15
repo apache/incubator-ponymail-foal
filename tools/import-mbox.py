@@ -146,9 +146,11 @@ class SlurpThread(Thread):
                 block.release()
 
             stime = time.time()
+            tmpname = ""
             delete_file = False
             if imap:
                 imap4 = mla[2]
+                tmpname = "IMAP"
 
                 def mailgen(_list):
                     for uid in _list:
@@ -215,6 +217,9 @@ class SlurpThread(Thread):
 
             for key in messages.iterkeys():
                 message = messages.get(key)
+                if not message:
+                    self.printid("Message %u could not be extracted from %s, ignoring it" % (key, tmpname))
+                    continue
                 file = messages.get_file(key, True)
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
