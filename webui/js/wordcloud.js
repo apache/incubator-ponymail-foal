@@ -97,7 +97,7 @@ async function wordCloud(hash, width, height, obj) {
         
         
         var textBox = makeWord(word, ss)
-        textBox.setAttribute("id", word)
+        textBox.setAttribute("id", "svg_wc_" + word)
         svg.appendChild(textBox)
         if (!popped) {
             textBox.setAttribute("x", 0)
