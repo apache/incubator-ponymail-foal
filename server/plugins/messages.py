@@ -316,6 +316,7 @@ async def query(
     docs = []
     hits = 0
     assert session.database, DATABASE_NOT_CONNECTED
+    preserve_order = True if epoch_order == "asc" else False
     es_query = {
         "query": {"bool": query_defuzzed},
         "sort": [{"epoch": {"order": epoch_order}}],
@@ -323,7 +324,8 @@ async def query(
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
     async for hit in session.database.scan(
-        query=es_query
+        query=es_query,
+        preserve_order=preserve_order
     ):
         doc = hit["_source"]
         # If email was delete/hidden and we're not doing an admin query, ignore it
