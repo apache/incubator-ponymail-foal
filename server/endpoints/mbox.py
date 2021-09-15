@@ -67,6 +67,7 @@ async def process(
         session,
         query_defuzzed,
         query_limit=server.config.database.max_hits,
+        epoch_order="asc"
     )
 
     # Figure out a sane filename
