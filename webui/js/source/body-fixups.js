@@ -23,55 +23,55 @@ ponymail_url_regex = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)
 // - inline quoting
 // - top posting with original email following
 ponymail_quote_regex = new RegExp("(" +
-  // Typical encapsulation of context by ticketing systems and/or bug trackers
-  "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
-  "(" +
-    "(?:\\r?\\n|^)" +  // start of line or after a colon
+    // Typical encapsulation of context by ticketing systems and/or bug trackers
+    "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
+    "(" +
+    "(?:\\r?\\n|^)" + // start of line or after a colon
     // Classic method; a signal line and the quote with '>' starting each line quoted
     "(" +
-      "(" + // Initial line signalling a quote
-        "((\\d+-\\d+-\\d+)\\s+.+<\\S+@\\S+>:[ \t\r\n]+)|" +  // "01-02-1982 Foo Bar <foo@bar.baz>:" OR
-        "(on\\s+(.+|.+\\n.+)\\s+wrote:[\r?\n]+)|" +          // "On $somedate, $someone wrote:", OR...
-        "(le\\s+(.+|.+\\n.+)\\s+écrit:[\r?\n]+)|" +          // French version of the above, OR...
-        "(.?am .+? schrieb\\s+.+:[\r?\n]+)|" +               // German version of the above, OR...
-        "(envoy[ée] de mon .+|sent from my .+|von meinem .+ gesendet)[ \t\r\n]+" + // "sent from my iphone/ipad/android phone/whatever", usually means the next part is a quote.
-      ")" + // End initial signal line
-      "(^$)*" + // Accept blank newlines following it...
-      "(((^(?!>)[\\s\\S]+$)*)|(^\\s*>[\\s\\S]+$)*)" +  // Either text that follows immediately after with no '>' first, OR text with '>' first, but NOT both...
+    "(" + // Initial line signalling a quote
+    "((\\d+-\\d+-\\d+)\\s+.+<\\S+@\\S+>:[ \t\r\n]+)|" + // "01-02-1982 Foo Bar <foo@bar.baz>:" OR
+    "(on\\s+(.+|.+\\n.+)\\s+wrote:[\r?\n]+)|" + // "On $somedate, $someone wrote:", OR...
+    "(le\\s+(.+|.+\\n.+)\\s+écrit:[\r?\n]+)|" + // French version of the above, OR...
+    "(.?am .+? schrieb\\s+.+:[\r?\n]+)|" + // German version of the above, OR...
+    "(envoy[ée] de mon .+|sent from my .+|von meinem .+ gesendet)[ \t\r\n]+" + // "sent from my iphone/ipad/android phone/whatever", usually means the next part is a quote.
+    ")" + // End initial signal line
+    "(^$)*" + // Accept blank newlines following it...
+    "(((^(?!>)[\\s\\S]+$)*)|(^\\s*>[\\s\\S]+$)*)" + // Either text that follows immediately after with no '>' first, OR text with '>' first, but NOT both...
     ")|" +
-      "(" +
-        // Lines after the signal line; comes in one shape, generally speaking...
-        "(^\\s*>+[ \\t]*[^\r\n]*\r*\n+)+" + // Lines beginning with one or more '>' after the initial signal line
-      ")" +      
+    "(" +
+    // Lines after the signal line; comes in one shape, generally speaking...
+    "(^\\s*>+[ \\t]*[^\r\n]*\r*\n+)+" + // Lines beginning with one or more '>' after the initial signal line
+    ")" +
     ")+|" + //OR...
     "(" +
-      "^(-{5,10}).+?\\1[\r\n]+" + // ----- Forwarded Message -----
-      "(^\\w+:\\s+.+[\r\n]+){3,10}[\r\n]+" + // Between three and ten header fields (we ask for at least 3, so as to not quote PGP blocks)
-      "[\\S\\s]+" + // Whatever comes next...
+    "^(-{5,10}).+?\\1[\r\n]+" + // ----- Forwarded Message -----
+    "(^\\w+:\\s+.+[\r\n]+){3,10}[\r\n]+" + // Between three and ten header fields (we ask for at least 3, so as to not quote PGP blocks)
+    "[\\S\\s]+" + // Whatever comes next...
     ")+" +
     ")", "mi");
 
 // Somewhat simplified method for catching email footers/trailers that we don't need
-ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi");//(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
+ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
 
 // This is a regex for capturing code diff blocks in an email
 ponymail_diff_regex = new RegExp(
-  "(" +
-  "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
-  "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
-  "(" + // Then one or more of...
+    "(" +
+    "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
+    "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
+    "(" + // Then one or more of...
     "^@@@? .+[\r\n]+" + // positioning
     "(^ .*[\r\n]*$){0,3}" + // diff header
     "(^[-+ ].*[\r\n]*)+" + // actual diff
     "(^ .*[\r\n]*$){0,3}" + // diff trailer
-  ")+" +
-  ")", "mi");
+    ")+" +
+    ")", "mi");
 
 // Function for turning URLs into <a> tags
 function fixup_urls(splicer) {
-    
+
     if (typeof splicer == 'object') {
-      return splicer;
+        return splicer;
         //splicer = splicer.innerText;
     }
     /* Array holding text and links */
@@ -84,34 +84,34 @@ function fixup_urls(splicer) {
 
     /* While we have more links, ... */
     while (i !== -1) {
-      urls++;
+        urls++;
 
-      /* Only parse the first 250 URLs... srsly */
-      if (urls > 250) {
-        break;
-      }
+        /* Only parse the first 250 URLs... srsly */
+        if (urls > 250) {
+            break;
+        }
 
-      /* Text preceding the link? add it to textbits frst */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        textbits.push(t);
-        splicer = splicer.substr(i);
-      }
+        /* Text preceding the link? add it to textbits frst */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            textbits.push(t);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the URL and cut it out as a link */
-      m = splicer.match(ponymail_url_regex);
-      if (m) {
-        url = m[1];
-        i = url.length;
-        t = splicer.substr(0, i);
-        textbits.push(new HTML('a', {
-          href: url
-        }, url));
-        splicer = splicer.substr(i);
-      }
+        /* Find the URL and cut it out as a link */
+        m = splicer.match(ponymail_url_regex);
+        if (m) {
+            url = m[1];
+            i = url.length;
+            t = splicer.substr(0, i);
+            textbits.push(new HTML('a', {
+                href: url
+            }, url));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next link */
-      i = splicer.search(ponymail_url_regex);
+        /* Find the next link */
+        i = splicer.search(ponymail_url_regex);
     }
 
     /* push the remaining text into textbits */
@@ -123,25 +123,25 @@ function fixup_urls(splicer) {
 // Simple check to (attempt to) assess whether a trailer should
 // remain or get cut out.
 function legit_trailer(a) {
-  let lines = a.split(/\s*\r?\n/);
-  let first_line = lines.shift();
-  while (first_line.length == 0 && lines.length) first_line = lines.shift(); // get first meaningful line
-  if (!lines.length || first_line == '--') return ''; // likely a simple trailer
-  let last_line = lines.pop();
-  while (last_line.length == 0 && lines.length) last_line = lines.pop(); // get last meaningful line
-  
-  // Check if first and last line are similar, which is usually indictive of a ticket system
-  if (last_line == first_line) {
-    return a;
-  }
-  // Otherwise, check if first line has two or more dashes, and it occurs again later (also tix)
-  if (first_line.match(/^---+/) && lines.has(first_line)) {
-    return "|||" + a + "|||";
-  }
-  
-  // Lastly, if there is "sufficient" length to the dashes, allow (JIRA etc)
-  if (first_line.match(/^-{6,72}$/)) return a;
-  return '';
+    let lines = a.split(/\s*\r?\n/);
+    let first_line = lines.shift();
+    while (first_line.length == 0 && lines.length) first_line = lines.shift(); // get first meaningful line
+    if (!lines.length || first_line == '--') return ''; // likely a simple trailer
+    let last_line = lines.pop();
+    while (last_line.length == 0 && lines.length) last_line = lines.pop(); // get last meaningful line
+
+    // Check if first and last line are similar, which is usually indictive of a ticket system
+    if (last_line == first_line) {
+        return a;
+    }
+    // Otherwise, check if first line has two or more dashes, and it occurs again later (also tix)
+    if (first_line.match(/^---+/) && lines.has(first_line)) {
+        return "|||" + a + "|||";
+    }
+
+    // Lastly, if there is "sufficient" length to the dashes, allow (JIRA etc)
+    if (first_line.match(/^-{6,72}$/)) return a;
+    return '';
 }
 
 // Function for cutting away trailers
@@ -157,20 +157,24 @@ function cut_trailer(splicer) {
 }
 
 function color_diff_lines(diff) {
-  let lines = diff.split(/[\r\n]+/);
-  let ret = [];
-  for (var z = 0; z < lines.length;z++) {
-    let line = lines[z];
-    let color = 'grey';
-    if (line[0] == '@') color = 'blue';
-    if (line[0] == '-') color = 'red';
-    if (line[0] == '+') color = 'green';
-    if (line[0] == ' ') color = 'black';
-    let el = new HTML('span', {style: {color: color}}, line);
-    ret.push(el);
-    ret.push(new HTML('br'));
-  }
-  return ret;
+    let lines = diff.split(/[\r\n]+/);
+    let ret = [];
+    for (var z = 0; z < lines.length; z++) {
+        let line = lines[z];
+        let color = 'grey';
+        if (line[0] == '@') color = 'blue';
+        if (line[0] == '-') color = 'red';
+        if (line[0] == '+') color = 'green';
+        if (line[0] == ' ') color = 'black';
+        let el = new HTML('span', {
+            style: {
+                color: color
+            }
+        }, line);
+        ret.push(el);
+        ret.push(new HTML('br'));
+    }
+    return ret;
 }
 
 // Function for coloring diffs
@@ -189,32 +193,34 @@ function fixup_diffs(splicer) {
 
     /* While we have more links, ... */
     while (i !== -1) {
-      diffs++;
+        diffs++;
 
-      /* Only parse the first 20 diffs... srsly */
-      if (diffs > 25) {
-        break;
-      }
-      console.log(i);
-      /* Text preceding the diff? add it to textbits frst */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        textbits.push(t);
-        splicer = splicer.substr(i);
-      }
+        /* Only parse the first 20 diffs... srsly */
+        if (diffs > 25) {
+            break;
+        }
+        console.log(i);
+        /* Text preceding the diff? add it to textbits frst */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            textbits.push(t);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the URL and cut it out as a link */
-      m = splicer.match(ponymail_diff_regex);
-      if (m) {
-        diff = m[1];
-        i = diff.length;
-        t = splicer.substr(0, i);
-        textbits.push(new HTML('pre', {class: 'diff'}, color_diff_lines(diff)));
-        splicer = splicer.substr(i);
-      }
+        /* Find the URL and cut it out as a link */
+        m = splicer.match(ponymail_diff_regex);
+        if (m) {
+            diff = m[1];
+            i = diff.length;
+            t = splicer.substr(0, i);
+            textbits.push(new HTML('pre', {
+                class: 'diff'
+            }, color_diff_lines(diff)));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next link */
-      i = splicer.search(ponymail_diff_regex);
+        /* Find the next link */
+        i = splicer.search(ponymail_diff_regex);
     }
 
     /* push the remaining text into textbits */
@@ -224,11 +230,11 @@ function fixup_diffs(splicer) {
 
 // Function for turning quotes into quote segments
 function fixup_quotes(splicer) {
-    if (splicer[splicer.length-1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
+    if (splicer[splicer.length - 1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
     var hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
     hideQuotes = true;
     if (prefs.compactQuotes === false && !chatty_layout) {
-      hideQuotes = false;
+        hideQuotes = false;
     }
     if (!hideQuotes) return splicer; // We'll bail here for now. Dunno why not.
 
@@ -241,59 +247,63 @@ function fixup_quotes(splicer) {
 
     /* While we have more quotes, ... */
     while (i !== -1) {
-      quotes++;
+        quotes++;
 
-      /* Only parse the first 50 quotes... srsly */
-      if (quotes > 50) {
-        break;
-      }
+        /* Only parse the first 50 quotes... srsly */
+        if (quotes > 50) {
+            break;
+        }
 
-      /* Text preceding the quote? add it to textbits first */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        let diffed = fixup_diffs(cut_trailer(t));
-        if (isArray(diffed)) { for(var z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));}
-        else textbits.push(fixup_urls(diffed));
-        splicer = splicer.substr(i);
-      }
+        /* Text preceding the quote? add it to textbits first */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            let diffed = fixup_diffs(cut_trailer(t));
+            if (isArray(diffed)) {
+                for (var z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));
+            } else textbits.push(fixup_urls(diffed));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the quote and cut it out as a div */
-      m = splicer.match(ponymail_quote_regex);
-      if (m) {
-        quote = m[0];
-        i = quote.length;
-        t = splicer.substr(0, i);
-        quote = quote.replace(/(>*\s*\r?\n)+$/g, "");
-        qdiv = new HTML('div', {
-          "class": "email_quote_parent"
-        }, [
-          new HTML('button', {
-            title: "Toggle quote",
-            onclick: "toggle_quote(this)"
-          }, new HTML('span', {class:'glyphicon glyphicon-comment'}, " ")), new HTML('br'), new HTML('blockquote', {
-            "class": "email_quote",
-            style: {
-              display: hideQuotes ? 'none' : 'block'
-            }
-          }, fixup_urls(quote))
-        ]);
-        textbits.push(qdiv);
-        splicer = splicer.substr(i);
-      }
+        /* Find the quote and cut it out as a div */
+        m = splicer.match(ponymail_quote_regex);
+        if (m) {
+            quote = m[0];
+            i = quote.length;
+            t = splicer.substr(0, i);
+            quote = quote.replace(/(>*\s*\r?\n)+$/g, "");
+            qdiv = new HTML('div', {
+                "class": "email_quote_parent"
+            }, [
+                new HTML('button', {
+                    title: "Toggle quote",
+                    onclick: "toggle_quote(this)"
+                }, new HTML('span', {
+                    class: 'glyphicon glyphicon-comment'
+                }, " ")), new HTML('br'), new HTML('blockquote', {
+                    "class": "email_quote",
+                    style: {
+                        display: hideQuotes ? 'none' : 'block'
+                    }
+                }, fixup_urls(quote))
+            ]);
+            textbits.push(qdiv);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next quotes */
-      i = splicer.search(ponymail_quote_regex);
+        /* Find the next quotes */
+        i = splicer.search(ponymail_quote_regex);
     }
 
     /* push the remaining text into textbits */
     let diffed = fixup_diffs(cut_trailer(splicer));
-    if (isArray(diffed)) { for(var z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);}
-    else diffed = fixup_urls(diffed);
+    if (isArray(diffed)) {
+        for (var z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);
+    } else diffed = fixup_urls(diffed);
     textbits.push(new HTML('span', {}, diffed));
-    
+
     return textbits;
-  }
-  
+}
+
 function toggle_quote(el) {
     let quote = el.parentNode.childNodes[2];
     if (quote.style.display != 'block') {

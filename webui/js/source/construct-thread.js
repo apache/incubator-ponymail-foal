@@ -55,31 +55,40 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (cid === undefined) {
         doScroll = true;
     }
-    included = included||[];
+    included = included || [];
     cid = (cid || 0) + 1;
-    nestlevel = (nestlevel||0) + 1;
+    nestlevel = (nestlevel || 0) + 1;
     let mw = calc_email_width();
     let max_nesting = ponymail_max_nesting;
     if (mw < 700) {
-        max_nesting = Math.floor(mw/250);
+        max_nesting = Math.floor(mw / 250);
     }
     cid %= 5;
     let color = ['286090', 'ccab0a', 'c04331', '169e4e', '6d4ca5'][cid];
     let email = undefined;
     if (nestlevel < max_nesting) {
-        email = new HTML('div', { class: 'email_wrapper', id: 'email_%s'.format(thread.tid||thread.id)});
+        email = new HTML('div', {
+            class: 'email_wrapper',
+            id: 'email_%s'.format(thread.tid || thread.id)
+        });
         if (chatty_layout) {
             email.style.border = "none !important";
         } else {
             email.style.borderLeft = '3px solid #%s'.format(color);
         }
     } else {
-        email = new HTML('div', { class: 'email_wrapper_nonest', id: 'email_%s'.format(thread.tid||thread.id)});
+        email = new HTML('div', {
+            class: 'email_wrapper_nonest',
+            id: 'email_%s'.format(thread.tid || thread.id)
+        });
     }
-    let wrapper = new HTML('div', { class: 'email_inner_wrapper', id: 'email_contents_%s'.format(thread.tid||thread.id)});
+    let wrapper = new HTML('div', {
+        class: 'email_inner_wrapper',
+        id: 'email_contents_%s'.format(thread.tid || thread.id)
+    });
     email.inject(wrapper);
     if (isArray(thread.children)) {
-        thread.children.sort((a,b) => a.epoch - b.epoch);
+        thread.children.sort((a, b) => a.epoch - b.epoch);
         for (var i = 0; i < thread.children.length; i++) {
             let reply = construct_thread(thread.children[i], cid, nestlevel, included);
             cid++;
@@ -88,11 +97,16 @@ function construct_thread(thread, cid, nestlevel, included) {
             }
         }
     }
-    let tid = thread.tid||thread.id;
+    let tid = thread.tid || thread.id;
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {cached: true, scroll: doScroll, id: tid, div: wrapper});
+        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {
+            cached: true,
+            scroll: doScroll,
+            id: tid,
+            div: wrapper
+        });
     }
     return email;
 }
@@ -113,8 +127,13 @@ function construct_single_thread(state, json) {
     if (chatty_layout) {
         let listname = json.thread.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
         div.setAttribute("class", "email_placeholder_chatty");
-        div.inject(new HTML('h4', {class: 'chatty_title'}, json.emails[0].subject));
-        div.inject(new HTML('a', {href: 'list.html?%s'.format(listname), class: 'chatty_title'}, 'Posted to %s'.format(listname)));
+        div.inject(new HTML('h4', {
+            class: 'chatty_title'
+        }, json.emails[0].subject));
+        div.inject(new HTML('a', {
+            href: 'list.html?%s'.format(listname),
+            class: 'chatty_title'
+        }, 'Posted to %s'.format(listname)));
     } else {
         div.setAttribute("class", "email_placeholder");
     }

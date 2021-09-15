@@ -21,16 +21,27 @@ function modal(title, msg, type, isHTML) {
     let modal = document.getElementById('modal');
     let text = document.getElementById('modal_text');
     if (modal == undefined) {
-        text = new HTML('p', {id: 'modal_text'}, "");
-        modal = new HTML('div', { id: 'modal'}, [
-            new HTML('div', {id: 'modal_content'}, [
-                    new HTML('span', {id: 'modal_close', onclick: 'document.getElementById("modal").style.display = "none";'}, 'X'),
-                    new HTML('h2', {id: 'modal_title'}, title),
-                    new HTML('div', {}, text)
-                    ])
-            ]);
+        text = new HTML('p', {
+            id: 'modal_text'
+        }, "");
+        modal = new HTML('div', {
+            id: 'modal'
+        }, [
+            new HTML('div', {
+                id: 'modal_content'
+            }, [
+                new HTML('span', {
+                    id: 'modal_close',
+                    onclick: 'document.getElementById("modal").style.display = "none";'
+                }, 'X'),
+                new HTML('h2', {
+                    id: 'modal_title'
+                }, title),
+                new HTML('div', {}, text)
+            ])
+        ]);
         document.body.appendChild(modal);
-        
+
     }
     if (type) {
         modal.setAttribute("class", "modal_" + type);
@@ -50,7 +61,7 @@ function modal(title, msg, type, isHTML) {
 
 // Helper for determining if an email is open or not...
 function anyOpen() {
-    let open = (current_email_idx !== undefined) ? true: false;
+    let open = (current_email_idx !== undefined) ? true : false;
     console.log("Emails open? " + open);
     return open;
 }
@@ -58,28 +69,28 @@ function anyOpen() {
 // Helper function for hiding windows and open tabs
 // Hide previous action on first escape, hide everything on second escape
 function hideWindows(force_all) {
-    
+
     // First, check if we want to hide a modal
     let modal = document.getElementById('modal');
     if (modal && modal.style.display == 'block') {
         modal.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // RThen, check if we want to hide a composer modal
     let cmodal = document.getElementById('composer_modal');
     if (cmodal && cmodal.style.display == 'block') {
         cmodal.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // Check Advanced Search
     let as = document.getElementById('advanced_search');
     if (as && as.style.display == 'block') {
         as.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // Check for individually opened email
     if (current_email_idx !== undefined) {
         console.log("Hiding placeholder at index %u".format(current_email_idx));
@@ -90,10 +101,10 @@ function hideWindows(force_all) {
         current_email_idx = undefined; // undef this even if we can't find the email
         if (force_all !== true) return;
     }
-    
+
     // if viewing a single thread, disregard the collapses below - the won't make sense!
     if (location.href.match(/thread(?:\.html)?/)) return;
-    
+
     // Finally, check for other opened emails, close 'em all
     let placeholders = document.getElementsByClassName('email_placeholder');
     for (var i = 0; i < placeholders.length; i++) {
@@ -101,20 +112,24 @@ function hideWindows(force_all) {
             console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
             placeholders[i].style.display = 'none';
             // Reset scroll cache
-            try { window.scrollTo(0,0);} catch (e) {}
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
         }
     }
-    
+
     placeholders = document.getElementsByClassName('email_placeholder_chatty');
     for (var i = 0; i < placeholders.length; i++) {
         if (placeholders[i].style.display == 'block') {
             console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
             placeholders[i].style.display = 'none';
             // Reset scroll cache
-            try { window.scrollTo(0,0);} catch (e) {}
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
         }
     }
-    
+
 }
 
 // Show keyboard commands
@@ -158,7 +173,9 @@ function keyCommands(e) {
                     if (current_listmode == 'threaded') blobs = current_json.thread_struct;
                     let no_emails = blobs.length;
                     if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
-                        listview_header({pos: current_index_pos + current_per_page}, current_json);
+                        listview_header({
+                            pos: current_index_pos + current_per_page
+                        }, current_json);
                     }
                 }
                 return;
@@ -168,20 +185,22 @@ function keyCommands(e) {
                     if (current_listmode == 'threaded') blobs = current_json.thread_struct;
                     let no_emails = blobs.length;
                     if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
-                        listview_header({pos: current_index_pos - current_per_page}, current_json);
+                        listview_header({
+                            pos: current_index_pos - current_per_page
+                        }, current_json);
                     }
                 }
                 return;
         }
-        
+
     }
 }
 
 // swipe left/right for next/previous page on mobile
 function ponymail_swipe(event) {
     // Only accept "big" swipes
-    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[ 0 ]);
-    let direction = event.swipestart.coords[0] > event.swipestop.coords[ 0 ] ? 'left' : 'right';
+    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[0]);
+    let direction = event.swipestart.coords[0] > event.swipestop.coords[0] ? 'left' : 'right';
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
@@ -190,17 +209,20 @@ function ponymail_swipe(event) {
             if (current_listmode == 'threaded') blobs = current_json.thread_struct;
             let no_emails = blobs.length;
             if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
-                listview_header({pos: current_index_pos - current_per_page}, current_json);
+                listview_header({
+                    pos: current_index_pos - current_per_page
+                }, current_json);
             }
         }
-    }
-    else if (direction == 'left') {
+    } else if (direction == 'left') {
         if (current_json) { // IF list view...
             let blobs = current_json.emails;
             if (current_listmode == 'threaded') blobs = current_json.thread_struct;
             let no_emails = blobs.length;
             if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
-                listview_header({pos: current_index_pos + current_per_page}, current_json);
+                listview_header({
+                    pos: current_index_pos + current_per_page
+                }, current_json);
             }
         }
     }

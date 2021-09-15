@@ -6,20 +6,19 @@ let mua_headers = {};
 function compose_send() {
     let of = [];
     for (let k in mua_headers) {
-        of.push(k + "=" + encodeURIComponent(mua_headers[k]));
+        of .push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
     // Push the subject and email body into the form data
-    of.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
-    of.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
+    of .push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value)); of .push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (ponymail_preferences.login && ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
-        of.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
+        of .push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
     }
-    
+
     let request = new XMLHttpRequest();
     request.open("POST", "/api/compose.lua");
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send(of.join("&")); // send email as a POST string
-    
+    request.send( of .join("&")); // send email as a POST string
+
     document.getElementById('composer_modal').style.display = 'none';
     modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
 }
@@ -27,7 +26,7 @@ function compose_send() {
 function compose_email(replyto, list) {
     let email = null;
     let loggedIn = (ponymail_preferences.login && ponymail_preferences.login.credentials) ? true : false;
-    if (replyto) email = full_emails[replyto||''];
+    if (replyto) email = full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
     if (email) {
@@ -42,23 +41,26 @@ function compose_email(replyto, list) {
     mua_list = listname;
     mua_headers.to = listname;
     mua_mid = email ? email['message-id'] : null;
-    
+
     // Not logged in? MUA it is, then!
     if (!loggedIn) {
         if (email) {
-            let a = new HTML('a', {href: mua_trigger}, "Reply via your own email client");
+            let a = new HTML('a', {
+                href: mua_trigger
+            }, "Reply via your own email client");
             let p = new HTML('p', {}, [
-                                   "In order to reply to emails using the web interface, you need to be ",
-                                   new HTML('a', {href: '/oauth.html'}, "logged in first"),
-                                   ". You can however still reply to this email using your own email client: ",
-                                   a
-                                  ]
-                             );
+                "In order to reply to emails using the web interface, you need to be ",
+                new HTML('a', {
+                    href: '/oauth.html'
+                }, "logged in first"),
+                ". You can however still reply to this email using your own email client: ",
+                a
+            ]);
             composer("Reply to thread:", p);
             return;
         }
     }
-    
+
     // Replying to an email and logged in?
     let eml_subject = "";
     let eml_body = "";
@@ -70,7 +72,9 @@ function compose_email(replyto, list) {
     }
     let form = [];
     form.push(new HTML('b', {}, "Sending as:"));
-    let s = new HTML('select', { id: 'composer_alt' });
+    let s = new HTML('select', {
+        id: 'composer_alt'
+    });
     s.inject(new HTML('option', {}, ponymail_preferences.login.credentials.email));
     if (ponymail_preferences.login && ponymail_preferences.login.alternates) {
         for (let z = 0; z < ponymail_preferences.login.alternates.length; z++) {
@@ -82,18 +86,38 @@ function compose_email(replyto, list) {
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Subject:"));
     form.push(new HTML('br'));
-    form.push(new HTML('input', {style: { width: '90%'}, id: 'composer_subject', type: 'text', value: eml_subject}));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_subject',
+        type: 'text',
+        value: eml_subject
+    }));
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Reply:"));
     form.push(new HTML('br'));
-    let body = new HTML('textarea', {style: { width: '90%', minHeight: '400px'}, id: 'composer_body'}, eml_body);
+    let body = new HTML('textarea', {
+        style: {
+            width: '90%',
+            minHeight: '400px'
+        },
+        id: 'composer_body'
+    }, eml_body);
     form.push(body);
-    
-    let btn = new HTML('button', { onclick: 'compose_send();'}, "Send reply");
+
+    let btn = new HTML('button', {
+        onclick: 'compose_send();'
+    }, "Send reply");
     form.push(btn);
     form.push("   ");
-    form.push(new HTML('a', {href: mua_trigger, style: { marginLeft: '10px'}}, "Or compose via your own email client"));
-    
+    form.push(new HTML('a', {
+        href: mua_trigger,
+        style: {
+            marginLeft: '10px'
+        }
+    }, "Or compose via your own email client"));
+
     composer(eml_title, form);
     if (email) document.getElementById('composer_body').focus();
 
@@ -105,19 +129,30 @@ function compose_email(replyto, list) {
 function composer(title, contents) {
     let modal = document.getElementById('composer_modal');
     if (modal == undefined) {
-        modal = new HTML('div', { id: 'composer_modal'}, [
-            new HTML('div', {id: 'composer_modal_content'}, [
-                    new HTML('span', {id: 'composer_modal_close', onclick: 'document.getElementById("composer_modal").style.display = "none";'}, 'X'),
-                    new HTML('h2', {id: 'composer_modal_title'}, title),
-                    new HTML('div', {id: 'composer_modal_contents'}, contents)
-                    ])
-            ]);
+        modal = new HTML('div', {
+            id: 'composer_modal'
+        }, [
+            new HTML('div', {
+                id: 'composer_modal_content'
+            }, [
+                new HTML('span', {
+                    id: 'composer_modal_close',
+                    onclick: 'document.getElementById("composer_modal").style.display = "none";'
+                }, 'X'),
+                new HTML('h2', {
+                    id: 'composer_modal_title'
+                }, title),
+                new HTML('div', {
+                    id: 'composer_modal_contents'
+                }, contents)
+            ])
+        ]);
         document.body.appendChild(modal);
-        
+
     } else {
         document.getElementById('composer_modal_title').innerText = title;
         document.getElementById('composer_modal_contents').innerHTML = '';
-        document.getElementById('composer_modal_contents').inject(contents||'');
+        document.getElementById('composer_modal_contents').inject(contents || '');
     }
     modal.style.display = 'block';
 }
@@ -139,7 +174,7 @@ function mua_link(email, xlist) {
         return `mailto:${xlist}?subject=Subject+goes+here`;
     }
     let eml_raw_short = composer_re(email);
-    let subject = "RE: " + email.subject||'';
+    let subject = "RE: " + email.subject || '';
     let truncated = false;
     let N = 16000; // Anything above 16K can cause namespace issues with links.
     if (eml_raw_short.length > N) {
@@ -148,5 +183,5 @@ function mua_link(email, xlist) {
     }
     let listname = email.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
     let xlink = 'mailto:' + listname + "?subject=" + encodeURIComponent(subject) + "&amp;In-Reply-To=" + encodeURIComponent(email['message-id']) + "&body=" + encodeURIComponent(eml_raw_short);
-    return xlink;    
+    return xlink;
 }

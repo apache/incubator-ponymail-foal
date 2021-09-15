@@ -19,8 +19,8 @@ function calc_email_width() {
     // Figure out how many emails per page
     let body = document.body;
     let html = document.documentElement;
-    let width = Math.max( body.scrollWidth, body.offsetWidth, 
-                       html.clientWidth, html.scrollWidth, html.offsetWidth );
+    let width = Math.max(body.scrollWidth, body.offsetWidth,
+        html.clientWidth, html.scrollWidth, html.offsetWidth);
     return width;
 }
 
@@ -28,16 +28,19 @@ function listview_threaded(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
     let per_page = calc_per_page();
-    
+
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (n = s; n < (s+per_page); n++ ) {
+        for (n = s; n < (s + per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
                 list.inject(item);
                 // Hidden placeholder for expanding email(s)
-                let placeholder = new HTML('div', {class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder', id: 'email_%u'.format(z)});
+                let placeholder = new HTML('div', {
+                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    id: 'email_%u'.format(z)
+                });
                 list.inject(placeholder);
             }
         }
@@ -71,7 +74,7 @@ function count_replies(thread) {
 function count_people(thread, hash) {
     let ppl = hash || {};
     let eml = find_email(thread.tid);
-    if (eml) ppl[eml.from]  = true;
+    if (eml) ppl[eml.from] = true;
     if (isArray(thread.children)) {
         for (let i = 0; i < thread.children.length; i++) {
             if (true) {
@@ -99,83 +102,120 @@ function last_email(thread) {
 
 function listview_threaded_element(thread, idx) {
     let eml = find_email(thread.tid);
-    if (!eml) { return; }
-    
-    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
-    
-    let element = new HTML('div', { class: "listview_email_flat"}, " ");
-    let date = new Date(eml.epoch*1000.0);
+    if (!eml) {
+        return;
+    }
+
+    let link_wrapper = new HTML('a', {
+        href: 'thread/%s'.format(eml.id),
+        onclick: 'return(expand_email_threaded(%u));'.format(idx)
+    });
+
+    let element = new HTML('div', {
+        class: "listview_email_flat"
+    }, " ");
+    let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
-    
+
     // Add gravatar
-    let gravatar = new HTML('img', { class:"gravatar", src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)});
+    let gravatar = new HTML('img', {
+        class: "gravatar",
+        src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)
+    });
     element.inject(gravatar);
-    
-    
+
+
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
     if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
-    let author = new HTML('span', { class: "listview_email_author"}, authorName);
+    let author = new HTML('span', {
+        class: "listview_email_author"
+    }, authorName);
     element.inject(author);
-    
+
     // If needed, inject ML name
     if (current_domain == 'inbox' || current_list == '*') {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
-        author.inject(new HTML('span', { class: "label label-primary", style: "font-style: italic; font-size: 1rem;"}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1)));
+        author.inject(new HTML('span', {
+            class: "label label-primary",
+            style: "font-style: italic; font-size: 1rem;"
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1)));
     }
-    
-    
-    
+
+
+
     // Combined space for subject + body teaser
-    let as = new HTML('div', {class: 'listview_email_as'});
-    
-    let suba = new HTML('a', {},  eml.subject === '' ? '(No subject)' : eml.subject);
+    let as = new HTML('div', {
+        class: 'listview_email_as'
+    });
+
+    let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
     if (current_json.list.match(/\*/) || current_json.domain == '*') {
-        let kbd = new HTML('kbd', {class: 'listview_kbd'}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1))
+        let kbd = new HTML('kbd', {
+            class: 'listview_kbd'
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
         suba = [kbd, suba];
     }
-    let subject = new HTML('div', {class: 'listview_email_subject email_unread'}, suba);
+    let subject = new HTML('div', {
+        class: 'listview_email_subject email_unread'
+    }, suba);
     as.inject(subject);
-    
-    let body = new HTML('div', {class: 'listview_email_body'}, eml.body);
+
+    let body = new HTML('div', {
+        class: 'listview_email_body'
+    }, eml.body);
     as.inject(body);
-    
+
     element.inject(as);
-    
+
     // Labels
-    let labels = new HTML('div', {class: 'listview_email_labels'});
-    
-    
+    let labels = new HTML('div', {
+        class: 'listview_email_labels'
+    });
+
+
     // Participants
     let ppl = count_people(thread);
     let ptitle = (ppl == 1) ? "one participant" : "%u participants".format(ppl);
-    let people = new HTML('span', { class: 'label label-default', title: ptitle}, [
-        new HTML('span', { class: 'glyphicon glyphicon-user'}, ' '),
+    let people = new HTML('span', {
+        class: 'label label-default',
+        title: ptitle
+    }, [
+        new HTML('span', {
+            class: 'glyphicon glyphicon-user'
+        }, ' '),
         " %u".format(ppl)
-                                                                 ]);
+    ]);
     labels.inject(people);
-    
+
     // Replies
     let reps = count_replies(thread);
     let rtitle = (reps == 1) ? "one reply" : "%u replies".format(reps);
-    let repl = new HTML('span', { class: 'label label-default', title: rtitle}, [
-        new HTML('span', { class: 'glyphicon glyphicon-envelope'}, ' '),
+    let repl = new HTML('span', {
+        class: 'label label-default',
+        title: rtitle
+    }, [
+        new HTML('span', {
+            class: 'glyphicon glyphicon-envelope'
+        }, ' '),
         " %u".format(reps)
-                                                                 ]);
+    ]);
     labels.inject(repl);
-    
+
     // Date
     date = new Date(last_email(thread) * 1000.0);
-    let dl = new HTML('span', { class: 'label label-default'}, date.ISOBare());
+    let dl = new HTML('span', {
+        class: 'label label-default'
+    }, date.ISOBare());
     if (now - date < 86400000) {
         dl.setAttribute("class", "label label-primary");
     }
     labels.inject(dl);
-    
+
     element.inject(labels);
     link_wrapper.inject(element);
-    
+
     return link_wrapper;
 }

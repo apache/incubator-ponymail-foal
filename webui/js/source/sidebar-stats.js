@@ -17,19 +17,21 @@
 
 async function sidebar_stats(json) {
     let obj = document.getElementById('sidebar_stats');
-    if (!obj) { return; }
-    
+    if (!obj) {
+        return;
+    }
+
     obj.innerHTML = ""; // clear stats bar
-    
+
     if (!json.emails || isHash(json.emails) || json.emails.length == 0) {
         obj.innerText = "No emails found...";
         return;
     }
-    
+
     // Top 10 participants
     obj.inject("Found %u emails by %u authors, divided into %u topics.".format(json.emails.length, json.numparts, json.no_threads));
     obj.inject(new HTML('h5', {}, "Most active authors:"));
-    for (var i=0; i < json.participants.length; i++) {
+    for (var i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
             break;
         }
@@ -40,15 +42,20 @@ async function sidebar_stats(json) {
         if (par.name.length == 0) {
             par.name = par.email;
         }
-        pdiv = new HTML('div', {class:"sidebar_stats_participant"});
-        pimg = new HTML('img', { class:"gravatar_sm", src: "https://secure.gravatar.com/avatar/%s.jpg?s=64&r=g&d=mm".format(par.gravatar)})
+        pdiv = new HTML('div', {
+            class: "sidebar_stats_participant"
+        });
+        pimg = new HTML('img', {
+            class: "gravatar_sm",
+            src: "https://secure.gravatar.com/avatar/%s.jpg?s=64&r=g&d=mm".format(par.gravatar)
+        })
         pdiv.inject(pimg);
-        pdiv.inject(new HTML('b', {}, par.name+": "));
+        pdiv.inject(new HTML('b', {}, par.name + ": "));
         pdiv.inject(new HTML('br'));
         pdiv.inject("%u emails sent".format(par.count));
         obj.inject(pdiv);
     }
-    
+
     // Word cloud, if applicable
     let wc = document.getElementById('sidebar_wordcloud');
     if (wc && json.cloud) {
@@ -56,6 +63,8 @@ async function sidebar_stats(json) {
         wc.inject(new HTML('h5', {}, "Popular topics:"));
         // word cloud is delayed by 50ms to let the rest render first
         // this is a chrome-specific slowdown we're addressing.
-        window.setTimeout(function() {wordCloud(json.cloud, 220, 100, wc);}, 50);
+        window.setTimeout(function() {
+            wordCloud(json.cloud, 220, 100, wc);
+        }, 50);
     }
 }

@@ -15,7 +15,7 @@
  limitations under the License.
  */
 
-var ponymail_version = "1.0.1-Foal"  // Current version of Pony Mail
+var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
 var ponymail_name = "Pony Mail" // name of archive (set to "Foo's mail archive" or whatever)
 
 var hits_per_page = 10;
@@ -39,7 +39,12 @@ var ponymail_max_nesting = 10; // max nesting level before unthreading to save s
 // thread state
 var current_email_idx = undefined;
 var chatty_layout = true;
-var ponymail_date_format = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+var ponymail_date_format = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+};
 var virtual_inbox_loading = false;
 var collated_json = {};
 
@@ -81,18 +86,23 @@ if (pm_config && pm_config.apiURL) {
     console.log("Setting API URL to %s".format(apiURL));
 }
 
-window.addEventListener('load',function() {
-        document.body.appendChild(new HTML('footer', {class: 'footer'}, [
-            new HTML('div', { class: 'container'}, [
-                new HTML('p', {class: 'muted'}, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
-                ]
-                )
-            ])
-        );
-    }
-    );
+window.addEventListener('load', function() {
+    document.body.appendChild(new HTML('footer', {
+        class: 'footer'
+    }, [
+        new HTML('div', {
+            class: 'container'
+        }, [
+            new HTML('p', {
+                class: 'muted'
+            }, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
+        ])
+    ]));
+});
 console.log("initializing pop state checker");
 window.onpopstate = function(event) {
     console.log("Popping state");
-    return parseURL({cached: true});
+    return parseURL({
+        cached: true
+    });
 };

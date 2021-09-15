@@ -27,7 +27,7 @@ async function escrow_check() {
     let now = new Date();
     let show_spinner = false;
     for (var k in async_escrow) {
-        if ( (now - async_escrow[k]) > async_maxwait ) {
+        if ((now - async_escrow[k]) > async_maxwait) {
             show_spinner = true;
             break;
         }
@@ -35,8 +35,14 @@ async function escrow_check() {
     // Fetch or create the spinner
     let spinner = document.getElementById('spinner');
     if (!spinner) {
-        spinner = new HTML('div', { id: 'spinner', class: 'spinner'});
-        spinwheel = new HTML('div', {id: 'spinwheel', class: 'spinwheel'});
+        spinner = new HTML('div', {
+            id: 'spinner',
+            class: 'spinner'
+        });
+        spinwheel = new HTML('div', {
+            id: 'spinwheel',
+            class: 'spinwheel'
+        });
         spinner.inject(spinwheel);
         spinner.inject(new HTML('h2', {}, "Loading, please wait.."));
         document.body.appendChild(spinner);
@@ -78,21 +84,21 @@ async function GET(url, callback, state) {
     if (state && state.cached === true && async_cache[url]) {
         console.log("Fetching %s from cache".format(url));
         res_json = async_cache[url];
-    }
-    else {
+    } else {
         try {
             console.log("putting %s in escrow...".format(url));
             async_escrow[pkey] = new Date(); // Log start of request in escrow dict
-            const rv = await fetch(url, {credentials: 'same-origin'}); // Wait for resource...
-            
+            const rv = await fetch(url, {
+                credentials: 'same-origin'
+            }); // Wait for resource...
+
             // Since this is an async request, the request may have been canceled
             // by the time we get a response. Only do callback if not.
             if (async_escrow[pkey] !== undefined) {
                 delete async_escrow[pkey]; // move out of escrow when fetched
                 res = rv;
             }
-        }
-        catch (e) {
+        } catch (e) {
             delete async_escrow[pkey]; // move out of escrow if failed
             console.log("The URL %s could not be fetched: %s".format(url, e));
             modal("An error occured", "An error occured while trying to fetch %s:\n%s".format(url, e), "error");

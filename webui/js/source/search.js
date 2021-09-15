@@ -29,14 +29,21 @@ function search(query, date) {
         global = true;
     }
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
-    GET(sURL, renderListView, {search: true, global: global});
+    GET(sURL, renderListView, {
+        search: true,
+        global: global
+    });
     let listid = '%s@%s'.format(list, domain);
     let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
-      window.history.pushState({}, null, newhref);
+        window.history.pushState({}, null, newhref);
     }
 
-    listview_list_lists({url: sURL, search: true, query: query});
+    listview_list_lists({
+        url: sURL,
+        search: true,
+        query: query
+    });
     hideWindows(true);
     document.getElementById('q').value = query;
     return false;

@@ -33,15 +33,17 @@ function list_index(state, json) {
             } else {
                 xtab.setAttribute("class", "");
             }
-            
+
         }
         return;
-    }
-    else {
+    } else {
         let letters = 'abcdefghijklmnopqrstuvwxyz*';
         for (var i = 0; i < letters.length; i++) {
             let letter = letters[i].toUpperCase();
-            let li = new HTML('li', {onclick: 'switch_index({letter: "%s"});'.format(letter), class: (letter == 'A') ? 'active' :null}, letter);
+            let li = new HTML('li', {
+                onclick: 'switch_index({letter: "%s"});'.format(letter),
+                class: (letter == 'A') ? 'active' : null
+            }, letter);
             lists.inject(li);
         }
     }
@@ -78,7 +80,9 @@ function list_index_onepage(state, json) {
             let lhtml = new HTML('h2', {}, l.toUpperCase());
             obj.inject(lhtml);
         }
-        let a = new HTML('a', {href: 'list.html?%s@%s'.format(best_list(json.lists[domain]), domain)}, domain);
+        let a = new HTML('a', {
+            href: 'list.html?%s@%s'.format(best_list(json.lists[domain]), domain)
+        }, domain);
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
     }
