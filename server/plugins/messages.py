@@ -251,17 +251,18 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     doctype = session.database.dbs.source
     try:
         doc = await session.database.get(index=doctype, id=permalink)
-        return doc
     except plugins.database.DBError:
-        pass
-    res = await session.database.search(
-        index=doctype,
-        size=1,
-        body={"query": {"bool": {"must": [{"match": {"permalink": permalink}}]}}},
-    )
-    if len(res["hits"]["hits"]) == 1:
-        doc = res["hits"]["hits"][0]
-        doc["id"] = doc["_id"]
+        doc = None
+    if not doc:
+        res = await session.database.search(
+            index=doctype,
+            size=1,
+            body={"query": {"bool": {"must": [{"match": {"permalink": permalink}}]}}},
+        )
+        if len(res["hits"]["hits"]) == 1:
+            doc = res["hits"]["hits"][0]
+            doc["id"] = doc["_id"]
+    if doc:
         if raw:
             return doc
         # Check for base64-encoded source
