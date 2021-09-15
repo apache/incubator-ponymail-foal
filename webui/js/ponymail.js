@@ -3024,6 +3024,11 @@ async function render_email(state, json) {
     let text = new HTML('pre', {}, fixup_quotes(json.body));
     div.inject(text);
     
+    // Private text?
+    if (json.private === true) {
+      text.style.backgroundImage = "url(images/private.png)";
+    }
+    
     
     let toolbar = new HTML('div', {class: 'toolbar'});
     
