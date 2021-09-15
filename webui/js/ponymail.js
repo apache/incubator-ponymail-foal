@@ -33,7 +33,7 @@ async function escrow_check() {
     let now = new Date();
     let show_spinner = false;
     for (var k in async_escrow) {
-        if ( (now - async_escrow[k]) > async_maxwait ) {
+        if ((now - async_escrow[k]) > async_maxwait) {
             show_spinner = true;
             break;
         }
@@ -41,8 +41,14 @@ async function escrow_check() {
     // Fetch or create the spinner
     let spinner = document.getElementById('spinner');
     if (!spinner) {
-        spinner = new HTML('div', { id: 'spinner', class: 'spinner'});
-        spinwheel = new HTML('div', {id: 'spinwheel', class: 'spinwheel'});
+        spinner = new HTML('div', {
+            id: 'spinner',
+            class: 'spinner'
+        });
+        spinwheel = new HTML('div', {
+            id: 'spinwheel',
+            class: 'spinwheel'
+        });
         spinner.inject(spinwheel);
         spinner.inject(new HTML('h2', {}, "Loading, please wait.."));
         document.body.appendChild(spinner);
@@ -84,21 +90,21 @@ async function GET(url, callback, state) {
     if (state && state.cached === true && async_cache[url]) {
         console.log("Fetching %s from cache".format(url));
         res_json = async_cache[url];
-    }
-    else {
+    } else {
         try {
             console.log("putting %s in escrow...".format(url));
             async_escrow[pkey] = new Date(); // Log start of request in escrow dict
-            const rv = await fetch(url, {credentials: 'same-origin'}); // Wait for resource...
-            
+            const rv = await fetch(url, {
+                credentials: 'same-origin'
+            }); // Wait for resource...
+
             // Since this is an async request, the request may have been canceled
             // by the time we get a response. Only do callback if not.
             if (async_escrow[pkey] !== undefined) {
                 delete async_escrow[pkey]; // move out of escrow when fetched
                 res = rv;
             }
-        }
-        catch (e) {
+        } catch (e) {
             delete async_escrow[pkey]; // move out of escrow if failed
             console.log("The URL %s could not be fetched: %s".format(url, e));
             modal("An error occured", "An error occured while trying to fetch %s:\n%s".format(url, e), "error");
@@ -126,7 +132,6 @@ async function GET(url, callback, state) {
     }
 }
 
-
 /******************************************
  Fetched from source/base-js-extensions.js
 ******************************************/
@@ -137,34 +142,34 @@ async function GET(url, callback, state) {
  */
 
 String.prototype.format = function() {
-  let args = arguments;
-  let n = 0;
-  let t = this;
-  let rtn = this.replace(/(?!%)?%([-+]*)([0-9.]*)([a-zA-Z])/g, function(m, pm, len, fmt) {
-      len = parseInt(len || '1');
-      // We need the correct number of args, balk otherwise, using ourselves to format the error!
-      if (args.length <= n) {
-        let err = "Error interpolating string '%s': Expected at least %u argments, only got %u!".format(t, n+1, args.length);
-        console.log(err);
-        throw err;
-      }
-      let varg = args[n];
-      n++;
-      switch (fmt) {
-        case 's':
-          if (typeof(varg) == 'function') {
-            varg = '(function)';
-          }
-          return varg;
-        // For now, let u, d and i do the same thing
-        case 'd':
-        case 'i':
-        case 'u':
-          varg = parseInt(varg).pad(len); // truncate to Integer, pad if needed
-          return varg;
-      }
+    let args = arguments;
+    let n = 0;
+    let t = this;
+    let rtn = this.replace(/(?!%)?%([-+]*)([0-9.]*)([a-zA-Z])/g, function(m, pm, len, fmt) {
+        len = parseInt(len || '1');
+        // We need the correct number of args, balk otherwise, using ourselves to format the error!
+        if (args.length <= n) {
+            let err = "Error interpolating string '%s': Expected at least %u argments, only got %u!".format(t, n + 1, args.length);
+            console.log(err);
+            throw err;
+        }
+        let varg = args[n];
+        n++;
+        switch (fmt) {
+            case 's':
+                if (typeof(varg) == 'function') {
+                    varg = '(function)';
+                }
+                return varg;
+                // For now, let u, d and i do the same thing
+            case 'd':
+            case 'i':
+            case 'u':
+                varg = parseInt(varg).pad(len); // truncate to Integer, pad if needed
+                return varg;
+        }
     });
-  return rtn;
+    return rtn;
 }
 
 
@@ -174,10 +179,10 @@ String.prototype.format = function() {
  */
 
 Number.prototype.pretty = function(fix) {
-  if (fix) {
-    return String(this.toFixed(fix)).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-  }
-  return String(this.toFixed(0)).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    if (fix) {
+        return String(this.toFixed(fix)).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+    }
+    return String(this.toFixed(0)).replace(/(\d)(?=(\d{3})+$)/g, '$1,');
 };
 
 
@@ -187,73 +192,70 @@ Number.prototype.pretty = function(fix) {
  */
 
 Number.prototype.pad = function(n) {
-  var str;
-  str = String(this);
+    var str;
+    str = String(this);
 
-  /* Do we need to pad? if so, do it using String.repeat */
-  if (str.length < n) {
-    str = "0".repeat(n - str.length) + str;
-  }
-  return str;
+    /* Do we need to pad? if so, do it using String.repeat */
+    if (str.length < n) {
+        str = "0".repeat(n - str.length) + str;
+    }
+    return str;
 };
 
 
 /* Func for converting a date to YYYY-MM-DD HH:MM */
 
 Date.prototype.ISOBare = function() {
-  var M, d, h, m, y;
-  y = this.getFullYear();
-  m = (this.getMonth() + 1).pad(2);
-  d = this.getDate().pad(2);
-  h = this.getHours().pad(2);
-  M = this.getMinutes().pad(2);
-  return y + "-" + m + "-" + d + " " + h + ":" + M;
+    var M, d, h, m, y;
+    y = this.getFullYear();
+    m = (this.getMonth() + 1).pad(2);
+    d = this.getDate().pad(2);
+    h = this.getHours().pad(2);
+    M = this.getMinutes().pad(2);
+    return y + "-" + m + "-" + d + " " + h + ":" + M;
 };
 
 
 /* isArray: function to detect if an object is an array */
 
 isArray = function(value) {
-  return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
+    return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
 };
 
 
 /* isHash: function to detect if an object is a hash */
 
 isHash = function(value) {
-  return value && typeof value === 'object' && !isArray(value);
+    return value && typeof value === 'object' && !isArray(value);
 };
 
 
 /* Remove an array element by value */
 
 Array.prototype.remove = function(val) {
-  var i, item, j, len;
-  for (i = j = 0, len = this.length; j < len; i = ++j) {
-    item = this[i];
-    if (item === val) {
-      this.splice(i, 1);
-      return this;
+    var i, item, j, len;
+    for (i = j = 0, len = this.length; j < len; i = ++j) {
+        item = this[i];
+        if (item === val) {
+            this.splice(i, 1);
+            return this;
+        }
     }
-  }
-  return this;
+    return this;
 };
 
 
 /* Check if array has value */
 Array.prototype.has = function(val) {
-  var i, item, j, len;
-  for (i = j = 0, len = this.length; j < len; i = ++j) {
-    item = this[i];
-    if (item === val) {
-      return true;
+    var i, item, j, len;
+    for (i = j = 0, len = this.length; j < len; i = ++j) {
+        item = this[i];
+        if (item === val) {
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 };
-
-
-
 
 /******************************************
  Fetched from source/body-fixups.js
@@ -267,55 +269,55 @@ ponymail_url_regex = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)
 // - inline quoting
 // - top posting with original email following
 ponymail_quote_regex = new RegExp("(" +
-  // Typical encapsulation of context by ticketing systems and/or bug trackers
-  "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
-  "(" +
-    "(?:\\r?\\n|^)" +  // start of line or after a colon
+    // Typical encapsulation of context by ticketing systems and/or bug trackers
+    "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
+    "(" +
+    "(?:\\r?\\n|^)" + // start of line or after a colon
     // Classic method; a signal line and the quote with '>' starting each line quoted
     "(" +
-      "(" + // Initial line signalling a quote
-        "((\\d+-\\d+-\\d+)\\s+.+<\\S+@\\S+>:[ \t\r\n]+)|" +  // "01-02-1982 Foo Bar <foo@bar.baz>:" OR
-        "(on\\s+(.+|.+\\n.+)\\s+wrote:[\r?\n]+)|" +          // "On $somedate, $someone wrote:", OR...
-        "(le\\s+(.+|.+\\n.+)\\s+écrit:[\r?\n]+)|" +          // French version of the above, OR...
-        "(.?am .+? schrieb\\s+.+:[\r?\n]+)|" +               // German version of the above, OR...
-        "(envoy[ée] de mon .+|sent from my .+|von meinem .+ gesendet)[ \t\r\n]+" + // "sent from my iphone/ipad/android phone/whatever", usually means the next part is a quote.
-      ")" + // End initial signal line
-      "(^$)*" + // Accept blank newlines following it...
-      "(((^(?!>)[\\s\\S]+$)*)|(^\\s*>[\\s\\S]+$)*)" +  // Either text that follows immediately after with no '>' first, OR text with '>' first, but NOT both...
+    "(" + // Initial line signalling a quote
+    "((\\d+-\\d+-\\d+)\\s+.+<\\S+@\\S+>:[ \t\r\n]+)|" + // "01-02-1982 Foo Bar <foo@bar.baz>:" OR
+    "(on\\s+(.+|.+\\n.+)\\s+wrote:[\r?\n]+)|" + // "On $somedate, $someone wrote:", OR...
+    "(le\\s+(.+|.+\\n.+)\\s+écrit:[\r?\n]+)|" + // French version of the above, OR...
+    "(.?am .+? schrieb\\s+.+:[\r?\n]+)|" + // German version of the above, OR...
+    "(envoy[ée] de mon .+|sent from my .+|von meinem .+ gesendet)[ \t\r\n]+" + // "sent from my iphone/ipad/android phone/whatever", usually means the next part is a quote.
+    ")" + // End initial signal line
+    "(^$)*" + // Accept blank newlines following it...
+    "(((^(?!>)[\\s\\S]+$)*)|(^\\s*>[\\s\\S]+$)*)" + // Either text that follows immediately after with no '>' first, OR text with '>' first, but NOT both...
     ")|" +
-      "(" +
-        // Lines after the signal line; comes in one shape, generally speaking...
-        "(^\\s*>+[ \\t]*[^\r\n]*\r*\n+)+" + // Lines beginning with one or more '>' after the initial signal line
-      ")" +      
+    "(" +
+    // Lines after the signal line; comes in one shape, generally speaking...
+    "(^\\s*>+[ \\t]*[^\r\n]*\r*\n+)+" + // Lines beginning with one or more '>' after the initial signal line
+    ")" +
     ")+|" + //OR...
     "(" +
-      "^(-{5,10}).+?\\1[\r\n]+" + // ----- Forwarded Message -----
-      "(^\\w+:\\s+.+[\r\n]+){3,10}[\r\n]+" + // Between three and ten header fields (we ask for at least 3, so as to not quote PGP blocks)
-      "[\\S\\s]+" + // Whatever comes next...
+    "^(-{5,10}).+?\\1[\r\n]+" + // ----- Forwarded Message -----
+    "(^\\w+:\\s+.+[\r\n]+){3,10}[\r\n]+" + // Between three and ten header fields (we ask for at least 3, so as to not quote PGP blocks)
+    "[\\S\\s]+" + // Whatever comes next...
     ")+" +
     ")", "mi");
 
 // Somewhat simplified method for catching email footers/trailers that we don't need
-ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi");//(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
+ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
 
 // This is a regex for capturing code diff blocks in an email
 ponymail_diff_regex = new RegExp(
-  "(" +
-  "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
-  "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
-  "(" + // Then one or more of...
+    "(" +
+    "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
+    "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
+    "(" + // Then one or more of...
     "^@@@? .+[\r\n]+" + // positioning
     "(^ .*[\r\n]*$){0,3}" + // diff header
     "(^[-+ ].*[\r\n]*)+" + // actual diff
     "(^ .*[\r\n]*$){0,3}" + // diff trailer
-  ")+" +
-  ")", "mi");
+    ")+" +
+    ")", "mi");
 
 // Function for turning URLs into <a> tags
 function fixup_urls(splicer) {
-    
+
     if (typeof splicer == 'object') {
-      return splicer;
+        return splicer;
         //splicer = splicer.innerText;
     }
     /* Array holding text and links */
@@ -328,34 +330,34 @@ function fixup_urls(splicer) {
 
     /* While we have more links, ... */
     while (i !== -1) {
-      urls++;
+        urls++;
 
-      /* Only parse the first 250 URLs... srsly */
-      if (urls > 250) {
-        break;
-      }
+        /* Only parse the first 250 URLs... srsly */
+        if (urls > 250) {
+            break;
+        }
 
-      /* Text preceding the link? add it to textbits frst */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        textbits.push(t);
-        splicer = splicer.substr(i);
-      }
+        /* Text preceding the link? add it to textbits frst */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            textbits.push(t);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the URL and cut it out as a link */
-      m = splicer.match(ponymail_url_regex);
-      if (m) {
-        url = m[1];
-        i = url.length;
-        t = splicer.substr(0, i);
-        textbits.push(new HTML('a', {
-          href: url
-        }, url));
-        splicer = splicer.substr(i);
-      }
+        /* Find the URL and cut it out as a link */
+        m = splicer.match(ponymail_url_regex);
+        if (m) {
+            url = m[1];
+            i = url.length;
+            t = splicer.substr(0, i);
+            textbits.push(new HTML('a', {
+                href: url
+            }, url));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next link */
-      i = splicer.search(ponymail_url_regex);
+        /* Find the next link */
+        i = splicer.search(ponymail_url_regex);
     }
 
     /* push the remaining text into textbits */
@@ -367,25 +369,25 @@ function fixup_urls(splicer) {
 // Simple check to (attempt to) assess whether a trailer should
 // remain or get cut out.
 function legit_trailer(a) {
-  let lines = a.split(/\s*\r?\n/);
-  let first_line = lines.shift();
-  while (first_line.length == 0 && lines.length) first_line = lines.shift(); // get first meaningful line
-  if (!lines.length || first_line == '--') return ''; // likely a simple trailer
-  let last_line = lines.pop();
-  while (last_line.length == 0 && lines.length) last_line = lines.pop(); // get last meaningful line
-  
-  // Check if first and last line are similar, which is usually indictive of a ticket system
-  if (last_line == first_line) {
-    return a;
-  }
-  // Otherwise, check if first line has two or more dashes, and it occurs again later (also tix)
-  if (first_line.match(/^---+/) && lines.has(first_line)) {
-    return "|||" + a + "|||";
-  }
-  
-  // Lastly, if there is "sufficient" length to the dashes, allow (JIRA etc)
-  if (first_line.match(/^-{6,72}$/)) return a;
-  return '';
+    let lines = a.split(/\s*\r?\n/);
+    let first_line = lines.shift();
+    while (first_line.length == 0 && lines.length) first_line = lines.shift(); // get first meaningful line
+    if (!lines.length || first_line == '--') return ''; // likely a simple trailer
+    let last_line = lines.pop();
+    while (last_line.length == 0 && lines.length) last_line = lines.pop(); // get last meaningful line
+
+    // Check if first and last line are similar, which is usually indictive of a ticket system
+    if (last_line == first_line) {
+        return a;
+    }
+    // Otherwise, check if first line has two or more dashes, and it occurs again later (also tix)
+    if (first_line.match(/^---+/) && lines.has(first_line)) {
+        return "|||" + a + "|||";
+    }
+
+    // Lastly, if there is "sufficient" length to the dashes, allow (JIRA etc)
+    if (first_line.match(/^-{6,72}$/)) return a;
+    return '';
 }
 
 // Function for cutting away trailers
@@ -401,20 +403,24 @@ function cut_trailer(splicer) {
 }
 
 function color_diff_lines(diff) {
-  let lines = diff.split(/[\r\n]+/);
-  let ret = [];
-  for (var z = 0; z < lines.length;z++) {
-    let line = lines[z];
-    let color = 'grey';
-    if (line[0] == '@') color = 'blue';
-    if (line[0] == '-') color = 'red';
-    if (line[0] == '+') color = 'green';
-    if (line[0] == ' ') color = 'black';
-    let el = new HTML('span', {style: {color: color}}, line);
-    ret.push(el);
-    ret.push(new HTML('br'));
-  }
-  return ret;
+    let lines = diff.split(/[\r\n]+/);
+    let ret = [];
+    for (var z = 0; z < lines.length; z++) {
+        let line = lines[z];
+        let color = 'grey';
+        if (line[0] == '@') color = 'blue';
+        if (line[0] == '-') color = 'red';
+        if (line[0] == '+') color = 'green';
+        if (line[0] == ' ') color = 'black';
+        let el = new HTML('span', {
+            style: {
+                color: color
+            }
+        }, line);
+        ret.push(el);
+        ret.push(new HTML('br'));
+    }
+    return ret;
 }
 
 // Function for coloring diffs
@@ -433,32 +439,34 @@ function fixup_diffs(splicer) {
 
     /* While we have more links, ... */
     while (i !== -1) {
-      diffs++;
+        diffs++;
 
-      /* Only parse the first 20 diffs... srsly */
-      if (diffs > 25) {
-        break;
-      }
-      console.log(i);
-      /* Text preceding the diff? add it to textbits frst */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        textbits.push(t);
-        splicer = splicer.substr(i);
-      }
+        /* Only parse the first 20 diffs... srsly */
+        if (diffs > 25) {
+            break;
+        }
+        console.log(i);
+        /* Text preceding the diff? add it to textbits frst */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            textbits.push(t);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the URL and cut it out as a link */
-      m = splicer.match(ponymail_diff_regex);
-      if (m) {
-        diff = m[1];
-        i = diff.length;
-        t = splicer.substr(0, i);
-        textbits.push(new HTML('pre', {class: 'diff'}, color_diff_lines(diff)));
-        splicer = splicer.substr(i);
-      }
+        /* Find the URL and cut it out as a link */
+        m = splicer.match(ponymail_diff_regex);
+        if (m) {
+            diff = m[1];
+            i = diff.length;
+            t = splicer.substr(0, i);
+            textbits.push(new HTML('pre', {
+                class: 'diff'
+            }, color_diff_lines(diff)));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next link */
-      i = splicer.search(ponymail_diff_regex);
+        /* Find the next link */
+        i = splicer.search(ponymail_diff_regex);
     }
 
     /* push the remaining text into textbits */
@@ -468,11 +476,11 @@ function fixup_diffs(splicer) {
 
 // Function for turning quotes into quote segments
 function fixup_quotes(splicer) {
-    if (splicer[splicer.length-1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
+    if (splicer[splicer.length - 1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
     var hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
     hideQuotes = true;
     if (prefs.compactQuotes === false && !chatty_layout) {
-      hideQuotes = false;
+        hideQuotes = false;
     }
     if (!hideQuotes) return splicer; // We'll bail here for now. Dunno why not.
 
@@ -485,59 +493,63 @@ function fixup_quotes(splicer) {
 
     /* While we have more quotes, ... */
     while (i !== -1) {
-      quotes++;
+        quotes++;
 
-      /* Only parse the first 50 quotes... srsly */
-      if (quotes > 50) {
-        break;
-      }
+        /* Only parse the first 50 quotes... srsly */
+        if (quotes > 50) {
+            break;
+        }
 
-      /* Text preceding the quote? add it to textbits first */
-      if (i > 0) {
-        t = splicer.substr(0, i);
-        let diffed = fixup_diffs(cut_trailer(t));
-        if (isArray(diffed)) { for(var z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));}
-        else textbits.push(fixup_urls(diffed));
-        splicer = splicer.substr(i);
-      }
+        /* Text preceding the quote? add it to textbits first */
+        if (i > 0) {
+            t = splicer.substr(0, i);
+            let diffed = fixup_diffs(cut_trailer(t));
+            if (isArray(diffed)) {
+                for (var z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));
+            } else textbits.push(fixup_urls(diffed));
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the quote and cut it out as a div */
-      m = splicer.match(ponymail_quote_regex);
-      if (m) {
-        quote = m[0];
-        i = quote.length;
-        t = splicer.substr(0, i);
-        quote = quote.replace(/(>*\s*\r?\n)+$/g, "");
-        qdiv = new HTML('div', {
-          "class": "email_quote_parent"
-        }, [
-          new HTML('button', {
-            title: "Toggle quote",
-            onclick: "toggle_quote(this)"
-          }, new HTML('span', {class:'glyphicon glyphicon-comment'}, " ")), new HTML('br'), new HTML('blockquote', {
-            "class": "email_quote",
-            style: {
-              display: hideQuotes ? 'none' : 'block'
-            }
-          }, fixup_urls(quote))
-        ]);
-        textbits.push(qdiv);
-        splicer = splicer.substr(i);
-      }
+        /* Find the quote and cut it out as a div */
+        m = splicer.match(ponymail_quote_regex);
+        if (m) {
+            quote = m[0];
+            i = quote.length;
+            t = splicer.substr(0, i);
+            quote = quote.replace(/(>*\s*\r?\n)+$/g, "");
+            qdiv = new HTML('div', {
+                "class": "email_quote_parent"
+            }, [
+                new HTML('button', {
+                    title: "Toggle quote",
+                    onclick: "toggle_quote(this)"
+                }, new HTML('span', {
+                    class: 'glyphicon glyphicon-comment'
+                }, " ")), new HTML('br'), new HTML('blockquote', {
+                    "class": "email_quote",
+                    style: {
+                        display: hideQuotes ? 'none' : 'block'
+                    }
+                }, fixup_urls(quote))
+            ]);
+            textbits.push(qdiv);
+            splicer = splicer.substr(i);
+        }
 
-      /* Find the next quotes */
-      i = splicer.search(ponymail_quote_regex);
+        /* Find the next quotes */
+        i = splicer.search(ponymail_quote_regex);
     }
 
     /* push the remaining text into textbits */
     let diffed = fixup_diffs(cut_trailer(splicer));
-    if (isArray(diffed)) { for(var z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);}
-    else diffed = fixup_urls(diffed);
+    if (isArray(diffed)) {
+        for (var z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);
+    } else diffed = fixup_urls(diffed);
     textbits.push(new HTML('span', {}, diffed));
-    
+
     return textbits;
-  }
-  
+}
+
 function toggle_quote(el) {
     let quote = el.parentNode.childNodes[2];
     if (quote.style.display != 'block') {
@@ -546,7 +558,6 @@ function toggle_quote(el) {
         quote.style.display = 'none';
     }
 }
-
 
 /******************************************
  Fetched from source/composer.js
@@ -560,20 +571,19 @@ let mua_headers = {};
 function compose_send() {
     let of = [];
     for (let k in mua_headers) {
-        of.push(k + "=" + encodeURIComponent(mua_headers[k]));
+        of .push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
     // Push the subject and email body into the form data
-    of.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
-    of.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
+    of .push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value)); of .push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (ponymail_preferences.login && ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
-        of.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
+        of .push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
     }
-    
+
     let request = new XMLHttpRequest();
     request.open("POST", "/api/compose.lua");
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send(of.join("&")); // send email as a POST string
-    
+    request.send( of .join("&")); // send email as a POST string
+
     document.getElementById('composer_modal').style.display = 'none';
     modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
 }
@@ -581,7 +591,7 @@ function compose_send() {
 function compose_email(replyto, list) {
     let email = null;
     let loggedIn = (ponymail_preferences.login && ponymail_preferences.login.credentials) ? true : false;
-    if (replyto) email = full_emails[replyto||''];
+    if (replyto) email = full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
     if (email) {
@@ -596,23 +606,26 @@ function compose_email(replyto, list) {
     mua_list = listname;
     mua_headers.to = listname;
     mua_mid = email ? email['message-id'] : null;
-    
+
     // Not logged in? MUA it is, then!
     if (!loggedIn) {
         if (email) {
-            let a = new HTML('a', {href: mua_trigger}, "Reply via your own email client");
+            let a = new HTML('a', {
+                href: mua_trigger
+            }, "Reply via your own email client");
             let p = new HTML('p', {}, [
-                                   "In order to reply to emails using the web interface, you need to be ",
-                                   new HTML('a', {href: '/oauth.html'}, "logged in first"),
-                                   ". You can however still reply to this email using your own email client: ",
-                                   a
-                                  ]
-                             );
+                "In order to reply to emails using the web interface, you need to be ",
+                new HTML('a', {
+                    href: '/oauth.html'
+                }, "logged in first"),
+                ". You can however still reply to this email using your own email client: ",
+                a
+            ]);
             composer("Reply to thread:", p);
             return;
         }
     }
-    
+
     // Replying to an email and logged in?
     let eml_subject = "";
     let eml_body = "";
@@ -624,7 +637,9 @@ function compose_email(replyto, list) {
     }
     let form = [];
     form.push(new HTML('b', {}, "Sending as:"));
-    let s = new HTML('select', { id: 'composer_alt' });
+    let s = new HTML('select', {
+        id: 'composer_alt'
+    });
     s.inject(new HTML('option', {}, ponymail_preferences.login.credentials.email));
     if (ponymail_preferences.login && ponymail_preferences.login.alternates) {
         for (let z = 0; z < ponymail_preferences.login.alternates.length; z++) {
@@ -636,18 +651,38 @@ function compose_email(replyto, list) {
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Subject:"));
     form.push(new HTML('br'));
-    form.push(new HTML('input', {style: { width: '90%'}, id: 'composer_subject', type: 'text', value: eml_subject}));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_subject',
+        type: 'text',
+        value: eml_subject
+    }));
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Reply:"));
     form.push(new HTML('br'));
-    let body = new HTML('textarea', {style: { width: '90%', minHeight: '400px'}, id: 'composer_body'}, eml_body);
+    let body = new HTML('textarea', {
+        style: {
+            width: '90%',
+            minHeight: '400px'
+        },
+        id: 'composer_body'
+    }, eml_body);
     form.push(body);
-    
-    let btn = new HTML('button', { onclick: 'compose_send();'}, "Send reply");
+
+    let btn = new HTML('button', {
+        onclick: 'compose_send();'
+    }, "Send reply");
     form.push(btn);
     form.push("   ");
-    form.push(new HTML('a', {href: mua_trigger, style: { marginLeft: '10px'}}, "Or compose via your own email client"));
-    
+    form.push(new HTML('a', {
+        href: mua_trigger,
+        style: {
+            marginLeft: '10px'
+        }
+    }, "Or compose via your own email client"));
+
     composer(eml_title, form);
     if (email) document.getElementById('composer_body').focus();
 
@@ -659,19 +694,30 @@ function compose_email(replyto, list) {
 function composer(title, contents) {
     let modal = document.getElementById('composer_modal');
     if (modal == undefined) {
-        modal = new HTML('div', { id: 'composer_modal'}, [
-            new HTML('div', {id: 'composer_modal_content'}, [
-                    new HTML('span', {id: 'composer_modal_close', onclick: 'document.getElementById("composer_modal").style.display = "none";'}, 'X'),
-                    new HTML('h2', {id: 'composer_modal_title'}, title),
-                    new HTML('div', {id: 'composer_modal_contents'}, contents)
-                    ])
-            ]);
+        modal = new HTML('div', {
+            id: 'composer_modal'
+        }, [
+            new HTML('div', {
+                id: 'composer_modal_content'
+            }, [
+                new HTML('span', {
+                    id: 'composer_modal_close',
+                    onclick: 'document.getElementById("composer_modal").style.display = "none";'
+                }, 'X'),
+                new HTML('h2', {
+                    id: 'composer_modal_title'
+                }, title),
+                new HTML('div', {
+                    id: 'composer_modal_contents'
+                }, contents)
+            ])
+        ]);
         document.body.appendChild(modal);
-        
+
     } else {
         document.getElementById('composer_modal_title').innerText = title;
         document.getElementById('composer_modal_contents').innerHTML = '';
-        document.getElementById('composer_modal_contents').inject(contents||'');
+        document.getElementById('composer_modal_contents').inject(contents || '');
     }
     modal.style.display = 'block';
 }
@@ -693,7 +739,7 @@ function mua_link(email, xlist) {
         return `mailto:${xlist}?subject=Subject+goes+here`;
     }
     let eml_raw_short = composer_re(email);
-    let subject = "RE: " + email.subject||'';
+    let subject = "RE: " + email.subject || '';
     let truncated = false;
     let N = 16000; // Anything above 16K can cause namespace issues with links.
     if (eml_raw_short.length > N) {
@@ -702,7 +748,7 @@ function mua_link(email, xlist) {
     }
     let listname = email.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
     let xlink = 'mailto:' + listname + "?subject=" + encodeURIComponent(subject) + "&amp;In-Reply-To=" + encodeURIComponent(email['message-id']) + "&body=" + encodeURIComponent(eml_raw_short);
-    return xlink;    
+    return xlink;
 }
 
 /******************************************
@@ -750,31 +796,40 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (cid === undefined) {
         doScroll = true;
     }
-    included = included||[];
+    included = included || [];
     cid = (cid || 0) + 1;
-    nestlevel = (nestlevel||0) + 1;
+    nestlevel = (nestlevel || 0) + 1;
     let mw = calc_email_width();
     let max_nesting = ponymail_max_nesting;
     if (mw < 700) {
-        max_nesting = Math.floor(mw/250);
+        max_nesting = Math.floor(mw / 250);
     }
     cid %= 5;
     let color = ['286090', 'ccab0a', 'c04331', '169e4e', '6d4ca5'][cid];
     let email = undefined;
     if (nestlevel < max_nesting) {
-        email = new HTML('div', { class: 'email_wrapper', id: 'email_%s'.format(thread.tid||thread.id)});
+        email = new HTML('div', {
+            class: 'email_wrapper',
+            id: 'email_%s'.format(thread.tid || thread.id)
+        });
         if (chatty_layout) {
             email.style.border = "none !important";
         } else {
             email.style.borderLeft = '3px solid #%s'.format(color);
         }
     } else {
-        email = new HTML('div', { class: 'email_wrapper_nonest', id: 'email_%s'.format(thread.tid||thread.id)});
+        email = new HTML('div', {
+            class: 'email_wrapper_nonest',
+            id: 'email_%s'.format(thread.tid || thread.id)
+        });
     }
-    let wrapper = new HTML('div', { class: 'email_inner_wrapper', id: 'email_contents_%s'.format(thread.tid||thread.id)});
+    let wrapper = new HTML('div', {
+        class: 'email_inner_wrapper',
+        id: 'email_contents_%s'.format(thread.tid || thread.id)
+    });
     email.inject(wrapper);
     if (isArray(thread.children)) {
-        thread.children.sort((a,b) => a.epoch - b.epoch);
+        thread.children.sort((a, b) => a.epoch - b.epoch);
         for (var i = 0; i < thread.children.length; i++) {
             let reply = construct_thread(thread.children[i], cid, nestlevel, included);
             cid++;
@@ -783,11 +838,16 @@ function construct_thread(thread, cid, nestlevel, included) {
             }
         }
     }
-    let tid = thread.tid||thread.id;
+    let tid = thread.tid || thread.id;
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {cached: true, scroll: doScroll, id: tid, div: wrapper});
+        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {
+            cached: true,
+            scroll: doScroll,
+            id: tid,
+            div: wrapper
+        });
     }
     return email;
 }
@@ -808,8 +868,13 @@ function construct_single_thread(state, json) {
     if (chatty_layout) {
         let listname = json.thread.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
         div.setAttribute("class", "email_placeholder_chatty");
-        div.inject(new HTML('h4', {class: 'chatty_title'}, json.emails[0].subject));
-        div.inject(new HTML('a', {href: 'list.html?%s'.format(listname), class: 'chatty_title'}, 'Posted to %s'.format(listname)));
+        div.inject(new HTML('h4', {
+            class: 'chatty_title'
+        }, json.emails[0].subject));
+        div.inject(new HTML('a', {
+            href: 'list.html?%s'.format(listname),
+            class: 'chatty_title'
+        }, 'Posted to %s'.format(listname)));
     } else {
         div.setAttribute("class", "email_placeholder");
     }
@@ -818,7 +883,6 @@ function construct_single_thread(state, json) {
     let email = construct_thread(thread);
     div.inject(email);
 }
-
 
 /******************************************
  Fetched from source/datepicker.js
@@ -835,24 +899,24 @@ var units = {
 }
 
 function fixupPicker(obj) {
-    obj.addEventListener("focus", function(event){
-        $('html').on('hide.bs.dropdown', function (e) {
+    obj.addEventListener("focus", function(event) {
+        $('html').on('hide.bs.dropdown', function(e) {
             return false;
         });
     });
-    obj.addEventListener("blur", function(event){
+    obj.addEventListener("blur", function(event) {
         $('html').unbind('hide.bs.dropdown')
     });
 }
 // makeSelect: Creates a <select> object with options
 function makeSelect(options, id, selval) {
     var sel = document.createElement('select')
-    sel.addEventListener("focus", function(event){
-        $('html').on('hide.bs.dropdown', function (e) {
+    sel.addEventListener("focus", function(event) {
+        $('html').on('hide.bs.dropdown', function(e) {
             return false;
         });
     });
-    sel.addEventListener("blur", function(event){
+    sel.addEventListener("blur", function(event) {
         $('html').unbind('hide.bs.dropdown')
     });
     sel.setAttribute("name", id)
@@ -890,24 +954,24 @@ function splitDiv(id, name, div2) {
     radio.setAttribute("name", "datepicker_radio")
     radio.setAttribute("value", name)
     radio.setAttribute("id", "datepicker_radio_" + id)
-    radio.setAttribute("onclick", "calcTimespan('"+ id + "')")
+    radio.setAttribute("onclick", "calcTimespan('" + id + "')")
     var label = document.createElement('label')
     label.innerHTML = "&nbsp; " + name + ": "
     label.setAttribute("for", "datepicker_radio_" + id)
-    
-    
+
+
     subdiv.appendChild(radio)
     subdiv.appendChild(label)
-    
-    
+
+
     subdiv.style.float = "left"
     div2.style.float = "left"
-    
+
     subdiv.style.width = "120px"
     subdiv.style.height = "48px"
     div2.style.height = "48px"
     div2.style.width = "250px"
-    
+
     div.appendChild(subdiv)
     div.appendChild(div2)
     return div
@@ -919,7 +983,7 @@ function splitDiv(id, name, div2) {
 function calcTimespan(what) {
     var wat = ""
     var tval = ""
-    
+
     // Less than N units ago?
     if (what == 'lt') {
         // Get unit and how many units
@@ -929,7 +993,7 @@ function calcTimespan(what) {
         if (parseInt(N) != 1) {
             unitt += "s"
         }
-        
+
         // If this makes sense, construct a humanly readable and a computer version
         // of the timespan
         if (N.length > 0) {
@@ -937,7 +1001,7 @@ function calcTimespan(what) {
             tval = "lte=" + N + unit
         }
     }
-    
+
     // More than N units ago?
     if (what == 'mt') {
         // As above, get unit and no of units.
@@ -947,14 +1011,14 @@ function calcTimespan(what) {
         if (parseInt(N) != 1) {
             unitt += "s"
         }
-        
+
         // construct timespan val + description
         if (N.length > 0) {
             wat = "More than " + N + " " + unitt + " ago"
             tval = "gte=" + N + unit
         }
     }
-    
+
     // Date range?
     if (what == 'cd') {
         // Get From and To values
@@ -966,7 +1030,7 @@ function calcTimespan(what) {
             tval = "dfr=" + f + "|dto=" + t
         }
     }
-    
+
     // If we calc'ed a value and spawner exists, update its key/val
     if (datepicker_spawner && what && wat.length > 0) {
         document.getElementById('datepicker_radio_' + what).checked = true
@@ -977,7 +1041,7 @@ function calcTimespan(what) {
             datepicker_spawner.value = wat
             datepicker_spawner.setAttribute("data", tval)
         }
-        
+
     }
 }
 
@@ -986,7 +1050,7 @@ function calcTimespan(what) {
 function datePicker(parent, seedPeriod) {
     datepicker_spawner = parent
     var div = document.getElementById('datepicker_popup')
-    
+
     // If the datepicker object doesn't exist, spawn it
     if (!div) {
         div = document.createElement('div')
@@ -994,17 +1058,17 @@ function datePicker(parent, seedPeriod) {
         div.setAttribute("id", "datepicker_popup")
         div.setAttribute("class", "datepicker")
     }
-    
+
     // Reset the contents of the datepicker object
     div.innerHTML = ""
     div.style.display = "block"
-    
+
     // Position the datepicker next to whatever called it
     var bb = parent.getBoundingClientRect()
     div.style.top = (bb.bottom + 8) + "px"
     div.style.left = (bb.left + 32) + "px"
-    
-    
+
+
     // -- Less than N $units ago
     var ltdiv = document.createElement('div')
     var lti = document.createElement('input')
@@ -1013,7 +1077,7 @@ function datePicker(parent, seedPeriod) {
     lti.setAttribute("onkeyup", "calcTimespan('lt')")
     lti.setAttribute("onblur", "calcTimespan('lt')")
     ltdiv.appendChild(lti)
-    
+
     var lts = makeSelect({
         'd': "Day(s)",
         'w': 'Week(s)',
@@ -1023,21 +1087,21 @@ function datePicker(parent, seedPeriod) {
     lts.setAttribute("onchange", "calcTimespan('lt')")
     ltdiv.appendChild(lts)
     ltdiv.appendChild(document.createTextNode(' ago'))
-    
+
     div.appendChild(splitDiv('lt', 'Less than', ltdiv))
-    
-    
+
+
     // -- More than N $units ago
     var mtdiv = document.createElement('div')
-    
+
     var mti = document.createElement('input')
     mti.style.width = "48px"
     mti.setAttribute("id", "datepicker_mti")
     mti.setAttribute("onkeyup", "calcTimespan('mt')")
     mti.setAttribute("onblur", "calcTimespan('mt')")
     mtdiv.appendChild(mti)
-    
-    
+
+
     var mts = makeSelect({
         'd': "Day(s)",
         'w': 'Week(s)',
@@ -1048,13 +1112,13 @@ function datePicker(parent, seedPeriod) {
     mts.setAttribute("onchange", "calcTimespan('mt')")
     mtdiv.appendChild(document.createTextNode(' ago'))
     div.appendChild(splitDiv('mt', 'More than', mtdiv))
-    
-    
-    
+
+
+
     // -- Calendar timespan
     // This is just two text fields, the calendarPicker sub-plugin populates them
     var cdiv = document.createElement('div')
-    
+
     var cfrom = document.createElement('input')
     cfrom.style.width = "90px"
     cfrom.setAttribute("id", "datepicker_cfrom")
@@ -1062,7 +1126,7 @@ function datePicker(parent, seedPeriod) {
     cfrom.setAttribute("onchange", "calcTimespan('cd')")
     cdiv.appendChild(document.createTextNode('From: '))
     cdiv.appendChild(cfrom)
-    
+
     var cto = document.createElement('input')
     cto.style.width = "90px"
     cto.setAttribute("id", "datepicker_cto")
@@ -1070,11 +1134,11 @@ function datePicker(parent, seedPeriod) {
     cto.setAttribute("onchange", "calcTimespan('cd')")
     cdiv.appendChild(document.createTextNode('To: '))
     cdiv.appendChild(cto)
-    
+
     div.appendChild(splitDiv('cd', 'Date range', cdiv))
-    
-    
-    
+
+
+
     // -- Magic button that sends the timespan back to the caller
     var okay = document.createElement('input')
     okay.setAttribute("type", "button")
@@ -1083,16 +1147,18 @@ function datePicker(parent, seedPeriod) {
     div.appendChild(okay)
     parent.parentNode.appendChild(div)
     document.body.setAttribute("onclick", "")
-    window.setTimeout(function() { document.body.setAttribute("onclick", "blurDatePicker(event)") }, 200)
+    window.setTimeout(function() {
+        document.body.setAttribute("onclick", "blurDatePicker(event)")
+    }, 200)
     lti.focus()
-    
+
     // This is for recalcing the set options if spawned from a
     // select/input box with an existing value derived from an
     // earlier call to datePicker
     var ptype = ""
     var pvalue = parent.hasAttribute("data") ? parent.getAttribute("data") : parent.value
     if (pvalue.search(/=|-/) != -1) {
-        
+
         // Less than N units ago?
         if (pvalue.match(/lte/)) {
             var m = pvalue.match(/lte=(\d+)([dMyw])/)
@@ -1110,9 +1176,9 @@ function datePicker(parent, seedPeriod) {
                     }
                 }
             }
-            
+
         }
-        
+
         // More than N units ago?
         if (pvalue.match(/gte/)) {
             ptype = 'mt'
@@ -1132,7 +1198,7 @@ function datePicker(parent, seedPeriod) {
                 }
             }
         }
-        
+
         // Date range?
         if (pvalue.match(/dfr/)) {
             ptype = 'cd'
@@ -1152,8 +1218,8 @@ function datePicker(parent, seedPeriod) {
             var m = pvalue.match(/(\d{4})-(\d+)/)
             if (m.length == 3) {
                 // easy peasy, just set two text fields!
-                var dfrom = new Date(parseInt(m[1]),parseInt(m[2])-1,1, 0, 0, 0)
-                var dto = new Date(parseInt(m[1]),parseInt(m[2]),0, 23, 59, 59)
+                var dfrom = new Date(parseInt(m[1]), parseInt(m[2]) - 1, 1, 0, 0, 0)
+                var dto = new Date(parseInt(m[1]), parseInt(m[2]), 0, 23, 59, 59)
                 document.getElementById('datepicker_cfrom').value = m[0] + "-" + dfrom.getDate()
                 document.getElementById('datepicker_cto').value = m[0] + "-" + dto.getDate()
             }
@@ -1170,7 +1236,7 @@ function datePickerValue(seedPeriod) {
     var ptype = ""
     var rv = seedPeriod
     if (seedPeriod && seedPeriod.search && seedPeriod.search(/=|-/) != -1) {
-        
+
         // Less than N units ago?
         if (seedPeriod.match(/lte/)) {
             var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
@@ -1181,7 +1247,7 @@ function datePickerValue(seedPeriod) {
             }
             rv = "Less than " + m[1] + " " + unitt + " ago"
         }
-        
+
         // More than N units ago?
         if (seedPeriod.match(/gte/)) {
             ptype = 'mt'
@@ -1192,7 +1258,7 @@ function datePickerValue(seedPeriod) {
             }
             rv = "More than " + m[1] + " " + unitt + " ago"
         }
-        
+
         // Date range?
         if (seedPeriod.match(/dfr/)) {
             ptype = 'cd'
@@ -1202,17 +1268,17 @@ function datePickerValue(seedPeriod) {
                 rv = "From " + mf[1] + " to " + mt[1]
             }
         }
-        
+
         // Month??
         if (seedPeriod.match(/^(\d+)-(\d+)$/)) {
             ptype = 'mr' // just a made up thing...(month range)
             var mr = seedPeriod.match(/(\d+)-(\d+)/)
             if (mr) {
-                dfrom = new Date(parseInt(mr[1]),parseInt(mr[2])-1,1, 0, 0, 0)
+                dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
                 rv = months[dfrom.getMonth()] + ', ' + mr[1]
             }
         }
-        
+
     }
     return rv
 }
@@ -1227,75 +1293,75 @@ function datePickerDouble(seedPeriod) {
     var tspan = 1
     var dfrom = new Date()
     var dto = new Date()
-    
+
     // datepicker range?
     if (seedPeriod && seedPeriod.search && seedPeriod.search(/=/) != -1) {
-        
+
         // Less than N units ago?
         if (seedPeriod.match(/lte/)) {
             var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
             ptype = 'lt'
             rv = "<" + m[1] + m[2] + " ago"
-            dbl = "lte=" + (parseInt(m[1])*2) + m[2]
-            
+            dbl = "lte=" + (parseInt(m[1]) * 2) + m[2]
+
             // N months ago
             if (m[2] == "M") {
-                dfrom.setMonth(dfrom.getMonth()-parseInt(m[1]), dfrom.getDate())
+                dfrom.setMonth(dfrom.getMonth() - parseInt(m[1]), dfrom.getDate())
             }
-            
+
             // N days ago
             if (m[2] == "d") {
-                dfrom.setDate(dfrom.getDate()-parseInt(m[1]))
+                dfrom.setDate(dfrom.getDate() - parseInt(m[1]))
             }
-            
+
             // N years ago
             if (m[2] == "y") {
-                dfrom.setYear(dfrom.getFullYear()-parseInt(m[1]))
+                dfrom.setYear(dfrom.getFullYear() - parseInt(m[1]))
             }
-            
+
             // N weeks ago
             if (m[2] == "w") {
-                dfrom.setDate(dfrom.getDate()-(parseInt(m[1])*7))
+                dfrom.setDate(dfrom.getDate() - (parseInt(m[1]) * 7))
             }
-            
+
             // Calc total duration in days for this time span
-            tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000*86400))
+            tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000 * 86400))
         }
-        
+
         // More than N units ago?
         if (seedPeriod.match(/gte/)) {
             ptype = 'mt'
             var m = seedPeriod.match(/gte=(\d+)([dMyw])/)
             rv = ">" + m[1] + m[2] + " ago"
-            dbl = "gte=" + (parseInt(m[1])*2) + m[2]
+            dbl = "gte=" + (parseInt(m[1]) * 2) + m[2]
             tspan = parseInt(parseInt(m[1]) * 30.4)
             dfrom = null
-            
+
             // Months
             if (m[2] == "M") {
-                dto.setMonth(dto.getMonth()-parseInt(m[1]), dto.getDate())
+                dto.setMonth(dto.getMonth() - parseInt(m[1]), dto.getDate())
             }
-            
+
             // Days
             if (m[2] == "d") {
-                dto.setDate(dto.getDate()-parseInt(m[1]))
+                dto.setDate(dto.getDate() - parseInt(m[1]))
             }
-            
+
             // Years
             if (m[2] == "y") {
-                dto.setYear(dto.getFullYear()-parseInt(m[1]))
+                dto.setYear(dto.getFullYear() - parseInt(m[1]))
             }
-            
+
             // Weeks
             if (m[2] == "w") {
-                dto.setDate(dto.getDate()-(parseInt(m[1])*7))
+                dto.setDate(dto.getDate() - (parseInt(m[1]) * 7))
             }
-            
+
             // Can't really figure out a timespan for this, so...null!
             // This also sort of invalidates use on the trend page, but meh..
             tspan = null
         }
-        
+
         // Date range?
         if (seedPeriod.match(/dfr/)) {
             ptype = 'cd'
@@ -1305,55 +1371,55 @@ function datePickerDouble(seedPeriod) {
             if (mf && mt) {
                 rv = "from " + mf[1] + " to " + mt[1]
                 // Starts at 00:00:00 on from date
-                dfrom = new Date(parseInt(mf[1]),parseInt(mf[2])-1,parseInt(mf[3]), 0, 0, 0)
-                
+                dfrom = new Date(parseInt(mf[1]), parseInt(mf[2]) - 1, parseInt(mf[3]), 0, 0, 0)
+
                 // Ends at 23:59:59 on to date
-                dto = new Date(parseInt(mt[1]),parseInt(mt[2])-1,parseInt(mt[3]), 23, 59, 59)
-                
+                dto = new Date(parseInt(mt[1]), parseInt(mt[2]) - 1, parseInt(mt[3]), 23, 59, 59)
+
                 // Get duration in days, add 5 seconds to we can floor the value and get an integer
-                tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000*86400))
-                
+                tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000 * 86400))
+
                 // double the distance
                 var dpast = new Date(dfrom)
                 dpast.setDate(dpast.getDate() - tspan)
-                dbl = seedPeriod.replace(/dfr=[^|]+/, "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth()+1) + '-' + dpast.getDate())
+                dbl = seedPeriod.replace(/dfr=[^|]+/, "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth() + 1) + '-' + dpast.getDate())
             } else {
                 tspan = 0
             }
         }
     }
-    
+
     // just N days?
     else if (parseInt(seedPeriod).toString() == seedPeriod.toString()) {
         tspan = parseInt(seedPeriod)
         dfrom.setDate(dfrom.getDate() - tspan)
-        dbl = "lte=" + (tspan*2) + "d"
+        dbl = "lte=" + (tspan * 2) + "d"
     }
-    
+
     // Specific month?
     else if (seedPeriod.match(/^(\d+)-(\d+)$/)) {
         // just a made up thing...(month range)
-        ptype = 'mr' 
+        ptype = 'mr'
         var mr = seedPeriod.match(/(\d+)-(\d+)/)
         if (mr) {
             rv = seedPeriod
             // Same as before, start at 00:00:00
-            dfrom = new Date(parseInt(mr[1]),parseInt(mr[2])-1,1, 0, 0, 0)
+            dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
             // end at 23:59:59
-            dto = new Date(parseInt(mr[1]),parseInt(mr[2]),0, 23, 59, 59)
-            
+            dto = new Date(parseInt(mr[1]), parseInt(mr[2]), 0, 23, 59, 59)
+
             // B-A, add 5 seconds so we can floor the no. of days into an integer neatly
-            tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000*86400))
-            
+            tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000 * 86400))
+
             // Double timespan
             var dpast = new Date(dfrom)
             dpast.setDate(dpast.getDate() - tspan)
-            dbl = "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth()+1) + '-' + dpast.getDate() + "|dto=" + (dto.getFullYear()) + '-' + (dto.getMonth()+1) + '-' + dto.getDate()
+            dbl = "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth() + 1) + '-' + dpast.getDate() + "|dto=" + (dto.getFullYear()) + '-' + (dto.getMonth() + 1) + '-' + dto.getDate()
         } else {
             tspan = 0
         }
     }
-    
+
     return [dbl, dfrom, dto, tspan]
 }
 
@@ -1392,39 +1458,39 @@ function blurDatePicker(evt) {
 
 // draws the actual calendar inside a calendarPicker object
 function drawCalendarPicker(obj, date) {
-    
-    
+
+
     obj.focus()
-    
+
     // Default to NOW for calendar.
     var now = new Date()
-    
+
     // if called with an existing date (YYYY-MM-DD),
     // convert it to a JS date object and use that for
     // rendering the calendar
     if (date) {
         var ar = date.split(/-/)
-        now = new Date(ar[0],parseInt(ar[1])-1,ar[2])
+        now = new Date(ar[0], parseInt(ar[1]) - 1, ar[2])
     }
-    var days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+    var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     var mat = now
-    
+
     // Go to first day of the month
     mat.setDate(1)
-    
+
     obj.innerHTML = "<h3>" + months[mat.getMonth()] + ", " + mat.getFullYear() + ":</h3>"
     var tm = mat.getMonth()
-    
+
     // -- Nav buttons --
-    
+
     // back-a-year button
     var a = document.createElement('a')
     fixupPicker(a)
-    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear()-1) + '-' + (mat.getMonth()+1) + '-' + mat.getDate() + "');")
+    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear() - 1) + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
     a.innerHTML = "≪"
     obj.appendChild(a)
-    
+
     // back-a-month button
     a = document.createElement('a')
     fixupPicker(a)
@@ -1432,31 +1498,31 @@ function drawCalendarPicker(obj, date) {
     a.setAttribute("href", "javascript:void(0);")
     a.innerHTML = "&lt;"
     obj.appendChild(a)
-    
+
     // forward-a-month button
     a = document.createElement('a')
     fixupPicker(a)
-    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + mat.getFullYear() + '-' + (mat.getMonth()+2) + '-' + mat.getDate() + "');")
+    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + mat.getFullYear() + '-' + (mat.getMonth() + 2) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
     a.innerHTML = "&gt;"
     obj.appendChild(a)
-    
+
     // forward-a-year button
     a = document.createElement('a')
     fixupPicker(a)
-    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear()+1) + '-' + (mat.getMonth()+1) + '-' + mat.getDate() + "');")
+    a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear() + 1) + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
     a.innerHTML = "≫"
     obj.appendChild(a)
     obj.appendChild(document.createElement('br'))
-    
-    
+
+
     // Table containing the dates of the selected month
     var table = document.createElement('table')
-    
+
     table.setAttribute("border", "1")
     table.style.margin = "0 auto"
-    
+
     // Add header day names
     var tr = document.createElement('tr');
     for (var m = 0; m < 7; m++) {
@@ -1465,7 +1531,7 @@ function drawCalendarPicker(obj, date) {
         tr.appendChild(td)
     }
     table.appendChild(tr)
-    
+
     // Until we hit the first day in a month, add blank days
     tr = document.createElement('tr');
     var weekday = mat.getDay()
@@ -1477,7 +1543,7 @@ function drawCalendarPicker(obj, date) {
         var td = document.createElement('td')
         tr.appendChild(td)
     }
-    
+
     // While still in this month, add day then increment date by 1 day.
     while (mat.getMonth() == tm) {
         weekday = mat.getDay()
@@ -1491,24 +1557,26 @@ function drawCalendarPicker(obj, date) {
         }
         td = document.createElement('td')
         // onclick for setting the calendarPicker's parent to this val.
-        td.setAttribute("onclick", "setCalendarDate('" + mat.getFullYear() + '-' + (mat.getMonth()+1) + '-' + mat.getDate() + "');")
+        td.setAttribute("onclick", "setCalendarDate('" + mat.getFullYear() + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
         td.innerHTML = mat.getDate()
-        mat.setDate(mat.getDate()+1)
+        mat.setDate(mat.getDate() + 1)
         tr.appendChild(td)
     }
-    
+
     table.appendChild(tr)
     obj.appendChild(table)
 }
 
 // callback for datePicker; sets the cd value to what date was picked
 function setCalendarDate(what) {
-    $('html').on('hide.bs.dropdown', function (e) {
+    $('html').on('hide.bs.dropdown', function(e) {
         return false;
     });
-    setTimeout(function() { $('html').unbind('hide.bs.dropdown');}, 250);
-    
-    
+    setTimeout(function() {
+        $('html').unbind('hide.bs.dropdown');
+    }, 250);
+
+
     calendarpicker_spawner.value = what
     var div = document.getElementById('calendarpicker_popup')
     div.parentNode.focus()
@@ -1519,7 +1587,7 @@ function setCalendarDate(what) {
 // caller for when someone clicks on a calendarPicker enabled field
 function showCalendarPicker(parent, seedDate) {
     calendarpicker_spawner = parent
-    
+
     // If supplied with a YYYY-MM-DD date, use this to seed the calendar
     if (!seedDate) {
         var m = parent.value.match(/(\d+-\d+(-\d+)?)/)
@@ -1527,7 +1595,7 @@ function showCalendarPicker(parent, seedDate) {
             seedDate = m[1]
         }
     }
-    
+
     // Show or create the calendar object
     var div = document.getElementById('calendarpicker_popup')
     if (!div) {
@@ -1539,19 +1607,19 @@ function showCalendarPicker(parent, seedDate) {
     }
     div.style.display = "block"
     var bb = parent.getBoundingClientRect()
-    
+
     // Align with the calling object, slightly below
     div.style.top = (bb.bottom + 8) + "px"
     div.style.left = (bb.right - 32) + "px"
-    
-    drawCalendarPicker(div, seedDate)    
+
+    drawCalendarPicker(div, seedDate)
 }
 
 /******************************************
  Fetched from source/init.js
 ******************************************/
 
-var ponymail_version = "1.0.1-Foal"  // Current version of Pony Mail
+var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
 var ponymail_name = "Pony Mail" // name of archive (set to "Foo's mail archive" or whatever)
 
 var hits_per_page = 10;
@@ -1575,7 +1643,12 @@ var ponymail_max_nesting = 10; // max nesting level before unthreading to save s
 // thread state
 var current_email_idx = undefined;
 var chatty_layout = true;
-var ponymail_date_format = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+var ponymail_date_format = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+};
 var virtual_inbox_loading = false;
 var collated_json = {};
 
@@ -1617,22 +1690,26 @@ if (pm_config && pm_config.apiURL) {
     console.log("Setting API URL to %s".format(apiURL));
 }
 
-window.addEventListener('load',function() {
-        document.body.appendChild(new HTML('footer', {class: 'footer'}, [
-            new HTML('div', { class: 'container'}, [
-                new HTML('p', {class: 'muted'}, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
-                ]
-                )
-            ])
-        );
-    }
-    );
+window.addEventListener('load', function() {
+    document.body.appendChild(new HTML('footer', {
+        class: 'footer'
+    }, [
+        new HTML('div', {
+            class: 'container'
+        }, [
+            new HTML('p', {
+                class: 'muted'
+            }, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
+        ])
+    ]));
+});
 console.log("initializing pop state checker");
 window.onpopstate = function(event) {
     console.log("Popping state");
-    return parseURL({cached: true});
+    return parseURL({
+        cached: true
+    });
 };
-
 
 /******************************************
  Fetched from source/key-commands.js
@@ -1643,16 +1720,27 @@ function modal(title, msg, type, isHTML) {
     let modal = document.getElementById('modal');
     let text = document.getElementById('modal_text');
     if (modal == undefined) {
-        text = new HTML('p', {id: 'modal_text'}, "");
-        modal = new HTML('div', { id: 'modal'}, [
-            new HTML('div', {id: 'modal_content'}, [
-                    new HTML('span', {id: 'modal_close', onclick: 'document.getElementById("modal").style.display = "none";'}, 'X'),
-                    new HTML('h2', {id: 'modal_title'}, title),
-                    new HTML('div', {}, text)
-                    ])
-            ]);
+        text = new HTML('p', {
+            id: 'modal_text'
+        }, "");
+        modal = new HTML('div', {
+            id: 'modal'
+        }, [
+            new HTML('div', {
+                id: 'modal_content'
+            }, [
+                new HTML('span', {
+                    id: 'modal_close',
+                    onclick: 'document.getElementById("modal").style.display = "none";'
+                }, 'X'),
+                new HTML('h2', {
+                    id: 'modal_title'
+                }, title),
+                new HTML('div', {}, text)
+            ])
+        ]);
         document.body.appendChild(modal);
-        
+
     }
     if (type) {
         modal.setAttribute("class", "modal_" + type);
@@ -1672,7 +1760,7 @@ function modal(title, msg, type, isHTML) {
 
 // Helper for determining if an email is open or not...
 function anyOpen() {
-    let open = (current_email_idx !== undefined) ? true: false;
+    let open = (current_email_idx !== undefined) ? true : false;
     console.log("Emails open? " + open);
     return open;
 }
@@ -1680,28 +1768,28 @@ function anyOpen() {
 // Helper function for hiding windows and open tabs
 // Hide previous action on first escape, hide everything on second escape
 function hideWindows(force_all) {
-    
+
     // First, check if we want to hide a modal
     let modal = document.getElementById('modal');
     if (modal && modal.style.display == 'block') {
         modal.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // RThen, check if we want to hide a composer modal
     let cmodal = document.getElementById('composer_modal');
     if (cmodal && cmodal.style.display == 'block') {
         cmodal.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // Check Advanced Search
     let as = document.getElementById('advanced_search');
     if (as && as.style.display == 'block') {
         as.style.display = 'none';
         if (force_all !== true) return;
     }
-    
+
     // Check for individually opened email
     if (current_email_idx !== undefined) {
         console.log("Hiding placeholder at index %u".format(current_email_idx));
@@ -1712,10 +1800,10 @@ function hideWindows(force_all) {
         current_email_idx = undefined; // undef this even if we can't find the email
         if (force_all !== true) return;
     }
-    
+
     // if viewing a single thread, disregard the collapses below - the won't make sense!
     if (location.href.match(/thread(?:\.html)?/)) return;
-    
+
     // Finally, check for other opened emails, close 'em all
     let placeholders = document.getElementsByClassName('email_placeholder');
     for (var i = 0; i < placeholders.length; i++) {
@@ -1723,20 +1811,24 @@ function hideWindows(force_all) {
             console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
             placeholders[i].style.display = 'none';
             // Reset scroll cache
-            try { window.scrollTo(0,0);} catch (e) {}
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
         }
     }
-    
+
     placeholders = document.getElementsByClassName('email_placeholder_chatty');
     for (var i = 0; i < placeholders.length; i++) {
         if (placeholders[i].style.display == 'block') {
             console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
             placeholders[i].style.display = 'none';
             // Reset scroll cache
-            try { window.scrollTo(0,0);} catch (e) {}
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {}
         }
     }
-    
+
 }
 
 // Show keyboard commands
@@ -1780,7 +1872,9 @@ function keyCommands(e) {
                     if (current_listmode == 'threaded') blobs = current_json.thread_struct;
                     let no_emails = blobs.length;
                     if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
-                        listview_header({pos: current_index_pos + current_per_page}, current_json);
+                        listview_header({
+                            pos: current_index_pos + current_per_page
+                        }, current_json);
                     }
                 }
                 return;
@@ -1790,20 +1884,22 @@ function keyCommands(e) {
                     if (current_listmode == 'threaded') blobs = current_json.thread_struct;
                     let no_emails = blobs.length;
                     if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
-                        listview_header({pos: current_index_pos - current_per_page}, current_json);
+                        listview_header({
+                            pos: current_index_pos - current_per_page
+                        }, current_json);
                     }
                 }
                 return;
         }
-        
+
     }
 }
 
 // swipe left/right for next/previous page on mobile
 function ponymail_swipe(event) {
     // Only accept "big" swipes
-    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[ 0 ]);
-    let direction = event.swipestart.coords[0] > event.swipestop.coords[ 0 ] ? 'left' : 'right';
+    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[0]);
+    let direction = event.swipestart.coords[0] > event.swipestop.coords[0] ? 'left' : 'right';
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
@@ -1812,17 +1908,20 @@ function ponymail_swipe(event) {
             if (current_listmode == 'threaded') blobs = current_json.thread_struct;
             let no_emails = blobs.length;
             if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
-                listview_header({pos: current_index_pos - current_per_page}, current_json);
+                listview_header({
+                    pos: current_index_pos - current_per_page
+                }, current_json);
             }
         }
-    }
-    else if (direction == 'left') {
+    } else if (direction == 'left') {
         if (current_json) { // IF list view...
             let blobs = current_json.emails;
             if (current_listmode == 'threaded') blobs = current_json.thread_struct;
             let no_emails = blobs.length;
             if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
-                listview_header({pos: current_index_pos + current_per_page}, current_json);
+                listview_header({
+                    pos: current_index_pos + current_per_page
+                }, current_json);
             }
         }
     }
@@ -1851,15 +1950,17 @@ function list_index(state, json) {
             } else {
                 xtab.setAttribute("class", "");
             }
-            
+
         }
         return;
-    }
-    else {
+    } else {
         let letters = 'abcdefghijklmnopqrstuvwxyz*';
         for (var i = 0; i < letters.length; i++) {
             let letter = letters[i].toUpperCase();
-            let li = new HTML('li', {onclick: 'switch_index({letter: "%s"});'.format(letter), class: (letter == 'A') ? 'active' :null}, letter);
+            let li = new HTML('li', {
+                onclick: 'switch_index({letter: "%s"});'.format(letter),
+                class: (letter == 'A') ? 'active' : null
+            }, letter);
             lists.inject(li);
         }
     }
@@ -1896,7 +1997,9 @@ function list_index_onepage(state, json) {
             let lhtml = new HTML('h2', {}, l.toUpperCase());
             obj.inject(lhtml);
         }
-        let a = new HTML('a', {href: 'list.html?%s@%s'.format(best_list(json.lists[domain]), domain)}, domain);
+        let a = new HTML('a', {
+            href: 'list.html?%s@%s'.format(best_list(json.lists[domain]), domain)
+        }, domain);
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
     }
@@ -1906,7 +2009,6 @@ function prime_list_index() {
     GET('%sapi/preferences.lua'.format(apiURL), list_index_onepage, {});
 }
 
-
 /******************************************
  Fetched from source/listview-flat.js
 ******************************************/
@@ -1915,13 +2017,16 @@ function calc_per_page() {
     // Figure out how many emails per page
     let body = document.body;
     let html = document.documentElement;
-    let height = Math.max( body.scrollHeight, 
-                       html.clientHeight, html.scrollHeight);
-    let width = Math.max( body.scrollWidth, 
-                       html.clientWidth, html.scrollWidth);
+    let height = Math.max(body.scrollHeight,
+        html.clientHeight, html.scrollHeight);
+    let width = Math.max(body.scrollWidth,
+        html.clientWidth, html.scrollWidth);
     let email_h = 40;
     console.log("window area: %ux%u".format(width, height));
-    if (width < 600) { console.log("Using narrow view, halving emails per page..."); email_h = 80;}
+    if (width < 600) {
+        console.log("Using narrow view, halving emails per page...");
+        email_h = 80;
+    }
     height -= 180;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
@@ -1932,17 +2037,20 @@ function listview_flat(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
     let per_page = calc_per_page();
-    
+
     let s = start || 0;
     if (json.emails && json.emails.length) {
-        for (n = s; n < (s+per_page); n++ ) {
+        for (n = s; n < (s + per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
             if (json.emails[z]) {
                 let item = listview_flat_element(json.emails[z], z);
                 list.inject(item);
-                
+
                 // Hidden placeholder for expanding email(s)
-                let placeholder = new HTML('div', {class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder', id: 'email_%u'.format(z)});
+                let placeholder = new HTML('div', {
+                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    id: 'email_%u'.format(z)
+                });
                 list.inject(placeholder);
             }
         }
@@ -1952,52 +2060,71 @@ function listview_flat(json, start) {
 }
 
 function listview_flat_element(eml, idx) {
-    
-    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u, true));'.format(idx)});
-    
-    let element = new HTML('div', { class: "listview_email_flat"}, " ");
-    let date = new Date(eml.epoch*1000.0);
+
+    let link_wrapper = new HTML('a', {
+        href: 'thread/%s'.format(eml.id),
+        onclick: 'return(expand_email_threaded(%u, true));'.format(idx)
+    });
+
+    let element = new HTML('div', {
+        class: "listview_email_flat"
+    }, " ");
+    let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
-    
+
     // Add gravatar
-    let gravatar = new HTML('img', { class:"gravatar", src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)});
+    let gravatar = new HTML('img', {
+        class: "gravatar",
+        src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)
+    });
     element.inject(gravatar);
-    
-    
+
+
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
     if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
-    let author = new HTML('span', { class: "listview_email_author"}, authorName);
+    let author = new HTML('span', {
+        class: "listview_email_author"
+    }, authorName);
     element.inject(author);
-    
-    
+
+
     // Combined space for subject + body teaser
-    let as = new HTML('div', {class: 'listview_email_as'});
-    
+    let as = new HTML('div', {
+        class: 'listview_email_as'
+    });
+
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
-    let subject = new HTML('div', {class: 'listview_email_subject email_unread'}, suba);
+    let subject = new HTML('div', {
+        class: 'listview_email_subject email_unread'
+    }, suba);
     as.inject(subject);
-    
-    let body = new HTML('div', {class: 'listview_email_body'}, eml.body);
+
+    let body = new HTML('div', {
+        class: 'listview_email_body'
+    }, eml.body);
     as.inject(body);
-    
+
     element.inject(as);
-    
+
     // Labels
-    let labels = new HTML('div', {class: 'listview_email_labels'});
-    let dl = new HTML('span', { class: 'label label-default'}, date.ISOBare());
+    let labels = new HTML('div', {
+        class: 'listview_email_labels'
+    });
+    let dl = new HTML('span', {
+        class: 'label label-default'
+    }, date.ISOBare());
     if (now - date < 86400000) {
         dl.setAttribute("class", "label label-primary");
     }
     labels.inject(dl);
-    
+
     element.inject(labels);
     link_wrapper.inject(element);
-    
+
     return link_wrapper;
 }
-
 
 /******************************************
  Fetched from source/listview-header.js
@@ -2332,7 +2459,6 @@ window.addEventListener('orientationchange', function() {
     }, 100);
 }, false);
 
-
 /******************************************
  Fetched from source/listview-threaded.js
 ******************************************/
@@ -2341,8 +2467,8 @@ function calc_email_width() {
     // Figure out how many emails per page
     let body = document.body;
     let html = document.documentElement;
-    let width = Math.max( body.scrollWidth, body.offsetWidth, 
-                       html.clientWidth, html.scrollWidth, html.offsetWidth );
+    let width = Math.max(body.scrollWidth, body.offsetWidth,
+        html.clientWidth, html.scrollWidth, html.offsetWidth);
     return width;
 }
 
@@ -2350,16 +2476,19 @@ function listview_threaded(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
     let per_page = calc_per_page();
-    
+
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (n = s; n < (s+per_page); n++ ) {
+        for (n = s; n < (s + per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
                 list.inject(item);
                 // Hidden placeholder for expanding email(s)
-                let placeholder = new HTML('div', {class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder', id: 'email_%u'.format(z)});
+                let placeholder = new HTML('div', {
+                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    id: 'email_%u'.format(z)
+                });
                 list.inject(placeholder);
             }
         }
@@ -2393,7 +2522,7 @@ function count_replies(thread) {
 function count_people(thread, hash) {
     let ppl = hash || {};
     let eml = find_email(thread.tid);
-    if (eml) ppl[eml.from]  = true;
+    if (eml) ppl[eml.from] = true;
     if (isArray(thread.children)) {
         for (let i = 0; i < thread.children.length; i++) {
             if (true) {
@@ -2421,87 +2550,123 @@ function last_email(thread) {
 
 function listview_threaded_element(thread, idx) {
     let eml = find_email(thread.tid);
-    if (!eml) { return; }
-    
-    let link_wrapper = new HTML('a', {href:'thread/%s'.format(eml.id), onclick:'return(expand_email_threaded(%u));'.format(idx)});
-    
-    let element = new HTML('div', { class: "listview_email_flat"}, " ");
-    let date = new Date(eml.epoch*1000.0);
+    if (!eml) {
+        return;
+    }
+
+    let link_wrapper = new HTML('a', {
+        href: 'thread/%s'.format(eml.id),
+        onclick: 'return(expand_email_threaded(%u));'.format(idx)
+    });
+
+    let element = new HTML('div', {
+        class: "listview_email_flat"
+    }, " ");
+    let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
-    
+
     // Add gravatar
-    let gravatar = new HTML('img', { class:"gravatar", src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)});
+    let gravatar = new HTML('img', {
+        class: "gravatar",
+        src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(eml.gravatar)
+    });
     element.inject(gravatar);
-    
-    
+
+
     // Add author
     let authorName = eml.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let authorEmail = eml.from.match(/\s*<(.+@.+)>\s*/);
     if (authorName.length == 0) authorName = authorEmail ? authorEmail[1] : "(No author?)";
-    let author = new HTML('span', { class: "listview_email_author"}, authorName);
+    let author = new HTML('span', {
+        class: "listview_email_author"
+    }, authorName);
     element.inject(author);
-    
+
     // If needed, inject ML name
     if (current_domain == 'inbox' || current_list == '*') {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
-        author.inject(new HTML('span', { class: "label label-primary", style: "font-style: italic; font-size: 1rem;"}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1)));
+        author.inject(new HTML('span', {
+            class: "label label-primary",
+            style: "font-style: italic; font-size: 1rem;"
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1)));
     }
-    
-    
-    
+
+
+
     // Combined space for subject + body teaser
-    let as = new HTML('div', {class: 'listview_email_as'});
-    
-    let suba = new HTML('a', {},  eml.subject === '' ? '(No subject)' : eml.subject);
+    let as = new HTML('div', {
+        class: 'listview_email_as'
+    });
+
+    let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
     if (current_json.list.match(/\*/) || current_json.domain == '*') {
-        let kbd = new HTML('kbd', {class: 'listview_kbd'}, eml.list_raw.replace(/[<>]/g, '').replace('.','@',1))
+        let kbd = new HTML('kbd', {
+            class: 'listview_kbd'
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
         suba = [kbd, suba];
     }
-    let subject = new HTML('div', {class: 'listview_email_subject email_unread'}, suba);
+    let subject = new HTML('div', {
+        class: 'listview_email_subject email_unread'
+    }, suba);
     as.inject(subject);
-    
-    let body = new HTML('div', {class: 'listview_email_body'}, eml.body);
+
+    let body = new HTML('div', {
+        class: 'listview_email_body'
+    }, eml.body);
     as.inject(body);
-    
+
     element.inject(as);
-    
+
     // Labels
-    let labels = new HTML('div', {class: 'listview_email_labels'});
-    
-    
+    let labels = new HTML('div', {
+        class: 'listview_email_labels'
+    });
+
+
     // Participants
     let ppl = count_people(thread);
     let ptitle = (ppl == 1) ? "one participant" : "%u participants".format(ppl);
-    let people = new HTML('span', { class: 'label label-default', title: ptitle}, [
-        new HTML('span', { class: 'glyphicon glyphicon-user'}, ' '),
+    let people = new HTML('span', {
+        class: 'label label-default',
+        title: ptitle
+    }, [
+        new HTML('span', {
+            class: 'glyphicon glyphicon-user'
+        }, ' '),
         " %u".format(ppl)
-                                                                 ]);
+    ]);
     labels.inject(people);
-    
+
     // Replies
     let reps = count_replies(thread);
     let rtitle = (reps == 1) ? "one reply" : "%u replies".format(reps);
-    let repl = new HTML('span', { class: 'label label-default', title: rtitle}, [
-        new HTML('span', { class: 'glyphicon glyphicon-envelope'}, ' '),
+    let repl = new HTML('span', {
+        class: 'label label-default',
+        title: rtitle
+    }, [
+        new HTML('span', {
+            class: 'glyphicon glyphicon-envelope'
+        }, ' '),
         " %u".format(reps)
-                                                                 ]);
+    ]);
     labels.inject(repl);
-    
+
     // Date
     date = new Date(last_email(thread) * 1000.0);
-    let dl = new HTML('span', { class: 'label label-default'}, date.ISOBare());
+    let dl = new HTML('span', {
+        class: 'label label-default'
+    }, date.ISOBare());
     if (now - date < 86400000) {
         dl.setAttribute("class", "label label-primary");
     }
     labels.inject(dl);
-    
+
     element.inject(labels);
     link_wrapper.inject(element);
-    
+
     return link_wrapper;
 }
-
 
 /******************************************
  Fetched from source/mgmt.js
@@ -2517,7 +2682,9 @@ async function POST(url, formdata, state) {
         credentials: "same-origin",
         mode: "same-origin",
         method: "post",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: formdata
     });
     return resp
@@ -2569,75 +2736,156 @@ async function admin_save_email() {
 function admin_email_preview(stats, json) {
     admin_current_email = json.mid;
     let cp = document.getElementById("panel");
-    let div = new HTML('div', { style: { margin: '5px'}});
+    let div = new HTML('div', {
+        style: {
+            margin: '5px'
+        }
+    });
     cp.inject(div);
 
     div.inject(new HTML('h1', {}, "Editing email " + json.mid + ":"));
 
     // Author
-    let author_field = new HTML('div', {class: 'email_kv_edit'});
-    let author_key = new HTML('div', {class: 'email_key'}, "From: ");
-    let author_value = new HTML('input', {id: 'email_from', style: {width: "480px"}, value: json.from});
+    let author_field = new HTML('div', {
+        class: 'email_kv_edit'
+    });
+    let author_key = new HTML('div', {
+        class: 'email_key'
+    }, "From: ");
+    let author_value = new HTML('input', {
+        id: 'email_from',
+        style: {
+            width: "480px"
+        },
+        value: json.from
+    });
     author_field.inject([author_key, author_value]);
     div.inject(author_field);
 
     // Subject
-    let subject_field = new HTML('div', {class: 'email_kv_edit'});
-    let subject_key = new HTML('div', {class: 'email_key'}, "Subject: ");
-    let subject_value = new HTML('input', {id: 'email_subject', style: {width: "480px"}, value: json.subject});
+    let subject_field = new HTML('div', {
+        class: 'email_kv_edit'
+    });
+    let subject_key = new HTML('div', {
+        class: 'email_key'
+    }, "Subject: ");
+    let subject_value = new HTML('input', {
+        id: 'email_subject',
+        style: {
+            width: "480px"
+        },
+        value: json.subject
+    });
     subject_field.inject([subject_key, subject_value]);
     div.inject(subject_field);
 
     // Date
-    let date_field = new HTML('div', {class: 'email_kv_edit'});
-    let date_key = new HTML('div', {class: 'email_key'}, "Date: ");
-    let date_value = new HTML('div', {class: 'email_value'}, new Date(json.epoch * 1000.0).ISOBare());
+    let date_field = new HTML('div', {
+        class: 'email_kv_edit'
+    });
+    let date_key = new HTML('div', {
+        class: 'email_key'
+    }, "Date: ");
+    let date_value = new HTML('div', {
+        class: 'email_value'
+    }, new Date(json.epoch * 1000.0).ISOBare());
     date_field.inject([date_key, date_value]);
     div.inject(date_field);
 
     // List
     let listname = json.list_raw.replace(".", "@", 1).replace(/[<>]/g, "");
-    let list_field = new HTML('div', {class: 'email_kv_edit'});
-    let list_key = new HTML('div', {class: 'email_key'}, "List: ");
-    let list_value = new HTML('input', {id: 'email_listname', style: {width: "480px"}, value: listname});
+    let list_field = new HTML('div', {
+        class: 'email_kv_edit'
+    });
+    let list_key = new HTML('div', {
+        class: 'email_key'
+    }, "List: ");
+    let list_value = new HTML('input', {
+        id: 'email_listname',
+        style: {
+            width: "480px"
+        },
+        value: listname
+    });
     list_field.inject([list_key, list_value]);
     div.inject(list_field);
 
     // Private email?
-    let priv_field = new HTML('div', {class: 'email_kv_edit'});
-    let priv_key = new HTML('div', {class: 'email_key'}, "Visibility: ");
-    let priv_value = new HTML('select', {id:'email_private'});
-    priv_value.inject(new HTML('option', {value: 'no', style: {color: 'green'}, selected: json.private ? null : "selected"}, "Public"));
-    priv_value.inject(new HTML('option', {value: 'yes', style: {color: 'red'}, selected: json.private ? "selected" : null}, "Private"));
+    let priv_field = new HTML('div', {
+        class: 'email_kv_edit'
+    });
+    let priv_key = new HTML('div', {
+        class: 'email_key'
+    }, "Visibility: ");
+    let priv_value = new HTML('select', {
+        id: 'email_private'
+    });
+    priv_value.inject(new HTML('option', {
+        value: 'no',
+        style: {
+            color: 'green'
+        },
+        selected: json.private ? null : "selected"
+    }, "Public"));
+    priv_value.inject(new HTML('option', {
+        value: 'yes',
+        style: {
+            color: 'red'
+        },
+        selected: json.private ? "selected" : null
+    }, "Private"));
     priv_field.inject([priv_key, priv_value]);
     div.inject(priv_field);
 
     // Attachments?
     if (json.attachments && json.attachments.length > 0) {
-        let attach_field = new HTML('div', {class: 'email_kv'});
-        let attach_key = new HTML('div', {class: 'email_key'}, "Attachment(s): ");
+        let attach_field = new HTML('div', {
+            class: 'email_kv'
+        });
+        let attach_key = new HTML('div', {
+            class: 'email_key'
+        }, "Attachment(s): ");
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
             let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
-            let a = new HTML('a', {href: link, target: '_blank'}, attachment.filename);
+            let a = new HTML('a', {
+                href: link,
+                target: '_blank'
+            }, attachment.filename);
             alinks.push(a);
             let fs = ` ${attachment.size} bytes`;
             if (attachment.size >= 1024) fs = ` ${Math.floor(attachment.size/1024)} KB`;
-            if (attachment.size >= 1024*1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
-            alinks.push (fs);
+            if (attachment.size >= 1024 * 1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
+            alinks.push(fs);
             alinks.push(new HTML('br'));
         }
-        let attach_value = new HTML('div', {class: 'email_value'}, alinks);
+        let attach_value = new HTML('div', {
+            class: 'email_value'
+        }, alinks);
         attach_field.inject([attach_key, attach_value]);
         div.inject(attach_field);
     }
 
-    let text = new HTML('textarea', {id: 'email_body', style: {width: "100%", height: "480px"}}, json.body);
+    let text = new HTML('textarea', {
+        id: 'email_body',
+        style: {
+            width: "100%",
+            height: "480px"
+        }
+    }, json.body);
     div.inject(text);
 
-    let btn_edit = new HTML('button', {onclick: "admin_save_email();"}, "Save changes to archive");
-    let btn_hide = new HTML('button', {onclick: "admin_hide_email();", style: {marginLeft: "36px", color: 'red'}}, "Remove email from archives");
+    let btn_edit = new HTML('button', {
+        onclick: "admin_save_email();"
+    }, "Save changes to archive");
+    let btn_hide = new HTML('button', {
+        onclick: "admin_hide_email();",
+        style: {
+            marginLeft: "36px",
+            color: 'red'
+        }
+    }, "Remove email from archives");
     div.inject(new HTML('br'));
     div.inject(btn_edit);
     div.inject(btn_hide);
@@ -2648,18 +2896,27 @@ function admin_email_preview(stats, json) {
 }
 
 function admin_audit_view(state, json) {
-    let headers = ['Date', 'Author','Remote','Action','Target', 'Log'];
+    let headers = ['Date', 'Author', 'Remote', 'Action', 'Target', 'Log'];
     let cp = document.getElementById("panel");
     let div = document.getElementById('auditlog_entries');
     if (!div) {
-        div = new HTML('div', { id: "auditlog", style: { margin: '5px'}});
+        div = new HTML('div', {
+            id: "auditlog",
+            style: {
+                margin: '5px'
+            }
+        });
         cp.inject(div);
         div.inject(new HTML('h1', {}, "Audit log:"));
     }
     let table = document.getElementById('auditlog_entries');
     if (json.entries && json.entries.length > 0 || table) {
         if (!table) {
-            table = new HTML('table', {border: "1", id: "auditlog_entries", class:"auditlog_entries"});
+            table = new HTML('table', {
+                border: "1",
+                id: "auditlog_entries",
+                class: "auditlog_entries"
+            });
             let trh = new HTML('tr');
             for (let i = 0; i < headers.length; i++) {
                 let th = new HTML('th', {}, headers[i] + ":");
@@ -2667,17 +2924,23 @@ function admin_audit_view(state, json) {
             }
             table.inject(trh)
             div.inject(table);
-            let btn = new HTML('button', {onclick: "admin_audit_next();"}, "Load more entries");
+            let btn = new HTML('button', {
+                onclick: "admin_audit_next();"
+            }, "Load more entries");
             div.inject(btn);
         }
         for (let i = 0; i < json.entries.length; i++) {
             let entry = json.entries[i];
-            let tr = new HTML('tr', {class: "auditlog_entry"});
+            let tr = new HTML('tr', {
+                class: "auditlog_entry"
+            });
             for (let i = 0; i < headers.length; i++) {
                 let key = headers[i].toLowerCase();
                 let value = entry[key];
                 if (key == 'target') {
-                    value = new HTML('a', {href: "/admin/" +value}, value);
+                    value = new HTML('a', {
+                        href: "/admin/" + value
+                    }, value);
                 }
                 if (key == 'action') {
                     let action_colors = {
@@ -2685,7 +2948,11 @@ function admin_audit_view(state, json) {
                         delete: 'red',
                         default: 'black'
                     };
-                    value = new HTML('spam', {style: {color: action_colors[value] ? action_colors[value] : action_colors['default']}}, value);
+                    value = new HTML('spam', {
+                        style: {
+                            color: action_colors[value] ? action_colors[value] : action_colors['default']
+                        }
+                    }, value);
                 }
                 let th = new HTML('td', {}, value);
                 tr.inject(th);
@@ -2741,56 +3008,63 @@ function init_preferences(state, json) {
             }
         }
     }
-    
+
     // color some links
     let cl = document.getElementById('chatty_link');
     if (cl) {
-      cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
     }
-    
+
     if (ponymail_preferences.login && ponymail_preferences.login.credentials) {
-      let prefsmenu = document.getElementById('prefs_dropdown');
-      let uimg = document.getElementById('uimg');
-      uimg.setAttribute("src", "images/user.png");
-      uimg.setAttribute("title", "Logged in as %s".format(ponymail_preferences.login.credentials.fullname));
-      
-      // Generate user menu
-      prefsmenu.innerHTML = "";
-      
-      
-      let logout = new HTML('a', { href: "javascript:void(logout());"}, "Log out");
-      let li = new HTML('li', {}, logout)
-      prefsmenu.inject(li);
-      
-    } else {
-      let prefsmenu = document.getElementById('prefs_dropdown');
-      if (prefsmenu) {
+        let prefsmenu = document.getElementById('prefs_dropdown');
+        let uimg = document.getElementById('uimg');
+        uimg.setAttribute("src", "images/user.png");
+        uimg.setAttribute("title", "Logged in as %s".format(ponymail_preferences.login.credentials.fullname));
+
+        // Generate user menu
         prefsmenu.innerHTML = "";
-        let login = new HTML('a', { href: "javascript:location.href='oauth.html';"}, "Log In");
-        let li = new HTML('li', {}, login)
+
+
+        let logout = new HTML('a', {
+            href: "javascript:void(logout());"
+        }, "Log out");
+        let li = new HTML('li', {}, logout)
         prefsmenu.inject(li);
-      }
-    }
-    
-    if (json) {
-      listview_list_lists(state, json);
-      if (state && state.prime) {
-        // If lists is accessible, show it
-        if (json.lists[current_domain] && json.lists[current_domain][current_list] != undefined) {
-          post_prime(state);
-        } else {// otherwise, bork
-          if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
-            let eml = document.getElementById('emails');
-            eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
-            eml.inject(new HTML('br'));
-            eml.inject(new HTML('a', {href: 'oauth.html', onclick:'location.href="oauth.html";'}, "Click here to log in via OAuth"));
-          } else {
-            console.log(current_domain);
-            let first_list = Object.keys(json.lists[current_domain])[0];
-            location.href = `?${first_list}@${current_domain}`;
-          }
+
+    } else {
+        let prefsmenu = document.getElementById('prefs_dropdown');
+        if (prefsmenu) {
+            prefsmenu.innerHTML = "";
+            let login = new HTML('a', {
+                href: "javascript:location.href='oauth.html';"
+            }, "Log In");
+            let li = new HTML('li', {}, login)
+            prefsmenu.inject(li);
         }
-      }
+    }
+
+    if (json) {
+        listview_list_lists(state, json);
+        if (state && state.prime) {
+            // If lists is accessible, show it
+            if (json.lists[current_domain] && json.lists[current_domain][current_list] != undefined) {
+                post_prime(state);
+            } else { // otherwise, bork
+                if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
+                    let eml = document.getElementById('emails');
+                    eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
+                    eml.inject(new HTML('br'));
+                    eml.inject(new HTML('a', {
+                        href: 'oauth.html',
+                        onclick: 'location.href="oauth.html";'
+                    }, "Click here to log in via OAuth"));
+                } else {
+                    console.log(current_domain);
+                    let first_list = Object.keys(json.lists[current_domain])[0];
+                    location.href = `?${first_list}@${current_domain}`;
+                }
+            }
+        }
     }
 }
 
@@ -2813,26 +3087,26 @@ function set_theme(theme) {
 }
 
 function set_skin(skin) {
-  chatty_layout = !chatty_layout;
-  let cl = document.getElementById('chatty_link');
-  if (cl) {
-    cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
-  }
-  hideWindows(true);
-  renderListView(current_state, current_json);
-  save_preferences();
+    chatty_layout = !chatty_layout;
+    let cl = document.getElementById('chatty_link');
+    if (cl) {
+        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+    }
+    hideWindows(true);
+    renderListView(current_state, current_json);
+    save_preferences();
 }
 
 // set_skin, but for permalinks
 function set_skin_permalink(skin) {
-  chatty_layout = !chatty_layout;
-  let cl = document.getElementById('chatty_link');
-  if (cl) {
-    cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
-  }
-  hideWindows(true);
-  save_preferences();
-  parse_permalink();
+    chatty_layout = !chatty_layout;
+    let cl = document.getElementById('chatty_link');
+    if (cl) {
+        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+    }
+    hideWindows(true);
+    save_preferences();
+    parse_permalink();
 }
 
 /******************************************
@@ -2847,21 +3121,24 @@ function renderListView(state, json) {
     current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
-        renderCalendar(json.firstYear,json.firstMonth,json.lastYear, json.lastMonth);
+        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
-        current_json.thread_struct.sort((a,b) => last_email(a) - last_email(b));
+        current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
     }
     listview_header(state, json);
-    if (current_listmode == 'threaded') { listview_threaded(json, 0); }
-    else { listview_flat(json, 0);}
-    
+    if (current_listmode == 'threaded') {
+        listview_threaded(json, 0);
+    } else {
+        listview_flat(json, 0);
+    }
+
     sidebar_stats(json); // This comes last, takes the longest with WC enabled.
     delete async_escrow['rendering'];
-    
+
     if (state && state.to) {
-      listview_list_lists(state);
+        listview_list_lists(state);
     }
 }
 
@@ -2881,90 +3158,92 @@ function primeListView(state) {
 
 // callback from when prefs have loaded
 function post_prime(state) {
-  let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, current_list, current_domain);
+    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, current_list, current_domain);
     if (current_year && current_month) {
         sURL += "&d=%u-%u".format(current_year, current_month);
     }
-    if (! (state && state.search)) {
-      if (state && state.array) {
-        collated_json = {};
-        virtual_inbox_loading = true;
-        for (var i = 0; i < state.array.length; i++) {
-          let list = state.array[i].split('@');
-          sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
-          GET(sURL, render_virtual_inbox, state);
+    if (!(state && state.search)) {
+        if (state && state.array) {
+            collated_json = {};
+            virtual_inbox_loading = true;
+            for (var i = 0; i < state.array.length; i++) {
+                let list = state.array[i].split('@');
+                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
+                GET(sURL, render_virtual_inbox, state);
+            }
+        } else {
+            GET(sURL, renderListView, state);
         }
-      } else {
-        GET(sURL, renderListView, state);
-      }
     } else {
-      search(state.query, state.date);
+        search(state.query, state.date);
     }
 }
 
 
 function parseURL(state) {
-  let bits = window.location.search.substr(1).split(":", 3);
-  let list = bits[0];
-  let month = bits[1];
-  let query = bits[2];
-  let list_array = null;
-  state = state || {};
-  current_query = query || "";
-  current_month = 0;
-  current_year = 0;
-  
-  // If "month" (year-month) is specified,
-  // we should set the current vars
-  if (month) {
-    try {
-        let dbits = month.split("-");
-        current_year = dbits[0];
-        current_month = dbits[1];
-    } catch (e) {}
-  }
-  // Is this a valid list?
-  if (list !== '') {
-    // multi-list??
-    if (list.match(/,/)) {
-      state.array = list.split(',');
-      current_domain = 'inbox';
-      current_list = 'virtual';
-    } else {
-      let lbits = list.split("@");
-      if (lbits.length > 1) {
-        current_list = lbits[0];
-        current_domain = lbits[1];
-      } else {
-        current_domain = lbits;
-        current_list = '';
-      }
+    let bits = window.location.search.substr(1).split(":", 3);
+    let list = bits[0];
+    let month = bits[1];
+    let query = bits[2];
+    let list_array = null;
+    state = state || {};
+    current_query = query || "";
+    current_month = 0;
+    current_year = 0;
+
+    // If "month" (year-month) is specified,
+    // we should set the current vars
+    if (month) {
+        try {
+            let dbits = month.split("-");
+            current_year = dbits[0];
+            current_month = dbits[1];
+        } catch (e) {}
     }
-  }
-  // Are we initiating a search?
-  if (query) {
-    state.search = true;
-    state.query = query;
-    state.date = month;
-  }
-  // If hitting the refresh button, don't refresh preferences, just do the search.
-  if (state.noprefs) {
-      post_prime(state);
-  } else {
-      primeListView(state);
-  }
+    // Is this a valid list?
+    if (list !== '') {
+        // multi-list??
+        if (list.match(/,/)) {
+            state.array = list.split(',');
+            current_domain = 'inbox';
+            current_list = 'virtual';
+        } else {
+            let lbits = list.split("@");
+            if (lbits.length > 1) {
+                current_list = lbits[0];
+                current_domain = lbits[1];
+            } else {
+                current_domain = lbits;
+                current_list = '';
+            }
+        }
+    }
+    // Are we initiating a search?
+    if (query) {
+        state.search = true;
+        state.query = query;
+        state.date = month;
+    }
+    // If hitting the refresh button, don't refresh preferences, just do the search.
+    if (state.noprefs) {
+        post_prime(state);
+    } else {
+        primeListView(state);
+    }
 };
 
 
 
 // Parse a permalink and fetch the thread
 function parse_permalink() {
-  // message id is the bit after the last /
-  let mid = location.href.split('/').pop();
-  init_preferences(); // blank call to load defaults like social rendering
-  GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
-  // Fetch the thread data and pass to build_single_thread
-  GET('%sapi/thread.lua?id=%s'.format(apiURL, mid), construct_single_thread, {cached: true});
+    // message id is the bit after the last /
+    let mid = location.href.split('/').pop();
+    init_preferences(); // blank call to load defaults like social rendering
+    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
+    // Fetch the thread data and pass to build_single_thread
+    GET('%sapi/thread.lua?id=%s'.format(apiURL, mid), construct_single_thread, {
+        cached: true
+    });
 }
 
 
@@ -2974,36 +3253,39 @@ function render_virtual_inbox(state, json) {
         collated_json.emails = collated_json.emails || [];
         collated_json.thread_struct = collated_json.thread_struct || [];
         for (var i = 0; i < json.emails.length; i++) {
-          collated_json.emails.push(json.emails[i]);
+            collated_json.emails.push(json.emails[i]);
         }
         for (var i = 0; i < json.thread_struct.length; i++) {
-          collated_json.thread_struct.push(json.thread_struct[i]);
+            collated_json.thread_struct.push(json.thread_struct[i]);
         }
     }
-    
+
     for (var k in async_escrow) {
         return;
     }
-    
+
     if (true) {
-      console.log("Rendering multi-list")
-      current_json = collated_json;
-      current_json.participants = [];
-      
-      async_escrow['rendering'] = new Date();
-      if (!state || state.update_calendar !== false) {
-          renderCalendar(json.firstYear,json.firstMonth,json.lastYear, json.lastMonth);
-      }
-      // sort threads by date
-      if (isArray(json.thread_struct)) {
-          current_json.thread_struct.sort((a,b) => last_email(a) - last_email(b));
-      }
-      listview_header(state, current_json);
-      if (current_listmode == 'threaded') { listview_threaded(current_json, 0); }
-      else { listview_flat(current_json, 0);}
-      
-      sidebar_stats(current_json); // This comes last, takes the longest with WC enabled.
-      delete async_escrow['rendering'];
+        console.log("Rendering multi-list")
+        current_json = collated_json;
+        current_json.participants = [];
+
+        async_escrow['rendering'] = new Date();
+        if (!state || state.update_calendar !== false) {
+            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
+        }
+        // sort threads by date
+        if (isArray(json.thread_struct)) {
+            current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
+        }
+        listview_header(state, current_json);
+        if (current_listmode == 'threaded') {
+            listview_threaded(current_json, 0);
+        } else {
+            listview_flat(current_json, 0);
+        }
+
+        sidebar_stats(current_json); // This comes last, takes the longest with WC enabled.
+        delete async_escrow['rendering'];
     }
 }
 
@@ -3019,99 +3301,162 @@ async function render_email(state, json) {
     if (state.scroll) {
         let rect = div.getBoundingClientRect();
         try {
-            window.setTimeout(function() { window.scrollTo(0, rect.top - 48);}, 200);
+            window.setTimeout(function() {
+                window.scrollTo(0, rect.top - 48);
+            }, 200);
             console.log("Scrolled to %u".format(rect.top - 48));
         } catch (e) {}
     }
     if (chatty_layout) {
         return render_email_chatty(state, json);
     }
-    
+
     // Author
-    let author_field = new HTML('div', {class: 'email_kv'});
-    let author_key = new HTML('div', {class: 'email_key'}, "From: ");
-    let author_value = new HTML('div', {class: 'email_value'}, json.from);
+    let author_field = new HTML('div', {
+        class: 'email_kv'
+    });
+    let author_key = new HTML('div', {
+        class: 'email_key'
+    }, "From: ");
+    let author_value = new HTML('div', {
+        class: 'email_value'
+    }, json.from);
     author_field.inject([author_key, author_value]);
     div.inject(author_field);
-    
+
     // Subject
-    let subject_field = new HTML('div', {class: 'email_kv'});
-    let subject_key = new HTML('div', {class: 'email_key'}, "Subject: ");
-    let subject_value = new HTML('div', {class: 'email_value'}, json.subject == '' ? '(No subject)' : json.subject);
+    let subject_field = new HTML('div', {
+        class: 'email_kv'
+    });
+    let subject_key = new HTML('div', {
+        class: 'email_key'
+    }, "Subject: ");
+    let subject_value = new HTML('div', {
+        class: 'email_value'
+    }, json.subject == '' ? '(No subject)' : json.subject);
     subject_field.inject([subject_key, subject_value]);
     div.inject(subject_field);
-    
+
     // Date
-    let date_field = new HTML('div', {class: 'email_kv'});
-    let date_key = new HTML('div', {class: 'email_key'}, "Date: ");
-    let date_value = new HTML('div', {class: 'email_value'}, new Date(json.epoch * 1000.0).ISOBare());
+    let date_field = new HTML('div', {
+        class: 'email_kv'
+    });
+    let date_key = new HTML('div', {
+        class: 'email_key'
+    }, "Date: ");
+    let date_value = new HTML('div', {
+        class: 'email_value'
+    }, new Date(json.epoch * 1000.0).ISOBare());
     date_field.inject([date_key, date_value]);
     div.inject(date_field);
-    
-    
+
+
     // List
     let listname = json.list_raw.replace(".", "@", 1).replace(/[<>]/g, "");
-    let list_field = new HTML('div', {class: 'email_kv'});
-    let list_key = new HTML('div', {class: 'email_key'}, "List: ");
-    let list_value = new HTML('div', {class: 'email_value'},
-        new HTML('a', {href: 'list?%s'.format(listname)}, listname)
-        );
+    let list_field = new HTML('div', {
+        class: 'email_kv'
+    });
+    let list_key = new HTML('div', {
+        class: 'email_key'
+    }, "List: ");
+    let list_value = new HTML('div', {
+            class: 'email_value'
+        },
+        new HTML('a', {
+            href: 'list?%s'.format(listname)
+        }, listname)
+    );
     list_field.inject([list_key, list_value]);
     div.inject(list_field);
-    
+
     // Private email??
     if (json.private === true) {
-        let priv_field = new HTML('div', {class: 'email_kv'});
-        let priv_key = new HTML('div', {class: 'email_key'}, "Private: ");
-        let priv_value = new HTML('div', {class: 'email_value_emphasis'}, "YES");
+        let priv_field = new HTML('div', {
+            class: 'email_kv'
+        });
+        let priv_key = new HTML('div', {
+            class: 'email_key'
+        }, "Private: ");
+        let priv_value = new HTML('div', {
+            class: 'email_value_emphasis'
+        }, "YES");
         priv_field.inject([priv_key, priv_value]);
         div.inject(priv_field);
     }
-    
+
     // Attachments?
     if (json.attachments && json.attachments.length > 0) {
-        let attach_field = new HTML('div', {class: 'email_kv'});
-        let attach_key = new HTML('div', {class: 'email_key'}, "Attachment(s): ");
+        let attach_field = new HTML('div', {
+            class: 'email_kv'
+        });
+        let attach_key = new HTML('div', {
+            class: 'email_key'
+        }, "Attachment(s): ");
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
             let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
-            let a = new HTML('a', {href: link, target: '_blank'}, attachment.filename);
+            let a = new HTML('a', {
+                href: link,
+                target: '_blank'
+            }, attachment.filename);
             alinks.push(a);
             let fs = ` ${attachment.size} bytes`;
             if (attachment.size >= 1024) fs = ` ${Math.floor(attachment.size/1024)} KB`;
-            if (attachment.size >= 1024*1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
-            alinks.push (fs);
+            if (attachment.size >= 1024 * 1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
+            alinks.push(fs);
             alinks.push(new HTML('br'));
         }
-        let attach_value = new HTML('div', {class: 'email_value'}, alinks);
+        let attach_value = new HTML('div', {
+            class: 'email_value'
+        }, alinks);
         attach_field.inject([attach_key, attach_value]);
         div.inject(attach_field);
     }
-    
+
     let text = new HTML('pre', {}, fixup_quotes(json.body));
     div.inject(text);
-    
+
     // Private text?
     if (json.private === true) {
-      text.style.backgroundImage = "url(images/private.png)";
+        text.style.backgroundImage = "url(images/private.png)";
     }
-    
-    
-    let toolbar = new HTML('div', {class: 'toolbar'});
-    
+
+
+    let toolbar = new HTML('div', {
+        class: 'toolbar'
+    });
+
     // reply to email button
-    let replybutton = new HTML('button', { title: "Reply to this email", onclick: `compose_email('${json.mid}');`, class: 'btn toolbar_btn toolbar_button_reply'}, new HTML('span', { class: 'glyphicon glyphicon-pencil'}, ' '));
+    let replybutton = new HTML('button', {
+        title: "Reply to this email",
+        onclick: `compose_email('${json.mid}');`,
+        class: 'btn toolbar_btn toolbar_button_reply'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-pencil'
+    }, ' '));
     toolbar.inject(replybutton);
-    
+
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', {
+        href: 'thread/%s'.format(json.mid),
+        title: "Permanent link to this email",
+        class: 'btn toolbar_btn toolbar_button_link'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-link'
+    }, ' '));
     toolbar.inject(linkbutton);
-    
+
     // Source-view button
-    let sourcebutton = new HTML('a', { href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid), title: "View raw source", class: 'btn toolbar_btn toolbar_button_source'}, new HTML('span', { class: 'glyphicon glyphicon-file'}, ' '));
+    let sourcebutton = new HTML('a', {
+        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        title: "View raw source",
+        class: 'btn toolbar_btn toolbar_button_source'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-file'
+    }, ' '));
     toolbar.inject(sourcebutton);
-    
+
     text.inject(toolbar);
 }
 
@@ -3120,85 +3465,132 @@ async function render_email(state, json) {
 async function render_email_chatty(state, json) {
     let div = state.div;
     div.parentNode.style.border = 'none';
-    
+
     // Author
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
         ldate = "%s %s".format(when.toLocaleDateString('en-US', ponymail_date_format), when.toLocaleTimeString());
     } catch (e) {
-        
+
     }
-    
-    let author_field = new HTML('div', {class: 'chatty_author'});
-    let gravatar = new HTML('img', { class:"chatty_gravatar", src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(json.gravatar)});
+
+    let author_field = new HTML('div', {
+        class: 'chatty_author'
+    });
+    let gravatar = new HTML('img', {
+        class: "chatty_gravatar",
+        src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(json.gravatar)
+    });
     let author_name = json.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let author_email = json.from.match(/\s*<(.+@.+)>\s*/);
     if (author_name.length == 0) author_name = author_email ? author_email[1] : "(No author?)";
-    let author_nametag = new HTML('div', {class: 'chatty_author_name'}, [
-                                  new HTML('b', {}, author_name),
-                                  " - %s".format(ldate)
-                                  ]);
+    let author_nametag = new HTML('div', {
+        class: 'chatty_author_name'
+    }, [
+        new HTML('b', {}, author_name),
+        " - %s".format(ldate)
+    ]);
     author_field.inject([gravatar, author_nametag]);
     div.inject(author_field);
     let chatty_body = fixup_quotes(json.body);
     if (json.mid == current_open_email) {
-        let header = new HTML('h4', {class: 'chatty_title_inline'}, json.subject);
+        let header = new HTML('h4', {
+            class: 'chatty_title_inline'
+        }, json.subject);
         chatty_body.unshift(header);
     }
-    let text = new HTML('pre', {class: 'chatty_body'}, chatty_body);
+    let text = new HTML('pre', {
+        class: 'chatty_body'
+    }, chatty_body);
     div.inject(text);
 
     // Private text?
     if (json.private === true) {
-      text.style.backgroundImage = "url(images/private.png)";
+        text.style.backgroundImage = "url(images/private.png)";
     }
-    
+
     // Attachments?
     if (json.attachments && json.attachments.length > 0) {
-        let attach_field = new HTML('div', {class: 'email_kv'});
-        let attach_key = new HTML('div', {class: 'email_key'}, "Attachment(s):");
+        let attach_field = new HTML('div', {
+            class: 'email_kv'
+        });
+        let attach_key = new HTML('div', {
+            class: 'email_key'
+        }, "Attachment(s):");
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
             let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
-            let a = new HTML('a', {href: link, target: '_blank'}, attachment.filename);
+            let a = new HTML('a', {
+                href: link,
+                target: '_blank'
+            }, attachment.filename);
             alinks.push(a);
             let fs = ` ${attachment.size} bytes`;
             if (attachment.size >= 1024) fs = ` ${Math.floor(attachment.size/1024)} KB`;
-            if (attachment.size >= 1024*1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
-            alinks.push (fs);
+            if (attachment.size >= 1024 * 1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
+            alinks.push(fs);
             alinks.push(new HTML('br'));
         }
-        let attach_value = new HTML('div', {class: 'email_value'}, alinks);
+        let attach_value = new HTML('div', {
+            class: 'email_value'
+        }, alinks);
         attach_field.inject([attach_key, attach_value]);
         text.inject(attach_field);
     }
-    
-    let toolbar = new HTML('div', {class: 'toolbar_chatty'});
-    
+
+    let toolbar = new HTML('div', {
+        class: 'toolbar_chatty'
+    });
+
     // reply to email button
-    let replybutton = new HTML('button', { title: "Reply to this email", onclick: `compose_email('${json.mid}');`, class: 'btn toolbar_btn toolbar_button_reply'}, new HTML('span', { class: 'glyphicon glyphicon-pencil'}, ' '));
+    let replybutton = new HTML('button', {
+        title: "Reply to this email",
+        onclick: `compose_email('${json.mid}');`,
+        class: 'btn toolbar_btn toolbar_button_reply'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-pencil'
+    }, ' '));
     toolbar.inject(replybutton);
-    
+
     // permalink button
-    let linkbutton = new HTML('a', { href: 'thread/%s'.format(json.mid), title: "Permanent link to this email", target: '_self', class: 'btn toolbar_btn toolbar_button_link'}, new HTML('span', { class: 'glyphicon glyphicon-link'}, ' '));
+    let linkbutton = new HTML('a', {
+        href: 'thread/%s'.format(json.mid),
+        title: "Permanent link to this email",
+        target: '_self',
+        class: 'btn toolbar_btn toolbar_button_link'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-link'
+    }, ' '));
     toolbar.inject(linkbutton);
-    
+
     // Source-view button
-    let sourcebutton = new HTML('a', { href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid), target: '_self', title: "View raw source", class: 'btn toolbar_btn toolbar_button_source'}, new HTML('span', { class: 'glyphicon glyphicon-file'}, ' '));
+    let sourcebutton = new HTML('a', {
+        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        target: '_self',
+        title: "View raw source",
+        class: 'btn toolbar_btn toolbar_button_source'
+    }, new HTML('span', {
+        class: 'glyphicon glyphicon-file'
+    }, ' '));
     toolbar.inject(sourcebutton);
 
     // Admin button?
     if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
-        let adminbutton = new HTML('a', { href: 'admin/%s'.format(json.mid), target: '_self', title: "Modify email", class: 'btn toolbar_btn toolbar_button_admin'}, new HTML('span', { class: 'glyphicon glyphicon-cog'}, ' '));
+        let adminbutton = new HTML('a', {
+            href: 'admin/%s'.format(json.mid),
+            target: '_self',
+            title: "Modify email",
+            class: 'btn toolbar_btn toolbar_button_admin'
+        }, new HTML('span', {
+            class: 'glyphicon glyphicon-cog'
+        }, ' '));
         toolbar.inject(adminbutton);
     }
-    
+
     text.inject(toolbar);
 }
-
-
 
 /******************************************
  Fetched from source/scaffolding-html.js
@@ -3222,75 +3614,75 @@ async function render_email_chatty(state, json) {
 var txt = (msg) => document.createTextNode(msg);
 
 var HTML = (function() {
-  function HTML(type, params, children) {
+    function HTML(type, params, children) {
 
-    /* create the raw element, or clone if passed an existing element */
-    var child, j, len, val;
-    if (typeof type === 'object') {
-      this.element = type.cloneNode();
-    } else {
-      this.element = document.createElement(type);
-    }
-
-    /* If params have been passed, set them */
-    if (isHash(params)) {
-      for (var key in params) {
-        val = params[key];
-
-        /* Standard string value? */
-        if (typeof val === "string" || typeof val === 'number') {
-          this.element.setAttribute(key, val);
-        } else if (isArray(val)) {
-
-          /* Are we passing a list of data to set? concatenate then */
-          this.element.setAttribute(key, val.join(" "));
-        } else if (isHash(val)) {
-
-          /* Are we trying to set multiple sub elements, like a style? */
-          for (var subkey in val) {
-            let subval = val[subkey];
-            if (!this.element[key]) {
-              throw "No such attribute, " + key + "!";
-            }
-            this.element[key][subkey] = subval;
-          }
+        /* create the raw element, or clone if passed an existing element */
+        var child, j, len, val;
+        if (typeof type === 'object') {
+            this.element = type.cloneNode();
+        } else {
+            this.element = document.createElement(type);
         }
-      }
-    }
 
-    /* If any children have been passed, add them to the element */
-    if (children) {
+        /* If params have been passed, set them */
+        if (isHash(params)) {
+            for (var key in params) {
+                val = params[key];
 
-      /* If string, convert to textNode using txt() */
-      if (typeof children === "string") {
-        this.element.inject(txt(children));
-      } else {
+                /* Standard string value? */
+                if (typeof val === "string" || typeof val === 'number') {
+                    this.element.setAttribute(key, val);
+                } else if (isArray(val)) {
 
-        /* If children is an array of elems, iterate and add */
-        if (isArray(children)) {
-          for (j = 0, len = children.length; j < len; j++) {
-            child = children[j];
+                    /* Are we passing a list of data to set? concatenate then */
+                    this.element.setAttribute(key, val.join(" "));
+                } else if (isHash(val)) {
 
-            /* String? Convert via txt() then */
-            if (typeof child === "string") {
-              this.element.inject(txt(child));
+                    /* Are we trying to set multiple sub elements, like a style? */
+                    for (var subkey in val) {
+                        let subval = val[subkey];
+                        if (!this.element[key]) {
+                            throw "No such attribute, " + key + "!";
+                        }
+                        this.element[key][subkey] = subval;
+                    }
+                }
+            }
+        }
+
+        /* If any children have been passed, add them to the element */
+        if (children) {
+
+            /* If string, convert to textNode using txt() */
+            if (typeof children === "string") {
+                this.element.inject(txt(children));
             } else {
 
-              /* Plain element, add normally */
-              this.element.inject(child);
+                /* If children is an array of elems, iterate and add */
+                if (isArray(children)) {
+                    for (j = 0, len = children.length; j < len; j++) {
+                        child = children[j];
+
+                        /* String? Convert via txt() then */
+                        if (typeof child === "string") {
+                            this.element.inject(txt(child));
+                        } else {
+
+                            /* Plain element, add normally */
+                            this.element.inject(child);
+                        }
+                    }
+                } else {
+
+                    /* Just a single element, add it */
+                    this.element.inject(children);
+                }
             }
-          }
-        } else {
-
-          /* Just a single element, add it */
-          this.element.inject(children);
         }
-      }
+        return this.element;
     }
-    return this.element;
-  }
 
-  return HTML;
+    return HTML;
 
 })();
 
@@ -3300,22 +3692,22 @@ var HTML = (function() {
  */
 
 HTMLElement.prototype.inject = function(child) {
-  var item, j, len;
-  if (isArray(child)) {
-    for (j = 0, len = child.length; j < len; j++) {
-      item = child[j];
-      if (typeof item === 'string') {
-        item = txt(item);
-      }
-      this.appendChild(item);
+    var item, j, len;
+    if (isArray(child)) {
+        for (j = 0, len = child.length; j < len; j++) {
+            item = child[j];
+            if (typeof item === 'string') {
+                item = txt(item);
+            }
+            this.appendChild(item);
+        }
+    } else {
+        if (typeof child === 'string') {
+            child = txt(child);
+        }
+        this.appendChild(child);
     }
-  } else {
-    if (typeof child === 'string') {
-      child = txt(child);
-    }
-    this.appendChild(child);
-  }
-  return child;
+    return child;
 };
 
 
@@ -3325,19 +3717,18 @@ HTMLElement.prototype.inject = function(child) {
  */
 
 HTMLElement.prototype.empty = function() {
-  var ndiv;
-  ndiv = this.cloneNode();
-  this.parentNode.replaceChild(ndiv, this);
-  return ndiv;
+    var ndiv;
+    ndiv = this.cloneNode();
+    this.parentNode.replaceChild(ndiv, this);
+    return ndiv;
 };
 
 function toggleView(id) {
-  let obj = document.getElementById(id);
-  if (obj) {
-    obj.style.display = (obj.style.display == 'block') ? 'none' : 'block';
-  }
+    let obj = document.getElementById(id);
+    if (obj) {
+        obj.style.display = (obj.style.display == 'block') ? 'none' : 'block';
+    }
 }
-
 
 /******************************************
  Fetched from source/search.js
@@ -3357,14 +3748,21 @@ function search(query, date) {
         global = true;
     }
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
-    GET(sURL, renderListView, {search: true, global: global});
+    GET(sURL, renderListView, {
+        search: true,
+        global: global
+    });
     let listid = '%s@%s'.format(list, domain);
     let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
-      window.history.pushState({}, null, newhref);
+        window.history.pushState({}, null, newhref);
     }
 
-    listview_list_lists({url: sURL, search: true, query: query});
+    listview_list_lists({
+        url: sURL,
+        search: true,
+        query: query
+    });
     hideWindows(true);
     document.getElementById('q').value = query;
     return false;
@@ -3387,7 +3785,6 @@ function search_set_list(what) {
     document.getElementById('q').setAttribute("placeholder", "Search %s...".format(whatxt));
 }
 
-
 /******************************************
  Fetched from source/sidebar-calendar.js
 ******************************************/
@@ -3400,11 +3797,13 @@ var calendar_years_shown = 4;
 
 function renderCalendar(FY, FM, LY, LM) {
     calendar_index = 0;
-    
+
     // Only render if calendar div is present
     let cal = document.getElementById('sidebar_calendar');
-    if (!cal) {return;}
-    
+    if (!cal) {
+        return;
+    }
+
     let now = new Date();
     let CY = now.getFullYear();
     let CM = now.getMonth() + 1;
@@ -3414,47 +3813,75 @@ function renderCalendar(FY, FM, LY, LM) {
         LM = CM;
     }
 
-    let cdiv = new HTML('div', { class: 'sidebar_calendar' })
+    let cdiv = new HTML('div', {
+        class: 'sidebar_calendar'
+    })
     let N = 0;
-    
+
     // Chevron for moving to later years
-    let chevron = new HTML('div', { class: 'sidebar_calendar_chevron'});
-        chevron.inject(new HTML('span', { onclick: 'calendar_scroll(this, -4);', style: {display: 'none'}, id: 'sidebar_calendar_up' , class: 'glyphicon glyphicon-collapse-up', title: "Show later years"}, " "));
-        cdiv.inject(chevron);
-    
+    let chevron = new HTML('div', {
+        class: 'sidebar_calendar_chevron'
+    });
+    chevron.inject(new HTML('span', {
+        onclick: 'calendar_scroll(this, -4);',
+        style: {
+            display: 'none'
+        },
+        id: 'sidebar_calendar_up',
+        class: 'glyphicon glyphicon-collapse-up',
+        title: "Show later years"
+    }, " "));
+    cdiv.inject(chevron);
+
     // Create divs for each year, assign all visible
     for (var Y = SY; Y >= FY; Y--) {
-        let ydiv = new HTML('div', { class: 'sidebar_calendar_year', id: 'sidebar_calendar_'+N++ });
+        let ydiv = new HTML('div', {
+            class: 'sidebar_calendar_year',
+            id: 'sidebar_calendar_' + N++
+        });
         ydiv.inject(txt(Y));
         ydiv.inject(new HTML('br'));
         for (var i = 0; i < months_shortened.length; i++) {
             let mon = months_shortened[i];
-            let mdiv = new HTML('div', { onclick: 'calendar_click(%u, %u);'.format(Y, i+1), class: 'sidebar_calendar_month'}, mon);
-            
+            let mdiv = new HTML('div', {
+                onclick: 'calendar_click(%u, %u);'.format(Y, i + 1),
+                class: 'sidebar_calendar_month'
+            }, mon);
+
             // Mark out-of-bounds segments
-            if ( (Y == SY && i >= LM) || (Y == CY && i > CM) ) {
+            if ((Y == SY && i >= LM) || (Y == CY && i > CM)) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
             }
-            if (Y == FY && ((i+1) < FM)) {
+            if (Y == FY && ((i + 1) < FM)) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
             }
             ydiv.inject(mdiv);
         }
         cdiv.inject(ydiv);
     }
-    
+
     cal.innerHTML = "<p style='text-align: center;'>Archives (%u - %u):</p>".format(FY, SY);
     cal.inject(cdiv);
-    
-        
-    chevron = new HTML('div', { class: 'sidebar_calendar_chevron'});
-    chevron.inject(new HTML('span', { onclick: 'calendar_scroll(this, 4);', style: {display: 'none'}, id: 'sidebar_calendar_down', class: 'glyphicon glyphicon-collapse-down', title: "Show earlier years"}, " "));
+
+
+    chevron = new HTML('div', {
+        class: 'sidebar_calendar_chevron'
+    });
+    chevron.inject(new HTML('span', {
+        onclick: 'calendar_scroll(this, 4);',
+        style: {
+            display: 'none'
+        },
+        id: 'sidebar_calendar_down',
+        class: 'glyphicon glyphicon-collapse-down',
+        title: "Show earlier years"
+    }, " "));
     cdiv.inject(chevron);
-    
+
     // If we have > 4 years, hide the rest
     if (N > calendar_years_shown) {
         for (var i = calendar_years_shown; i < N; i++) {
-            let obj = document.getElementById('sidebar_calendar_'+i);
+            let obj = document.getElementById('sidebar_calendar_' + i);
             if (obj) {
                 obj.style.display = "none";
             }
@@ -3465,30 +3892,30 @@ function renderCalendar(FY, FM, LY, LM) {
 
 function calendar_scroll(me, x) {
     let years = document.getElementsByClassName('sidebar_calendar_year');
-    calendar_index = Math.max(Math.min(years.length-x, calendar_index + x), 0);
+    calendar_index = Math.max(Math.min(years.length - x, calendar_index + x), 0);
     if (calendar_index > 0) {
         document.getElementById('sidebar_calendar_up').style.display = 'block';
     } else {
         document.getElementById('sidebar_calendar_up').style.display = 'none';
     }
-    if (calendar_index < (years.length-x)) {
+    if (calendar_index < (years.length - x)) {
         document.getElementById('sidebar_calendar_down').style.display = 'block';
     } else {
         document.getElementById('sidebar_calendar_down').style.display = 'none';
     }
-    
-    
+
+
     for (var i = 0; i < years.length; i++) {
         let year = years[i];
         if (typeof(year) == 'object') {
-            if (i >= calendar_index && i < (calendar_index+Math.abs(x))) {
+            if (i >= calendar_index && i < (calendar_index + Math.abs(x))) {
                 year.style.display = "block";
             } else {
                 year.style.display = "none";
             }
-        }    
+        }
     }
-    
+
 }
 
 function calendar_click(year, month) {
@@ -3497,11 +3924,13 @@ function calendar_click(year, month) {
     searching = false;
     let newhref = "list.html?%s@%s:%u-%u".format(current_list, current_domain, year, month);
     if (location.href !== newhref) {
-      window.history.pushState({}, null, newhref);
+        window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u'.format(apiURL, current_list, current_domain, year, month), renderListView, {to: '%s@%s'.format(current_list, current_domain), update_calendar: false});
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u'.format(apiURL, current_list, current_domain, year, month), renderListView, {
+        to: '%s@%s'.format(current_list, current_domain),
+        update_calendar: false
+    });
 }
-
 
 /******************************************
  Fetched from source/sidebar-stats.js
@@ -3509,19 +3938,21 @@ function calendar_click(year, month) {
 
 async function sidebar_stats(json) {
     let obj = document.getElementById('sidebar_stats');
-    if (!obj) { return; }
-    
+    if (!obj) {
+        return;
+    }
+
     obj.innerHTML = ""; // clear stats bar
-    
+
     if (!json.emails || isHash(json.emails) || json.emails.length == 0) {
         obj.innerText = "No emails found...";
         return;
     }
-    
+
     // Top 10 participants
     obj.inject("Found %u emails by %u authors, divided into %u topics.".format(json.emails.length, json.numparts, json.no_threads));
     obj.inject(new HTML('h5', {}, "Most active authors:"));
-    for (var i=0; i < json.participants.length; i++) {
+    for (var i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
             break;
         }
@@ -3532,15 +3963,20 @@ async function sidebar_stats(json) {
         if (par.name.length == 0) {
             par.name = par.email;
         }
-        pdiv = new HTML('div', {class:"sidebar_stats_participant"});
-        pimg = new HTML('img', { class:"gravatar_sm", src: "https://secure.gravatar.com/avatar/%s.jpg?s=64&r=g&d=mm".format(par.gravatar)})
+        pdiv = new HTML('div', {
+            class: "sidebar_stats_participant"
+        });
+        pimg = new HTML('img', {
+            class: "gravatar_sm",
+            src: "https://secure.gravatar.com/avatar/%s.jpg?s=64&r=g&d=mm".format(par.gravatar)
+        })
         pdiv.inject(pimg);
-        pdiv.inject(new HTML('b', {}, par.name+": "));
+        pdiv.inject(new HTML('b', {}, par.name + ": "));
         pdiv.inject(new HTML('br'));
         pdiv.inject("%u emails sent".format(par.count));
         obj.inject(pdiv);
     }
-    
+
     // Word cloud, if applicable
     let wc = document.getElementById('sidebar_wordcloud');
     if (wc && json.cloud) {
@@ -3548,6 +3984,8 @@ async function sidebar_stats(json) {
         wc.inject(new HTML('h5', {}, "Popular topics:"));
         // word cloud is delayed by 50ms to let the rest render first
         // this is a chrome-specific slowdown we're addressing.
-        window.setTimeout(function() {wordCloud(json.cloud, 220, 100, wc);}, 50);
+        window.setTimeout(function() {
+            wordCloud(json.cloud, 220, 100, wc);
+        }, 50);
     }
 }
