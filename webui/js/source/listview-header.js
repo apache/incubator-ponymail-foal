@@ -150,6 +150,7 @@ function listview_list_lists(state, json) {
                 alists.unshift(current_list);
             }
             let maxlists = (searching && 3 || 4);
+            if (alists.length == maxlists + 1) maxlists++; // skip drop-down if only one additional list (#54)
             for (var i = 0; i < alists.length; i++) {
                 if (i >= maxlists) break;
                 let listname = alists[i];
