@@ -59,7 +59,11 @@ function listview_header(state, json) {
     if (state && state.pos) {
         first = 1 + state.pos;
     }
-    chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + per_page - 1, blobs.length), blobs.length||0);
+    if (blobs.length == 0) {
+        chevrons.innerHTML = "No topics to show";
+    } else {
+        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + per_page - 1, blobs.length), blobs.length||0);
+    }
     
     let pprev = Math.max(0, first - per_page - 1);
     let cback = new HTML('button', { onclick: 'listview_header({pos: %u}, current_json);'.format(pprev), disabled: (first == 1) ? 'true': null}, new HTML('span', {class: 'glyphicon glyphicon-chevron-left'}, " "));
