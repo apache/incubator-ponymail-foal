@@ -25,12 +25,17 @@ import re
 import typing
 import aiohttp.web
 import asyncio.exceptions
+import time
 
 
 async def convert_source(session: plugins.session.SessionObject, email: dict):
     source = await plugins.messages.get_source(session, permalink=email.get("dbid", email["mid"]))
     if source:
         source_as_text = source["_source"]["source"]
+        # Ensure it starts with "From "...or fake it
+        if not source_as_text.startswith("From "):
+            from_line = "From MAILER-DAEMON %s\n" % time.strftime("%a %b %d %H:%M:%S %Y")
+            source_as_text = from_line + source_as_text
         # Convert to mboxrd format
         mboxrd_source = ""
         line_no = 0
