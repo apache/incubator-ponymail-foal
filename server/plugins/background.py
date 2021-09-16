@@ -30,6 +30,7 @@ import plugins.server
 import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
+ACTIVITY_TIMESPAN = "now-90d"  # How far back to look for "current" activity in lists
 
 
 class ProgTimer:
@@ -73,7 +74,7 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     for ml in res["aggregations"]["per_list"]["buckets"]:
         list_name = ml["key"].strip("<>").replace(".", "@", 1)
         lists[list_name] = {
-            "count": ml["doc_count"],
+            "count": 0,   # We'll sort this later
             "private": False,
         }
 
@@ -90,9 +91,24 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     for ml in res["aggregations"]["per_list"]["buckets"]:
         list_name = ml["key"].strip("<>").replace(".", "@", 1)
         lists[list_name] = {
-            "count": ml["doc_count"],
+            "count": 0,  # Sorting later
             "private": True,
         }
+
+    # Get 90 day activity, if any
+    s = Search(using=db.client, index=database.db_prefix + "-mbox")
+    s = s.filter('range', date = {'gte': ACTIVITY_TIMESPAN})
+    s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
+
+    res = await db.search(
+        index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
+    )
+
+    for ml in res["aggregations"]["per_list"]["buckets"]:
+        list_name = ml["key"].strip("<>").replace(".", "@", 1)
+        if list_name in lists:
+            lists[list_name]["count"] = ml["doc_count"]
+
     await db.client.close()
 
     return lists
