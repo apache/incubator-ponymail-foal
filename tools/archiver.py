@@ -520,11 +520,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 else:
                     print("Could not find any valid dates in email headers, using current time")
                     notes.append(["BADDATE: Falling back to default UNIX epoch"])
-                    epoch = time.time()
+                    epoch = int(time.time())
             else:
-                epoch = email.utils.mktime_tz(message_date)
+                epoch = int(email.utils.mktime_tz(message_date))
         else:
-            epoch = email.utils.mktime_tz(message_date)
+            epoch = int(email.utils.mktime_tz(message_date))
         # message_date calculations are all done, prepare the index entry
         date_as_string = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(epoch))
         body = self.message_body(msg)
