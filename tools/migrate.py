@@ -59,7 +59,7 @@ class MultiDocProcessor:
         self.start_time = time.time()
         self.queue_pointer = 0
         self.num_processes = num_processes
-        for i in range(0, num_processes):
+        for _ in range(0, num_processes):
             q = multiprocessing.Queue()
             p = multiprocessing.Process(
                 target=self.start,
@@ -261,7 +261,7 @@ async def main(no_jobs, graceful):
     dbname_attachment = new_dbprefix + "-attachment"
 
     # Let's get started..!
-    start_time = time.time()
+    # start_time = time.time()
     count = await ols_es_async.count(index=old_dbname, doc_type="mbox")
     no_emails = count["count"]
 
@@ -270,8 +270,8 @@ async def main(no_jobs, graceful):
 
     processes = MultiDocProcessor(old_es_url, new_es_url, process_document, no_jobs)
 
-    processed_last_count = 0
-    current_executor = 0
+    # processed_last_count = 0
+    # current_executor = 0
     docs_read = 0
     async for doc in async_scan(
         client=ols_es_async,
@@ -299,7 +299,7 @@ async def main(no_jobs, graceful):
     processes.stop()
 
     # Process attachments
-    start_time = time.time()
+    # start_time = time.time()
     processes = MultiDocProcessor(old_es_url, new_es_url, process_attachment, no_jobs, graceful)
     docs_read = 0
     count = await ols_es_async.count(index=old_dbname, doc_type="attachment")
