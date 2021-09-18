@@ -424,7 +424,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         msg: email.message.Message,
         raw_msg: bytes,
         default_date: typing.Union[None, str, int] = None
-    ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str]]:
+    ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str], bool]:
         """Determine what needs to be sent to the archiver.
         :param lid: The list id
         :param private: Whether privately archived email or not (bool)
