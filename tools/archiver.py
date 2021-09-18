@@ -53,6 +53,7 @@ import time
 import traceback
 import typing
 import uuid
+import datetime
 
 import elasticsearch
 import formatflowed
@@ -482,15 +483,31 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             message_date = email.utils.parsedate_tz(
                 str(msg_metadata.get("archived-at"))
             )
-
         if not message_date:
-            epoch = time.time()
+            print("No message date could be derived from the Date: header, looking elsewhere.")
+            # See if we have a "From" header line in the raw email, we can use
+            first_line = raw_msg.split(b"\n", 1)[0].decode("us-ascii")
+            if first_line.startswith("From "):
+                # If we have one, the date must be the third element when splitting by single space.
+                env_from_date = first_line.split(" ", 2)[-1]  # Split twice, grab last element.
+                message_date = email.utils.parsedate_tz(env_from_date)
+                if message_date:
+                    print("Found date in envelope FROM header: %s" % env_from_date)
+            # Otherwise, look for a Received: header we can scan
+            if not message_date:
+                for recv_from in msg.get_all('received', []):  # We may have multiple of these, not all have "from".
+                    m = re.match(r"from[^;]+?;\s+(.+?)(?:$|[\r\n])", recv_from)
+                    if m:
+                        message_date = email.utils.parsedate_tz(m.group(1))
+                        if message_date:
+                            print("Found date in Received header: %s" % m.group(1))
+                            break
+            if not message_date:
+                print("Could not find any valid dates in email headers, using current time")
+                epoch = time.time()
+            else:
+                epoch = email.utils.mktime_tz(message_date)
             notes.append(["BADDATE: Email date missing or invalid, setting to %u" % epoch])
-            print(
-                "Date (%s) seems totally wrong, using current UNIX epoch instead."
-                % message_date
-            )
-
         else:
             epoch = email.utils.mktime_tz(message_date)
         # message_date calculations are all done, prepare the index entry
