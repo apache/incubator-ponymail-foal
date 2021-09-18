@@ -8,9 +8,11 @@ __pycache__/
 
 # Local configuration files
 ponymail.yaml
+tools/archiver.yaml
 
 # Local temporary configuration files
 ponymail.yaml.tmp
+tools/archiver.yaml.tmp
 
 # Distribution / packaging
 .Python
