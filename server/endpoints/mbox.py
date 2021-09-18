@@ -25,10 +25,8 @@ import re
 import typing
 import aiohttp.web
 import asyncio.exceptions
-import time
 import email.utils as eutils
 import datetime
-import dateutil.tz
 
 
 async def convert_source(session: plugins.session.SessionObject, email: dict):
@@ -37,16 +35,17 @@ async def convert_source(session: plugins.session.SessionObject, email: dict):
         source_as_text = source["_source"]["source"]
         # Ensure it starts with "From "...or fake it
         if not source_as_text.startswith("From "):
-            from_line = "From MAILER-DAEMON %s\n" % time.strftime("%a %b %d %H:%M:%S %Y", time.gmtime(0))  # Fallback in case no date found
+            from_line = "From MAILER-DAEMON Thu Jan  1 00:00:00 1970\n"  # Fallback in case no date found
             # If we have any Received: headers, we can extrapolate an approximate time from the last (top) one.
             from_match = re.search(r"(?:[\r\n]|^)Received:\s+from[^;]+?; (.+?)[\r\n]", source_as_text)
             if from_match:
                 recv_time = eutils.parsedate_tz(from_match.group(1))
                 if recv_time:
                     dt_tuple = datetime.datetime(*recv_time[:7])
-                    if recv_time[9]:  # If we have an offset, set timezone
-                        dt_tuple = dt_tuple.replace(tzinfo=dateutil.tz.tzoffset("Offset", recv_time[9]))
-                    from_line = "From MAILER-DAEMON %s\n" % dt_tuple.strftime("%a %b %d %H:%M:%S %Y %z")
+                    if recv_time[9]:  # If we have a timezone offset, apply via timedelta
+                        dt_tuple += datetime.timedelta(seconds=recv_time[9])
+                    # Set using ctime, as per https://datatracker.ietf.org/doc/html/rfc4155#appendix-A
+                    from_line = "From MAILER-DAEMON %s\n" % dt_tuple.ctime()
             source_as_text = from_line + source_as_text
         # Convert to mboxrd format
         mboxrd_source = ""
