@@ -512,7 +512,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 # If --defaultdate is defined, use that instead.
                 if default_date is not None:
                     if default_date == "skip":  # If we are to skip emails with bad dates...
-                        return {"foo": "bar"}, None, None, None, True  # return fake set with skipit == True
+                        return {"foo": "bar"}, {}, {}, None, True  # return fake set with skipit == True
                     else:
                         print("Could not find any valid dates in email headers, using --defaultdate parameter %s" % default_date)
                         epoch = int(default_date)
