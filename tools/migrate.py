@@ -351,4 +351,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(args.jobs, arg.graceful))
+    loop.run_until_complete(main(args.jobs, args.graceful))
