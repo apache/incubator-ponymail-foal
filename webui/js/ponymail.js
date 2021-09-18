@@ -3121,7 +3121,7 @@ function renderListView(state, json) {
     current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
-        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
+        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
@@ -3271,7 +3271,7 @@ function render_virtual_inbox(state, json) {
 
         async_escrow['rendering'] = new Date();
         if (!state || state.update_calendar !== false) {
-            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
+            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
         }
         // sort threads by date
         if (isArray(json.thread_struct)) {
@@ -3288,6 +3288,7 @@ function render_virtual_inbox(state, json) {
         delete async_escrow['rendering'];
     }
 }
+
 
 /******************************************
  Fetched from source/render-email.js
@@ -3795,7 +3796,7 @@ var default_end_year = 2100;
 var calendar_index = 0;
 var calendar_years_shown = 4;
 
-function renderCalendar(FY, FM, LY, LM) {
+function renderCalendar(FY, FM, LY, LM, activity = null) {
     calendar_index = 0;
 
     // Only render if calendar div is present
@@ -3849,11 +3850,20 @@ function renderCalendar(FY, FM, LY, LM) {
             }, mon);
 
             // Mark out-of-bounds segments
+            let ym = '%04u-%02u'.format(Y, i+1);
+            let c_active = true;
+            if (activity && !activity[ym]) {
+                c_active = false;
+            }
             if ((Y == SY && i >= LM) || (Y == CY && i > CM)) {
-                mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
+                c_active = false;
             }
             if (Y == FY && ((i + 1) < FM)) {
+                c_active = false;
+            }
+            if (!c_active) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
+                mdiv.setAttribute("onclick", "javascript:void(0);");
             }
             ydiv.inject(mdiv);
         }
@@ -3931,6 +3941,7 @@ function calendar_click(year, month) {
         update_calendar: false
     });
 }
+
 
 /******************************************
  Fetched from source/sidebar-stats.js
