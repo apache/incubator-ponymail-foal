@@ -26,7 +26,7 @@ import typing
 import aiohttp.web
 import asyncio.exceptions
 import time
-import email.utils
+import email.utils as eutils
 import datetime
 import dateutil.tz
 
@@ -41,7 +41,7 @@ async def convert_source(session: plugins.session.SessionObject, email: dict):
             # If we have any Received: headers, we can extrapolate an approximate time from the last (top) one.
             from_match = re.search(r"(?:[\r\n]|^)Received:\s+from[^;]+?; (.+?)[\r\n]", source_as_text)
             if from_match:
-                recv_time = email.utils.parsedate_tz(from_match.group(1))
+                recv_time = eutils.parsedate_tz(from_match.group(1))
                 if recv_time:
                     dt_tuple = datetime.datetime(*recv_time[:7])
                     if recv_time[9]:  # If we have an offset, set timezone
