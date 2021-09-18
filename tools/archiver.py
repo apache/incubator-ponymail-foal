@@ -423,7 +423,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         private: bool,
         msg: email.message.Message,
         raw_msg: bytes,
-        default_date: typing.Union[None, str, int] = None
+        default_epoch: typing.Union[None, str, int] = None
     ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str], bool]:
         """Determine what needs to be sent to the archiver.
         :param lid: The list id
@@ -509,14 +509,14 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                             break
             if not message_date:
                 # Current time makes most sense for live archiving.
-                # If --defaultdate is defined, use that instead.
-                if default_date is not None:
-                    if default_date == "skip":  # If we are to skip emails with bad dates...
+                # If --defaultepoch is defined, use that instead.
+                if default_epoch is not None:
+                    if default_epoch == "skip":  # If we are to skip emails with bad dates...
                         return {"foo": "bar"}, {}, {}, None, True  # return fake set with skipit == True
                     else:
-                        print("Could not find any valid dates in email headers, using --defaultdate parameter %s" % default_date)
-                        epoch = int(default_date)
-                        notes.append(["BADDATE: Falling back to default epoch specified by --defaultdate: %s" % default_date])
+                        print("Could not find any valid dates in email headers, using --defaultepoch parameter %s" % default_epoch)
+                        epoch = int(default_epoch)
+                        notes.append(["BADDATE: Falling back to default epoch specified by --defaultepoch: %s" % default_epoch])
                 else:
                     print("Could not find any valid dates in email headers, using current time")
                     notes.append(["BADDATE: Falling back to default UNIX epoch"])
@@ -614,7 +614,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         return output_json, contents, msg_metadata, irt, False
 
-    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None, defaultdate=None):
+    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None, defaultepoch=None):
         """Send the message to the archiver.
 
         :param mlist: The IMailingList object.
@@ -643,7 +643,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         if raw_message is None:
             raw_message = msg.as_bytes()
         ojson, contents, msg_metadata, irt, skipit = self.compute_updates(
-            lid, private, msg, raw_message, defaultdate
+            lid, private, msg, raw_message, defaultepoch
         )
         if not ojson:
             _id = msg.get("message-id") or msg.get("Subject") or msg.get("Date")
@@ -938,9 +938,9 @@ def main():
         "fail silently.",
     )
     parser.add_argument(
-        "--defaultdate",
-        dest="defaultdate",
-        help="If no data could be found in the email, use this epoch. Set to 'skip' to skip importing on bad date",
+        "--defaultepoch",
+        dest="defaultepoch",
+        help="If no date could be found in the email, use this epoch. Set to 'skip' to skip importing on bad date",
     )
     parser.add_argument("--generator", dest="generator", help="Override the generator.")
     args = parser.parse_args()
@@ -1042,7 +1042,7 @@ def main():
             )
 
             try:
-                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump, args.defaultdate)
+                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump, args.defaultepoch)
                 print(
                     "%s: Done archiving to %s as %s!"
                     % (email.utils.formatdate(), lid, mid)
