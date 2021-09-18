@@ -461,8 +461,8 @@ async def get_years(session, query_defuzzed):
     youngest = datetime.datetime.fromtimestamp(0)
     if res["aggregations"]:
         aggs = res["aggregations"]
-        oldest = datetime.datetime.fromtimestamp(aggs["first"]["value"])
-        youngest = datetime.datetime.fromtimestamp(aggs["last"]["value"])
+        oldest = datetime.datetime.fromtimestamp(aggs["first"]["value"] or 0)
+        youngest = datetime.datetime.fromtimestamp(aggs["last"]["value"] or 0)
 
     return oldest.year, youngest.year, oldest.month, youngest.month
 
