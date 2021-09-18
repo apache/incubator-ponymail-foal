@@ -458,7 +458,9 @@ async def get_years(session, query_defuzzed):
 
     # Get youngest doc
     res = await session.database.search(
-        size=1, body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "desc"}}
+        index=session.database.dbs.mbox,
+        size=1,
+        body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "desc"}}
     )
     youngest = datetime.datetime.fromtimestamp(0)
     if res["hits"]["hits"]:
