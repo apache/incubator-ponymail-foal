@@ -516,8 +516,10 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     else:
                         print("Could not find any valid dates in email headers, using --defaultdate parameter %s" % default_date)
                         epoch = int(default_date)
+                        notes.append(["BADDATE: Falling back to default epoch specified by --defaultdate: %s" % default_date])
                 else:
                     print("Could not find any valid dates in email headers, using current time")
+                    notes.append(["BADDATE: Falling back to default UNIX epoch"])
                     epoch = time.time()
             else:
                 epoch = email.utils.mktime_tz(message_date)
