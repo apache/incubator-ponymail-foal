@@ -37,7 +37,7 @@ async def convert_source(session: plugins.session.SessionObject, email: dict):
         if not source_as_text.startswith("From "):
             from_line = "From MAILER-DAEMON Thu Jan  1 00:00:00 1970\n"  # Fallback in case no date found
             # If we have any Received: headers, we can extrapolate an approximate time from the last (top) one.
-            from_match = re.search(r"(?:[\r\n]|^)Received:\s+from[^;]+?; (.+?)[\r\n]", source_as_text)
+            from_match = re.search(r"(?:[\r\n]|^)Received:\s+from[^;]+?;\s+(.+?)[\r\n]", source_as_text)
             if from_match:
                 recv_time = eutils.parsedate_tz(from_match.group(1))
                 if recv_time:
