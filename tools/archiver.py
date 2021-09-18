@@ -53,7 +53,6 @@ import time
 import traceback
 import typing
 import uuid
-import datetime
 
 import elasticsearch
 import formatflowed
