@@ -81,6 +81,16 @@ class Server(plugins.server.BaseServer):
                     print(
                         f"Could not find entry point 'register()' in {endpoint_file}, skipping!"
                     )
+        if args.logger:
+            import logging
+            es_trace_logger = logging.getLogger('elasticsearch')
+            es_trace_logger.setLevel(args.logger)
+            es_trace_logger.addHandler(logging.StreamHandler())
+        if args.trace:
+            import logging
+            es_trace_logger = logging.getLogger('elasticsearch.trace')
+            es_trace_logger.setLevel(args.trace)
+            es_trace_logger.addHandler(logging.StreamHandler())
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
@@ -197,6 +207,14 @@ if __name__ == "__main__":
         "--config",
         help="Configuration file to load (default: ponymail.yaml)",
         default="ponymail.yaml",
+    )
+    parser.add_argument(
+        "--logger",
+        help="elasticsearch level (e.g. INFO or DEBUG)",
+    )
+    parser.add_argument(
+        "--trace",
+        help="elasticsearch.trace level (e.g. INFO or DEBUG)",
     )
     cliargs = parser.parse_args()
     pubsub_server = Server(cliargs)
