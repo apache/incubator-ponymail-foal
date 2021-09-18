@@ -46,7 +46,7 @@ async def process(
     wordcloud = None
     if server.config.ui.wordcloud:
         wordcloud = await plugins.messages.wordcloud(session, query_defuzzed)
-    first_year, last_year, first_month, last_month = await plugins.messages.get_years(session, query_defuzzed_nodate)
+    oldest, youngest, active_months = await plugins.messages.get_activity_span(session, query_defuzzed_nodate)
 
     threads = plugins.messages.ThreadConstructor(results)
     tstruct, authors = await server.runners.run(threads.construct)
@@ -66,10 +66,11 @@ async def process(
         plugins.messages.trim_email(msg, external=True)
 
     return {
-        "firstYear": first_year,
-        "lastYear": last_year,
-        "firstMonth": first_month,
-        "lastMonth": last_month,
+        "firstYear": oldest.year,
+        "lastYear": youngest.year,
+        "firstMonth": oldest.month,
+        "lastMonth": youngest.month,
+        "active_months": active_months,
         "hits": len(results),
         "numparts": len(authors),
         "no_threads": len(tstruct),
