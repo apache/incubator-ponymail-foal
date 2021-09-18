@@ -98,6 +98,9 @@ async def process(
     await response.prepare(request)
     for email in results:
         mboxrd_source = await convert_source(session, email)
+        # Ensure each non-empty source ends with a blank line
+        if not mboxrd_source.endswith("\n\n"):
+            mboxrd_source += "\n"
         try:
             async with server.streamlock:
                 await asyncio.wait_for(response.write(mboxrd_source.encode("utf-8")), timeout=5)
