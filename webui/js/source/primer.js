@@ -24,7 +24,7 @@ function renderListView(state, json) {
     current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
-        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
+        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
@@ -174,7 +174,7 @@ function render_virtual_inbox(state, json) {
 
         async_escrow['rendering'] = new Date();
         if (!state || state.update_calendar !== false) {
-            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth);
+            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
         }
         // sort threads by date
         if (isArray(json.thread_struct)) {
