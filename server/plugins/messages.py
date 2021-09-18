@@ -445,27 +445,24 @@ async def get_years(session, query_defuzzed):
             {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
         ]
 
-    # Get oldest doc
+    # Get oldest and youngest doc in single scan
     res = await session.database.search(
         index=session.database.dbs.mbox,
-        size=1,
-        body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "asc"}},
+        size=0,
+        body={"query": {"bool": query_defuzzed},
+            "aggs": {
+                "first": {"min": {"field": "epoch"}},
+                "last": {"max": {"field": "epoch"}},
+            },
+        }
     )
-    oldest = datetime.datetime.fromtimestamp(0)
-    if res["hits"]["hits"]:
-        doc = res["hits"]["hits"][0]
-        oldest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])
 
-    # Get youngest doc
-    res = await session.database.search(
-        index=session.database.dbs.mbox,
-        size=1,
-        body={"query": {"bool": query_defuzzed}, "sort": {"epoch": "desc"}}
-    )
+    oldest = datetime.datetime.fromtimestamp(0)
     youngest = datetime.datetime.fromtimestamp(0)
-    if res["hits"]["hits"]:
-        doc = res["hits"]["hits"][0]
-        youngest = datetime.datetime.fromtimestamp(doc["_source"]["epoch"])
+    if res["aggregations"]:
+        aggs = res["aggregations"]
+        oldest = datetime.datetime.fromtimestamp(aggs["first"]["value"])
+        youngest = datetime.datetime.fromtimestamp(aggs["last"]["value"])
 
     return oldest.year, youngest.year, oldest.month, youngest.month
 
