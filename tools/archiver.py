@@ -423,7 +423,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         private: bool,
         msg: email.message.Message,
         raw_msg: bytes,
-    ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str]]:
+        default_epoch: typing.Union[None, str, int] = None
+    ) -> typing.Tuple[typing.Optional[dict], dict, dict, typing.Optional[str], bool]:
         """Determine what needs to be sent to the archiver.
         :param lid: The list id
         :param private: Whether privately archived email or not (bool)
@@ -482,21 +483,51 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             message_date = email.utils.parsedate_tz(
                 str(msg_metadata.get("archived-at"))
             )
-
         if not message_date:
-            epoch = time.time()
-            notes.append(["BADDATE: Email date missing or invalid, setting to %u" % epoch])
-            print(
-                "Date (%s) seems totally wrong, using current UNIX epoch instead."
-                % message_date
-            )
-
+            print("No message date could be derived from the Date: header, looking elsewhere.")
+            bad_date_original = str(msg_metadata.get("date"))
+            if bad_date_original:
+                notes.append(["BADDATE: Original email Date: header was set to invalid value: %s" % bad_date_original])
+            # See if we have a "From" header line in the raw email, we can use
+            first_line = raw_msg.split(b"\n", 1)[0].decode("us-ascii")
+            if first_line.startswith("From "):
+                # If we have one, the date must be the third element when splitting by single space.
+                env_from_date = first_line.split(" ", 2)[-1]  # Split twice, grab last element.
+                message_date = email.utils.parsedate_tz(env_from_date)
+                if message_date:
+                    print("Found date in envelope FROM header: %s" % env_from_date)
+                    notes.append(["BADDATE: Used envelope FROM header for email date: %s" % env_from_date])
+            # Otherwise, look for a Received: header we can scan
+            if not message_date:
+                for recv_from in msg.get_all('received', []):  # We may have multiple of these, not all have "from".
+                    m = re.match(r"from[^;]+?;\s+(.+?)(?:$|[\r\n])", recv_from)
+                    if m:
+                        message_date = email.utils.parsedate_tz(m.group(1))
+                        if message_date:
+                            print("Found date in Received header: %s" % m.group(1))
+                            notes.append(["BADDATE: Used Received header for email date: %s" % m.group(1)])
+                            break
+            if not message_date:
+                # Current time makes most sense for live archiving.
+                # If --defaultepoch is defined, use that instead.
+                if default_epoch is not None:
+                    if default_epoch == "skip":  # If we are to skip emails with bad dates...
+                        return {"foo": "bar"}, {}, {}, None, True  # return fake set with skipit == True
+                    else:
+                        print("Could not find any valid dates in email headers, using --defaultepoch parameter %s" % default_epoch)
+                        epoch = int(default_epoch)
+                        notes.append(["BADDATE: Falling back to default epoch specified by --defaultepoch: %s" % default_epoch])
+                else:
+                    print("Could not find any valid dates in email headers, using current time")
+                    notes.append(["BADDATE: Falling back to default UNIX epoch"])
+                    epoch = int(time.time())
+            else:
+                epoch = int(email.utils.mktime_tz(message_date))
         else:
-            epoch = email.utils.mktime_tz(message_date)
+            epoch = int(email.utils.mktime_tz(message_date))
         # message_date calculations are all done, prepare the index entry
         date_as_string = time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(epoch))
         body = self.message_body(msg)
-
         attachments, contents = message_attachments(msg)
         irt = ""
 
@@ -581,9 +612,9 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "_archived_at": int(time.time()),
             }
 
-        return output_json, contents, msg_metadata, irt
+        return output_json, contents, msg_metadata, irt, False
 
-    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None):
+    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None, defaultepoch=None):
         """Send the message to the archiver.
 
         :param mlist: The IMailingList object.
@@ -611,13 +642,15 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if raw_message is None:
             raw_message = msg.as_bytes()
-        ojson, contents, msg_metadata, irt = self.compute_updates(
-            lid, private, msg, raw_message
+        ojson, contents, msg_metadata, irt, skipit = self.compute_updates(
+            lid, private, msg, raw_message, defaultepoch
         )
         if not ojson:
             _id = msg.get("message-id") or msg.get("Subject") or msg.get("Date")
             raise Exception("Could not parse message %s for %s" % (_id, lid))
-
+        if skipit:
+            print("Skipping archiving of email due to invalid date and default date set to skip")
+            return lid, "(skipped)"
         if dry:
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
@@ -904,6 +937,11 @@ def main():
         help="If pushing to ElasticSearch fails, dump documents in JSON format to this directory and "
         "fail silently.",
     )
+    parser.add_argument(
+        "--defaultepoch",
+        dest="defaultepoch",
+        help="If no date could be found in the email, use this epoch. Set to 'skip' to skip importing on bad date",
+    )
     parser.add_argument("--generator", dest="generator", help="Override the generator.")
     args = parser.parse_args()
 
@@ -1004,7 +1042,7 @@ def main():
             )
 
             try:
-                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump)
+                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump, args.defaultepoch)
                 print(
                     "%s: Done archiving to %s as %s!"
                     % (email.utils.formatdate(), lid, mid)
