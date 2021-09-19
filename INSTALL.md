@@ -50,6 +50,10 @@ pipenv run python3 main.py
 ~~~
 - use a web server like httpd or nginx to serve UI and proxy to the API. A sample httpd configuration could be:
 ~~~apache
+# Load required modules
+LoadModule proxy_module ...
+LoadModule proxy_http_module ...
+...
 <VirtualHost *:80>
     ServerName ponymail.example.org
     DocumentRoot /var/www/ponymail-foal/webui/
