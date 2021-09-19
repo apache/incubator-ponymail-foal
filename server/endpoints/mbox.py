@@ -67,9 +67,14 @@ async def process(
 ) -> typing.Union[dict, aiohttp.web.Response, aiohttp.web.StreamResponse]:
 
     lid = indata.get("list", "_")
+    if lid == '*':
+        lid = 'all'
     domain = indata.get("domain", "_")
+    if domain == '*':
+        domain = 'all'
     # may be provided as d= or date=
     yyyymm = indata.get("d") or indata.get("date") # e.g. 2019-9; can also be lte=1M etc
+    q = indata.get("q")
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
@@ -88,14 +93,15 @@ async def process(
         epoch_order="asc"
     )
 
+    dlstem = f"{lid}_{domain}"
     if yyyymm:
         if len(yyyymm) == 6 and yyyymm[4] == '-': # assume yyyy-m, convert to yyyy-mm
             yyyymm = yyyymm[0:-1] + "0" + yyyymm[-1]
-        dlstem = f"{lid}_{domain}_{yyyymm}"
-    else:
-        dlstem = f"{lid}_{domain}"
+        dlstem = f"{dlstem}_{yyyymm}"
+    if q:
+        dlstem = f"{dlstem}_{q}"
     # Figure out a sane filename stem (don't keep '.')
-    dlstem = re.sub(r"[^-_a-z0-9]+", "_", dlstem)
+    dlstem = re.sub(r"[^-_a-zA-Z0-9]+", "_", dlstem)
     headers = {"Content-Type": "application/mbox", "Content-Disposition": f"attachment; filename={dlstem}.mbox"}
 
     # Return mbox archive with filename as a stream
