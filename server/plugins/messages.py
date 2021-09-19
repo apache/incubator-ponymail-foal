@@ -472,7 +472,8 @@ async def get_activity_span(session, query_defuzzed):
         oldest = datetime.datetime.fromtimestamp(aggs["first"]["value"] or 0)
         youngest = datetime.datetime.fromtimestamp(aggs["last"]["value"] or 0)
         for bucket in aggs["active_months"].get("buckets", []):
-            monthly_activity[bucket["key_as_string"]] = bucket["doc_count"]
+            if bucket["doc_count"]:
+                monthly_activity[bucket["key_as_string"]] = bucket["doc_count"]
 
     return oldest, youngest, monthly_activity
 
