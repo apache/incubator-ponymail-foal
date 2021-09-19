@@ -153,15 +153,21 @@ function calendar_scroll(me, x) {
 
 }
 
+
 function calendar_click(year, month) {
     current_year = year;
     current_month = month;
     searching = false;
+    let q = "";
     let newhref = "list.html?%s@%s:%u-%u".format(current_list, current_domain, year, month);
+    if (current_json && current_json.searchParams && current_json.searchParams.q) {
+        q = current_json.searchParams.q;
+        newhref += ":" + q;
+    }
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u'.format(apiURL, current_list, current_domain, year, month), renderListView, {
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(apiURL, current_list, current_domain, year, month, q), renderListView, {
         to: '%s@%s'.format(current_list, current_domain),
         update_calendar: false
     });
