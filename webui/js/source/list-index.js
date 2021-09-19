@@ -34,7 +34,7 @@ function list_index(state, json) {
             }
         }
     } else {
-        let letters = 'abcdefghijklmnopqrstuvwxyz';
+        let letters = 'abcdefghijklmnopqrstuvwxyz#';
         for (var i = 0; i < letters.length; i++) {
             let letter = letters[i].toUpperCase();
             let li = new HTML('li', {
@@ -48,7 +48,7 @@ function list_index(state, json) {
     let list_ul = document.getElementById('list_index_wide_lists');
     list_ul.textContent = "";
     for (let domain_name in list_json.lists) {
-        if (domain_name.toLowerCase().startsWith(letter.toLowerCase())) {
+        if (is_letter(domain_name, letter)) {
             console.log(domain_name);
             let li = new HTML('li', {});
             let a = new HTML('a', {
@@ -63,6 +63,11 @@ function list_index(state, json) {
 
 let preferred_lists = ['dev', 'users'];
 let preferred_no_lists = ['security'];
+
+function is_letter(domain, letter) {
+    if (letter == '#' && domain.match(/^([^a-zA-Z]+)/)) return true
+    else return domain.toLowerCase().startsWith(letter.toLowerCase());
+}
 
 function best_list(entries) {
     let x = 0;
