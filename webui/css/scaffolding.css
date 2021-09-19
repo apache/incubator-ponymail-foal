@@ -714,6 +714,8 @@ a.dropdown-toggle {
 
 #list_index_wide_lists {
     list-style: none;
+    background-color: white;
+    width: 760px;
 }
 
 /* Hide word cloud on short displays */
