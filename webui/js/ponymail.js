@@ -1932,39 +1932,54 @@ function ponymail_swipe(event) {
  Fetched from source/list-index.js
 ******************************************/
 
+let LOTS_OF_LISTS = 2; // Beyond 25 list domains and we start using the old phonebook.
 let list_json = {}
 
 function list_index(state, json) {
     if (json) {
         list_json = json;
     }
+    let letter = 'a';
     let lists = document.getElementById('list_picker_ul');
     if (state && state.letter) {
-        let tab = undefined;
-        let tabs = lists.childNodes;
-        for (var i = 0; i < tabs.length; i++) {
-            let xtab = tabs[i];
-            if ((xtab.innerText == state.to || xtab.getAttribute('data-list') == state.to)) {
-                tab = xtab;
-                tab.setAttribute("class", 'active');
-            } else {
+        letter = state.letter;
+        for (let xtab of lists.childNodes) {
+            if (xtab.innerText == state.letter) {
+                xtab.setAttribute("class", 'active');
+            } else if (xtab.setAttribute) {
                 xtab.setAttribute("class", "");
             }
-
         }
-        return;
     } else {
-        let letters = 'abcdefghijklmnopqrstuvwxyz*';
+        let letters = 'abcdefghijklmnopqrstuvwxyz';
         for (var i = 0; i < letters.length; i++) {
             let letter = letters[i].toUpperCase();
             let li = new HTML('li', {
-                onclick: 'switch_index({letter: "%s"});'.format(letter),
+                onclick: 'list_index({letter: "%s"});'.format(letter),
                 class: (letter == 'A') ? 'active' : null
             }, letter);
             lists.inject(li);
         }
     }
+
+    let list_ul = document.getElementById('list_index_wide_lists');
+    list_ul.textContent = "";
+    for (let domain_name in list_json.lists) {
+        if (domain_name.toLowerCase().startsWith(letter.toLowerCase())) {
+            console.log(domain_name);
+            let li = new HTML('li', {});
+            let a = new HTML('a', {
+                href: 'list.html?%s'.format(domain_name),
+                style: {
+                    border: "none !important"
+                }
+            }, domain_name);
+            li.inject(a);
+            list_ul.inject(li);
+        }
+    }
 }
+
 
 let preferred_lists = ['dev', 'users'];
 let preferred_no_lists = ['security'];
@@ -2002,6 +2017,15 @@ function list_index_onepage(state, json) {
         }, domain);
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
+    }
+    if (domains.length > LOTS_OF_LISTS) {
+        list_index(state, json);
+    } else {
+        let wide_obj = document.getElementById('list_index_child_wide');
+        let new_obj = obj.cloneNode(true);
+        new_obj.setAttribute("id", "list_index_child_wide");
+        wide_obj.replaceWith(new_obj);
+        console.log(new_obj);
     }
 }
 
