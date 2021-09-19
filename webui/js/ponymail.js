@@ -1932,7 +1932,7 @@ function ponymail_swipe(event) {
  Fetched from source/list-index.js
 ******************************************/
 
-let LOTS_OF_LISTS = 2; // Beyond 25 list domains and we start using the old phonebook.
+let LOTS_OF_LISTS = 25; // Beyond 25 list domains and we start using the old phonebook.
 let list_json = {}
 
 function list_index(state, json) {
@@ -1964,7 +1964,9 @@ function list_index(state, json) {
 
     let list_ul = document.getElementById('list_index_wide_lists');
     list_ul.textContent = "";
-    for (let domain_name in list_json.lists) {
+    let domains = Object.keys(list_json.lists);
+    domains.sort();
+    for (let domain_name of domains) {
         if (is_letter(domain_name, letter)) {
             console.log(domain_name);
             let li = new HTML('li', {});
