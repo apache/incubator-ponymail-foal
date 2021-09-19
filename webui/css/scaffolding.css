@@ -694,11 +694,35 @@ a.dropdown-toggle {
   }
 }
 
+
+/* Show wide list index on desktop, narrow on mobile */
+#list_index_child_wide {
+    display: block;
+}
+#list_index_child {
+    display: none;
+}
+
+@media only screen and (max-width: 800px) {
+    #list_index_child_wide {
+        display: none;
+    }
+    #list_index_child {
+        display: block;
+    }
+}
+
+#list_index_wide_lists {
+    list-style: none;
+}
+
 /* Hide word cloud on short displays */
 @media only screen and (max-height: 700px) {
   #sidebar_wordcloud {
     display: none;
   }
+
+
 }
 
 .listview_email_labels .label {
