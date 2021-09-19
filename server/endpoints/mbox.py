@@ -68,7 +68,8 @@ async def process(
 
     lid = indata.get("list", "_")
     domain = indata.get("domain", "_")
-    yyyymm = indata.get("d") # e.g. 2019-9
+    # may be provided as d= or date=
+    yyyymm = indata.get("d") or indata.get("date") # e.g. 2019-9
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
