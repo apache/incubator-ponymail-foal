@@ -68,6 +68,7 @@ async def process(
 
     lid = indata.get("list", "_")
     domain = indata.get("domain", "_")
+    yyyymm = indata.get("d") # e.g. 2019-9
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
@@ -86,10 +87,15 @@ async def process(
         epoch_order="asc"
     )
 
-    # Figure out a sane filename
-    xlist = re.sub(r"[^-_.a-z0-9]+", "_", lid)
-    xdomain = re.sub(r"[^-_.a-z0-9]+", "_", domain)
-    dlfile = f"{xlist}-{xdomain}.mbox"
+    # Figure out a sane filename (don't keep '.')
+    xlist = re.sub(r"[^-_a-z0-9]+", "_", lid)
+    xdomain = re.sub(r"[^-_a-z0-9]+", "_", domain)
+    if yyyymm:
+        if len(yyyymm) == 6: # assume yyyy-m, convert to yyyy-mm
+            yyyymm = yyyymm[0:-1] + "0" + yyyymm[-1]
+        dlfile = f"{xlist}_{xdomain}_{yyyymm}.mbox"
+    else:
+        dlfile = f"{xlist}_{xdomain}.mbox"
     headers = {"Content-Type": "application/mbox", "Content-Disposition": f"attachment; filename={dlfile}"}
 
     # Return mbox archive with filename as a stream
