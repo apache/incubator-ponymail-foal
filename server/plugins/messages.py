@@ -411,8 +411,8 @@ async def get_list_stats(session, maxage="90d", admin=False):
     return lists
 
 
-async def get_years(session, query_defuzzed):
-    """ Fetches the oldest and youngest email, returns the years between them """
+async def get_activity_span(session, query_defuzzed):
+    """ Fetches the activity span of a search as well as active months within that span """
 
     # Fetch any private lists included in search results
     fuzz_private_only = dict(query_defuzzed)
@@ -445,7 +445,7 @@ async def get_years(session, query_defuzzed):
             {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
         ]
 
-    # Get oldest and youngest doc in single scan
+    # Get oldest and youngest doc in single scan, as well as a monthly histogram
     res = await session.database.search(
         index=session.database.dbs.mbox,
         size=0,
@@ -453,18 +453,29 @@ async def get_years(session, query_defuzzed):
             "aggs": {
                 "first": {"min": {"field": "epoch"}},
                 "last": {"max": {"field": "epoch"}},
+                "active_months": {
+                    "date_histogram": {
+                        "field": "date",
+                        "calendar_interval": "month",
+                        "format": "yyyy-MM"
+                    }
+                }
             },
         }
     )
 
     oldest = datetime.datetime.fromtimestamp(0)
     youngest = datetime.datetime.fromtimestamp(0)
+    monthly_activity = {}
     if res["aggregations"]:
         aggs = res["aggregations"]
         oldest = datetime.datetime.fromtimestamp(aggs["first"]["value"] or 0)
         youngest = datetime.datetime.fromtimestamp(aggs["last"]["value"] or 0)
+        for bucket in aggs["active_months"].get("buckets", []):
+            if bucket["doc_count"]:
+                monthly_activity[bucket["key_as_string"]] = bucket["doc_count"]
 
-    return oldest.year, youngest.year, oldest.month, youngest.month
+    return oldest, youngest, monthly_activity
 
 
 class ThreadConstructor:
