@@ -69,7 +69,7 @@ async def process(
     lid = indata.get("list", "_")
     domain = indata.get("domain", "_")
     # may be provided as d= or date=
-    yyyymm = indata.get("d") or indata.get("date") # e.g. 2019-9
+    yyyymm = indata.get("d") or indata.get("date") # e.g. 2019-9; can also be lte=1M etc
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
@@ -88,16 +88,15 @@ async def process(
         epoch_order="asc"
     )
 
-    # Figure out a sane filename (don't keep '.')
-    xlist = re.sub(r"[^-_a-z0-9]+", "_", lid)
-    xdomain = re.sub(r"[^-_a-z0-9]+", "_", domain)
     if yyyymm:
-        if len(yyyymm) == 6: # assume yyyy-m, convert to yyyy-mm
+        if len(yyyymm) == 6 and yyyymm[4] == '-': # assume yyyy-m, convert to yyyy-mm
             yyyymm = yyyymm[0:-1] + "0" + yyyymm[-1]
-        dlfile = f"{xlist}_{xdomain}_{yyyymm}.mbox"
+        dlstem = f"{lid}_{domain}_{yyyymm}"
     else:
-        dlfile = f"{xlist}_{xdomain}.mbox"
-    headers = {"Content-Type": "application/mbox", "Content-Disposition": f"attachment; filename={dlfile}"}
+        dlstem = f"{lid}_{domain}"
+    # Figure out a sane filename stem (don't keep '.')
+    dlstem = re.sub(r"[^-_a-z0-9]+", "_", dlstem)
+    headers = {"Content-Type": "application/mbox", "Content-Disposition": f"attachment; filename={dlstem}.mbox"}
 
     # Return mbox archive with filename as a stream
     response = aiohttp.web.StreamResponse(status=200, headers=headers)
