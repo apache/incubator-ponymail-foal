@@ -651,6 +651,12 @@ a.dropdown-toggle {
   
 }
 
+#userprefs {
+    position: absolute;
+    right: 18px;
+    top: 0px;
+}
+
 @media only screen and (max-width: 860px) {
   .navbar-brand {
     display: none;
