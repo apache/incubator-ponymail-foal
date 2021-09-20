@@ -23,8 +23,9 @@ before_script:
   - pip install mypy
 
 script:
+  # Is this needed? There are no server tests currently
   - pip install -r server/requirements.txt
-  - pip install -r requirements.txt
+  - pip install -r tools/requirements.txt
   - mypy --cache-dir /tmp/ --install-types
   - mypy --cache-dir /tmp/ --ignore-missing-imports tools/archiver.py
   - mypy --cache-dir /tmp/ --ignore-missing-imports tools/import-mbox.py

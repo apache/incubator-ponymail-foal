@@ -2,13 +2,17 @@
 
 <!-- toc -->
 
-- [Basic requirements](#basic-requirements)
-- [Installation steps:](#installation-steps)
-- [Archiving new emails via Postfix or the likes](#archiving-new-emails-via-postfix-or-the-likes)
-- [Setting up OAuth](#setting-up-oauth)
-  * [Setting up Google OAuth](#setting-up-google-oauth)
-  * [Setting up GitHub OAuth](#setting-up-github-oauth)
-- [Setting up web replies](#setting-up-web-replies)
+- [Installation instructions](#installation-instructions)
+  - [Basic requirements](#basic-requirements)
+  - [Installation steps:](#installation-steps)
+- [Load required modules](#load-required-modules)
+  - [Archiving new emails via Postfix or the likes](#archiving-new-emails-via-postfix-or-the-likes)
+  - [Setting up OAuth](#setting-up-oauth)
+    - [Setting up Google OAuth](#setting-up-google-oauth)
+    - [Setting up GitHub OAuth](#setting-up-github-oauth)
+  - [Setting up web replies](#setting-up-web-replies)
+  - [Hiding tracebacks from users](#hiding-tracebacks-from-users)
+  - [Archiving options](#archiving-options)
 
 <!-- tocstop -->
 
@@ -24,7 +28,7 @@
 - Clone the Foal git repository to your machine: `git clone https://github.com/apache/incubator-ponymail-foal.git foal`
 - Install the Python requirements for the setup:
 ~~~shell script
-cd foal/
+cd foal/tools
 pipenv install -r requirements.txt
 ~~~
 - Install any desired optional dependencies, for example:
@@ -33,7 +37,6 @@ pipenv install -r requirements.txt
   - zope (Zope Public Licence 2.1) - required for Mailman integration
 - Run the setup process:
 ~~~shell script
-cd tools/
 pipenv run python3 setup.py
 cd ..
 ~~~
