@@ -632,7 +632,9 @@ a.dropdown-toggle {
   }
   #userprefs {
     width: 100px;
-    
+    position: absolute;
+    right: 18px;
+    top: 0px;
   }
   #project_select_form {
     display: none;
