@@ -712,8 +712,8 @@ if re.match(r"https?://", source):
             qn += 1
             if quickmode and qn >= 2:
                 break
-        for t in dl_threads:
-            t.join()
+        for done_dl_t in dl_threads:
+            done_dl_t.join()
 
 # IMAP(S) based import?
 elif re.match(r"imaps?://", source):
