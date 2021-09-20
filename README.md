@@ -3,7 +3,10 @@
 
 _Next generation suite of services and tools for Apache Pony Mail_
 
-![CI Status](https://img.shields.io/travis/apache/incubator-ponymail-foal?style=plastic)
+| Type tests: | ![CI Status, Type Tests](https://img.shields.io/github/workflow/status/apache/incubator-ponymail-foal/Foal%20Type%20Tests?style=plastic) |
+|-----|-------|
+| **Unit tests:** | ![CI Status, Unit Tests](https://img.shields.io/github/workflow/status/apache/incubator-ponymail-foal/Unit%20Tests?style=plastic) |
+
 
 This repository aims to contain the next generation of Apache Pony Mail,
 a pure python version of Apache Pony Mail with support for ElasticSearch 
