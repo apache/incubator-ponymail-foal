@@ -111,6 +111,24 @@ def bulk_insert(name, json, xes, dtype, wc="quorum"):
     except Exception as err:
         print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dtype))
 
+class DownloadThread(Thread):
+    def assign(self, url):
+        self.url = url
+    def run(self):
+        global lists
+        mldata = urlopen(self.url).read()
+        tmpfile = tempfile.NamedTemporaryFile(mode="w+b", buffering=1, delete=False)
+        try:
+            if ml.find(".gz") != -1:
+                mldata = gzip.decompress(mldata)
+        except Exception as err:
+            print("This wasn't a gzip file: %s" % err)
+        print(len(mldata))
+        tmpfile.write(mldata)
+        tmpfile.flush()
+        tmpfile.close()
+        lists.append([tmpfile.name, list_override])
+        print("Adding %s to slurp list as %s" % (self.url, tmpfile.name))
 
 class SlurpThread(Thread):
     def printid(self, message):
@@ -683,24 +701,19 @@ if re.match(r"https?://", source):
             sys.exit(-1)
         ns = r"href=\"(\d+(?:-[a-zA-Z]+)?\.txt(\.gz)?)\""
         qn = 0
+        
+        dl_threads = []
         for mlist in re.finditer(ns, data):
             ml = mlist.group(1)
-            mldata = urlopen("%s%s" % (source, ml)).read()
-            tmpfile = tempfile.NamedTemporaryFile(mode="w+b", buffering=1, delete=False)
-            try:
-                if ml.find(".gz") != -1:
-                    mldata = gzip.decompress(mldata)
-            except Exception as err:
-                print("This wasn't a gzip file: %s" % err)
-            print(len(mldata))
-            tmpfile.write(mldata)
-            tmpfile.flush()
-            tmpfile.close()
-            lists.append([tmpfile.name, list_override])
-            print("Adding %s/%s to slurp list as %s" % (source, ml, tmpfile.name))
+            dl_thread = DownloadThread()
+            dl_thread.assign("%s%s" % (source, ml))
+            dl_thread.start()
+            dl_threads.append(dl_thread)
             qn += 1
             if quickmode and qn >= 2:
                 break
+        for t in dl_threads:
+            t.join()
 
 # IMAP(S) based import?
 elif re.match(r"imaps?://", source):
