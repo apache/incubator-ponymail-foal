@@ -286,8 +286,8 @@ class SlurpThread(Thread):
                 
                 # If fetched from Pipermail, we have to revert/reconstruct From: headers sometimes,
                 # before we can pass it off to final archiving.
-                if args.pipermail and " at " in message.get("from"):
-                    m = re.match(r"^(\S+) at (\S+) \((.+)\)$", message["from"])
+                if args.pipermail and " at " in str(message.get("from")):
+                    m = re.match(r"^(\S+) at (\S+) \((.+)\)$", str(message["from"]))
                     if m:
                         message.replace_header("from", "%s <%s@%s>" % (m.group(3), m.group(1), m.group(2)))
 
