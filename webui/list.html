@@ -159,6 +159,11 @@ the License. -->
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).on("mobileinit", function() {
+        $.mobile.keepNative = "input";
+      });
+    </script>
     <script src="js/jquery.mobile-1.4.5.min.js"
             integrity="sha256-Lsk+CDPOzTapLoAzWW0G/WeQeViS3FMzywpzPZV8SXk="></script>
 
