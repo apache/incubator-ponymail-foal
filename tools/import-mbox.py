@@ -274,9 +274,11 @@ class SlurpThread(Thread):
                         message.replace_header("from", "%s <%s@%s>" % (m.group(3), m.group(1), m.group(2)))
 
 
-                json, contents, _msgdata, _irt = archie.compute_updates(
+                json, contents, _msgdata, _irt, skipit = archie.compute_updates(
                     list_override, private, message, message_raw
                 )
+                if skipit:
+                    continue
 
                 # Not sure this can ever happen
                 if json and not (json["list"] and json["list_raw"]):
