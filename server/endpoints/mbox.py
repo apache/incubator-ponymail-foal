@@ -24,7 +24,7 @@ import plugins.defuzzer
 import re
 import typing
 import aiohttp.web
-import asyncio.exceptions
+from asyncio.exceptions import CancelledError
 import email.utils as eutils
 import datetime
 
@@ -116,7 +116,7 @@ async def process(
         try:
             async with server.streamlock:
                 await asyncio.wait_for(response.write(mboxrd_source.encode("utf-8")), timeout=5)
-        except (TimeoutError, RuntimeError, asyncio.exceptions.CancelledError):
+        except (TimeoutError, RuntimeError, CancelledError):
             break  # Writing stream failed, break it off.
     return response
 
