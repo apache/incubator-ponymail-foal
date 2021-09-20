@@ -24,7 +24,10 @@ import plugins.defuzzer
 import re
 import typing
 import aiohttp.web
-from asyncio.exceptions import CancelledError
+try:
+    from asyncio.exceptions import CancelledError
+except ImportError:  # 3.7 ??
+    from asyncio import CancelledError
 import email.utils as eutils
 import datetime
 
