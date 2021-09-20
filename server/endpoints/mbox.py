@@ -26,7 +26,7 @@ import typing
 import aiohttp.web
 try:
     from asyncio.exceptions import CancelledError
-except (ImportError, ModuleNotFoundError):  # 3.7 ??
+except AttributeError:  # 3.7 ??
     from asyncio import CancelledError
 import email.utils as eutils
 import datetime
