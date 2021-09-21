@@ -3971,11 +3971,16 @@ function calendar_click(year, month) {
     current_month = month;
     searching = false;
     let q = "";
-    let newhref = "list.html?%s@%s:%u-%u".format(current_list, current_domain, year, month);
+    let calendar_current_list = current_list;
+    let calendar_current_domain = current_domain;
     if (current_json && current_json.searchParams && current_json.searchParams.q) {
         q = current_json.searchParams.q;
-        newhref += ":" + q;
+        calendar_current_list = current_json.searchParams.list;
+        calendar_current_domain = current_json.searchParams.domain;
     }
+    let newhref = "list?%s@%s:%u-%u".format(calendar_current_list, calendar_current_domain, year, month);
+    if (q && q.length > 0) newhref += ":" + q;
+
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
