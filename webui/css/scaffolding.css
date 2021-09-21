@@ -1253,6 +1253,6 @@ pre {
 
 .calendar_count {
     display: block;
-    line-height: 6px;
-    font-size: 0.6em;
+    line-height: 5px;
+    font-size: 0.65em;
 }
