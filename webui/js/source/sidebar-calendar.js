@@ -181,6 +181,7 @@ function calendar_click(year, month) {
     }
     GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
         to: '%s@%s'.format(calendar_current_list, calendar_current_domain),
-        update_calendar: false
+        update_calendar: false,
+        search: (q && q.length > 0)
     });
 }
