@@ -145,6 +145,7 @@ async function render_email(state, json) {
     // permalink button
     let linkbutton = new HTML('a', {
         href: 'thread/%s'.format(json.mid),
+        target: '_self',
         title: "Permanent link to this email",
         class: 'btn toolbar_btn toolbar_button_link'
     }, new HTML('span', {
