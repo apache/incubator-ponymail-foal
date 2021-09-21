@@ -3482,6 +3482,7 @@ async function render_email(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', {
         href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
     }, new HTML('span', {
