@@ -90,7 +90,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
                 mdiv.setAttribute("onclick", "javascript:void(0);");
             } else if (activity && activity[ym]) {
-                let count = activity[ym] * 127;
+                let count = activity[ym];
                 if (count >= 1000) {
                     count = Math.floor(count/1000.0) + "k+";
                 }
