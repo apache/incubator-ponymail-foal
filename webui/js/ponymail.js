@@ -3900,7 +3900,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
                     count = Math.floor(count/1000.0) + "k+";
                 }
                 count = count.toString();
-                mdiv.inject(new HTML('span', {class: 'calendar_count'}, count));
+                mdiv.inject(new HTML('span', {title: `${count} emails this month`, class: 'calendar_count'}, count));
             }
             ydiv.inject(mdiv);
         }
