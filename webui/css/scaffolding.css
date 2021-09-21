@@ -1250,3 +1250,9 @@ pre {
 .auditlog_entries th {
     padding: 2px;
 }
+
+.calendar_count {
+    display: block;
+    line-height: 6px;
+    font-size: 0.6em;
+}

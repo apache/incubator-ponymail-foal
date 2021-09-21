@@ -89,6 +89,13 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
             if (!c_active) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
                 mdiv.setAttribute("onclick", "javascript:void(0);");
+            } else if (activity && activity[ym]) {
+                let count = activity[ym] * 127;
+                if (count >= 1000) {
+                    count = Math.floor(count/1000.0) + "k+";
+                }
+                count = count.toString();
+                mdiv.inject(new HTML('span', {class: 'calendar_count'}, count));
             }
             ydiv.inject(mdiv);
         }
