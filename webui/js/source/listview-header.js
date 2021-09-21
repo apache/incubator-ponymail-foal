@@ -230,7 +230,6 @@ function listview_list_lists(state, json) {
             class: 'search'
         }, "Search: %s".format(state.query));
         li.setAttribute("data-url", state.url);
-        li.setAttribute("data-list", "%s@%s".format(current_list, current_domain));
         li.setAttribute("data-href", location.href);
         lists.inject(li);
     }
