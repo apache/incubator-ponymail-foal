@@ -168,10 +168,17 @@ function calendar_click(year, month) {
     let q = "";
     let calendar_current_list = current_list;
     let calendar_current_domain = current_domain;
-    if (current_json && current_json.searchParams && current_json.searchParams.q) {
-        q = current_json.searchParams.q;
+    if (current_json && current_json.searchParams) {
+        q = current_json.searchParams.q || "";
         calendar_current_list = current_json.searchParams.list;
         calendar_current_domain = current_json.searchParams.domain;
+        // Weave in header parameters
+        for (let key of Object.keys((current_json.searchParams || {}))) {
+            if (key.match(/^header_/)) {
+                let value = current_json.searchParams[key];
+                q += `&${key}=${value}`;
+            }
+        }
     }
     let newhref = "list?%s@%s:%u-%u".format(calendar_current_list, calendar_current_domain, year, month);
     if (q && q.length > 0) newhref += ":" + q;

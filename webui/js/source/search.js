@@ -28,13 +28,27 @@ function search(query, date) {
         list = '*';
         global = true;
     }
+
+    let listid = '%s@%s'.format(list, domain);
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
+
+    let header_from = document.getElementById('header_from');
+    let header_subject = document.getElementById('header_subject');
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
+    if (header_from.value.length > 0) {
+        sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
+        newhref += "&header_from=%s".format(header_from.value);
+        header_from.value = "";
+    }
+    if (header_subject.value.length > 0) {
+        sURL += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
+        newhref += "&header_subject=%s".format(header_subject.value);
+        header_subject.value = "";
+    }
     GET(sURL, renderListView, {
         search: true,
         global: global
     });
-    let listid = '%s@%s'.format(list, domain);
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }

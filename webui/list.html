@@ -67,7 +67,13 @@ the License. -->
           <li><b>Date range:</b>
             <span id='drh'><input title="Click to change the date range" style="padding-left: 20px; border: none; cursor: url(images/daterange.ico), text; min-width: 200px; margin-right: 10px; background-color: transparent; font-size: 9pt;" name="d" id='d' data="lte=1M" value="Less than 1 month ago" onclick="datePicker(this);" readonly="readonly"/></span>
           </li>
+          <li class="divider"></li>
+          <li><b>Advanced filters:</b><br/>
+            <div style="display: inline-block; width: 120px;">Author: </div><span id='hd_from'><input title="Name or email address" style="min-width: 200px; margin-right: 10px; background-color: white; font-size: 8pt;" name="header_from" id='header_from' value=""/></span><br/>
+            <div style="display: inline-block; width: 120px;">Subject: </div><span id='hd_subject'><input style="min-width: 200px; margin-right: 10px; background-color: white; font-size: 8pt;" name="header_subject" id='header_subject' value=""/></span><br/>
+          </li>
         </ul>
+
         
         <input type="text" name="q" id="q" placeholder="Search this list..." style="border-top: none; border-bottom: none;"/>
         <button type="submit" title="Search!" value="Search!" class="btn btn-primary"><span class="glyphicon glyphicon-search"> </span></button>
