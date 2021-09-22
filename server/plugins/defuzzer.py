@@ -74,8 +74,8 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         if m:
             dfr = m.group(1)
             dto = m.group(2)
-            syear, smonth, sday = dfr.split("-", 1)
-            eyear, emonth, eday = dto.split("-", 1)
+            syear, smonth, sday = dfr.split("-", 2)
+            eyear, emonth, eday = dto.split("-", 2)
             daterange = {
                 "gt": "%04u/%02u/%02u 00:00:00" % (int(syear), int(smonth), int(sday)),
                 "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), int(eday)),
