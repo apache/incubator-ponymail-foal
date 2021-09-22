@@ -2374,7 +2374,6 @@ function listview_list_lists(state, json) {
             class: 'search'
         }, "Search: %s".format(state.query));
         li.setAttribute("data-url", state.url);
-        li.setAttribute("data-list", "%s@%s".format(current_list, current_domain));
         li.setAttribute("data-href", location.href);
         lists.inject(li);
     }
@@ -3781,13 +3780,27 @@ function search(query, date) {
         list = '*';
         global = true;
     }
+
+    let listid = '%s@%s'.format(list, domain);
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
+
+    let header_from = document.getElementById('header_from');
+    let header_subject = document.getElementById('header_subject');
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
+    if (header_from.value.length > 0) {
+        sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
+        newhref += "&header_from=%s".format(header_from.value);
+        header_from.value = "";
+    }
+    if (header_subject.value.length > 0) {
+        sURL += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
+        newhref += "&header_subject=%s".format(header_subject.value);
+        header_subject.value = "";
+    }
     GET(sURL, renderListView, {
         search: true,
         global: global
     });
-    let listid = '%s@%s'.format(list, domain);
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
@@ -3976,10 +3989,17 @@ function calendar_click(year, month) {
     let q = "";
     let calendar_current_list = current_list;
     let calendar_current_domain = current_domain;
-    if (current_json && current_json.searchParams && current_json.searchParams.q) {
-        q = current_json.searchParams.q;
+    if (current_json && current_json.searchParams) {
+        q = current_json.searchParams.q || "";
         calendar_current_list = current_json.searchParams.list;
         calendar_current_domain = current_json.searchParams.domain;
+        // Weave in header parameters
+        for (let key of Object.keys((current_json.searchParams || {}))) {
+            if (key.match(/^header_/)) {
+                let value = current_json.searchParams[key];
+                q += `&${key}=${value}`;
+            }
+        }
     }
     let newhref = "list?%s@%s:%u-%u".format(calendar_current_list, calendar_current_domain, year, month);
     if (q && q.length > 0) newhref += ":" + q;
