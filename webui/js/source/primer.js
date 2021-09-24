@@ -82,7 +82,7 @@ function post_prime(state) {
     }
 }
 
-
+// onload function for list.html
 function parseURL(state) {
     let bits = window.location.search.substr(1).split(":", 3);
     let list = bits[0];
@@ -138,6 +138,7 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
+// onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
     let mid = location.href.split('/').pop();

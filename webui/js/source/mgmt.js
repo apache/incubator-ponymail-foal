@@ -295,6 +295,7 @@ function admin_audit_next() {
     GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
 }
 
+// Onload function for admin.html
 function admin_init() {
     let mid = location.href.split('/').pop();
     // Specific email/list handling?

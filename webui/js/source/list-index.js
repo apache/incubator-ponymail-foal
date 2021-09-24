@@ -116,6 +116,7 @@ function list_index_onepage(state, json) {
     }
 }
 
+// onload function for index.html
 function prime_list_index() {
     GET('%sapi/preferences.lua'.format(apiURL), list_index_onepage, {});
 }

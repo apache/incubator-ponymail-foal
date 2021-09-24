@@ -2033,6 +2033,7 @@ function list_index_onepage(state, json) {
     }
 }
 
+// onload function for index.html
 function prime_list_index() {
     GET('%sapi/preferences.lua'.format(apiURL), list_index_onepage, {});
 }
@@ -2999,6 +3000,7 @@ function admin_audit_next() {
     GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
 }
 
+// Onload function for admin.html
 function admin_init() {
     let mid = location.href.split('/').pop();
     // Specific email/list handling?
@@ -3209,7 +3211,7 @@ function post_prime(state) {
     }
 }
 
-
+// onload function for list.html
 function parseURL(state) {
     let bits = window.location.search.substr(1).split(":", 3);
     let list = bits[0];
@@ -3265,6 +3267,7 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
+// onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
     let mid = location.href.split('/').pop();
