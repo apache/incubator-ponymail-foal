@@ -120,6 +120,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     # - "this sentence": find emails with this exact string
     if "q" in formdata:
         qs = formdata["q"].replace(":", "")
+        qs = qs.replace("/", " ")  # Forward slashes are reserved characters
         bits = shlex.split(qs)
 
         should = []
@@ -168,6 +169,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         hname = "header_%s" % header
         if hname in formdata:
             hvalue = formdata[hname]  # .replace('"', "")
+            hvalue = hvalue.replace("/", " ")  # Forward slashes are reserved characters
             must.append({"match": {header: {"query": hvalue}}})
 
     thebool = {"must": must}
