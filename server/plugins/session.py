@@ -190,7 +190,7 @@ async def set_session(server: plugins.server.BaseServer, cid, **credentials):
     cookie: http.cookies.SimpleCookie = http.cookies.SimpleCookie()
     cookie["ponymail"] = session_id
     session = SessionObject(
-        server, last_accessed=time.time(), cookie=session_id, cid=cid
+        server, last_accessed=int(time.time()), cookie=session_id, cid=cid
     )
     session.credentials = SessionCredentials(credentials)
     server.data.sessions[session_id] = session
