@@ -149,7 +149,7 @@ source:
       type: keyword
     mid:
       type: keyword
-    permalink:
+    permalinks:
       type: keyword
     source:
       type: binary
