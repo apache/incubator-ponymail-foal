@@ -40,6 +40,7 @@ class UIConfig:
     traceback: bool
     mgmt_enabled: bool
     focus_domain: str
+    fully_delete: bool
 
     def __init__(self, subyaml: dict):
         self.wordcloud = bool(subyaml.get("wordcloud", False))
@@ -51,6 +52,7 @@ class UIConfig:
         # Set to false in yaml to redirect to stderr instead.
         self.traceback = subyaml.get("traceback", True)
         self.mgmt_enabled = bool(subyaml.get("mgmtconsole", False))  # Whether to enable online mgmt component or not
+        self.fully_delete = bool(subyaml.get("true_gdpr", False))  # Whether to enforce full expunging of deleted emails
         # Default to all lists, "*". Use "" for host. Wildcard subdomain globs also supported
         self.focus_domain = subyaml.get("focus_domain", "*")
 
