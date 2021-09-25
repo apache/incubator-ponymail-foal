@@ -57,9 +57,17 @@ async def process(
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = True
-                await session.database.index(
-                    index=session.database.dbs.mbox, body=email, id=email["id"],
-                )
+                if server.config.ui.fully_delete and email["id"] and email["dbid"]:  # Full on GDPR blast?
+                    await session.database.delete(
+                        index=session.database.dbs.mbox, id=email["id"],
+                    )
+                    await session.database.delete(
+                        index=session.database.dbs.source, id=email["dbid"],
+                    )
+                else:  # Standard behavior: hide the email from everyone.
+                    await session.database.index(
+                        index=session.database.dbs.mbox, body=email, id=email["id"],
+                    )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
                 delcount += 1
