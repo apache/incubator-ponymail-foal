@@ -94,7 +94,7 @@ class Database:
                    scroll="5m",
                    preserve_order=False,
                    size=1000,
-                   request_timeout=None,
+                   request_timeout=60,
                    clear_scroll=True,
                    scroll_kwargs=None,
                    **kwargs) -> typing.AsyncIterator[dict]:
