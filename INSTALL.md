@@ -11,6 +11,7 @@
     - [Setting up Google OAuth](#setting-up-google-oauth)
     - [Setting up GitHub OAuth](#setting-up-github-oauth)
   - [Setting up web replies](#setting-up-web-replies)
+  - [Online Management Console](#online-management-console)
   - [Hiding tracebacks from users](#hiding-tracebacks-from-users)
   - [Archiving options](#archiving-options)
 
@@ -173,6 +174,22 @@ separating each entry with a single space:
 
 Only users logged in via authoritative OAuth will be able to compose replies via the
 web interface.
+
+## Online Management Console
+the `ui` paragraph of the server configuration allows for enabling an administrative interface
+for editing or removing emails from the archives. To enable this, set `mgmtconsole` to `true`.
+For true GDPR compliance (deleting an email deletes from disk), set `true_gdpr` to `true`. 
+If left out or set to false, deleted emails are merely hidden, and can be recovered at a later stage.
+
+~~~yaml
+ui:
+  mgmtconsole:     true
+  true_gdpr:       true
+~~~
+
+The administrative interface can be accessed by clicking on the yellow cog in the context menu 
+of an email.
+
 
 ## Hiding tracebacks from users
 By default, API errors will include a full traceback for debugging purposes. If you wish to 
