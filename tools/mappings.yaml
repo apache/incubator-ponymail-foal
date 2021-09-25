@@ -2,6 +2,7 @@
 # It is used solely by setup.py during the setup process, and should not be
 # edited prior to installation.
 account:
+  dynamic: strict
   properties:
     cid:
       type: keyword
@@ -24,10 +25,12 @@ account:
     request_id:
       type: keyword
 attachment:
+  dynamic: strict
   properties:
     source:
       type: binary
 mailinglist:
+  dynamic: strict
   properties:
     description:
       type: keyword
@@ -36,6 +39,7 @@ mailinglist:
     name:
       type: keyword
 mbox:
+  dynamic: strict
   properties:
     attachments:
       properties:
@@ -139,6 +143,7 @@ session:
     cid:
       type: keyword
 source:
+  dynamic: strict
   properties:
     message-id:
       type: keyword
