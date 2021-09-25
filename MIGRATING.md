@@ -16,7 +16,7 @@ and the name of the old database and the prefix of the new indices.
 
 You will also need to acknowledge the DKIm re-indexing, or deny it and 
 continue with the old document IDs. Re-indexing is recommended if you wish 
-to use shorted permalinks, and is fully backwards-compatible with your 
+to use shorter permalinks, and is fully backwards-compatible with your 
 previous permalinks.
 
 Migrating may take quite a while. Assume 250 documents can be migrated per second.
