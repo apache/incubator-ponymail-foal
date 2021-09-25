@@ -188,7 +188,7 @@ ui:
 ~~~
 
 The administrative interface can be accessed by clicking on the yellow cog in the context menu 
-of an email.
+of an email. Admins are defined in the [OAuth](#setting-up-oauth) configuration.
 
 
 ## Hiding tracebacks from users
