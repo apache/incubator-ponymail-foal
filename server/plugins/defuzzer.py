@@ -50,7 +50,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     # Advanced date formatting
     elif "d" in formdata:
         # The more/less than N days/weeks/months/years ago
-        m = re.match(r"^([a-z]+)=([0-9Mwyd]+)$", formdata["d"])
+        m = re.match(r"^([a-z]+)=([0-9]+[Mwyd])$", formdata["d"])
         if m:
             t = m.group(1)
             r = m.group(2)
