@@ -83,9 +83,9 @@ class Server(plugins.server.BaseServer):
                     )
         if args.logger:
             import logging
-            es_trace_logger = logging.getLogger('elasticsearch')
-            es_trace_logger.setLevel(args.logger)
-            es_trace_logger.addHandler(logging.StreamHandler())
+            es_logger = logging.getLogger('elasticsearch')
+            es_logger.setLevel(args.logger)
+            es_logger.addHandler(logging.StreamHandler())
         if args.trace:
             import logging
             es_trace_logger = logging.getLogger('elasticsearch.trace')
