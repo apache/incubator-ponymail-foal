@@ -99,7 +99,6 @@ def bulk_insert(name, json, xes, dtype, wc="quorum"):
                 "_op_type": "index",
                 "_consistency": wc,
                 "_index": dbname + "-" + dtype,
-                "_type": "_doc",
                 "_id": document_id,
                 "doc": js,
                 "_source": js,
