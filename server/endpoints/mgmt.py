@@ -102,8 +102,8 @@ async def process(
             email["body"] = new_body
 
             # Save edited email
-            await session.database.index(
-                index=session.database.dbs.mbox, body=email, id=email["id"],
+            await session.database.update(
+                index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
             )
 
             # Fetch source, mark as deleted (modified) and save
@@ -112,8 +112,8 @@ async def process(
             if source:
                 source = source["_source"]
                 source["deleted"] = True
-                await session.database.index(
-                    index=session.database.dbs.source, body=source, id=email["id"],
+                await session.database.update(
+                    index=session.database.dbs.source, body={"doc": email}, id=email["id"],
                 )
 
             await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
