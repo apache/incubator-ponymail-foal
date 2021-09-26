@@ -105,6 +105,7 @@ mbox:
     _archived_at:
       type: long
 notification:
+  dynamic: true # explicit default
   properties:
     date:
       format: yyyy/MM/dd HH:mm:ss
@@ -135,6 +136,7 @@ notification:
     type:
       type: keyword
 session:
+  dynamic: true # explicit default
   properties:
     cookie:
       type: keyword
@@ -154,6 +156,7 @@ source:
     source:
       type: binary
 auditlog:
+  dynamic: true # explicit default
   properties:
     date:
       format: yyyy/MM/dd HH:mm:ss
