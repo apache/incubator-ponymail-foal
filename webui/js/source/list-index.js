@@ -63,26 +63,9 @@ function list_index(state, json) {
 }
 
 
-let preferred_lists = ['dev', 'users'];
-let preferred_no_lists = ['security'];
-
 function is_letter(domain, letter) {
     if (letter == '#' && domain.match(/^([^a-zA-Z]+)/)) return true
     else return domain.toLowerCase().startsWith(letter.toLowerCase());
-}
-
-function best_list(entries) {
-    let x = 0;
-    let pick = 'dev';
-    for (var key in entries) {
-        if (preferred_lists.has(key)) return key;
-        if (preferred_no_lists.has(key) && Object.keys(entries).length > 1) continue;
-        if (entries[key] > x) {
-            x = entries[key];
-            pick = key;
-        }
-    }
-    return pick;
 }
 
 function list_index_onepage(state, json) {
@@ -100,7 +83,7 @@ function list_index_onepage(state, json) {
             obj.inject(lhtml);
         }
         let a = new HTML('a', {
-            href: 'list.html?%s@%s'.format(best_list(json.lists[domain]), domain)
+            href: 'list.html?%s'.format(domain)
         }, domain);
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
