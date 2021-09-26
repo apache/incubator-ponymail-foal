@@ -58,28 +58,29 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                 daterange = {"gt": "now-%s" % r}
             elif t == "gte" and r:
                 daterange = {"lt": "now-%s" % r}
-        # simple one month listing
-        m = re.match(r"^(\d\d\d\d-\d+)$", formdata["d"])
-        if m:
-            xdate = m.group(1)
-            dyear, dmonth = xdate.split("-", 1)
-            daterange = {
-                "gte": "%04u-%02u-01||/M" % (int(dyear), int(dmonth)),
-                "lte": "%04u-%02u-01||/M" % (int(dyear), int(dmonth)),
-                "format": "yyyy-MM-dd",
-            }
-
-        # dfr and dto defining a time span
-        m = re.match(r"^dfr=(\d\d\d\d-\d+-\d+)\|dto=(\d\d\d\d-\d+-\d+)$", formdata["d"])
-        if m:
-            dfr = m.group(1)
-            dto = m.group(2)
-            syear, smonth, sday = dfr.split("-", 2)
-            eyear, emonth, eday = dto.split("-", 2)
-            daterange = {
-                "gt": "%04u/%02u/%02u 00:00:00" % (int(syear), int(smonth), int(sday)),
-                "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), int(eday)),
-            }
+        else:
+            # simple one month listing
+            m = re.match(r"^(\d\d\d\d-\d+)$", formdata["d"])
+            if m:
+                xdate = m.group(1)
+                dyear, dmonth = xdate.split("-", 1)
+                daterange = {
+                    "gte": "%04u-%02u-01||/M" % (int(dyear), int(dmonth)),
+                    "lte": "%04u-%02u-01||/M" % (int(dyear), int(dmonth)),
+                    "format": "yyyy-MM-dd",
+                }
+            else:
+                # dfr and dto defining a time span
+                m = re.match(r"^dfr=(\d\d\d\d-\d+-\d+)\|dto=(\d\d\d\d-\d+-\d+)$", formdata["d"])
+                if m:
+                    dfr = m.group(1)
+                    dto = m.group(2)
+                    syear, smonth, sday = dfr.split("-", 2)
+                    eyear, emonth, eday = dto.split("-", 2)
+                    daterange = {
+                        "gt": "%04u/%02u/%02u 00:00:00" % (int(syear), int(smonth), int(sday)),
+                        "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), int(eday)),
+                    }
 
     # List parameter(s)
     fqdn = formdata.get("domain", "*")  # If left out entirely, assume wildcard search
