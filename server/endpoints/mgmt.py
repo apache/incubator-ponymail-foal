@@ -92,6 +92,13 @@ async def process(
 
         email = await plugins.messages.get_email(session, permalink=doc)
         if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+            # Test if only privacy may have changed
+            privacy_only = (
+                    email["from"] == new_from and
+                    email["subject"] == new_subject and
+                    email["list"] == lid and
+                    email["body"] == new_body
+            )
             email["from_raw"] = new_from
             email["from"] = new_from
             email["subject"] = new_subject
@@ -106,15 +113,16 @@ async def process(
                 index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
             )
 
-            # Fetch source, mark as deleted (modified) and save
+            # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
             # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
-            source = await plugins.messages.get_source(session, permalink=email["id"], raw=True)
-            if source:
-                source = source["_source"]
-                source["deleted"] = True
-                await session.database.update(
-                    index=session.database.dbs.source, body={"doc": email}, id=email["id"],
-                )
+            if not privacy_only:
+                source = await plugins.messages.get_source(session, permalink=email["id"], raw=True)
+                if source:
+                    source = source["_source"]
+                    source["deleted"] = True
+                    await session.database.update(
+                        index=session.database.dbs.source, body={"doc": email}, id=email["id"],
+                    )
 
             await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
                                              log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})")
