@@ -116,12 +116,13 @@ async def process(
             # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
             # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
             if not privacy_only:
-                source = await plugins.messages.get_source(session, permalink=email["id"], raw=True)
+                source = await plugins.messages.get_source(session, permalink=email["dbid"], raw=True)
                 if source:
+                    docid = source["_id"]
                     source = source["_source"]
                     source["deleted"] = True
                     await session.database.update(
-                        index=session.database.dbs.source, body={"doc": email}, id=email["id"],
+                        index=session.database.dbs.source, body={"doc": source}, id=docid,
                     )
 
             await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
