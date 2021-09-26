@@ -89,6 +89,12 @@ class Database:
         res = await self.client.index(index=index, **kwargs)
         return res
 
+    async def update(self, index="", **kwargs):
+        if not index:
+            index = self.dbs.session
+        res = await self.client.update(index=index, **kwargs)
+        return res
+
     async def scan(self,
                    query=None,
                    scroll="5m",
