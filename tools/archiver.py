@@ -604,7 +604,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
                 "body": body.unflow() if body else "",
-                "html_source_only": body and body.html_as_source or False,
+                "html_as_source": body and body.html_as_source or False,
                 "attachments": attachments,
                 "forum": (lid or "").strip("<>").replace(".", "@", 1),
                 "size": len(raw_msg),
