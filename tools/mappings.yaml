@@ -73,7 +73,7 @@ mbox:
       type: keyword
     gravatar:
       type: text
-    html_as_source:
+    html_source_only:
       type: boolean
     in-reply-to:
       type: keyword
