@@ -101,6 +101,28 @@ async def process(
                 await plugins.auditlog.add_entry(session, action="unhide", target=doc, lid=lid, log=f"Unhid email {doc} from {lid} archives")
                 hidecount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Unhid {hidecount} emails from archives.")
+    # Removing an attachment
+    elif action == "delatt":
+        delcount = 0
+        for doc in docs:
+            assert isinstance(doc, str), "Attachment ID must be a string"
+            attachment = None
+            try:
+                assert session.database, "Database not connected!"
+                attachment = await session.database.get(
+                    index=session.database.dbs.attachment, id=doc
+                )
+            except plugins.database.DBError:
+                pass  # attachment not found
+
+            if attachment and isinstance(attachment, dict):
+                await session.database.delete(
+                    index=session.database.dbs.attachment, id=attachment["_id"],
+                )
+                lid = "<system>"
+                await plugins.auditlog.add_entry(session, action="delatt", target=doc, lid=lid, log=f"Removed attachment {doc} from the archives")
+                delcount += 1
+        return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} attachments from archives.")
     # Editing an email in place
     elif action == "edit":
         new_from = indata.get("from")
@@ -108,6 +130,7 @@ async def process(
         new_list = indata.get("list", "")
         private = indata.get("private", "no") == "yes"
         new_body = indata.get("body", "")
+        attach_edit = indata.get("attachments", None)
 
         # Check for consistency so we don't pollute the database
         assert isinstance(doc, str) and doc, "Document ID is missing or invalid"
@@ -136,6 +159,8 @@ async def process(
             email["list"] = lid
             email["list_raw"] = lid
             email["body"] = new_body
+            if attach_edit is not None:  # Only set if truly editing attachments...
+                email["attachments"] = attach_edit
 
             # Save edited email
             await session.database.update(
