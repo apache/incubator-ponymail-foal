@@ -40,7 +40,10 @@ async def process(
         email = await plugins.messages.get_email(session, messageid=indata.get("id"))
 
     # If email was found, process the request if we are allowed to display it
-    if email and isinstance(email, dict) and not email.get("deleted"):
+    cannot_view = email.get("deleted", False)
+    if session.credentials and session.credentials.admin:
+        cannot_view = False
+    if email and isinstance(email, dict) and not cannot_view:
         if plugins.aaa.can_access_email(session, email):
             # Are we fetching an attachment?
             if not indata.get("attachment"):
