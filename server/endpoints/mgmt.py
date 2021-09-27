@@ -42,13 +42,13 @@ async def process(
         numentries = int(indata.get("size", 50))
         page = int(indata.get("page", 0))
         out = []
-        async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True, filter=("edit", "delete",)):
+        async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True, filter=("edit","delete","hide","unhide")):
             out.append(entry)
         return {
             "entries": out
         }
 
-    # Deleting/hiding a document?
+    # Deleting a document?
     elif action == "delete":
         delcount = 0
         for doc in docs:
@@ -64,13 +64,43 @@ async def process(
                         index=session.database.dbs.source, id=email["dbid"],
                     )
                 else:  # Standard behavior: hide the email from everyone.
-                    await session.database.index(
-                        index=session.database.dbs.mbox, body=email, id=email["id"],
+                    await session.database.update(
+                        index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
                     )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
                 delcount += 1
         return aiohttp.web.Response(headers={}, status=200, text=f"Removed {delcount} emails from archives.")
+    # Hiding one or more emails?
+    elif action == "hide":
+        hidecount = 0
+        for doc in docs:
+            assert isinstance(doc, str), "Document ID must be a string"
+            email = await plugins.messages.get_email(session, permalink=doc)
+            if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+                email["deleted"] = True
+                await session.database.update(
+                    index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                )
+                lid = email.get("list_raw", "??")
+                await plugins.auditlog.add_entry(session, action="hide", target=doc, lid=lid, log=f"Hid email {doc} from {lid} archives")
+                hidecount += 1
+        return aiohttp.web.Response(headers={}, status=200, text=f"Hid {hidecount} emails from archives.")
+    # Exposing (unhiding) one or more emails?
+    elif action == "unhide":
+        hidecount = 0
+        for doc in docs:
+            assert isinstance(doc, str), "Document ID must be a string"
+            email = await plugins.messages.get_email(session, permalink=doc)
+            if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+                email["deleted"] = False
+                await session.database.update(
+                    index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                )
+                lid = email.get("list_raw", "??")
+                await plugins.auditlog.add_entry(session, action="unhide", target=doc, lid=lid, log=f"Unhid email {doc} from {lid} archives")
+                hidecount += 1
+        return aiohttp.web.Response(headers={}, status=200, text=f"Unhid {hidecount} emails from archives.")
     # Editing an email in place
     elif action == "edit":
         new_from = indata.get("from")
