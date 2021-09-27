@@ -24,7 +24,6 @@ import typing
 import elasticsearch
 
 import plugins.configuration
-import plugins.defuzzer
 
 
 class DBNames:

@@ -20,7 +20,6 @@
 import plugins.server
 import plugins.session
 import plugins.messages
-import plugins.defuzzer
 import plugins.auditlog
 import typing
 import aiohttp.web
