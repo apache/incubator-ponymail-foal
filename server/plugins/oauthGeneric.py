@@ -24,7 +24,9 @@ import aiohttp.client
 
 async def process(formdata, _session, _server):
     js = None
-    m = re.match(r"https?://(.+)/", formdata["oauth_token"])
+    # Extract domain, allowing for :port
+    # Does not handle user/password prefix etc
+    m = re.match(r"https?://([^/:]+)(?::\d+)?/", formdata["oauth_token"])
     if m:
         oauth_domain = m.group(1)
         headers = {"User-Agent": "Pony Mail OAuth Agent/0.1"}
