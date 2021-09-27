@@ -2910,7 +2910,7 @@ function admin_email_preview(stats, json) {
     if (!mgmt_prefs.login.credentials.fully_delete) {
         div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
     } else {
-        div.inject(new HTML('small', {style:{color: 'red'}}, "As GDPR enforcement is enabled on this server, emails that are removed forever from the archive when deleted, and cannot be recovered."))
+        div.inject(new HTML('small', {style:{color: 'red'}}, "As GDPR enforcement is enabled on this server, emails are removed forever from the archive when deleted, and cannot be recovered."))
     }
 }
 
