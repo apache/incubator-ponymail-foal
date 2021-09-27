@@ -947,7 +947,6 @@ a .listview_email_threaded {
 .email_kv {
   width: 100%;
   float: left;
-  height: 16px;
   position: relative;
   min-width: 370px;
   background: #EEE;
