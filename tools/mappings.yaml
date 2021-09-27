@@ -38,6 +38,8 @@ mailinglist:
       type: keyword
     name:
       type: keyword
+    private:
+      type: boolean
 mbox:
   dynamic: strict
   properties:
@@ -69,6 +71,8 @@ mbox:
       type: text
     from_raw:
       type: keyword
+    gravatar:
+      type: text
     html_as_source:
       type: boolean
     in-reply-to:
