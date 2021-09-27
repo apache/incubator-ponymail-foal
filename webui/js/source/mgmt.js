@@ -2,6 +2,7 @@ let admin_current_email = null;
 let audit_entries = []
 let audit_page = 0;
 let audit_size = 30;
+let mgmt_prefs = {}
 
 async function POST(url, formdata, state) {
     const resp = await fetch(url, {
@@ -218,7 +219,11 @@ function admin_email_preview(stats, json) {
     div.inject(new HTML('br'));
     div.inject(new HTML('small', {}, "Modifying emails will remove the option to view their sources via the web interface, as the source may contain traces that reveal the edit."))
     div.inject(new HTML('br'));
-    div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
+    if (!mgmt_prefs.login.credentials.fully_delete) {
+        div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
+    } else {
+        div.inject(new HTML('small', {style:{color: 'red'}}, "As GDPR enforcement is enabled on this server, emails that are removed forever from the archive when deleted, and cannot be recovered."))
+    }
 }
 
 function admin_audit_view(state, json) {
@@ -297,6 +302,7 @@ function admin_audit_next() {
 
 // Onload function for admin.html
 function admin_init() {
+    GET('%sapi/preferences.lua'.format(apiURL), (state, json) => {mgmt_prefs = json}, null);
     let mid = location.href.split('/').pop();
     // Specific email/list handling?
     if (mid.length > 0) {

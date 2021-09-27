@@ -58,6 +58,8 @@ async def process(
         }
         if session.credentials.admin is True:
             prefs["login"]["credentials"]["admin"] = True
+            if server.config.ui.fully_delete:  # Needed by the UI
+                prefs["login"]["credentials"]["fully_delete"] = True
 
     # Logging out??
     if indata.get("logout"):
