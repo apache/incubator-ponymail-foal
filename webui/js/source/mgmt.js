@@ -1,4 +1,5 @@
 let admin_current_email = null;
+let admin_email_meta = {};
 let audit_entries = []
 let audit_page = 0;
 let audit_size = 30;
@@ -17,8 +18,44 @@ async function POST(url, formdata, state) {
     return resp
 }
 
-// Deletes (hides) an email from the archives
+// Hides an email from the archives
 async function admin_hide_email() {
+    if (!confirm("Are you sure you wish to hide this email from the archives?")) {
+        return
+    }
+    formdata = JSON.stringify({
+        action: "hide",
+        document: admin_current_email
+    });
+    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let response = await rv.text();
+    if (rv.status == 200) {
+        modal("Email hidden", "Server responded with: " + response, "help");
+    } else {
+        modal("Something went wrong!", "Server responded with: " + response, "error");
+    }
+}
+
+async function admin_unhide_email() {
+    if (!confirm("Are you sure you wish to unhide this email?")) {
+        return
+    }
+    formdata = JSON.stringify({
+        action: "unhide",
+        document: admin_current_email
+    });
+    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let response = await rv.text();
+    if (rv.status == 200) {
+        modal("Email unhidden", "Server responded with: " + response, "help");
+    } else {
+        modal("Something went wrong!", "Server responded with: " + response, "error");
+    }
+}
+
+
+// Fully deletes an email from the archives
+async function admin_delete_email() {
     if (!confirm("Are you sure you wish to remove this email from the archives?")) {
         return
     }
@@ -62,6 +99,7 @@ async function admin_save_email() {
 
 function admin_email_preview(stats, json) {
     admin_current_email = json.mid;
+    admin_email_meta = json;
     let cp = document.getElementById("panel");
     let div = new HTML('div', {
         style: {
@@ -206,23 +244,42 @@ function admin_email_preview(stats, json) {
     let btn_edit = new HTML('button', {
         onclick: "admin_save_email();"
     }, "Save changes to archive");
-    let btn_hide = new HTML('button', {
-        onclick: "admin_hide_email();",
+    let btn_del = new HTML('button', {
+        onclick: "admin_delete_email();",
         style: {
             marginLeft: "36px",
             color: 'red'
         }
-    }, "Remove email from archives");
+    }, "Delete email from archives");
+
+    let btn_hide = new HTML('button', {
+        onclick: "admin_hide_email();",
+        style: {
+            marginLeft: "36px",
+            color: 'purple'
+        }
+    }, "Hide email from archives");
+    if (admin_email_meta.deleted) {
+        btn_hide = new HTML('button', {
+            onclick: "admin_unhide_email();",
+            style: {
+                marginLeft: "36px",
+                color: 'purple'
+            }
+        }, "Unhide email from archives");
+    }
+
     div.inject(new HTML('br'));
     div.inject(btn_edit);
     div.inject(btn_hide);
+    div.inject(btn_del);
     div.inject(new HTML('br'));
     div.inject(new HTML('small', {}, "Modifying emails will remove the option to view their sources via the web interface, as the source may contain traces that reveal the edit."))
     div.inject(new HTML('br'));
     if (!mgmt_prefs.login.credentials.fully_delete) {
-        div.inject(new HTML('small', {}, "Emails that are removed may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
+        div.inject(new HTML('small', {}, "Emails that are deleted may still be recovered by the base system administrator. For complete expungement, please contact the system administrator."))
     } else {
-        div.inject(new HTML('small', {style:{color: 'red'}}, "As GDPR enforcement is enabled on this server, emails are removed forever from the archive when deleted, and cannot be recovered."))
+        div.inject(new HTML('small', {style:{color: 'red'}}, "As full delete enforcement is enabled on this server, emails are removed forever from the archive when deleted, and cannot be recovered."))
     }
 }
 
