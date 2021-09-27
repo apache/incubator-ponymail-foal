@@ -700,7 +700,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 id=ojson["dbid"],
                 body={
                     "message-id": msg_metadata["message-id"],
-                    "permalink": ojson["mid"],
+                    "permalinks": [ojson["mid"]], # TODO: is this correct?
                     "source": mbox_source(raw_message),
                 },
             )
