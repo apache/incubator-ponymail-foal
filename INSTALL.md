@@ -178,13 +178,14 @@ web interface.
 ## Online Management Console
 the `ui` paragraph of the server configuration allows for enabling an administrative interface
 for editing or removing emails from the archives. To enable this, set `mgmtconsole` to `true`.
-For true GDPR compliance (deleting an email deletes from disk), set `true_gdpr` to `true`. 
-If left out or set to false, deleted emails are merely hidden, and can be recovered at a later stage.
+For GDPR compliance (deleting an email deletes from disk), set `allow_delete` to `true`. 
+If left out or set to false, deleted emails are merely hidden, and can be recovered at a later 
+stage by an administrator.
 
 ~~~yaml
 ui:
   mgmtconsole:     true
-  true_gdpr:       true
+  allow_delete:       true
 ~~~
 
 The administrative interface can be accessed by clicking on the yellow cog in the context menu 

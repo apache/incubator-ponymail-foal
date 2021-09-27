@@ -52,7 +52,7 @@ class UIConfig:
         # Set to false in yaml to redirect to stderr instead.
         self.traceback = subyaml.get("traceback", True)
         self.mgmt_enabled = bool(subyaml.get("mgmtconsole", False))  # Whether to enable online mgmt component or not
-        self.fully_delete = bool(subyaml.get("true_gdpr", False))  # Whether to enforce full expunging of deleted emails
+        self.fully_delete = bool(subyaml.get("allow_delete", False))  # Whether to enforce full expunging of deleted emails
         # Default to all lists, "*". Use "" for host. Wildcard subdomain globs also supported
         self.focus_domain = subyaml.get("focus_domain", "*")
 
