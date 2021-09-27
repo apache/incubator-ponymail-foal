@@ -2706,6 +2706,37 @@ async function POST(url, formdata, state) {
     return resp
 }
 
+// Removes an attachment from the archives
+async function admin_del_attachment(hash) {
+    if (!confirm("Are you sure you wish remove this attachment from the archives?")) {
+        return
+    }
+    // rewrite attachments for email
+    let new_attach = [];
+    for (let el of admin_email_meta.attachments) {
+        if (el.hash != hash) {
+            new_attach.push(el);
+        }
+    }
+    admin_email_meta.attachments = new_attach;
+    formdata = JSON.stringify({
+        action: "delatt",
+        document: hash
+    });
+    // remove attachment
+    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let response = await rv.text();
+
+    // Edit email in place
+    admin_save_email(true);
+
+    if (rv.status == 200) {
+        modal("Attachment removed", "Server responded with: " + response, "help");
+    } else {
+        modal("Something went wrong!", "Server responded with: " + response, "error");
+    }
+}
+
 // Hides an email from the archives
 async function admin_hide_email() {
     if (!confirm("Are you sure you wish to hide this email from the archives?")) {
@@ -2761,12 +2792,16 @@ async function admin_delete_email() {
 }
 
 // Saves an email with edits
-async function admin_save_email() {
+async function admin_save_email(edit_attachment = false) {
     let from = document.getElementById('email_from').value;
     let subject = document.getElementById('email_subject').value;
     let listname = document.getElementById('email_listname').value;
     let private = document.getElementById('email_private').value;
     let body = document.getElementById('email_body').value;
+    let attach = null;
+    if (edit_attachment) {
+        attach = admin_email_meta.attachments;
+    }
     let formdata = JSON.stringify({
         action: "edit",
         document: admin_current_email,
@@ -2774,10 +2809,12 @@ async function admin_save_email() {
         subject: subject,
         list: listname,
         private: private,
-        body: body
+        body: body,
+        attachments: attach
     })
     let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
     let response = await rv.text();
+    if (edit_attachment && rv.status == 200) return
     if (rv.status == 200) {
         modal("Email changed", "Server responded with: " + response, "help");
     } else {
@@ -2911,6 +2948,11 @@ function admin_email_preview(stats, json) {
             if (attachment.size >= 1024) fs = ` ${Math.floor(attachment.size/1024)} KB`;
             if (attachment.size >= 1024 * 1024) fs = ` ${Math.floor(attachment.size/(1024*10.24))/100} MB`;
             alinks.push(fs);
+            let adel = new HTML('a', {
+                onclick: `admin_del_attachment('${attachment.hash}');`,
+                href: "javascript:void(0);"
+            }, "Delete attachment");
+            alinks.push(adel);
             alinks.push(new HTML('br'));
         }
         let attach_value = new HTML('div', {
