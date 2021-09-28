@@ -15,7 +15,6 @@
  limitations under the License.
  */
 
-let LOTS_OF_LISTS = 25; // Beyond 25 list domains and we start using the old phonebook.
 let list_json = {}
 
 function list_index(state, json) {
@@ -88,7 +87,7 @@ function list_index_onepage(state, json) {
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
     }
-    if (domains.length > LOTS_OF_LISTS) {
+    if (domains.length > pm_config.LOTS_OF_LISTS) {
         list_index(state, json);
     } else {
         let wide_obj = document.getElementById('list_index_child_wide');

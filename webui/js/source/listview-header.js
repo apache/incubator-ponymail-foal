@@ -157,7 +157,7 @@ function listview_list_lists(state, json) {
                 if (i >= maxlists) break;
                 let listname = alists[i];
                 let listnametxt = listname;
-                if (long_tabs) {
+                if (pm_config.long_tabs) {
                     listnametxt = '%s@%s'.format(listname, current_domain);
                 }
                 let li = new HTML('li', {
@@ -282,12 +282,12 @@ function switch_project(domain) {
         let listname = lists[0];
         let n = 1;
         if (lists.length > n) {
-            while (boring_lists.has(listname) && lists.length > n) {
+            while (pm_config.boring_lists.has(listname) && lists.length > n) {
                 listname = lists[n];
                 n++;
             }
-            if (lists.has(favorite_list)) {
-                listname = favorite_list;
+            if (lists.has(pm_config.favorite_list)) {
+                listname = pm_config.favorite_list;
             }
         }
         switch_list('%s@%s'.format(listname, domain));

@@ -51,7 +51,11 @@ var pm_config = {
     trendPie: true,
     URLBase: '',
     apiURL: '/',
-    apiSuffix: ''
+    apiSuffix: '',
+    boring_lists: ['commits', 'cvs', 'site-cvs', 'security', 'notifications'], // we'd rather not default to these, noisy!
+    favorite_list: 'dev', // if we have this, default to it
+    long_tabs: false, // tab name format (long or short)
+    LOTS_OF_LISTS: 25 // Beyond this number of list domains we start using the old phonebook.
 }
 
 

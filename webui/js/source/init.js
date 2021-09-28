@@ -48,11 +48,6 @@ var ponymail_date_format = {
 var virtual_inbox_loading = false;
 var collated_json = {};
 
-// List auto-picker criteria
-var boring_lists = ['commits', 'cvs', 'site-cvs', 'security', 'notifications']; // we'd rather not default to these, noisy!
-var favorite_list = 'dev'; // if we have this, default to it
-var long_tabs = false; // tab name format (long or short)
-
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
 // Adjust titles:
 document.title = ponymail_name;

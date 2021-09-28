@@ -1652,11 +1652,6 @@ var ponymail_date_format = {
 var virtual_inbox_loading = false;
 var collated_json = {};
 
-// List auto-picker criteria
-var boring_lists = ['commits', 'cvs', 'site-cvs', 'security', 'notifications']; // we'd rather not default to these, noisy!
-var favorite_list = 'dev'; // if we have this, default to it
-var long_tabs = false; // tab name format (long or short)
-
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
 // Adjust titles:
 document.title = ponymail_name;
@@ -1932,7 +1927,6 @@ function ponymail_swipe(event) {
  Fetched from source/list-index.js
 ******************************************/
 
-let LOTS_OF_LISTS = 25; // Beyond 25 list domains and we start using the old phonebook.
 let list_json = {}
 
 function list_index(state, json) {
@@ -2005,7 +1999,7 @@ function list_index_onepage(state, json) {
         obj.inject(['- ', a]);
         obj.inject(new HTML('br'));
     }
-    if (domains.length > LOTS_OF_LISTS) {
+    if (domains.length > pm_config.LOTS_OF_LISTS) {
         list_index(state, json);
     } else {
         let wide_obj = document.getElementById('list_index_child_wide');
@@ -2285,7 +2279,7 @@ function listview_list_lists(state, json) {
                 if (i >= maxlists) break;
                 let listname = alists[i];
                 let listnametxt = listname;
-                if (long_tabs) {
+                if (pm_config.long_tabs) {
                     listnametxt = '%s@%s'.format(listname, current_domain);
                 }
                 let li = new HTML('li', {
@@ -2410,12 +2404,12 @@ function switch_project(domain) {
         let listname = lists[0];
         let n = 1;
         if (lists.length > n) {
-            while (boring_lists.has(listname) && lists.length > n) {
+            while (pm_config.boring_lists.has(listname) && lists.length > n) {
                 listname = lists[n];
                 n++;
             }
-            if (lists.has(favorite_list)) {
-                listname = favorite_list;
+            if (lists.has(pm_config.favorite_list)) {
+                listname = pm_config.favorite_list;
             }
         }
         switch_list('%s@%s'.format(listname, domain));
