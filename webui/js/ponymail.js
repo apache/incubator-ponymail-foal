@@ -1685,7 +1685,7 @@ window.setInterval(escrow_check, 250);
 console.log("Initializing key command logger");
 window.addEventListener('keyup', keyCommands);
 
-if (pm_config && pm_config.apiURL) {
+if (pm_config.apiURL) {
     apiURL = pm_config.apiURL;
     console.log("Setting API URL to %s".format(apiURL));
 }
