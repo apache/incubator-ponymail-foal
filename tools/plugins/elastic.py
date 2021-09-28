@@ -142,6 +142,12 @@ class Elastic:
         kwargs["doc_type"] = "_doc"
         return self.es.index(**kwargs)
 
+    def create(self, **kwargs):
+        return self.es.create(**kwargs)
+
+    def info(self, **kwargs):
+        return self.es.info(**kwargs)
+
     def update(self, **kwargs):
         return self.es.update(index=self.dbname, **kwargs)
 
