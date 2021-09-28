@@ -263,7 +263,7 @@ def get_parent_identifiers(ojson):
 
 
 def get_by_message_id(elastic, msgid, timeout="5s"):
-    data = elastic.es.search(index=elastic.db_mbox, body={
+    data = elastic.search(index=elastic.db_mbox, body={
         "query": {
             "bool": {
                 "must": {"term": {"message-id": msgid}}
@@ -292,7 +292,7 @@ def get_parent_info(elastic, ojson, timeout=5, limit=10):
 def get_previous_mid(elastic, ojson, timeout="5s"):
     forum = ojson["forum"]
     latest = ojson.get("epoch", 1) - 1
-    data = elastic.es.search(index=elastic.db_mbox, body={
+    data = elastic.search(index=elastic.db_mbox, body={
         "query": {
             "bool": {
                 "must": [
