@@ -1622,7 +1622,6 @@ function showCalendarPicker(parent, seedDate) {
 var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
 var ponymail_name = "Pony Mail" // name of archive (set to "Foo's mail archive" or whatever)
 
-var hits_per_page = 10;
 var apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
