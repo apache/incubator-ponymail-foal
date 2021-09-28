@@ -88,6 +88,16 @@ class Database:
         res = await self.client.index(index=index, **kwargs)
         return res
 
+    async def create(self, index=None, **kwargs):
+        """Create a new document (put if missing)"""
+        res = await self.client.create(index=index, **kwargs)
+        return res
+
+    async def info(self, **kwargs):
+        """Get ES info"""
+        res = await self.client.info(**kwargs)
+        return res
+
     async def update(self, index="", **kwargs):
         if not index:
             index = self.dbs.session
