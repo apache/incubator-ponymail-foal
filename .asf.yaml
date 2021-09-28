@@ -3,3 +3,6 @@ github:
   features:
     # Enable issue management
     issues: true
+
+notifications:
+    issues:       issues@ponymail.apache.org
