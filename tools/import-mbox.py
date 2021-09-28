@@ -84,7 +84,7 @@ noMboxo = False  # Don't skip MBoxo patch
 
 rootURL = ""
 
-def bulk_insert(name, json, xes, dtype, wc="quorum"):
+def bulk_insert(name, json, xes, dbindex, wc="quorum"):
 
     sys.stderr.flush()
 
@@ -92,13 +92,13 @@ def bulk_insert(name, json, xes, dtype, wc="quorum"):
     for entry in json:
         js = entry
         document_id = js["mid"]
-        if dtype == "source":
+        if dbindex == xes.db_source:
             del js["mid"]
         js_arr.append(
             {
                 "_op_type": "index",
                 "_consistency": wc,
-                "_index": dbname + "-" + dtype,
+                "_index": dbindex,
                 "_id": document_id,
                 "doc": js,
                 "_source": js,
@@ -106,9 +106,9 @@ def bulk_insert(name, json, xes, dtype, wc="quorum"):
         )
     try:
         xes.bulk(js_arr, ignore=404)
-    #       print("%s: Inserted %u entries into %s" % (name, len(js_arr),dtype))
+    #       print("%s: Inserted %u entries into %s" % (name, len(js_arr),dbindex))
     except Exception as err:
-        print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dtype))
+        print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dbindex))
 
 class DownloadThread(Thread):
     def assign(self, url):
@@ -385,10 +385,10 @@ class SlurpThread(Thread):
                                     body={"source": contents[key]},
                                 )
                     if len(ja) >= 40 and not args.dry:
-                        bulk_insert(self.name, ja, es, "mbox")
+                        bulk_insert(self.name, ja, es, es.db_mbox)
                         ja = []
 
-                        bulk_insert(self.name, jas, es, "source")
+                        bulk_insert(self.name, jas, es, es.db_source)
                         jas = []
                 else:
                     self.printid(
@@ -415,11 +415,11 @@ class SlurpThread(Thread):
             goodies += count
             baddies += bad
             if len(ja) > 0 and not args.dry:
-                bulk_insert(self.name, ja, es, "mbox")
+                bulk_insert(self.name, ja, es, es.db_mbox)
             ja = []
 
             if len(jas) > 0 and not args.dry:
-                bulk_insert(self.name, jas, es, "source")
+                bulk_insert(self.name, jas, es, es.db_source)
             jas = []
         self.printid("Done, %u elements left to slurp" % len(lists))
 
@@ -625,11 +625,9 @@ if args.dry:
 else:
     # Fetch config and set up ES
     es = Elastic()
-    # We need the index name for bulk actions
-    dbname = es.getdbname()
 
     # No point continuing if the index does not exist
-    print("Checking that the database index %s exists ... " % dbname)
+    print("Checking that the database index %s exists ... " % es.db_mbox)
 
     # Need to check the index before starting bulk operations
     try:

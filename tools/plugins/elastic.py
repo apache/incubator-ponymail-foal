@@ -51,15 +51,15 @@ class Elastic:
         config = ponymailconfig.PonymailConfig()
 
         # Set default names for all indices we use
-        self.dbname = config.get('elasticsearch', 'dbname', fallback='ponymail')
-        self.db_mbox = self.dbname + '-mbox'
-        self.db_source = self.dbname + '-source'
-        self.db_account = self.dbname + '-account'
-        self.db_attachment = self.dbname + '-attachment'
-        self.db_session = self.dbname + '-session'
-        self.db_notification = self.dbname + '-notification'
-        self.db_mailinglist = self.dbname + '-mailinglist'
-        self.db_auditlog = self.dbname + '-auditlog'
+        dbname = config.get('elasticsearch', 'dbname', fallback='ponymail')
+        self.db_mbox = dbname + '-mbox'
+        self.db_source = dbname + '-source'
+        self.db_account = dbname + '-account'
+        self.db_attachment = dbname + '-attachment'
+        self.db_session = dbname + '-session'
+        self.db_notification = dbname + '-notification'
+        self.db_mailinglist = dbname + '-mailinglist'
+        self.db_auditlog = dbname + '-auditlog'
         self.db_version = 0
 
         dburl = config.get('elasticsearch', 'dburl', fallback=None)
@@ -131,11 +131,8 @@ class Elastic:
     def engineMajor(self):
         return int(self.engineVersion().split(".")[0])
 
-    def getdbname(self):
-        return self.dbname
-
     def search(self, **kwargs):
-        return self.es.search(index=self.dbname, **kwargs)
+        return self.es.search(**kwargs)
 
     def index(self, **kwargs):
         kwargs["wait_for_active_shards"] = self.wait_for_active_shards
@@ -149,11 +146,11 @@ class Elastic:
         return self.es.info(**kwargs)
 
     def update(self, **kwargs):
-        return self.es.update(index=self.dbname, **kwargs)
+        return self.es.update(**kwargs)
 
     def scan(self, scroll="3m", size=100, **kwargs):
         return self.es.search(
-            index=self.dbname, search_type="scan", size=size, scroll=scroll, **kwargs
+            search_type="scan", size=size, scroll=scroll, **kwargs
         )
 
     def scan_and_scroll(self, scroll="3m", size=100, **kwargs):
@@ -162,7 +159,7 @@ class Elastic:
             incorporates es.scroll for continuous iteration, and thus the
             scroll() does NOT need to be called at all by the calling
             process. """
-        results = self.es.search(index=self.dbname, size=size, scroll=scroll, **kwargs)
+        results = self.es.search(size=size, scroll=scroll, **kwargs)
         if results["hits"].get("hits", []):  # Might not be there in 2.x?
             yield results
 
@@ -176,7 +173,7 @@ class Elastic:
             yield results
 
     def get(self, **kwargs):
-        return self.es.get(index=self.dbname, **kwargs)
+        return self.es.get(**kwargs)
 
     def scroll(self, **kwargs):
         return self.es.scroll(**kwargs)
