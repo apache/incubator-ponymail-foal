@@ -142,6 +142,10 @@ function parseURL(state) {
 function parse_permalink() {
     // message id is the bit after the last /
     let mid = location.href.split('/').pop();
+    // Cut off any query string there might be
+    if (mid.match(/\?/)) {
+        mid = mid.replace(/\?.*$/, '');
+    }
     init_preferences(); // blank call to load defaults like social rendering
     GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
