@@ -3082,6 +3082,8 @@ function admin_audit_next() {
 
 // Onload function for admin.html
 function admin_init() {
+    init_preferences(); // blank call to load defaults like social rendering
+    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
     GET('%sapi/preferences.lua'.format(apiURL), (state, json) => {mgmt_prefs = json}, null);
     let mid = location.href.split('/').pop();
     // Specific email/list handling?
