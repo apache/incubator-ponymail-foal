@@ -93,11 +93,11 @@ def anonymize(doc):
             bytes(fremail.lower(), encoding="ascii", errors="replace")
         ).hexdigest()
         ptr["from"] = re.sub(
-            r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1..@\\2>", ptr["from"]
+            r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["from"]
         )
         if ptr["body"]:
             ptr["body"] = re.sub(
-                r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1..@\\2>", ptr["body"]
+                r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["body"]
             )
     return doc
 
