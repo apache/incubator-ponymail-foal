@@ -26,6 +26,7 @@ import re
 import email.utils
 import typing
 import aiohttp.web
+import time
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 
@@ -83,6 +84,7 @@ async def process(
         "name": xlist,
         "list": f"{xlist}@{xdomain}",
         "searchParams": indata,
+        "unixtime": int(time.time()),
     }
 
 
