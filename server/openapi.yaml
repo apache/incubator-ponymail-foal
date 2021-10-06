@@ -269,7 +269,7 @@ components:
               name: Jane Doe
               count: 5
               gravatar: "7ddfb840a4db40a01ac99d29e82267b0"
-        search_list:
+        searchlist:
           description: The raw List-ID (if any) of the search parameters
           type: string
           example: "<dev.lists.example.org>"

@@ -79,7 +79,7 @@ async def process(
         "cloud": wordcloud,
         "participants": top10_authors,
         "thread_struct": tstruct,
-        "search_list": f"<{xlist}.{xdomain}>",
+        "searchlist": f"<{xlist}.{xdomain}>",
         "domain": xdomain,
         "name": xlist,
         "list": f"{xlist}@{xdomain}",
