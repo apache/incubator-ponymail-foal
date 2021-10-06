@@ -42,6 +42,8 @@ DATABASE_NOT_CONNECTED = "Database not connected!"
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
+BODY_MAXLEN = 200 # TODO: make this a config item
+
 USED_UI_FIELDS = [
     "private",
     "list",
@@ -338,8 +340,8 @@ async def query(
                 doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
-            if shorten:
-                doc["body"] = (doc["body"] or "")[:200]
+            if shorten and len(doc["body"] or "") > BODY_MAXLEN:
+                doc["body"] = doc["body"][:BODY_MAXLEN] + '...'
             trim_email(doc)
             docs.append(doc)
             hits += 1
