@@ -273,6 +273,10 @@ components:
           description: The raw List-ID (if any) of the search parameters
           type: string
           example: "<dev.lists.example.org>"
+        name:
+          description: The listname part of the search parameters
+          type: string
+          example: dev
         domain:
           description: The domain part of the search parameters
           type: string
@@ -300,6 +304,10 @@ components:
               tsubject: "apache/httpd#1037 (trunk…_<dev.httpd.apache.org>"
               epoch: 1596279300
               nest: 1
+          unixtime:
+            description: The server time in UNIX epoch format
+            example: 1506761839
+            type: integer
     ErrorResponse:
       properties:
         okay:
