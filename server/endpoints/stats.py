@@ -80,6 +80,7 @@ async def process(
         "thread_struct": tstruct,
         "search_list": f"<{xlist}.{xdomain}>",
         "domain": xdomain,
+        "name": xlist,
         "list": f"{xlist}@{xdomain}",
         "searchParams": indata,
     }
