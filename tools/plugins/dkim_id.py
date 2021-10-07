@@ -321,12 +321,12 @@ def rfc6376_reformed_canon(
     # print(headers, body)
     k: bytes
     v: bytes
-    # If any List-Id header is set to the LID, lid is empty
+    # If any List-Id header is set to the LID, lid is not needed in the hash
     for (k, v) in headers:
-        if k == b"list-id":
-            if v == lid:
-                lid = None
-                break
+        # N.B. headers still contain trailing \r\n
+        if k == b"list-id" and v.rstrip() == lid:
+            lid = None
+            break
     # Construct hashable bytes from the parsed message
     return (lid or b"", rfc6376_join(headers, body))
 
