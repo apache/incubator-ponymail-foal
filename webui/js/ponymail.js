@@ -4018,9 +4018,11 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
             } else if (activity && activity[ym]) {
                 let count = activity[ym];
                 if (count >= 1000) {
-                    count = Math.floor(count/1000.0) + "k+";
+                    count = Math.round(count/100.0); // nearest century
+                    count = Math.floor(count/10) + "k" + (count % 10); // thousands and remainder
+                } else {
+                    count = count.toString();
                 }
-                count = count.toString();
                 mdiv.inject(new HTML('span', {title: `${activity[ym].pretty()} emails this month`, class: 'calendar_count'}, count));
             }
             ydiv.inject(mdiv);
