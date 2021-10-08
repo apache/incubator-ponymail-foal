@@ -21,6 +21,7 @@ DKIM-ID Generator Code
 
 import base64
 import hmac
+import re
 from typing import List, Optional, Set, Tuple
 
 # Types
@@ -253,9 +254,27 @@ def rfc6376_split_canon(
         # Which makes this function polymorphic really
         # This is not reflected in its type signature
         headers, body = rfc6376_simple_holistic(headers, body)
-
+        body = _strip_gt_from(body)
     return (headers, body)
 
+def _strip_gt_from(body: bytes) -> bytes:
+    r"""
+    Convert all escaped '>+From ' back to 'From '
+
+    >>> _strip_gt_from(b'> From ')
+    b'> From '
+    >>> _strip_gt_from(b' >From ')
+    b' >From '
+    >>> _strip_gt_from(b'>From_')
+    b'>From_'
+    >>> _strip_gt_from(b'>From ')
+    b'From '
+    >>> _strip_gt_from(b'>>>From ')
+    b'From '
+    >>> _strip_gt_from(b'\r\n>From x\r\n>From y')
+    b'\r\nFrom x\r\nFrom y'
+    """
+    return re.sub(b'^>+From ', b'From ', body, flags = re.MULTILINE)
 
 def rfc6376_join(headers: Headers, body: Optional[bytes] = None) -> bytes:
     r"""
