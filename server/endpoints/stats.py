@@ -35,6 +35,12 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
+    # must provide list and domain
+    xlist = indata.get("list", None)
+    xdomain = indata.get("domain", None)
+    if not xlist or not xdomain:
+        return aiohttp.web.Response(headers={"content-type": "application/json",}, text='{}')
+
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata)
         query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
@@ -44,8 +50,6 @@ async def process(
         session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
 
-    xlist = indata.get("list", "*")
-    xdomain = indata.get("domain", "*")
     # statsOnly: Whether to only send statistical info (for n-grams etc), and not the
     # thread struct and message bodies
     # Param: quick
