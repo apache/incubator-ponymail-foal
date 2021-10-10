@@ -44,29 +44,46 @@ async def process(
         session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
     )
 
+    xlist = indata.get("list", "*")
+    xdomain = indata.get("domain", "*")
+    # statsOnly: Whether to only send statistical info (for n-grams etc), and not the
+    # thread struct and message bodies
+    # Param: quick
+    statsOnly = 'quick' in indata
+    # emailsOnly: return email summaries only, not derived data:
+    # i.e. omit thread_struct, top 10 participants and word-cloud   
+    emailsOnly = 'emailsOnly' in indata
+
     wordcloud = None
-    if server.config.ui.wordcloud:
+    if server.config.ui.wordcloud and not emailsOnly and not statsOnly:
         wordcloud = await plugins.messages.wordcloud(session, query_defuzzed)
     oldest, youngest, active_months = await plugins.messages.get_activity_span(session, query_defuzzed_nodate)
 
-    threads = plugins.messages.ThreadConstructor(results)
-    tstruct, authors = await server.runners.run(threads.construct)
-    xlist = indata.get("list", "*")
-    xdomain = indata.get("domain", "*")
+    authors = {}
+    tstruct = {}
+    top10_authors = {} # This is the default used in stats.lua
+    if not statsOnly and not emailsOnly:
+        threads = plugins.messages.ThreadConstructor(results)
+        tstruct, authors = await server.runners.run(threads.construct)
 
-    all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True)  # sort in reverse by author count
-    top10_authors = []
-    for author, count in all_authors[:10]:
-        name, address = email.utils.parseaddr(author)
-        top10_authors.append(
-            {"email": address, "name": name, "count": count, "gravatar": plugins.messages.gravatar(author),}
-        )
+        all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True)  # sort in reverse by author count
+        top10_authors = []
+        for author, count in all_authors[:10]:
+            name, address = email.utils.parseaddr(author)
+            top10_authors.append(
+                {"email": address, "name": name, "count": count, "gravatar": plugins.messages.gravatar(author),}
+            )
 
     # Trim email data so as to reduce download sizes
     for msg in results:
-        plugins.messages.trim_email(msg, external=True)
+        if statsOnly:
+            for header in list(msg.keys()):
+                if not header == 'epoch':
+                    del msg[header]
+        else:
+            plugins.messages.trim_email(msg, external=True)
 
-    return {
+    output = {
         "firstYear": oldest.year,
         "lastYear": youngest.year,
         "firstMonth": oldest.month,
@@ -76,9 +93,7 @@ async def process(
         "numparts": len(authors),
         "no_threads": len(tstruct),
         "emails": list(sorted(results, key=lambda x: x["epoch"])),
-        "cloud": wordcloud,
         "participants": top10_authors,
-        "thread_struct": tstruct,
         "searchlist": f"<{xlist}.{xdomain}>",
         "domain": xdomain,
         "name": xlist,
@@ -86,6 +101,11 @@ async def process(
         "searchParams": indata,
         "unixtime": int(time.time()),
     }
+    if not statsOnly and not emailsOnly:
+        output['thread_struct'] = tstruct
+    if wordcloud:
+        output['cloud'] = wordcloud
+    return output
 
 
 def register(server: plugins.server.BaseServer):
