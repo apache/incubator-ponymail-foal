@@ -65,7 +65,7 @@ async def process(
 
     authors = {}
     tstruct = {}
-    top10_authors = {} # This is the default used in stats.lua
+    top10_authors = None
     if not statsOnly and not emailsOnly:
         threads = plugins.messages.ThreadConstructor(results)
         tstruct, authors = await server.runners.run(threads.construct)
@@ -97,7 +97,7 @@ async def process(
         "numparts": len(authors),
         "no_threads": len(tstruct),
         "emails": list(sorted(results, key=lambda x: x["epoch"])),
-        "participants": top10_authors,
+        "participants": top10_authors or {},
         "searchlist": f"<{xlist}.{xdomain}>",
         "domain": xdomain,
         "name": xlist,
