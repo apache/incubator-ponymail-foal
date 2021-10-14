@@ -39,6 +39,7 @@ import plugins.database
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 DATABASE_NOT_CONNECTED = "Database not connected!"
+OLD_SHORTENED_ID_LENGTH = 18
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
@@ -197,6 +198,10 @@ async def get_email(
             doc = await session.database.get(index=doctype, id=permalink)
         # Email not found through primary ID, look for other permalinks?
         except plugins.database.DBError:
+            # If using old shortened hex IDs, regexp for them instead of a direct match
+            if len(permalink) == OLD_SHORTENED_ID_LENGTH and re.match(r"^[a-f0-9]+$", permalink):
+                permalink += ".+"
+                aggtype = "regexp"
             res = await session.database.search(
                 index=doctype,
                 size=1,
