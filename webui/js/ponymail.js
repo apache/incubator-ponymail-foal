@@ -3360,6 +3360,7 @@ function parse_permalink() {
     if (mid.match(/\?/)) {
         mid = mid.replace(/\?.*$/, '');
     }
+    mid = unshortenID(mid);  // In case of old school shortened links
     init_preferences(); // blank call to load defaults like social rendering
     GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
@@ -3411,6 +3412,26 @@ function render_virtual_inbox(state, json) {
     }
 }
 
+
+// hex <- base 36 conversion, reverses short links
+function unshortenID(mid) {
+    // all short links begin with 'Z'. If not, it's not a short link
+    // so let's just pass it through unaltered if so.
+    // Some old shortlinks begin with 'B', so let's be backwards compatible for now.
+    if (mid[0] == 'Z' || mid[0] == 'B') {
+        // remove padding
+        var id1 = parseInt(mid.substr(1, 7).replace(/-/g, ""), 36)
+        var id2 = parseInt(mid.substr(8, 7).replace(/-/g, ""), 36)
+        id1 = id1.toString(16)
+        id2 = id2.toString(16)
+
+        // add 0-padding
+        while (id1.length < 9) id1 = '0' + id1
+        while (id2.length < 9) id2 = '0' + id2
+        return id1+id2
+    }
+    return mid
+}
 
 /******************************************
  Fetched from source/render-email.js
