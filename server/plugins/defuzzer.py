@@ -190,7 +190,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         hname = "header_%s" % header
         if hname in formdata:
             hvalue = formdata[hname]
-            must.append({"match": {header: hvalue}})
+            must.append({"match_phrase": {header: hvalue}})
 
     thebool = {"must": must}
 
