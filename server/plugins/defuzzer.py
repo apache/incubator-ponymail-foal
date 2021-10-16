@@ -121,7 +121,6 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     # - "this sentence": find emails with this exact string
     if "q" in formdata:
         qs = formdata["q"].replace(":", "")
-        qs = qs.replace("/", " ")  # Forward slashes are reserved characters
         bits = shlex.split(qs)
 
         should = []
@@ -135,35 +134,57 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                 bit = bit[1:]
             # Negatives
             if bit[0] == "-" and not force_positive:
-                # Quoted?
-                if bit.find(" ") != -1:
-                    bit = '"' + bit + '"'
                 shouldnot.append(bit[1:])
             # Positives
             else:
-                # Quoted?
-                if bit.find(" ") != -1:
-                    bit = '"' + bit + '"'
                 should.append(bit)
 
-        if len(should) > 0:
-            must.append(
-                {
-                    "query_string": {
-                        "fields": ["subject", "from", "body"],
-                        "query": " AND ".join(should),
+        if should:
+            xshould = []
+            for x in should:
+                xshould.append(
+                    {
+                        "bool": {
+                            "should":
+                                [
+                                    {
+                                        "multi_match": {
+                                            "fields": ["from", "body", "subject"],
+                                            "query": x,
+                                            "type": "phrase"
+                                        },
+                                    },
+
+                                ]
+
+                        }
                     }
-                }
-            )
-        if len(shouldnot) > 0:
-            must_not.append(
-                {
-                    "query_string": {
-                        "fields": ["subject", "from", "body"],
-                        "query": " AND ".join(shouldnot),
+                )
+            xmust = {"bool": {"minimum_should_match": len(should), "should": xshould}}
+            must.append(xmust)
+        if shouldnot:
+            for x in shouldnot:
+                must_not.append(
+                    {
+                        "match": {
+                            "subject": x,
+                        }
                     }
-                }
-            )
+                )
+                must_not.append(
+                    {
+                        "match": {
+                            "from": x,
+                        }
+                    }
+                )
+                must_not.append(
+                    {
+                        "match": {
+                            "body": x,
+                        }
+                    }
+                )
 
     # Header parameters
     for header in ["from", "subject", "body", "to"]:
@@ -174,6 +195,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
             must.append({"match": {header: {"query": hvalue}}})
 
     thebool = {"must": must}
+    print(thebool)
 
     if len(must_not) > 0:
         thebool["must_not"] = must_not
