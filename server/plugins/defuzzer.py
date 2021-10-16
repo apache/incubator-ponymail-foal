@@ -161,29 +161,29 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                 )
             xmust = {"bool": {"minimum_should_match": len(should), "should": xshould}}
             must.append(xmust)
-        if shouldnot:
-            for x in shouldnot:
-                must_not.append(
-                    {
-                        "match": {
-                            "subject": x,
-                        }
+
+        for x in shouldnot:
+            must_not.append(
+                {
+                    "match": {
+                        "subject": x,
                     }
-                )
-                must_not.append(
-                    {
-                        "match": {
-                            "from": x,
-                        }
+                }
+            )
+            must_not.append(
+                {
+                    "match": {
+                        "from": x,
                     }
-                )
-                must_not.append(
-                    {
-                        "match": {
-                            "body": x,
-                        }
+                }
+            )
+            must_not.append(
+                {
+                    "match": {
+                        "body": x,
                     }
-                )
+                }
+            )
 
     # Header parameters
     for header in ["from", "subject", "body", "to"]:
@@ -194,7 +194,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
 
     thebool = {"must": must}
 
-    if len(must_not) > 0:
+    if must_not:
         thebool["must_not"] = must_not
 
     return thebool
