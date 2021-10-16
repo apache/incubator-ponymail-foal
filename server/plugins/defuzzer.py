@@ -90,7 +90,9 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         listname, fqdn = list_override.split("@", 1)
     assert fqdn, "You must specify a domain part of the mailing list(s) to search, or * for wildcard search."
     assert listname, "You must specify a list part of the mailing list(s) to search, or * for wildcard search."
-    assert '@' not in listname, "The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching."
+    assert (
+        "@" not in listname
+    ), "The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching."
     list_raw = "<%s.%s>" % (listname, fqdn)
 
     # Default is to look in a specific list
@@ -145,18 +147,15 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                 xshould.append(
                     {
                         "bool": {
-                            "should":
-                                [
-                                    {
-                                        "multi_match": {
-                                            "fields": ["from", "body", "subject"],
-                                            "query": x,
-                                            "type": "phrase"
-                                        },
+                            "should": [
+                                {
+                                    "multi_match": {
+                                        "fields": ["from", "body", "subject"],
+                                        "query": x,
+                                        "type": "phrase",
                                     },
-
-                                ]
-
+                                },
+                            ]
                         }
                     }
                 )
