@@ -95,9 +95,14 @@ def anonymize(doc):
         ptr["md5"] = hashlib.md5(
             bytes(fremail.lower(), encoding="ascii", errors="replace")
         ).hexdigest()
-        ptr["from"] = re.sub(
-            r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["from"]
-        )
+        if not all(b in ptr["from"] for b in ['<', '>']):  # no <> encasing?
+            ptr["from"] = re.sub(
+                r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", ptr["from"]
+            )
+        else:  # standard <> encasing
+            ptr["from"] = re.sub(
+                r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["from"]
+            )
         if ptr["body"]:
             ptr["body"] = re.sub(
                 r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["body"]
