@@ -195,7 +195,6 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
             must.append({"match": {header: {"query": hvalue}}})
 
     thebool = {"must": must}
-    print(thebool)
 
     if len(must_not) > 0:
         thebool["must_not"] = must_not
