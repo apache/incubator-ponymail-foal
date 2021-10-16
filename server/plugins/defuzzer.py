@@ -189,9 +189,8 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     for header in ["from", "subject", "body", "to"]:
         hname = "header_%s" % header
         if hname in formdata:
-            hvalue = formdata[hname]  # .replace('"', "")
-            hvalue = hvalue.replace("/", " ")  # Forward slashes are reserved characters
-            must.append({"match": {header: {"query": hvalue}}})
+            hvalue = formdata[hname]
+            must.append({"match": {header: hvalue}})
 
     thebool = {"must": must}
 
