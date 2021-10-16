@@ -125,8 +125,8 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         qs = formdata["q"].replace(":", "")
         bits = shlex.split(qs)
 
-        should = []
-        shouldnot = []
+        query_should_match = []
+        query_should_not_match = []
 
         for bit in bits:
             force_positive = False
@@ -136,15 +136,15 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                 bit = bit[1:]
             # Negatives
             if bit[0] == "-" and not force_positive:
-                shouldnot.append(bit[1:])
+                query_should_not_match.append(bit[1:])
             # Positives
             else:
-                should.append(bit)
+                query_should_match.append(bit)
 
-        if should:
-            xshould = []
-            for x in should:
-                xshould.append(
+        if query_should_match:
+            query_should_match_expanded = []
+            for x in query_should_match:
+                query_should_match_expanded.append(
                     {
                         "bool": {
                             "should": [
@@ -159,10 +159,10 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
                         }
                     }
                 )
-            xmust = {"bool": {"minimum_should_match": len(should), "should": xshould}}
+            xmust = {"bool": {"minimum_should_match": len(query_should_match), "should": query_should_match_expanded}}
             must.append(xmust)
 
-        for x in shouldnot:
+        for x in query_should_not_match:
             must_not.append(
                 {
                     "match": {
@@ -192,9 +192,9 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
             hvalue = formdata[hname]
             must.append({"match_phrase": {header: hvalue}})
 
-    thebool = {"must": must}
+    query_as_bool = {"must": must}
 
     if must_not:
-        thebool["must_not"] = must_not
+        query_as_bool["must_not"] = must_not
 
-    return thebool
+    return query_as_bool
