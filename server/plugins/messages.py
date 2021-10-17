@@ -335,6 +335,8 @@ async def query(
     }
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
+    else:
+        es_query["_source"] = { "exclude": ["body"] }
     async for hit in session.database.scan(
         query=es_query,
         preserve_order=preserve_order
@@ -350,8 +352,11 @@ async def query(
                 doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
-            if shorten and len(doc["body"] or "") > BODY_MAXLEN:
-                doc["body"] = doc["body"][:BODY_MAXLEN] + '...'
+            if shorten and len(doc["body_short"] or "") > BODY_MAXLEN:
+                doc["body"] = doc["body_short"][:BODY_MAXLEN] + '...'
+            else:
+                doc["body"] = doc["body_short"]
+            del doc["body_short"]
             trim_email(doc)
             docs.append(doc)
             hits += 1
