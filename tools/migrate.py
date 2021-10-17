@@ -36,12 +36,11 @@ import os
 import re
 import time
 import sys
+import archiver
 
 # Increment this number whenever breaking changes happen in the migration workflow:
 MIGRATION_MAGIC_NUMBER = "2"
 
-# Standard "short body" max length for email aggregations
-SHORT_BODY_MAX_LEN = 200
 
 # Max number of parallel conversions to perform before pushing. 75-ish percent of max cores.
 cores = len(os.sched_getaffinity(0))
@@ -202,7 +201,7 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
     doc["_source"]["dbid"] = hashlib.sha3_256(source_text).hexdigest()
 
     # Add in shortened body for search aggs
-    doc["_source"]["body_short"] = doc["_source"]["body"][:SHORT_BODY_MAX_LEN+10]
+    doc["_source"]["body_short"] = doc["_source"]["body"][:archiver.SHORT_BODY_MAX_LEN+10]
 
     # Add in gravatar
     header_from = doc["_source"]["from"]
