@@ -117,6 +117,10 @@ function oauthWelcome(args) {
     // query string arg.
     if (!args || args.length == 0) {
         args = window.location.hash.substring(1)
+    } else {
+        // Disable title and back button while logging in...
+        document.getElementById('oauth_title').style.display = "none";
+        document.getElementById('oauth_regrets').style.display = "none";
     }
     // Is this a callback from an oauth provider? If so, run the oauth stuff
     if (args && args.length >= 40) {
