@@ -588,7 +588,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
             notes.append(["ARCHIVE: Email archived as %s at %u" % (document_id, time.time())])
             body_unflowed = body.unflow() if body else ""
-            body_shortened = body_unflowed[:SHORT_BODY_MAX_LEN+10]  # +10 so that we can tell if larger than std short body.
+            body_shortened = body_unflowed[:SHORT_BODY_MAX_LEN+1]  # +1 so that we can tell if larger than std short body.
 
             output_json = {
                 "from_raw": msg_metadata["from"],

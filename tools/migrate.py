@@ -201,7 +201,8 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
     doc["_source"]["dbid"] = hashlib.sha3_256(source_text).hexdigest()
 
     # Add in shortened body for search aggs
-    doc["_source"]["body_short"] = doc["_source"]["body"][:archiver.SHORT_BODY_MAX_LEN+10]
+    # We add +1 to know whether to use ellipsis in reports.
+    doc["_source"]["body_short"] = doc["_source"]["body"][:archiver.SHORT_BODY_MAX_LEN+1]
 
     # Add in gravatar
     header_from = doc["_source"]["from"]
