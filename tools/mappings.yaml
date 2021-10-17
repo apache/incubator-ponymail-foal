@@ -55,6 +55,8 @@ mbox:
           type: long
     body:
       type: text
+    body_short:
+      type: text
     cc:
       type: text
     date:

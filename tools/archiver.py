@@ -584,6 +584,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             ghash = hashlib.md5(mailaddr.encode("utf-8")).hexdigest()
 
             notes.append(["ARCHIVE: Email archived as %s at %u" % (document_id, time.time())])
+            body_unflowed = body.unflow() if body else ""
+            body_shortened = body_unflowed[:210]  # 210 so that we can tell if > 200.
 
             output_json = {
                 "from_raw": msg_metadata["from"],
@@ -603,7 +605,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 "private": private,
                 "references": msg_metadata["references"],
                 "in-reply-to": irt,
-                "body": body.unflow() if body else "",
+                "body": body_unflowed,
+                "body_short": body_shortened,
                 "html_source_only": body and body.html_as_source or False,
                 "attachments": attachments,
                 "forum": (lid or "").strip("<>").replace(".", "@", 1),
