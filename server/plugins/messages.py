@@ -103,10 +103,10 @@ def anonymize(doc):
             ptr["from"] = re.sub(
                 r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["from"]
             )
-        if ptr["body"]:
-            ptr["body"] = re.sub(
-                r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["body"]
-            )
+    if "body" in ptr and ptr["body"]:
+        ptr["body"] = re.sub(
+            r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["body"]
+        )
     return doc
 
 
