@@ -123,7 +123,10 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     # - "this sentence": find emails with this exact string
     if "q" in formdata:
         qs = formdata["q"].replace(":", "")
-        bits = shlex.split(qs)
+        try:
+            bits = shlex.split(qs)
+        except ValueError:  # Uneven number of quotes, default to split on whitespace instead
+            bits = qs.split()
 
         query_should_match = []
         query_should_not_match = []
