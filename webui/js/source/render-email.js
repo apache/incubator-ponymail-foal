@@ -200,7 +200,7 @@ async function render_email_chatty(state, json) {
     });
     let gravatar = new HTML('img', {
         class: "chatty_gravatar",
-        src: "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm".format(json.gravatar)
+        src: gravatar_url.format(json.gravatar)
     });
     let author_name = json.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let author_email = json.from.match(/\s*<(.+@.+)>\s*/);
