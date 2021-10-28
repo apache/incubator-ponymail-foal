@@ -67,4 +67,15 @@ async function sidebar_stats(json) {
             wordCloud(json.cloud, 220, 100, wc);
         }, 50);
     }
+
+    // Subscribe button
+    if (prefs && prefs.subscribeLinks) {
+        let sb = document.getElementById('sidebar_subscribe');
+        if (sb && json.list) {
+            sb.textContent = "";
+            let sublink = json.list.replace("@", "-subscribe@");
+            let subbutton = new HTML("a", {href: `mailto:${sublink}`, id: "subscribe_button"}, "Subscribe to list");
+            sb.inject(subbutton);
+        }
+    }
 }

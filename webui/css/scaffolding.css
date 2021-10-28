@@ -360,6 +360,20 @@ a.dropdown-toggle {
 }
 
 
+/* Sidebar subscribe link */
+#subscribe_button {
+    margin-top: 16px;
+    display: inline-block;
+    background-color: #337ab7;
+    color: white;
+    font-size: 1.15rem;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid #0009;
+    border-radius: 4px;
+}
+
 /* Sidebar calendar */
 
 #sidebar_calendar {

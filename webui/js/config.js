@@ -62,6 +62,7 @@ var pm_config = {
 
 // Localized preferences (defaults)
 var prefs = {
+    subscribeLinks: false,           // Add subscribe button in stats pane?
     displayMode: 'threaded',        // threaded or flat
     groupBy: 'thread',              // thread or date
     sortOrder: 'forward',           // forward or reverse sort
