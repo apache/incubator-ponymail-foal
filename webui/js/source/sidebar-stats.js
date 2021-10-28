@@ -23,6 +23,18 @@ async function sidebar_stats(json) {
 
     obj.innerHTML = ""; // clear stats bar
 
+    // Subscribe button
+    if (prefs && prefs.subscribeLinks) {
+        let sb = document.getElementById('sidebar_subscribe');
+        if (sb) sb.textContent = "";
+        if (sb && json.list && !json.list.match(/\*/)) {
+            sb.textContent = "";
+            let sublink = json.list.replace("@", "-subscribe@");
+            let subbutton = new HTML("a", {href: `mailto:${sublink}`, id: "subscribe_button"}, "Subscribe to list");
+            sb.inject(subbutton);
+        }
+    }
+
     if (!json.emails || isHash(json.emails) || json.emails.length == 0) {
         obj.innerText = "No emails found...";
         return;
@@ -68,14 +80,4 @@ async function sidebar_stats(json) {
         }, 50);
     }
 
-    // Subscribe button
-    if (prefs && prefs.subscribeLinks) {
-        let sb = document.getElementById('sidebar_subscribe');
-        if (sb && json.list) {
-            sb.textContent = "";
-            let sublink = json.list.replace("@", "-subscribe@");
-            let subbutton = new HTML("a", {href: `mailto:${sublink}`, id: "subscribe_button"}, "Subscribe to list");
-            sb.inject(subbutton);
-        }
-    }
 }
