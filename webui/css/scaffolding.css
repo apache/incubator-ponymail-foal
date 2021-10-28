@@ -339,6 +339,7 @@ a.dropdown-toggle {
     border-top: 2px groove #AAA3;
     margin-top: 10px;
     float: left;
+    width: 100%;
 }
 
 /* Sidebar stats panel */
