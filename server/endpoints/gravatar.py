@@ -52,7 +52,7 @@ async def gravatar_exists_in_db(session, gid):
     return False
 
 
-async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> dict:
+async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> aiohttp.web.Response:
     gid = indata.get("md5", "null")
     # Ensure md5 hash is valid
     if len(gid) != 32 or not all(b in "abcdef0123456789" for b in gid):
