@@ -84,9 +84,7 @@ function init_preferences(state, json) {
                         onclick: 'location.href="oauth.html";'
                     }, "Click here to log in via OAuth"));
                 } else {
-                    console.log(current_domain);
-                    let first_list = Object.keys(json.lists[current_domain])[0];
-                    location.href = `?${first_list}@${current_domain}`;
+                    switch_project(current_domain);
                 }
             }
         }
