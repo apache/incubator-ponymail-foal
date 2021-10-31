@@ -72,8 +72,8 @@ def create_indices():
     print(f"Creating indices {dbname}-*...")
 
     settings = {"number_of_shards": shards, "number_of_replicas": replicas}
-    mappings = yaml.safe_load(open("mappings.yaml", "r"))
-    for index, mappings in mappings.items():
+    mapping_file = yaml.safe_load(open("mappings.yaml", "r"))
+    for index, mappings in mapping_file.items():
         res = es.indices.create(
             index=f"{dbname}-{index}", body={"mappings": mappings, "settings": settings}
         )
