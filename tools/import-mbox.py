@@ -327,7 +327,7 @@ class SlurpThread(Thread):
                             }
                         },
                     )
-                    if res and len(res["hits"]["total"]) > 0:
+                    if res and res["hits"]["total"]["value"] > 0:
                         self.printid(
                             "Dedupping %s - matched in %s"
                             % (
