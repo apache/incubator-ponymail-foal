@@ -19,6 +19,7 @@
 import plugins.server
 import plugins.session
 import email.message
+import email.utils
 import aiosmtplib
 import fnmatch
 import typing
@@ -66,6 +67,7 @@ async def process(
             msg["from"] = "%s <%s>" % (session.credentials.name, session.credentials.email)
             msg["to"] = to
             msg["subject"] = subject
+            msg["date"] = email.utils.formatdate()
             msg["X-Sender"] = "Apache Pony Mail Foal Composer v/0.1"
             msg.set_charset("utf-8")
             msg.set_content(body)
