@@ -537,11 +537,13 @@ class ThreadConstructor:
                 self.hashed_by_subject[tsubject] = xemail
         return self.threads, self.authors
 
+    
     def find_root_subject(self, root_email, osubject=None):
         """Finds the discussion origin of an email, if present"""
         irt = root_email.get("in-reply-to")
         subject = root_email.get("subject")
-        subject = subject.replace("\n", "")  # Crop multi-line subjects
+        subject = subject.replace("\n", "").strip()  # Crop multi-line subjects and surrounding whitespace
+        subject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
 
         # First, the obvious - look for an in-reply-to in our existing dict with a matching subject
         if irt and irt in self.hashed_by_msg_id:
@@ -552,12 +554,11 @@ class ThreadConstructor:
         if osubject:
             rsubject = osubject
         else:
-            rsubject = (
-                PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
-            )
+            rsubject = subject
         if rsubject and rsubject in self.hashed_by_subject:
             return self.hashed_by_subject[rsubject]
         return None
+
 
 
 def gravatar(eml):
