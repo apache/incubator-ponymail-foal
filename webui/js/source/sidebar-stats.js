@@ -59,7 +59,7 @@ async function sidebar_stats(json) {
         });
         pimg = new HTML('img', {
             class: "gravatar_sm",
-            src: "https://secure.gravatar.com/avatar/%s.jpg?s=64&r=g&d=mm".format(par.gravatar)
+            src: gravatar_url.format(par.gravatar)
         })
         pdiv.inject(pimg);
         pdiv.inject(new HTML('b', {}, par.name + ": "));
