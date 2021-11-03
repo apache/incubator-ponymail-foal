@@ -22,8 +22,13 @@ This is the Database library stub for Pony Mail codename Foal
 import uuid
 import typing
 import elasticsearch
+import elasticsearch.exceptions
 
 import plugins.configuration
+
+
+class Timeout (elasticsearch.exceptions.ConnectionTimeout):
+    """Database timeout exception"""
 
 
 class DBNames:
@@ -67,8 +72,11 @@ class Database:
     async def search(self, index="", **kwargs):
         if not index:
             index = self.dbs.mbox
-        res = await self.client.search(index=index, **kwargs)
-        return res
+        try:
+            res = await self.client.search(index=index, **kwargs)
+            return res
+        except elasticsearch.exceptions.ConnectionTimeout as e:
+            raise Timeout(e)
 
     async def get(self, index="", **kwargs):
         if not index:
