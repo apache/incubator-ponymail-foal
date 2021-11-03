@@ -84,13 +84,21 @@ Number.prototype.pad = function(n) {
 
 /* Func for converting a date to YYYY-MM-DD HH:MM */
 
-Date.prototype.ISOBare = function() {
-    var M, d, h, m, y;
-    y = this.getFullYear();
-    m = (this.getMonth() + 1).pad(2);
-    d = this.getDate().pad(2);
-    h = this.getHours().pad(2);
-    M = this.getMinutes().pad(2);
+Date.prototype.ISOBare = function(utc = false) {
+    let M, d, h, m, y;
+    if (prefs.UTC === true) {
+        y = this.getUTCFullYear();
+        m = (this.getUTCMonth() + 1).pad(2);
+        d = this.getUTCDate().pad(2);
+        h = this.getUTCHours().pad(2);
+        M = this.getUTCMinutes().pad(2);
+    } else {
+        y = this.getFullYear();
+        m = (this.getMonth() + 1).pad(2);
+        d = this.getDate().pad(2);
+        h = this.getHours().pad(2);
+        M = this.getMinutes().pad(2);
+    }
     return y + "-" + m + "-" + d + " " + h + ":" + M;
 };
 

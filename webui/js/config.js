@@ -62,15 +62,16 @@ var pm_config = {
 
 // Localized preferences (defaults)
 var prefs = {
-    subscribeLinks: false,           // Add subscribe button in stats pane?
+    subscribeLinks: false,          // Add subscribe button in stats pane?
     displayMode: 'threaded',        // threaded or flat
     groupBy: 'thread',              // thread or date
     sortOrder: 'forward',           // forward or reverse sort
-    compactQuotes: true,           // Show quotes from original email as compacted blocks?
+    compactQuotes: true,            // Show quotes from original email as compacted blocks?
     notifications: 'direct',        // Notify on direct or indirect replies to your posts?
-    hideStats: 'yes',                // Hide the email statistics window?
+    hideStats: 'yes',               // Hide the email statistics window?
     theme: 'default',               // Set to 'social' to default to the social theme
-    loggedIn: false
+    loggedIn: false,
+    UTC: false,                      // Use UTC for timestamps in UI. If false, use browser local time.
 }
 
 // array of prefs we have now. This is needed in case we change/break the existing
