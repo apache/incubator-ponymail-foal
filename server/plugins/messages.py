@@ -370,19 +370,22 @@ async def wordcloud(session, query_defuzzed):
     Wordclouds via significant terms query in ES
     """
     wc = {}
-    res = await session.database.search(
-        body={
-            "size": 0,
-            "query": {"bool": query_defuzzed},
-            "aggregations": {
-                "cloud": {"significant_terms": {"field": "subject", "size": 10}}
-            },
-        }
-    )
+    try:
+        res = await session.database.search(
+            body={
+                "size": 0,
+                "query": {"bool": query_defuzzed},
+                "aggregations": {
+                    "cloud": {"significant_terms": {"field": "subject", "size": 10}}
+                },
+            }
+        )
 
-    for hit in res["aggregations"]["cloud"]["buckets"]:
-        wc[hit["key"]] = hit["doc_count"]
+        for hit in res["aggregations"]["cloud"]["buckets"]:
+            wc[hit["key"]] = hit["doc_count"]
 
+    except plugins.database.Timeout as e:  # If we time out, just return empty WC.
+        pass
     return wc
 
 
