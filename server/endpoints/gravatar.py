@@ -20,6 +20,7 @@
 import plugins.server
 import aiohttp
 import aiohttp.web
+import string
 
 CACHE_LIMIT = 25000  # Store a maximum of 25,000 gravatars in memory at any given time (25k x 5kb ≃125mb)
 GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm"
@@ -55,13 +56,14 @@ async def gravatar_exists_in_db(session, gid):
 async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> aiohttp.web.Response:
     gid = indata.get("md5", "null")
     # Ensure md5 hash is valid
-    if len(gid) != 32 or not all(b in "abcdef0123456789" for b in gid):
-        gid = "null"
+    is_valid_md5 = len(gid) == 32 and all(letter in string.hexdigits for letter in gid)
+
     # Valid and in cache??
     in_cache = gid in gravatars
     should_fetch = False
+
     # If valid but not cached, check if gravatar exists in the pony mail db
-    if gid != "null" and not in_cache:
+    if is_valid_md5 and not in_cache:
         should_fetch = await gravatar_exists_in_db(session, gid)
     # If valid and not in cache, fetch from gravatar.com
     if not in_cache and should_fetch:
@@ -71,7 +73,7 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
             to_pop = gravatars.pop(0)
             del gravatar_cache[to_pop]
     # if in cache, serve it.
-    if gid in gravatars:
+    if is_valid_md5 and gid in gravatars:
         img = gravatar_cache[gid]
         headers = {
           "Cache-Control": "max-age=86400",  # Expire gravatar in one day
