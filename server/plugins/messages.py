@@ -225,10 +225,11 @@ async def get_email(
         if len(res["hits"]["hits"]) == 1:
             doc = res["hits"]["hits"][0]
     elif irt:
+        xirt = '"%s"' % irt.replace('"', '\\"')
         res = await session.database.search(
             index=doctype,
             size=250,
-            body={"query": {"bool": {"must": [{aggtype: {"in-reply-to": irt}}]}}},
+            body={"query": {"bool": {"must": [ {"simple_query_string": { "query": xirt, "fields":["in-reply-to", "references"]}}]}}},
         )
         docs = res["hits"]["hits"]
 
