@@ -1,5 +1,21 @@
 let full_emails = {};
 
+// Function for parsing email addresses from a to or cc line
+function get_rcpts(addresses) {
+    let list_of_emails = []
+    for (let a of addresses.split(/,\s*/)) {
+        let m = a.match(/<(.+)>/);
+        if (m) {
+            a = m[1];
+        }
+        if (a && a.length > 5) { // more than a@b.c
+            list_of_emails.push(a);
+            console.log(a);
+        }
+    }
+    return list_of_emails;
+}
+
 async function render_email(state, json) {
     let div = state.div;
     full_emails[json.mid] = json; // Save for composer if replying later...
@@ -73,6 +89,26 @@ async function render_email(state, json) {
     );
     list_field.inject([list_key, list_value]);
     div.inject(list_field);
+
+    // To + CC if need be
+    let rcpts = get_rcpts(json.to);
+    rcpts.push(...get_rcpts(json.cc));
+    rcpts.remove(listname);
+    if (rcpts.length) {
+        let rcpt_field = new HTML('div', {
+            class: 'email_kv'
+        });
+        let rcpt_key = new HTML('div', {
+            class: 'email_key'
+        }, "CC: ");
+        let rcpt_value = new HTML('div', {
+                class: 'email_value'
+            },
+            new HTML('span', {}, rcpts.join(", "))
+    );
+        rcpt_field.inject([rcpt_key, rcpt_value]);
+        div.inject(rcpt_field);
+    }
 
     // Private email??
     if (json.private === true) {
