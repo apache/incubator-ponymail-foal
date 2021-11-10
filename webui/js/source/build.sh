@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Try to change to correct directory:
+cd $(dirname "$0") || exit 1
+
 test -r build.sh || { echo "Must be run from the directory containing build.sh!"; exit 1; }
 
 echo "Combining JS..."
