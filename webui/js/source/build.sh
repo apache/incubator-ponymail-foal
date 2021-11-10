@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+test -r build.sh || { echo "Must be run from the directory containing build.sh!"; exit 1; }
+
 echo "Combining JS..."
 echo '/*
  Licensed to the Apache Software Foundation (ASF) under one or more
