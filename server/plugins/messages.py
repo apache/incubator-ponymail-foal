@@ -243,9 +243,9 @@ async def get_email(
         doc = doc["_source"]
         doc["id"] = doc["mid"]
         if doc and plugins.aaa.can_access_email(session, doc):
+            trim_email(doc)
             if not session.credentials:
                 doc = anonymize(doc)
-            trim_email(doc)
             return doc
 
     # multi-doc return?
@@ -255,9 +255,9 @@ async def get_email(
             doc = doc["_source"]
             doc["id"] = doc["mid"]
             if doc and plugins.aaa.can_access_email(session, doc):
+                trim_email(doc)
                 if not session.credentials:
                     doc = anonymize(doc)
-                trim_email(doc)
                 docs_returned.append(doc)
         return docs_returned
     # no doc?
