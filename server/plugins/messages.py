@@ -337,7 +337,7 @@ async def query(
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
     else:
-        es_query["_source"] = { "exclude": ["body"] }
+        es_query["_source"] = { "excludes": ["body"] }
     async for hit in session.database.scan(
         query=es_query,
         preserve_order=preserve_order
