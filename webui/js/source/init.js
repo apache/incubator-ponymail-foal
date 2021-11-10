@@ -44,7 +44,6 @@ var ponymail_date_format = {
     month: 'long',
     day: 'numeric'
 };
-var virtual_inbox_loading = false;
 var collated_json = {};
 
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))

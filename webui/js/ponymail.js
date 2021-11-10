@@ -1669,7 +1669,6 @@ var ponymail_date_format = {
     month: 'long',
     day: 'numeric'
 };
-var virtual_inbox_loading = false;
 var collated_json = {};
 
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
@@ -3301,7 +3300,6 @@ function post_prime(state) {
     if (!(state && state.search)) {
         if (state && state.array) {
             collated_json = {};
-            virtual_inbox_loading = true;
             for (var i = 0; i < state.array.length; i++) {
                 let list = state.array[i].split('@');
                 sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);

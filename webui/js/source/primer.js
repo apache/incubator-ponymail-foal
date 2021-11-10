@@ -68,7 +68,6 @@ function post_prime(state) {
     if (!(state && state.search)) {
         if (state && state.array) {
             collated_json = {};
-            virtual_inbox_loading = true;
             for (var i = 0; i < state.array.length; i++) {
                 let list = state.array[i].split('@');
                 sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
