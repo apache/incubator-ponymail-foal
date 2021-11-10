@@ -2433,7 +2433,7 @@ function switch_project(domain) {
         }
         switch_list('%s@%s'.format(listname, domain));
     } else {
-        switch_list('dev@%s'.format(domain));
+        switch_list('%s@%s'.format(pm_config.favorite_list, domain));
     }
 }
 
