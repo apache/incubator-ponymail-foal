@@ -531,16 +531,15 @@ a.dropdown-toggle {
 
 .listview_email_as {
   float: left;
-  width: calc(80% - 164px);
+  width: calc(80% - 200px);
   padding-left: 1%;
   padding-right: 1%;
-
 }
 
 .listview_email_labels {
   float: right;
-  width: 180px;
-  min-width: 180px;
+  width: 220px;
+  min-width: 220px;
   text-align: right;
   position: absolute;
   right: 24px;
