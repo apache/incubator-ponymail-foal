@@ -45,21 +45,26 @@ mbox_cache_privacy: typing.Dict[str, bool] = {}
 
 BODY_MAXLEN = 200 # TODO: make this a config item
 
+# Only these fields are returned by the API:
+# (keep this list sorted)
 USED_UI_FIELDS = [
-    "private",
-    "list",
-    "list_raw",
     "attachments",
+    "body",
+    "children",
+    "epoch",
     "from",
+    "gravatar",
+    "id",
+    "list_raw",
+    "list",
     "message-id",
     "mid",
-    "body",
-    "epoch",
+    "private",
     "subject",
-    "id",
-    "gravatar",
-    "children",
 ]
+# The following fields are currently excluded:
+# from_raw, permalinks, dbid, date, references, in-reply-to, html_source_only, forum, size, to, cc
+# The body_short contents may replace the body contents, but it is not returned separately
 
 
 def trim_email(doc, external=False):
