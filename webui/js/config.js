@@ -16,7 +16,6 @@
 */
 
 var pm_config = {
-    debug: false, // set to true for some debug output
     oauth: {
         // OAuth settings
          apache: {
@@ -42,16 +41,8 @@ var pm_config = {
             construct: true
         }
     },
-    indexMode: 'table', // front page view mode:
-                            // phonebook: Standard phonebook mode, sort/list by domain name (a.org, b.org, c.org...)
-                            // phonebook_short: Same as above, but sort/list by list name (dev@a.org, dev@.org, user@a.org...)
-                            // table: A more detailed view meant for smaller list sites (<=20-30 lists or such)
-    shortLists: true, // whether to display foo@bar.org or just foo@ in flat view
-    shortLinks: true,
-    trendPie: true,
     URLBase: '',
     apiURL: '/',
-    apiSuffix: '',
     boring_lists: ['commits', 'cvs', 'site-cvs', 'security', 'notifications'], // we'd rather not default to these, noisy!
     favorite_list: 'dev', // if we have this, default to it
     long_tabs: false, // tab name format (long or short)
