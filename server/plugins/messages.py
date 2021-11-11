@@ -87,6 +87,11 @@ def extract_name(addr):
     addr = addr.strip("<>")
     return [addr, addr]
 
+# Simple anonymiser; relies on @ appearing only in an email address
+def anonymize_mail_address(emaillist):
+    return re.sub(
+        r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", emaillist
+    )
 
 def anonymize(doc):
     """ Anonymizes an email, hiding author email addresses."""
@@ -100,14 +105,11 @@ def anonymize(doc):
         ptr["md5"] = hashlib.md5(
             bytes(fremail.lower(), encoding="ascii", errors="replace")
         ).hexdigest()
-        if not all(b in ptr["from"] for b in ['<', '>']):  # no <> encasing?
-            ptr["from"] = re.sub(
-                r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", ptr["from"]
-            )
-        else:  # standard <> encasing
-            ptr["from"] = re.sub(
-                r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["from"]
-            )
+        ptr["from"] = anonymize_mail_address(ptr["from"])
+    if "to" in ptr:
+        ptr["to"] = anonymize_mail_address(ptr["to"])
+    if "cc" in ptr:
+        ptr["cc"] = anonymize_mail_address(ptr["cc"])
     if "body" in ptr and ptr["body"]:
         ptr["body"] = re.sub(
             r"<(\S{1,2})\S*@([-a-zA-Z0-9_.]+)>", "<\\1...@\\2>", ptr["body"]
