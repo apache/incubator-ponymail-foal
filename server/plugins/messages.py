@@ -87,11 +87,17 @@ def extract_name(addr):
     addr = addr.strip("<>")
     return [addr, addr]
 
-# Simple anonymiser; relies on @ appearing only in an email address
-def anonymize_mail_address(emaillist):
-    return re.sub(
-        r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", emaillist
-    )
+# anonymise a string of email entries
+def anonymize_mail_address(emailstring):
+    out = []
+    # split the email list into individual entries
+    for real, addr in email.utils.getaddresses([emailstring]):
+        # generate the anonymised entries
+        anon = re.sub(r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", addr)
+        out.append(email.utils.formataddr([real, anon]))
+
+    # rejoin one per line
+    return ",\n ".join(out)
 
 def anonymize(doc):
     """ Anonymizes an email, hiding author email addresses."""
