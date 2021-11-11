@@ -20,6 +20,7 @@ import plugins.server
 import plugins.session
 import email.message
 import email.utils
+import email.header
 import aiosmtplib
 import fnmatch
 import typing
@@ -27,7 +28,9 @@ import aiohttp.web
 
 
 async def process(
-    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
+    server: plugins.server.BaseServer,
+    session: plugins.session.SessionObject,
+    indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     if not server.config.ui.mailhost:
@@ -64,11 +67,13 @@ async def process(
                 msg["in-reply-to"] = irt
             if references:
                 msg["references"] = references
-            msg["from"] = "%s <%s>" % (session.credentials.name, session.credentials.email)
+            msg["from"] = email.utils.formataddr(
+                (str(email.header.Header(session.credentials.name, "utf-8")), session.credentials.email)
+            )
             msg["to"] = to
-            msg["subject"] = subject
+            msg["subject"] = str(email.header.Header(subject, "utf-8"))
             msg["date"] = email.utils.formatdate()
-            msg["X-Sender"] = "Apache Pony Mail Foal Composer v/0.1"
+            msg["X-Sender"] = "Apache Pony Mail Foal Composer v/0.2"
             msg.set_charset("utf-8")
             msg.set_content(body)
             await aiosmtplib.send(msg, hostname=mailhost, port=mailport)
