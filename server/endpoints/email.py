@@ -39,6 +39,9 @@ async def process(
     if email is None:
         email = await plugins.messages.get_email(session, messageid=indata.get("id"))
 
+    if email is None:
+        return aiohttp.web.Response(headers={}, status=404, text="Email not found")
+
     # If email was found, process the request if we are allowed to display it
     cannot_view = email.get("deleted", False)
     if session.credentials and session.credentials.admin:
