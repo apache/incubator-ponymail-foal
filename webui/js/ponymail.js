@@ -3459,6 +3459,7 @@ let full_emails = {};
 // Function for parsing email addresses from a to or cc line
 function get_rcpts(addresses) {
     let list_of_emails = []
+    if (!addresses) return [] // cc or to may be null
     for (let a of addresses.split(/,\s*/)) {
         let m = a.match(/<(.+)>/);
         if (m) {
