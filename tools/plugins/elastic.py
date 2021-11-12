@@ -108,9 +108,6 @@ class Elastic:
         else:
             raise Exception("Unexpected elasticsearch version ", es_engine_major)
 
-        # Mimic ES hierarchy: es.indices.xyz()
-        self.indices = _indices_wrap(self)
-
     @staticmethod
     def libraryVersion():
         return ES_VERSION
@@ -193,15 +190,3 @@ class Elastic:
             when terminating scrolling early.
         """
         return self.es.clear_scroll(*args, **kwargs)
-
-
-class _indices_wrap:
-    """
-        Wrapper for the ES indices methods we use
-    """
-
-    def __init__(self, parent):
-        self.es = parent.es
-
-    def exists(self, *args, **kwargs):
-        return self.es.indices.exists(*args, **kwargs)
