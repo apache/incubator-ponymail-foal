@@ -15,10 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# utility to check for and add missing mappings. Only applies to mbox index currently
+# utility to check mappings, report differences and create missing mappings
 
 #  ** INITIAL VERSION, liable to change **
 
+import argparse
 import sys
 import yaml
 from plugins.elastic import Elastic
@@ -29,26 +30,48 @@ if sys.version_info <= (3, 3):
     sys.exit(-1)
 
 # the desired mappings
-mapping_file = yaml.safe_load(open("mappings.yaml", "r"))['mbox']['properties']
+mapping_file = yaml.safe_load(open("mappings.yaml", "r"))
 
 elastic = Elastic()
 major = elastic.engineMajor()
 if major != 7:
     print("This script requires ElasticSearch 7 API in order to work!")
     sys.exit(-1)
-  
-# actual mappings
-mappings = elastic.indices.get_mapping(index=elastic.db_mbox)[elastic.db_mbox]['mappings']['properties']
 
-if mappings == mapping_file:
-  print("Mappings are as expected, hoorah!")
-else:
-  unexpected = set(mappings) - set(mapping_file)
-  for name in unexpected:
-    data = {name: mappings[name]}
-    print("Unexpected: " + str(data))
-  expected = set(mapping_file) - set(mappings)
-  for name in expected:
-    data = {name: mapping_file[name]}
-    print("Missing: " + str(data))
-    elastic.indices.put_mapping(body={'properties': data}, index=elastic.db_mbox)
+parser = argparse.ArgumentParser(description="Command line options.")
+parser.add_argument(
+    "--create",
+    dest="create",
+    action="store_true",
+    help="Create the missing mapping(s)",
+)
+args = parser.parse_args()
+
+def check_mapping(index):
+  # expected mappings
+  mappings_expected = mapping_file[index]['properties']
+
+  index_name = elastic.index_name(index)
+  # actual mappings
+  mappings = elastic.indices.get_mapping(index=index_name)[index_name]['mappings']['properties']
+
+  if mappings == mappings_expected:
+    print("Mappings are as expected, hoorah!")
+  else:
+    unexpected = set(mappings) - set(mappings_expected)
+    for name in unexpected:
+      data = {name: mappings[name]}
+      print("Unexpected: " + str(data))
+    expected = set(mappings_expected) - set(mappings)
+    for name in expected:
+      data = {name: mappings_expected[name]}
+      if args.create:
+        print("Creating the mapping: " + str(data))
+        elastic.indices.put_mapping(body={'properties': data}, index=index_name)
+      else:
+        print("Missing: " + str(data))
+
+
+for type in mapping_file.keys():
+  print("Checking " + type)
+  check_mapping(type)

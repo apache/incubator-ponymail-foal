@@ -45,6 +45,7 @@ class Elastic:
     db_notification:    str
     db_mailinglist:     str
     db_auditlog:        str
+    dbname:             str
 
     def __init__(self):
         # Fetch config
@@ -52,6 +53,7 @@ class Elastic:
 
         # Set default names for all indices we use
         dbname = config.get('elasticsearch', 'dbname', fallback='ponymail')
+        self.dbname = dbname
         self.db_mbox = dbname + '-mbox'
         self.db_source = dbname + '-source'
         self.db_account = dbname + '-account'
@@ -110,6 +112,10 @@ class Elastic:
 
         # Mimic ES hierarchy: es.indices.xyz()
         self.indices = _indices_wrap(self)
+
+    # convert index type to index name
+    def index_name(self, index):
+        return self.dbname + "-" + index
 
     @staticmethod
     def libraryVersion():
