@@ -90,6 +90,8 @@ def extract_name(addr):
 # anonymise a string of email entries
 def anonymize_mail_address(emailstring):
     out = []
+    if not emailstring:
+        return ""
     # split the email list into individual entries
     for real, addr in email.utils.getaddresses([emailstring]):
         # generate the anonymised entries
