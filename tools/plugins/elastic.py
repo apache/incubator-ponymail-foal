@@ -190,3 +190,9 @@ class Elastic:
             when terminating scrolling early.
         """
         return self.es.clear_scroll(*args, **kwargs)
+
+    def get_mapping(self, **kwargs):
+        return self.es.indices.get_mapping(**kwargs)
+
+    def put_mapping(self, **kwargs):
+        return self.es.indices.put_mapping(**kwargs)
