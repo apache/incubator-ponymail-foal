@@ -40,7 +40,7 @@ import plugins.database
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")  # Prefixes on subjects, such as Re: Fwd:, etc.
 DATABASE_NOT_CONNECTED = "Database not connected!"
 OLD_SHORTENED_ID_LENGTH = 18  # Thread IDs of 18 char length (deprecated) need special care in searches
-NEEDS_QUOTES = re.compile(r'[][\\()<>@,:;".]')  # If these characters are present in a From: header, quote it
+NEEDS_QUOTES = re.compile(r'[][\\()<>@,:;".]')  # If these characters are present in an email display name, quote it
 ESCAPES_RE = re.compile(r'[\\"]')  # Characters to escape with backslash in make_address()
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
