@@ -40,6 +40,8 @@ import plugins.database
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 DATABASE_NOT_CONNECTED = "Database not connected!"
 OLD_SHORTENED_ID_LENGTH = 18
+NEEDS_QUOTES = re.compile(r'[][\\()<>@,:;".]')  # If these characters are present in a From: header, quote it
+ESCAPES_RE = re.compile(r'[\\"]')
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
@@ -87,6 +89,22 @@ def extract_name(addr):
     addr = addr.strip("<>")
     return [addr, addr]
 
+
+# Format an email address given a name (optional) and an email address.
+# Same as email.utils.formataddr except no Unicode escaping happens.
+def make_address(name, email):
+    if name and email:
+        quotes = ''
+        if NEEDS_QUOTES.search(name):
+            quotes = '"'
+        name = ESCAPES_RE.sub(r'\\\g<0>', name)
+        return f'{quotes}{name}{quotes} <{email}>'
+    elif email:
+        return email
+    else:
+        return ""
+
+
 # anonymise a string of email entries
 def anonymize_mail_address(emailstring):
     out = []
@@ -96,7 +114,7 @@ def anonymize_mail_address(emailstring):
     for real, addr in email.utils.getaddresses([emailstring]):
         # generate the anonymised entries
         anon = re.sub(r"(\S{1,2})\S*@([-a-zA-Z0-9_.]+)", "\\1...@\\2", addr)
-        out.append(email.utils.formataddr([real, anon]))
+        out.append(make_address(real, anon))
 
     # rejoin one per line
     return ",\n ".join(out)
