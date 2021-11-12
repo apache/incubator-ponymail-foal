@@ -38,7 +38,7 @@ if major != 7:
     sys.exit(-1)
   
 # actual mappings
-mappings = elastic.get_mapping(index=elastic.db_mbox)[elastic.db_mbox]['mappings']['properties']
+mappings = elastic.indices.get_mapping(index=elastic.db_mbox)[elastic.db_mbox]['mappings']['properties']
 
 if mappings == mapping_file:
   print("Mappings are as expected, hoorah!")
@@ -51,4 +51,4 @@ else:
   for name in expected:
     data = {name: mapping_file[name]}
     print("Missing: " + str(data))
-    elastic.put_mapping(body={'properties': data}, index=elastic.db_mbox)
+    elastic.indices.put_mapping(body={'properties': data}, index=elastic.db_mbox)
