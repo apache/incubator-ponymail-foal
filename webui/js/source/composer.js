@@ -66,7 +66,10 @@ function compose_email(replyto, list) {
     let eml_body = "";
     let eml_title = `Start a new thread on ${listname}:`;
     if (email) {
-        eml_subject = "Re: " + email.subject;
+        eml_subject = email.subject;
+        if (!eml_subject.match(/^Re:\s+/i)) {  // Add "Re: " if needed only.
+            eml_subject = "Re: " + eml_subject;
+        }
         eml_body = composer_re(email);
         eml_title = `Reply to email on ${listname}:`;
     }
