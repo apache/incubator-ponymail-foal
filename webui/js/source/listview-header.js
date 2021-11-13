@@ -20,7 +20,7 @@ let current_index_pos = 0;
 let current_per_page = 0;
 
 function listview_header(state, json) {
-    if (json.isEmpty()) { // Bad search request?
+    if (isEmpty(json)) { // Bad search request?
         modal("Bad search request", "Your request could not be parsed.", "warning");
         return;
     }
