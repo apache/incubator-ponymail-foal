@@ -157,10 +157,10 @@ Array.prototype.has = function(val) {
     return false;
 };
 
-Object.prototype.isEmpty = function() {
+function isEmpty(obj) {
     return (
-        this
-        && Object.keys(this).length === 0
-        && Object.getPrototypeOf(this) === Object.prototype
+        obj
+        && Object.keys(obj).length === 0
+        && Object.getPrototypeOf(obj) === Object.prototype
     )
 }
