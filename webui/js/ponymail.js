@@ -2181,7 +2181,7 @@ function listview_header(state, json) {
     if (json.searchParams.q && json.searchParams.q.length || (json.searchParams.d || "").match(/=/)) {
         list_title = "Custom search";
     }
-
+    document.title = list_title + " - " + prefs.title;
     document.getElementById('listview_title').innerText = list_title + ":";
     let download = new HTML('button', {
         title: 'Download as mbox archive',
