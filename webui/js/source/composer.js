@@ -4,20 +4,21 @@ let mua_mid = null;
 let mua_headers = {};
 
 function compose_send() {
-    let of = [];
+    let content = [];
     for (let k in mua_headers) {
-        of .push(k + "=" + encodeURIComponent(mua_headers[k]));
+        content.push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
     // Push the subject and email body into the form data
-    of .push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value)); of .push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
+    content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
+    content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (ponymail_preferences.login && ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
-        of .push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
+        content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
     }
 
     let request = new XMLHttpRequest();
     request.open("POST", "/api/compose.lua");
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send( of .join("&")); // send email as a POST string
+    request.send(content.join("&")); // send email as a POST string
 
     document.getElementById('composer_modal').style.display = 'none';
     modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
