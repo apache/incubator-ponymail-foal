@@ -26,7 +26,7 @@ function listview_header(state, json) {
     if (current_list == 'virtual' && current_domain == 'inbox') {
         list_title = "Virtual inbox, past 30 days";
     }
-    let blobs = json.emails;
+    let blobs = json.emails || [];
     if (current_listmode == 'threaded') blobs = json.thread_struct;
 
     if (current_year && current_month) {
@@ -35,7 +35,11 @@ function listview_header(state, json) {
         list_title += ", past month";
     }
 
-    if (json.searchParams && json.searchParams.q && json.searchParams.q.length || (json.searchParams.d || "").match(/=/)) {
+    if (json.searchParams && (
+            json.searchParams.q &&
+            json.searchParams.q.length ||
+            (json.searchParams.d || "").match(/=/))
+    ){
         list_title = "Custom search";
     }
     document.title = list_title + " - " + prefs.title;
