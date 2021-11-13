@@ -20,13 +20,17 @@ let current_index_pos = 0;
 let current_per_page = 0;
 
 function listview_header(state, json) {
+    if (json.isEmpty()) { // Bad search request?
+        modal("Bad search request", "Your request could not be parsed.", "warning");
+        return;
+    }
     let list_title = json.list;
     prev_listview_json = json;
     prev_listview_state = state;
     if (current_list == 'virtual' && current_domain == 'inbox') {
         list_title = "Virtual inbox, past 30 days";
     }
-    let blobs = json.emails || [];
+    let blobs = json.emails ? json.emails : [];
     if (current_listmode == 'threaded') blobs = json.thread_struct;
 
     if (current_year && current_month) {
@@ -69,8 +73,9 @@ function listview_header(state, json) {
     if (state && state.pos) {
         first = 1 + state.pos;
     }
-    if (blobs.length == 0) {
+    if (!blobs || blobs.length == 0) {
         chevrons.innerHTML = "No topics to show";
+        blobs = [];
     } else {
         chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + per_page - 1, blobs.length), blobs.length || 0);
     }
