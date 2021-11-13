@@ -65,15 +65,15 @@ async def process(
         if to and subject and body:
             msg = email.message.EmailMessage()
             if irt:
-                msg["in-reply-to"] = irt
+                msg["In-reply-to"] = irt
             if references:
-                msg["references"] = references
-            msg["from"] = email.utils.formataddr(
+                msg["References"] = references
+            msg["From"] = email.utils.formataddr(
                 (str(email.header.Header(session.credentials.name, "utf-8")), session.credentials.email)
             )
-            msg["to"] = to
-            msg["subject"] = str(email.header.Header(subject, "utf-8"))
-            msg["date"] = email.utils.formatdate()
+            msg["To"] = to
+            msg["Subject"] = str(email.header.Header(subject, "utf-8"))
+            msg["Date"] = email.utils.formatdate()
             msg["X-Sender"] = "Apache Pony Mail Foal Composer v/%s" % COMPOSER_VERSION
             msg.set_charset("utf-8")
             msg.set_content(body)
