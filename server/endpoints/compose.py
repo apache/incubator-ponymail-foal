@@ -75,7 +75,7 @@ async def process(
             msg["To"] = to
             msg["Subject"] = str(email.header.Header(subject, "utf-8"))
             msg["Date"] = email.utils.formatdate()
-            msg["Message-ID"] = f"<{pony-str(uuid.uuid4())}-{to}>"
+            msg["Message-ID"] = f"<pony-{str(uuid.uuid4())}-{to}>"
             msg["User-Agent"] = "Apache Pony Mail Foal Composer v/%s" % COMPOSER_VERSION
             msg.set_charset("utf-8")
             msg.set_content(body)
