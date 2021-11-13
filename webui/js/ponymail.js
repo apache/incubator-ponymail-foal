@@ -278,11 +278,11 @@ Array.prototype.has = function(val) {
     return false;
 };
 
-Object.prototype.isEmpty = function() {
+function isEmpty(obj) {
     return (
-        this
-        && Object.keys(this).length === 0
-        && Object.getPrototypeOf(this) === Object.prototype
+        obj
+        && Object.keys(obj).length === 0
+        && Object.getPrototypeOf(obj) === Object.prototype
     )
 }
 
@@ -2172,7 +2172,7 @@ let current_index_pos = 0;
 let current_per_page = 0;
 
 function listview_header(state, json) {
-    if (json.isEmpty()) { // Bad search request?
+    if (isEmpty(json)) { // Bad search request?
         modal("Bad search request", "Your request could not be parsed.", "warning");
         return;
     }
