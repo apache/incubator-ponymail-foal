@@ -156,3 +156,11 @@ Array.prototype.has = function(val) {
     }
     return false;
 };
+
+Object.prototype.isEmpty = function() {
+    return (
+        this
+        && Object.keys(this).length === 0
+        && Object.getPrototypeOf(this) === Object.prototype
+    )
+}
