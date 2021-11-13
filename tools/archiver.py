@@ -42,6 +42,7 @@ import base64
 import collections
 import email.header
 import email.utils
+import email.policy
 import fnmatch
 import hashlib
 import json
@@ -454,7 +455,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         def default_empty_string(value):
             return str(value) if value else ""
-
         msg_metadata = dict([(k, default_empty_string(msg.get(k))) for k in self.keys])
         mid = (
             hashlib.sha224(
@@ -535,7 +535,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         irt = ""
 
         output_json = None
-
         if body is not None or attachments:
             pmid = mid
             id_set = list()
@@ -966,7 +965,7 @@ def main():
     try:
         raw_message = input_stream.read()
         try:
-            msg = email.message_from_bytes(raw_message)
+            msg = email.message_from_bytes(raw_message, policy=email.policy.default)
         except Exception as err:
             print("STDIN parser exception: %s" % err)
             sys.exit(-1)
