@@ -16,7 +16,6 @@
  */
 
 var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
-var ponymail_name = "Pony Mail" // name of archive (set to "Foo's mail archive" or whatever)
 
 var apiURL = ''; // external API URL. Usually left blank.
 
@@ -48,10 +47,10 @@ var collated_json = {};
 
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
 // Adjust titles:
-document.title = ponymail_name;
+document.title = prefs.title;
 let titles = document.getElementsByClassName("title");
 for (var i in titles) {
-    titles[i].innerText = ponymail_name;
+    titles[i].innerText = prefs.title;
 }
 
 // check local storage for settings

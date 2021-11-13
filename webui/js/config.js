@@ -62,7 +62,8 @@ var prefs = {
     hideStats: 'yes',               // Hide the email statistics window?
     theme: 'default',               // Set to 'social' to default to the social theme
     loggedIn: false,
-    UTC: true,                      // Use UTC for timestamps in UI. If false, use browser local time.
+    UTC: false,                     // Use UTC for timestamps in UI. If false, use browser local time.
+    title: "Apache Pony Mail"       // Default browser window title
 }
 
 // array of prefs we have now. This is needed in case we change/break the existing
