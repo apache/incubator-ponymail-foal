@@ -25,8 +25,9 @@ import aiosmtplib
 import fnmatch
 import typing
 import aiohttp.web
+import uuid
 
-COMPOSER_VERSION = "0.3"  # Bump when changing logic
+COMPOSER_VERSION = "0.4"  # Bump when changing logic
 
 async def process(
     server: plugins.server.BaseServer,
@@ -74,7 +75,8 @@ async def process(
             msg["To"] = to
             msg["Subject"] = str(email.header.Header(subject, "utf-8"))
             msg["Date"] = email.utils.formatdate()
-            msg["X-Sender"] = "Apache Pony Mail Foal Composer v/%s" % COMPOSER_VERSION
+            msg["Message-ID"] = f"<{pony-str(uuid.uuid4())}-{to}>"
+            msg["User-Agent"] = "Apache Pony Mail Foal Composer v/%s" % COMPOSER_VERSION
             msg.set_charset("utf-8")
             msg.set_content(body)
             await aiosmtplib.send(msg, hostname=mailhost, port=mailport)
