@@ -35,7 +35,7 @@ function listview_header(state, json) {
         list_title += ", past month";
     }
 
-    if (json.searchParams.q && json.searchParams.q.length || (json.searchParams.d || "").match(/=/)) {
+    if (json.searchParams && json.searchParams.q && json.searchParams.q.length || (json.searchParams.d || "").match(/=/)) {
         list_title = "Custom search";
     }
     document.title = list_title + " - " + prefs.title;
