@@ -386,11 +386,12 @@ async def query(
                 doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
-            if shorten and len(doc["body_short"] or "") > BODY_MAXLEN:
-                doc["body"] = doc["body_short"][:BODY_MAXLEN] + '...'
-            else:
-                doc["body"] = doc["body_short"]
-            del doc["body_short"]
+            if not metadata_only:
+                if shorten and len(doc["body_short"] or "") > BODY_MAXLEN:
+                    doc["body"] = doc["body_short"][:BODY_MAXLEN] + '...'
+                else:
+                    doc["body"] = doc["body_short"]
+                del doc["body_short"]
             trim_email(doc)
             docs.append(doc)
             hits += 1
