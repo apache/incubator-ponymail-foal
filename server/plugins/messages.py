@@ -536,7 +536,8 @@ class ThreadConstructor:
     def __init__(self, emails: typing.List[typing.Dict]):
         self.emails = emails
         self.threads: typing.List[dict] = []
-        self.authors: typing.Dict[str, int] = {}
+        # this now includes the gravatar, to avoid issues with address anonymisation
+        self.authors: typing.Dict[str, list] = {}
         self.hashed_by_msg_id: typing.Dict[str, dict] = {}
         self.hashed_by_subject: typing.Dict[str, dict] = {}
 
@@ -545,8 +546,8 @@ class ThreadConstructor:
         for cur_email in sorted(self.emails, key=lambda x: x["epoch"]):
             author = cur_email.get("from")
             if author not in self.authors:
-                self.authors[author] = 0
-            self.authors[author] += 1
+                self.authors[author] = [0, cur_email.get("gravatar")]
+            self.authors[author][0] += 1
             subject = cur_email.get("subject", "").replace(
                 "\n", ""
             )  # Crop multi-line subjects

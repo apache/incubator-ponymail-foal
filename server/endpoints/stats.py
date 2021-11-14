@@ -70,12 +70,14 @@ async def process(
         threads = plugins.messages.ThreadConstructor(results)
         tstruct, authors = await server.runners.run(threads.construct)
 
-        all_authors = sorted(authors.items(), key=lambda x: x[1], reverse=True)  # sort in reverse by author count
+        # author entries are now [count, gravatar]
+        # as we cannot reconstruct the correct gravatar from an anonymised address
+        all_authors = sorted(authors.items(), key=lambda x: x[0][1], reverse=True)  # sort in reverse by author count
         top10_authors = []
-        for author, count in all_authors[:10]:
+        for author, data in all_authors[:10]:
             name, address = email.utils.parseaddr(author)
             top10_authors.append(
-                {"email": address, "name": name, "count": count, "gravatar": plugins.messages.gravatar(author),}
+                {"email": address, "name": name, "count": data[0], "gravatar": data[1],}
             )
 
     # Trim email data so as to reduce download sizes
