@@ -47,7 +47,8 @@ async def process(
     except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(
-        session, query_defuzzed, query_limit=server.config.database.max_hits, shorten=True,
+        session, query_defuzzed, query_limit=server.config.database.max_hits,
+        body_max_len=server.config.ui.BODY_MAXLEN,
     )
 
     # statsOnly: Whether to only send statistical info (for n-grams etc), and not the

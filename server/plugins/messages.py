@@ -45,8 +45,6 @@ ESCAPES_RE = re.compile(r'[\\"]')  # Characters to escape with backslash in make
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
-BODY_MAXLEN = 200  # TODO: make this a config item
-
 # Only these fields are returned by the API:
 # (keep this list sorted)
 USED_UI_FIELDS = [
@@ -351,7 +349,7 @@ async def query(
     session: plugins.session.SessionObject,
     query_defuzzed,
     query_limit=10000,
-    shorten=False,
+    body_max_len=None,
     hide_deleted=True,
     metadata_only=False,
     epoch_order="desc"
@@ -388,8 +386,8 @@ async def query(
             if not session.credentials:
                 doc = anonymize(doc)
             if not metadata_only:
-                if shorten and len(doc["body_short"] or "") > BODY_MAXLEN:
-                    doc["body"] = doc["body_short"][:BODY_MAXLEN] + '...'
+                if body_max_len and len(doc["body_short"] or "") > body_max_len:
+                    doc["body"] = doc["body_short"][:body_max_len] + '...'
                 else:
                     doc["body"] = doc["body_short"]
                 del doc["body_short"]
