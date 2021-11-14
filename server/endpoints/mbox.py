@@ -94,6 +94,7 @@ async def process(
         session,
         query_defuzzed,
         query_limit=server.config.database.max_hits,
+        metadata_only=True,
         epoch_order="asc"
     )
 
