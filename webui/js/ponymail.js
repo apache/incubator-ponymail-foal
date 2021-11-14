@@ -912,6 +912,7 @@ function construct_single_thread(state, json) {
     } else {
         div.setAttribute("class", "email_placeholder");
     }
+    document.title = json.emails[0].subject + "-" + prefs.title
     div.style.display = "block";
     let thread = json.thread;
     let email = construct_thread(thread);
