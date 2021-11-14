@@ -358,6 +358,7 @@ async def query(
 ):
     """
     Advanced query and grab for stats.py
+    Also called by mbox.py (using metadata_only=True)
     """
     docs = []
     hits = 0
