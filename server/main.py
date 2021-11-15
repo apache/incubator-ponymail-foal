@@ -65,8 +65,12 @@ class Server(plugins.server.BaseServer):
         self.server = None
         self.streamlock = asyncio.Lock()
 
-        # Make a pool of 15 database connections for async queries
-        for _ in range(1, 15):
+        # Make a pool of database connections for async queries
+        try:
+            pool_size = self.config.database.pool_size
+        except AttributeError: # remove try/except to make pool_size a required config entry
+             pool_size = 15
+        for _ in range(1, pool_size):
             self.dbpool.put_nowait(plugins.database.Database(self.config.database))
 
         # Load each URL endpoint
