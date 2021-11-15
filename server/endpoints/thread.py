@@ -31,6 +31,10 @@ async def process(
     if not email:
         mailid = mailid.replace(" ", "+")  # Some Message-IDs have + in them, this can confuse since + means space.
         email = await plugins.messages.get_email(session, messageid=mailid)
+    if indata.get("find_parent"):
+        parent = await plugins.messages.find_parent(session, email)
+        if parent:
+            email = parent
     if email and isinstance(email, dict):
         thread, emails, pdocs = await plugins.messages.fetch_children(session, email, short=True)
     else:
