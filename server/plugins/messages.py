@@ -311,30 +311,6 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     return None
 
 
-def get_list(session, listid, fr=None, to=None, limit=10000):
-    """
-    Loads emails from a specified list.
-    If fr and to are not specified, loads the last 30 days.
-    TODO: use fr and to
-    """
-    res = session.DB.ES.search(
-        index=session.DB.dbs.mbox,
-        size=limit,
-        body={
-            "query": {"bool": {"must": [{"term": {"list_raw": listid}}]}},
-            "sort": [{"epoch": {"order": "asc"}}],
-        },
-    )
-    docs = []
-    for hit in res["hits"]["hits"]:
-        doc = hit["_source"]
-        if plugins.aaa.can_access_email(session, doc):
-            if not session.user:
-                doc = anonymize(doc)
-            docs.append(doc)
-    return docs
-
-
 async def query(
     session: plugins.session.SessionObject,
     query_defuzzed,
@@ -423,38 +399,6 @@ def is_public(session: plugins.session.SessionObject, listname):
     if listname in session.server.data.lists:
         return not session.server.data.lists[listname]["private"]
     return False  # Default to not public
-
-
-async def get_list_stats(session, maxage="90d", admin=False):
-    """
-    Fetches a list of all mailing lists available (and visible).
-    Use the admin flag to override AAA and see everything
-    """
-    daterange = {"gt": "now-%s" % maxage, "lt": "now+1d"}
-    res = session.database.search(
-        index=session.DB.dbs.mbox,
-        size=0,
-        body={
-            "query": {"bool": {"must": [{"range": {"date": daterange}}]}},
-            "aggs": {"listnames": {"terms": {"field": "list_raw", "size": 10000}}},
-        },
-    )
-    lists = {}
-    for entry in res["aggregations"]["listnames"]["buckets"]:
-
-        # Normalize list name
-        listname = entry["key"].lower()
-
-        # Check access
-        if (
-            is_public(session, listname)
-            or admin
-            or plugins.aaa.can_access_list(session, listname)
-        ):
-            # Change foo.bar.baz to foo@bar.baz
-            listname = listname.strip("<>").replace(".", "@", 1)
-            lists[listname] = entry["doc_count"]
-    return lists
 
 
 async def get_activity_span(session, query_defuzzed):
