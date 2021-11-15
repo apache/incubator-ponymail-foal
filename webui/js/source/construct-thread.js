@@ -124,6 +124,15 @@ function construct_single_thread(state, json) {
     }
     let div = document.getElementById('emails');
     div.innerHTML = "";
+
+    // Fix URLs if they point to an deprecated permalink
+    if (json.thread) {
+        let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
+        if (location.href != url_to_push) {
+            window.history.pushState({}, json.thread.subject, url_to_push)
+        }
+    }
+
     if (chatty_layout) {
         let listname = json.thread.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
         div.setAttribute("class", "email_placeholder_chatty");
