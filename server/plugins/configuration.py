@@ -81,6 +81,7 @@ class DBConfig:
     db_prefix: str
     max_hits: int
     max_lists: int
+    pool_size: int
 
     def __init__(self, subyaml: dict):
         self.dburl = str(subyaml.get("dburl", ""))
@@ -91,6 +92,7 @@ class DBConfig:
         self.db_prefix = str(subyaml.get("db_prefix", "ponymail"))
         self.max_hits = int(subyaml.get("max_hits", 5000))
         self.max_lists = int(subyaml.get("max_lists", 8192))
+        self.pool_size = int(subyaml.get("pool_size", 15))
 
 
 class Configuration:

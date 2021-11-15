@@ -66,10 +66,9 @@ class Server(plugins.server.BaseServer):
         self.streamlock = asyncio.Lock()
 
         # Make a pool of database connections for async queries
-        try:
-            pool_size = self.config.database.pool_size
-        except AttributeError: # remove try/except to make pool_size a required config entry
-             pool_size = 15
+        pool_size = self.config.database.pool_size
+        if pool_size < 1:
+            raise ValueError(f"pool_size {pool_size} must be > 0")
         for _ in range(1, pool_size):
             self.dbpool.put_nowait(plugins.database.Database(self.config.database))
 
