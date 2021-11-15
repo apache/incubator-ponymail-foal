@@ -82,15 +82,6 @@ def trim_email(doc, external=False):
             del doc[header]
 
 
-def extract_name(addr):
-    """ Extract name and email from from: header """
-    m = re.match(r"^([^<]+)\s*<(.+)>$", addr)
-    if m:
-        return [m.group(1), m.group(2)]
-    addr = addr.strip("<>")
-    return [addr, addr]
-
-
 # Format an email address given a name (optional) and an email address.
 # Same as email.utils.formataddr except no Unicode escaping happens.
 def make_address(name, email):
@@ -128,10 +119,6 @@ def anonymize(doc):
         ptr = doc["_source"]
 
     if "from" in ptr:
-        _frname, fremail = extract_name(ptr["from"])
-        ptr["md5"] = hashlib.md5(
-            bytes(fremail.lower(), encoding="ascii", errors="replace")
-        ).hexdigest()
         ptr["from"] = anonymize_mail_address(ptr["from"])
     if "to" in ptr:
         ptr["to"] = anonymize_mail_address(ptr["to"])
