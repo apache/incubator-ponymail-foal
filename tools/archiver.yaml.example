@@ -38,6 +38,7 @@ archiver:
     #generator:             full|dkim|other (dkim recommended)
     generator:              dkim
     # nonce:                optional secret salt ('pepper')
+    policy:                 default   # message parsing policy: default, strict, smtputf8
 
 debug:
     #cropout:               string to crop from list-id
