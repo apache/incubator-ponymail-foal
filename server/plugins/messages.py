@@ -352,7 +352,6 @@ async def query(
     session: plugins.session.SessionObject,
     query_defuzzed,
     query_limit=10000,
-    shorten=False,
     hide_deleted=True,
     metadata_only=False,
     epoch_order="desc"
@@ -389,7 +388,7 @@ async def query(
             if not session.credentials:
                 doc = anonymize(doc)
             if not metadata_only:
-                if shorten and len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
+                if len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
                     doc["body"] = doc["body_short"][:SHORT_BODY_MAX_LEN] + '...'
                 else:
                     doc["body"] = doc["body_short"]
