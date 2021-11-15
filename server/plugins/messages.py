@@ -45,7 +45,8 @@ ESCAPES_RE = re.compile(r'[\\"]')  # Characters to escape with backslash in make
 
 mbox_cache_privacy: typing.Dict[str, bool] = {}
 
-BODY_MAXLEN = 200  # TODO: make this a config item
+# This is used to detect if the '...' truncation marker is to be added
+SHORT_BODY_MAX_LEN = 200  # This must be the same as Archiver.SHORT_BODY_MAXLEN
 
 # Only these fields are returned by the API:
 # (keep this list sorted)
@@ -388,8 +389,8 @@ async def query(
             if not session.credentials:
                 doc = anonymize(doc)
             if not metadata_only:
-                if shorten and len(doc["body_short"] or "") > BODY_MAXLEN:
-                    doc["body"] = doc["body_short"][:BODY_MAXLEN] + '...'
+                if shorten and len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
+                    doc["body"] = doc["body_short"][:SHORT_BODY_MAX_LEN] + '...'
                 else:
                     doc["body"] = doc["body_short"]
                 del doc["body_short"]

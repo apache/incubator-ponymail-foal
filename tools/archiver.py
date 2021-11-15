@@ -72,7 +72,7 @@ else:
 DEFAULT_CHARACTER_SET = 'utf-8'
 
 # Standard "short body" max length for email aggregations
-SHORT_BODY_MAX_LEN = 200
+SHORT_BODY_MAX_LEN = 200 # This must be the same as server.plugins.messages.SHORT_BODY_MAX_LEN
 
 # Fetch config from same dir as archiver.py
 config = ponymailconfig.PonymailConfig()
