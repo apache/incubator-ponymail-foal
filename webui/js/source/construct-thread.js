@@ -136,10 +136,10 @@ function construct_single_thread(state, json) {
 
     // Not top level thread?
     if (json.thread['in-reply-to'] && json.thread['in-reply-to'].length > 0) {
-        let notice = new HTML("span", {style: {color: "saddlebrown"}}, "This email appears to be a reply to another email. If you wish to attempt finding the root thread, click here: ");
+        let notice = new HTML("span", {style: {color: "saddlebrown", background: 'white', padding: "1px"}}, "This email appears to be a reply to another email. If you wish to attempt finding the root thread, click here: ");
         let a = new HTML("a", {href: "javascript:void(location.href += '&find_parent=true');"}, "Find parent email");
         div.inject(notice);
-        div.inject(a);
+        notice.inject(a);
     }
 
     if (chatty_layout) {
