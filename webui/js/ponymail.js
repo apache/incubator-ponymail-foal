@@ -901,6 +901,7 @@ function construct_single_thread(state, json) {
     div.innerHTML = "";
 
     // Fix URLs if they point to an deprecated permalink
+    let looked_for_parent = location.href.match(/find_parent/) ? true : false;
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
@@ -910,7 +911,7 @@ function construct_single_thread(state, json) {
     }
 
     // Not top level thread?
-    if (json.thread['in-reply-to'] && json.thread['in-reply-to'].length > 0) {
+    if (!looked_for_parent && json.thread['in-reply-to'] && json.thread['in-reply-to'].length > 0) {
         let notice = new HTML("span", {style: {color: "saddlebrown", background: 'white', padding: "1px"}}, "This email appears to be a reply to another email. If you wish to attempt finding the root thread, click here: ");
         let a = new HTML("a", {href: "javascript:void(location.href += '&find_parent=true');"}, "Find parent email");
         div.inject(notice);
