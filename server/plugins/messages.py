@@ -58,6 +58,7 @@ USED_UI_FIELDS = [
     "from",
     "gravatar",
     "id",
+    "in-reply-to",
     "list_raw",
     "list",
     "message-id",
