@@ -388,10 +388,13 @@ async def query(
             if not session.credentials:
                 doc = anonymize(doc)
             if not metadata_only:
+                # The body_short field is set to SHORT_BODY_MAX_LEN+1 if the body is longer
+                # than SHORT_BODY_MAX_LEN, so we know if it has been truncated
                 if len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
                     doc["body"] = doc["body_short"][:SHORT_BODY_MAX_LEN] + '...'
                 else:
                     doc["body"] = doc["body_short"]
+                # stats.py is expecting doc['body'], not body_short
                 del doc["body_short"]
             trim_email(doc)
             docs.append(doc)
