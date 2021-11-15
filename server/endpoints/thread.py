@@ -26,7 +26,7 @@ import typing
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Optional[dict]:
-    mailid = indata.get("id")
+    mailid = indata.get("id", "")
     email = await plugins.messages.get_email(session, permalink=mailid)
     if not email:
         mailid = mailid.replace(" ", "+")  # Some Message-IDs have + in them, this can confuse since + means space.
