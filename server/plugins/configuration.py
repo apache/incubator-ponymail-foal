@@ -41,7 +41,6 @@ class UIConfig:
     mgmt_enabled: bool
     focus_domain: str
     fully_delete: bool
-    BODY_MAXLEN = 200  # largest body to show in thread display
 
     def __init__(self, subyaml: dict):
         self.wordcloud = bool(subyaml.get("wordcloud", False))
