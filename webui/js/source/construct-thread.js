@@ -129,6 +129,7 @@ function construct_single_thread(state, json) {
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
+            console.log("URL differs from default permalink, pushing correct ID to history.");
             window.history.pushState({}, json.thread.subject, url_to_push)
         }
     }
