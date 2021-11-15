@@ -7,6 +7,7 @@ database:
   dburl:     http://localhost:9200/   # The URL of the ElasticSearch database
   db_prefix: ponymail                 # DB prefix, usually 'ponymail'
   max_hits: 15000                     # Maximum number of emails to process in a search
+  pool_size: 15                       # number of connections for async queries
 
 tasks:
   refresh_rate:  150                  # Background indexer run interval, in seconds
