@@ -8,6 +8,7 @@ database:
   db_prefix: ponymail                 # DB prefix, usually 'ponymail'
   max_hits: 15000                     # Maximum number of emails to process in a search
   pool_size: 15                       # number of connections for async queries
+  max_lists: 8192                     # max number of lists to allow for
 
 tasks:
   refresh_rate:  150                  # Background indexer run interval, in seconds

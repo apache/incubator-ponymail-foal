@@ -59,7 +59,7 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     """
     lists = {}
     db = plugins.database.Database(database)
-    limit = 8192
+    limit = database.max_lists
 
     # Fetch aggregations of all public emails
     s = Search(using=db.client, index=database.db_prefix + "-mbox").filter(
