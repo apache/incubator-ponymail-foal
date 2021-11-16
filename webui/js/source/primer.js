@@ -87,7 +87,6 @@ function parseURL(state) {
     let list = bits[0];
     let month = bits[1];
     let query = bits[2];
-    let list_array = null;
     state = state || {};
     current_query = query || "";
     current_month = 0;
