@@ -9,7 +9,7 @@ _Next generation suite of services and tools for Apache Pony Mail_
 
 
 This repository aims to contain the next generation of Apache Pony Mail,
-a pure python version of Apache Pony Mail with support for ElasticSearch 
+a pure Python version of Apache Pony Mail with support for ElasticSearch 
 7.x and above.
 
 
@@ -19,7 +19,7 @@ Among other things, Foal sports the following new features:
 * Improved archiver and import tools
 * New, sleeker UI for the end user
 * Migration tools for moving to Foal
-* 100% python backend, no Lua required
+* 100% Python backend, no Lua required
 * In-place editing of emails via web UI
 
 ## Installation Guide

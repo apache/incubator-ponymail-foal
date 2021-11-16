@@ -81,7 +81,7 @@ def create_indices():
         print(f"Index {dbname}-{index} created! %s " % res)
 
 
-# Check for all required python packages
+# Check for all required Python packages
 wanted_pkgs = [
     "elasticsearch",  # used by setup.py, archiver.py and elastic.py
     "formatflowed",  # used by archiver.py
@@ -95,7 +95,7 @@ for pkg in wanted_pkgs:
         missing_pkgs.remove(pkg)
 
 if missing_pkgs:
-    print("It looks like you need to install some python modules first")
+    print("It looks like you need to install some Python modules first")
     print("The following packages are required: ")
     for pkg in missing_pkgs:
         print(" - %s" % pkg)
