@@ -1936,9 +1936,6 @@ function keyCommands(e) {
                 return;
             case 'ArrowLeft': // quick previous
                 if (current_json) { // IF list view...
-                    let blobs = current_json.emails;
-                    if (current_listmode == 'threaded') blobs = current_json.thread_struct;
-                    let no_emails = blobs.length;
                     if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
                         listview_header({
                             pos: current_index_pos - current_per_page
@@ -1960,9 +1957,6 @@ function ponymail_swipe(event) {
     if (len < 20) return false;
     if (direction == 'right') {
         if (current_json) { // IF list view...
-            let blobs = current_json.emails;
-            if (current_listmode == 'threaded') blobs = current_json.thread_struct;
-            let no_emails = blobs.length;
             if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
                 listview_header({
                     pos: current_index_pos - current_per_page
