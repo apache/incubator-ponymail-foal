@@ -72,7 +72,9 @@ function init_preferences(state, json) {
         listview_list_lists(state, json);
         if (state && state.prime) {
             // If lists is accessible, show it
-            if (json.lists[current_domain] && json.lists[current_domain][current_list] != undefined) {
+            if (json.lists[current_domain] && (current_list == '*' || json.lists[current_domain][current_list] != undefined)) {
+                post_prime(state);
+            } else if  (current_domain == '*') { // assume a match
                 post_prime(state);
             } else { // otherwise, bork
                 if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
