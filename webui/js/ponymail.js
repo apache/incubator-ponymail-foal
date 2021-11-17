@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "8e55477";
+const PONYMAIL_REVISION = "93e3b9d";
 
 
 
@@ -2750,7 +2750,6 @@ function listview_threaded_element(thread, idx) {
 
 let admin_current_email = null;
 let admin_email_meta = {};
-let audit_entries = []
 let audit_page = 0;
 let audit_size = 30;
 let mgmt_prefs = {}
