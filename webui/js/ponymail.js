@@ -1957,8 +1957,8 @@ function keyCommands(e) {
 // swipe left/right for next/previous page on mobile
 function ponymail_swipe(event) {
     // Only accept "big" swipes
-    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[0]);
-    let direction = event.swipestart.coords[0] > event.swipestop.coords[0] ? 'left' : 'right';
+    let len = Math.abs(event.detail.swipestart.coords[0] - event.detail.swipestop.coords[0]);
+    let direction = event.detail.swipestart.coords[0] > event.detail.swipestop.coords[0] ? 'left' : 'right';
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
@@ -1983,6 +1983,7 @@ function ponymail_swipe(event) {
     }
     return false;
 }
+
 
 /******************************************
  Fetched from source/list-index.js
@@ -3371,6 +3372,8 @@ function post_prime(state) {
 
 // onload function for list.html
 function parseURL(state) {
+    console.log("Running ParseURL");
+    console.log(state);
     let bits = window.location.search.substr(1).split(":", 3);
     let list = bits[0];
     let month = bits[1];
@@ -3504,6 +3507,7 @@ function unshortenID(mid) {
     }
     return mid
 }
+
 
 /******************************************
  Fetched from source/render-email.js
@@ -4322,3 +4326,63 @@ async function sidebar_stats(json) {
     }
 
 }
+
+
+/******************************************
+ Fetched from source/swipe.js
+******************************************/
+
+const SWIPE_THRESHOLD = 50;  // Need at least this long a swipe before we register it
+let xDown, yDown;
+
+// touch/swipe begins                                                                         
+function touchStart(evt) {
+    let firstTouch = (evt.touches || evt.originalEvent.touches)[0];
+    xDown = firstTouch.clientX;                                      
+    yDown = firstTouch.clientY;                                      
+}
+
+// Touch/swipe ends
+function touchEnd(evt) {
+    if ( !xDown || !yDown ) {
+        return
+    }
+    let xUp = evt.changedTouches[0].clientX;                                    
+    let yUp = evt.changedTouches[0].clientY;
+
+    let xDiff = Math.abs(xDown - xUp);
+    let yDiff = Math.abs(yDown - yUp);
+    let coords = {
+        detail: {
+            swipestart: { coords: [xDown, yDown] },
+            swipestop: { coords: [xUp, yUp] }
+        }
+    };
+    // If the swipe was too short, abort
+    if ( Math.sqrt(xDiff**2 + yDiff**2) < SWIPE_THRESHOLD ) return
+    
+    // Which direction??
+    if ( xDiff > yDiff ) {
+        if ( xDiff > 0 ) {
+            document.dispatchEvent(new CustomEvent("swipeleft", coords));
+        } else {
+            document.dispatchEvent(new CustomEvent("swiperight", coords));
+        }                       
+    } else {
+        if ( yDiff > 0 ) {
+            document.dispatchEvent(new CustomEvent("swipeup", coords));
+        } else { 
+            document.dispatchEvent(new CustomEvent("swipedown", coords));
+        }                                                                 
+    }
+
+    xDown = null;
+    yDown = null;                                             
+};
+
+function attachSwipe(elm) {
+    console.log("Attaching swipe detector to element ", elm);
+    elm.addEventListener('touchstart', touchStart, false);        
+    elm.addEventListener('touchend', touchEnd, false);
+}
+
