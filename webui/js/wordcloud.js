@@ -15,7 +15,7 @@
  limitations under the License.
 */
 
-var svgNS = "http://www.w3.org/2000/svg"
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 
 
 function fastIntersect(x,y,nx,ny) {
@@ -34,7 +34,7 @@ function fastIntersect(x,y,nx,ny) {
 }
 
 function makeWord(word, size) {
-    var textBox = document.createElementNS(svgNS, "text");
+    var textBox = document.createElementNS(SVG_NAMESPACE, "text");
     textBox.setAttribute("font-size", size + "px")
     textBox.setAttribute("x", "0")
     textBox.setAttribute("y", "40")
@@ -54,7 +54,7 @@ async function wordCloud(hash, width, height, obj) {
     var hashSorted = []
     for (word in hash) hashSorted.push(word)
     hashSorted = hashSorted.sort(function(a,b) { return hash[a] > hash[b] })
-    var svg = document.createElementNS(svgNS, "svg");
+    var svg = document.createElementNS(SVG_NAMESPACE, "svg");
     document.body.appendChild(svg)
     svg.setAttribute("width",  width)
     svg.setAttribute("height",  height)
@@ -65,7 +65,7 @@ async function wordCloud(hash, width, height, obj) {
         var expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
         console.log(expected_area)
         
-        var textBox = document.createElementNS(svgNS, "text");
+        var textBox = document.createElementNS(SVG_NAMESPACE, "text");
         textBox.textContent = word
         textBox.setAttribute("font-size", "100px")
         svg.appendChild(textBox)
