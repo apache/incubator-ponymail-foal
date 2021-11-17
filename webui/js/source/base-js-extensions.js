@@ -71,8 +71,7 @@ Number.prototype.pretty = function(fix) {
  */
 
 Number.prototype.pad = function(n) {
-    var str;
-    str = String(this);
+    let str = String(this);
 
     /* Do we need to pad? if so, do it using String.repeat */
     if (str.length < n) {
@@ -84,10 +83,10 @@ Number.prototype.pad = function(n) {
 /* Func for converting TZ offset from minutes to +/-HHMM */
 
 Date.prototype.TZ_HHMM = function() {
-    var off_mins = this.getTimezoneOffset();
-    var off_hh =   Math.floor(Math.abs(off_mins/60));
-    var off_mm =   Math.abs(off_mins%60);
-    var sgn = off_mins > 0 ? '-' : '+';
+    let off_mins = this.getTimezoneOffset();
+    let off_hh =   Math.floor(Math.abs(off_mins/60));
+    let off_mm =   Math.abs(off_mins%60);
+    let sgn = off_mins > 0 ? '-' : '+';
     return sgn + off_hh.pad(2) + ':' + off_mm.pad(2);
 }
 
@@ -133,7 +132,7 @@ isHash = function(value) {
 /* Remove an array element by value */
 
 Array.prototype.remove = function(val) {
-    var i, item, j, len;
+    let i, item, j, len;
     for (i = j = 0, len = this.length; j < len; i = ++j) {
         item = this[i];
         if (item === val) {
@@ -148,8 +147,7 @@ Array.prototype.remove = function(val) {
 /* Check if array has value */
 Array.prototype.has = function(val) {
     var i, item, j, len;
-    for (i = j = 0, len = this.length; j < len; i = ++j) {
-        item = this[i];
+    for (let item of this) {
         if (item === val) {
             return true;
         }
