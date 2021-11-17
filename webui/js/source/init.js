@@ -15,7 +15,7 @@
  limitations under the License.
  */
 
-const PONYMAIL_VERSION = "1.0.1-Foal"; // Current version of Pony Mail
+const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
 let apiURL = ''; // external API URL. Usually left blank.
 
