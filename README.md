@@ -1,7 +1,7 @@
 # Apache Pony Mail Foal
 <img src="https://github.com/apache/incubator-ponymail-foal/blob/master/webui/images/foal.png" width="72" align="left"/>
 
-_Next generation suite of services and tools for Apache Pony Mail_
+_Next generation suite of services and tools for Apache Pony Mail (incubating)_
 
 | Type tests: | ![CI Status, Type Tests](https://img.shields.io/github/workflow/status/apache/incubator-ponymail-foal/Foal%20Type%20Tests?style=plastic) |
 |-----|-------|
