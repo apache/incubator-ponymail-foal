@@ -40,7 +40,7 @@ async function escrow_check() {
             id: 'spinner',
             class: 'spinner'
         });
-        spinwheel = new HTML('div', {
+        let spinwheel = new HTML('div', {
             id: 'spinwheel',
             class: 'spinwheel'
         });
