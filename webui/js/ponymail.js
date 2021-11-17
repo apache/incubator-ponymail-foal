@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "35b7658";
+const PONYMAIL_REVISION = "529f59b";
 
 
 
@@ -2092,7 +2092,7 @@ function calc_per_page() {
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
     let email_h = 40;
-    console.log("window area: %ux%u".format(width, height));
+    console.log("Window area: %ux%u".format(width, height));
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
         email_h = 80;
@@ -2100,17 +2100,17 @@ function calc_per_page() {
     height -= 180;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
+    console.log("We can display %u emails per page".format(per_page));
     return per_page;
 }
 
 function listview_flat(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
-    let per_page = calc_per_page();
 
     let s = start || 0;
     if (json.emails && json.emails.length) {
-        for (n = s; n < (s + per_page); n++) {
+        for (n = s; n < (s + current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
             if (json.emails[z]) {
                 let item = listview_flat_element(json.emails[z], z);
@@ -2252,8 +2252,7 @@ function listview_header(state, json) {
     });
 
     let chevrons = document.getElementById('listview_chevrons');
-    let per_page = calc_per_page();
-    current_per_page = per_page;
+    current_per_page = calc_per_page();
     current_index_pos = state.pos || 0;
     let first = 1;
     if (state && state.pos) {
@@ -2263,10 +2262,10 @@ function listview_header(state, json) {
         chevrons.innerHTML = "No topics to show";
         blobs = [];
     } else {
-        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + per_page - 1, blobs.length), blobs.length || 0);
+        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + current_per_page - 1, blobs.length), blobs.length || 0);
     }
 
-    let pprev = Math.max(0, first - per_page - 1);
+    let pprev = Math.max(0, first - current_per_page - 1);
     let cback = new HTML('button', {
         onclick: 'listview_header({pos: %u}, current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
@@ -2275,10 +2274,10 @@ function listview_header(state, json) {
     }, " "));
     chevrons.inject(cback);
 
-    let pnext = first + per_page - 1;
+    let pnext = first + current_per_page - 1;
     let cforward = new HTML('button', {
         onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),
-        disabled: (first + per_page - 1 >= blobs.length) ? 'true' : null
+        disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
     }, " "));
@@ -2557,11 +2556,10 @@ function calc_email_width() {
 function listview_threaded(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
-    let per_page = calc_per_page();
 
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (let n = s; n < (s + per_page); n++) {
+        for (let n = s; n < (s + current_per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
@@ -4336,59 +4334,67 @@ async function sidebar_stats(json) {
 ******************************************/
 
 const SWIPE_THRESHOLD = 50; // Need at least this long a swipe before we register it
-let xDown;
-let yDown;
 
-// touch/swipe begins                                                                         
-function touchStart(evt) {
-    let firstTouch = (evt.touches || evt.originalEvent.touches)[0];
-    xDown = firstTouch.clientX;
-    yDown = firstTouch.clientY;
-}
+class SwipeDetector {
+    constructor(target = document, threshold = SWIPE_THRESHOLD) {
+        this.xDown = null;
+        this.yDown = null;
+        this.xUp = null;
+        this.yUp = null;
+        this.threshold = threshold;
+        this.target = target;
 
-// Touch/swipe ends
-function touchEnd(evt) {
-    if (!xDown || !yDown) return
-    let xUp = evt.changedTouches[0].clientX;
-    let yUp = evt.changedTouches[0].clientY;
-
-    let xDiff = Math.abs(xDown - xUp);
-    let yDiff = Math.abs(yDown - yUp);
-    let coords = {
-        detail: {
-            swipestart: {
-                coords: [xDown, yDown]
-            },
-            swipestop: {
-                coords: [xUp, yUp]
-            }
-        }
-    };
-    // If the swipe was too short, abort
-    if (Math.sqrt(xDiff ** 2 + yDiff ** 2) < SWIPE_THRESHOLD) return
-
-    // Which direction??
-    if (xDiff > yDiff) {
-        if (xDiff > 0) {
-            document.dispatchEvent(new CustomEvent("swipeleft", coords));
-        } else {
-            document.dispatchEvent(new CustomEvent("swiperight", coords));
-        }
-    } else {
-        if (yDiff > 0) {
-            document.dispatchEvent(new CustomEvent("swipeup", coords));
-        } else {
-            document.dispatchEvent(new CustomEvent("swipedown", coords));
-        }
+        console.log("Attaching swipe detector to element ", target);
+        target.addEventListener("touchstart", this.touchStart, false);
+        target.addEventListener("touchend", this.touchEnd, false);
     }
 
-    xDown = null;
-    yDown = null;
-};
+    setCallback(direction = "left", callback_function ) {
+        document.addEventListener(`swipe${direction}`, callback_function);
+    }
 
-function attachSwipe(elm) {
-    console.log("Attaching swipe detector to element ", elm);
-    elm.addEventListener("touchstart", touchStart, false);
-    elm.addEventListener("touchend", touchEnd, false);
+    touchStart(evt) {
+        let firstTouch = (evt.touches || evt.originalEvent.touches)[0];
+        this.xDown = firstTouch.clientX;
+        this.yDown = firstTouch.clientY;
+    }
+
+    touchEnd(evt) {
+        if (!this.xDown || !this.yDown) return
+        this.xUp = evt.changedTouches[0].clientX;
+        this.yUp = evt.changedTouches[0].clientY;
+
+        let xDiff = Math.abs(this.xDown - this.xUp);
+        let yDiff = Math.abs(this.yDown - this.yUp);
+        let coords = {
+            detail: {
+                swipestart: {
+                    coords: [this.xDown, this.yDown]
+                },
+                swipestop: {
+                    coords: [this.xUp, this.yUp]
+                }
+            }
+        };
+        // If the swipe was too short, abort
+        if (Math.sqrt(xDiff ** 2 + yDiff ** 2) < this.threshold) return
+
+        // Which direction??
+        if (xDiff > yDiff) {
+            if (xDiff > 0) {
+                document.dispatchEvent(new CustomEvent("swipeleft", coords));
+            } else {
+                document.dispatchEvent(new CustomEvent("swiperight", coords));
+            }
+        } else {
+            if (yDiff > 0) {
+                document.dispatchEvent(new CustomEvent("swipeup", coords));
+            } else {
+                document.dispatchEvent(new CustomEvent("swipedown", coords));
+            }
+        }
+        this.xDown = null;
+        this.yDown = null;
+    }
+
 }
-
