@@ -108,7 +108,7 @@ async function admin_save_email(edit_attachment = false) {
     let from = document.getElementById('email_from').value;
     let subject = document.getElementById('email_subject').value;
     let listname = document.getElementById('email_listname').value;
-    let private = document.getElementById('email_private').value;
+    let is_private = document.getElementById('email_private').value;
     let body = document.getElementById('email_body').value;
     let attach = null;
     if (edit_attachment) {
@@ -120,7 +120,7 @@ async function admin_save_email(edit_attachment = false) {
         from: from,
         subject: subject,
         list: listname,
-        private: private,
+        private: is_private,
         body: body,
         attachments: attach
     })
