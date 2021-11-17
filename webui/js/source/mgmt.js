@@ -1,6 +1,5 @@
 let admin_current_email = null;
 let admin_email_meta = {};
-let audit_entries = []
 let audit_page = 0;
 let audit_size = 30;
 let mgmt_prefs = {}
