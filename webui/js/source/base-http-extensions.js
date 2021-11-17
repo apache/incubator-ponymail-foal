@@ -17,17 +17,17 @@
 
 
 // URL calls currently 'in escrow'. This controls the spinny wheel animation
-var async_escrow = {}
-var async_maxwait = 250; // ms to wait before displaying spinner
-var async_status = 'clear';
-var async_cache = {}
+let async_escrow = {}
+const ASYNC_MAXWAIT = 250; // ms to wait before displaying spinner
+let async_status = 'clear';
+let async_cache = {}
 
 // Escrow spinner check
 async function escrow_check() {
     let now = new Date();
     let show_spinner = false;
-    for (var k in async_escrow) {
-        if ((now - async_escrow[k]) > async_maxwait) {
+    for (let k in async_escrow) {
+        if ((now - async_escrow[k]) > ASYNC_MAXWAIT) {
             show_spinner = true;
             break;
         }
@@ -64,7 +64,7 @@ async function escrow_check() {
 }
 
 async function async_snap(error) {
-    msg = await error.text();
+    let msg = await error.text();
     msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
     if (error.status === 404) {
         msg += "\n\nYou may need to be logged in with additional permissions in order to view this resource.";
