@@ -34,7 +34,7 @@ function listview_header(state, json) {
     if (current_listmode == 'threaded') blobs = json.thread_struct;
 
     if (current_year && current_month) {
-        list_title += ", %s %u".format(months[current_month - 1], current_year);
+        list_title += ", %s %u".format(MONTHS[current_month - 1], current_year);
     } else {
         list_title += ", past month";
     }
