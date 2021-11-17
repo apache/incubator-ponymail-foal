@@ -27,7 +27,7 @@ function init_preferences(state, json) {
     if (can_store) {
         let local_preferences = window.localStorage.getItem('ponymail_preferences');
         if (local_preferences) {
-            ljson = JSON.parse(local_preferences);
+            let ljson = JSON.parse(local_preferences);
             if (ljson.chatty_layout !== undefined) {
                 chatty_layout = ljson.chatty_layout;
             }
