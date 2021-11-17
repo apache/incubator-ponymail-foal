@@ -109,6 +109,7 @@ async function GET(url, callback, state) {
         // We expect a 2xx return code (usually 200 or 201), snap otherwise
         if ((res_json) || (res.status >= 200 && res.status < 300)) {
             console.log("Successfully fetched %s".format(url))
+            let js;
             if (res_json) {
                 js = res_json;
             } else {
