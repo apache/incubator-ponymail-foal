@@ -149,7 +149,7 @@ function listview_list_lists(state, json) {
         lists.innerHTML = "";
 
         if (isHash(json.lists) && json.lists[current_domain]) {
-            lists_sorted = [];
+            let lists_sorted = [];
             for (var list in json.lists[current_domain]) {
                 lists_sorted.push([list, json.lists[current_domain][list]]);
             }
