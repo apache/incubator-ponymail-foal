@@ -117,7 +117,7 @@ Date.prototype.ISOBare = function() {
 
 /* isArray: function to detect if an object is an array */
 
-function isArrray(value) {
+function isArray(value) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
 };
 
