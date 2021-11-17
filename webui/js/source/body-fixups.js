@@ -15,14 +15,14 @@
  limitations under the License.
  */
 
-ponymail_url_regex = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)?" + "(?:" + "([01][0-9][0-9]|2[0-4][0-9]|25[0-5])" + "|" + "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" + "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" + "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" + "\\.?" + ")" + "(?::\\d{2,5})?" + "(?:[/?#]([^,<>()\\[\\] \\t\\r\\n]|(<[^:\\s]*?>|\\([^:\\s]*?\\)|\\[[^:\\s]*?\\]))*)?" + ")\\.?", "mi");
+const PONYMAIL_URL_RE = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)?" + "(?:" + "([01][0-9][0-9]|2[0-4][0-9]|25[0-5])" + "|" + "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" + "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" + "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" + "\\.?" + ")" + "(?::\\d{2,5})?" + "(?:[/?#]([^,<>()\\[\\] \\t\\r\\n]|(<[^:\\s]*?>|\\([^:\\s]*?\\)|\\[[^:\\s]*?\\]))*)?" + ")\\.?", "mi");
 
 // Regex for things to potentially put inside quote objects:
 // - quotes
 // - forwarded emails
 // - inline quoting
 // - top posting with original email following
-ponymail_quote_regex = new RegExp("(" +
+const PONYMAIL_QUOTE_RE = new RegExp("(" +
     // Typical encapsulation of context by ticketing systems and/or bug trackers
     "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
     "(" +
@@ -52,10 +52,10 @@ ponymail_quote_regex = new RegExp("(" +
     ")", "mi");
 
 // Somewhat simplified method for catching email footers/trailers that we don't need
-ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
+const PONYMAIL_TRAILER_RE = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
 
 // This is a regex for capturing code diff blocks in an email
-ponymail_diff_regex = new RegExp(
+const PONYMAIL_DIFF_RE = new RegExp(
     "(" +
     "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
     "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
@@ -79,7 +79,7 @@ function fixup_urls(splicer) {
     textbits = [];
 
     /* Find the first link, if any */
-    i = splicer.search(ponymail_url_regex);
+    i = splicer.search(PONYMAIL_URL_RE);
     urls = 0;
 
     /* While we have more links, ... */
@@ -99,7 +99,7 @@ function fixup_urls(splicer) {
         }
 
         /* Find the URL and cut it out as a link */
-        m = splicer.match(ponymail_url_regex);
+        m = splicer.match(PONYMAIL_URL_RE);
         if (m) {
             url = m[1];
             i = url.length;
@@ -111,7 +111,7 @@ function fixup_urls(splicer) {
         }
 
         /* Find the next link */
-        i = splicer.search(ponymail_url_regex);
+        i = splicer.search(PONYMAIL_URL_RE);
     }
 
     /* push the remaining text into textbits */
@@ -148,9 +148,9 @@ function legit_trailer(a) {
 function cut_trailer(splicer) {
     if (!chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
-        splicer.innerText = splicer.innerText.replace(ponymail_trailer_regex, legit_trailer, 3);
+        splicer.innerText = splicer.innerText.replace(PONYMAIL_TRAILER_RE, legit_trailer, 3);
     } else {
-        splicer = splicer.replace(ponymail_trailer_regex, legit_trailer);
+        splicer = splicer.replace(PONYMAIL_TRAILER_RE, legit_trailer);
 
     }
     return splicer;
@@ -188,7 +188,7 @@ function fixup_diffs(splicer) {
     let textbits = [];
 
     /* Find the first link, if any */
-    i = splicer.search(ponymail_diff_regex);
+    i = splicer.search(PONYMAIL_DIFF_RE);
     diffs = 0;
 
     /* While we have more links, ... */
@@ -208,7 +208,7 @@ function fixup_diffs(splicer) {
         }
 
         /* Find the URL and cut it out as a link */
-        m = splicer.match(ponymail_diff_regex);
+        m = splicer.match(PONYMAIL_DIFF_RE);
         if (m) {
             diff = m[1];
             i = diff.length;
@@ -220,7 +220,7 @@ function fixup_diffs(splicer) {
         }
 
         /* Find the next link */
-        i = splicer.search(ponymail_diff_regex);
+        i = splicer.search(PONYMAIL_DIFF_RE);
     }
 
     /* push the remaining text into textbits */
@@ -242,7 +242,7 @@ function fixup_quotes(splicer) {
     textbits = [];
 
     /* Find the first quote, if any */
-    i = splicer.search(ponymail_quote_regex);
+    i = splicer.search(PONYMAIL_QUOTE_RE);
     quotes = 0;
 
     /* While we have more quotes, ... */
@@ -265,7 +265,7 @@ function fixup_quotes(splicer) {
         }
 
         /* Find the quote and cut it out as a div */
-        m = splicer.match(ponymail_quote_regex);
+        m = splicer.match(PONYMAIL_QUOTE_RE);
         if (m) {
             quote = m[0];
             i = quote.length;
@@ -291,7 +291,7 @@ function fixup_quotes(splicer) {
         }
 
         /* Find the next quotes */
-        i = splicer.search(ponymail_quote_regex);
+        i = splicer.search(PONYMAIL_QUOTE_RE);
     }
 
     /* push the remaining text into textbits */
