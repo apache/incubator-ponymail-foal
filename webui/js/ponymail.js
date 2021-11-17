@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "c221ada";
+const PONYMAIL_REVISION = "5ecd672";
 
 
 
@@ -2088,7 +2088,6 @@ function calc_per_page() {
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
     let email_h = 40;
-    console.log("Window area: %ux%u".format(width, height));
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
         email_h = 80;
@@ -2096,7 +2095,7 @@ function calc_per_page() {
     height -= 180;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
-    console.log("We can display %u emails per page".format(per_page));
+    console.log("Viewport is %ux%u. We can show %u emails per page".format(width, height, per_page));
     return per_page;
 }
 
