@@ -89,8 +89,8 @@ function construct_thread(thread, cid, nestlevel, included) {
     email.inject(wrapper);
     if (isArray(thread.children)) {
         thread.children.sort((a, b) => a.epoch - b.epoch);
-        for (var i = 0; i < thread.children.length; i++) {
-            let reply = construct_thread(thread.children[i], cid, nestlevel, included);
+        for (let child of thread.children) {
+            let reply = construct_thread(child, cid, nestlevel, included);
             cid++;
             if (reply) {
                 email.inject(reply);
