@@ -66,8 +66,7 @@ function listview_header(state, json) {
     });
 
     let chevrons = document.getElementById('listview_chevrons');
-    let per_page = calc_per_page();
-    current_per_page = per_page;
+    current_per_page = calc_per_page();
     current_index_pos = state.pos || 0;
     let first = 1;
     if (state && state.pos) {
@@ -77,10 +76,10 @@ function listview_header(state, json) {
         chevrons.innerHTML = "No topics to show";
         blobs = [];
     } else {
-        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + per_page - 1, blobs.length), blobs.length || 0);
+        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + current_per_page - 1, blobs.length), blobs.length || 0);
     }
 
-    let pprev = Math.max(0, first - per_page - 1);
+    let pprev = Math.max(0, first - current_per_page - 1);
     let cback = new HTML('button', {
         onclick: 'listview_header({pos: %u}, current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
@@ -89,10 +88,10 @@ function listview_header(state, json) {
     }, " "));
     chevrons.inject(cback);
 
-    let pnext = first + per_page - 1;
+    let pnext = first + current_per_page - 1;
     let cforward = new HTML('button', {
         onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),
-        disabled: (first + per_page - 1 >= blobs.length) ? 'true' : null
+        disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
     }, " "));

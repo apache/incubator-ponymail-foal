@@ -24,7 +24,7 @@ function calc_per_page() {
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
     let email_h = 40;
-    console.log("window area: %ux%u".format(width, height));
+    console.log("Window area: %ux%u".format(width, height));
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
         email_h = 80;
@@ -32,17 +32,17 @@ function calc_per_page() {
     height -= 180;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
+    console.log("We can display %u emails per page".format(per_page));
     return per_page;
 }
 
 function listview_flat(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
-    let per_page = calc_per_page();
 
     let s = start || 0;
     if (json.emails && json.emails.length) {
-        for (n = s; n < (s + per_page); n++) {
+        for (n = s; n < (s + current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
             if (json.emails[z]) {
                 let item = listview_flat_element(json.emails[z], z);

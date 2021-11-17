@@ -27,11 +27,10 @@ function calc_email_width() {
 function listview_threaded(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
-    let per_page = calc_per_page();
 
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (let n = s; n < (s + per_page); n++) {
+        for (let n = s; n < (s + current_per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
