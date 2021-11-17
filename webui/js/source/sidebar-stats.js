@@ -54,10 +54,10 @@ async function sidebar_stats(json) {
         if (par.name.length == 0) {
             par.name = par.email;
         }
-        pdiv = new HTML('div', {
+        let pdiv = new HTML('div', {
             class: "sidebar_stats_participant"
         });
-        pimg = new HTML('img', {
+        let pimg = new HTML('img', {
             class: "gravatar_sm",
             src: gravatar_url.format(par.gravatar)
         })
