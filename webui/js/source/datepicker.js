@@ -402,7 +402,7 @@ function datePickerValue(seedPeriod) {
             var mr = seedPeriod.match(/(\d+)-(\d+)/)
             if (mr) {
                 dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
-                rv = months[dfrom.getMonth()] + ', ' + mr[1]
+                rv = MONTHS[dfrom.getMonth()] + ', ' + mr[1]
             }
         }
 
