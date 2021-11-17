@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "93e3b9d";
+const PONYMAIL_REVISION = "9789849";
 
 
 
@@ -2238,7 +2238,7 @@ function listview_header(state, json) {
     document.getElementById('listview_title').inject(download);
     download.addEventListener('click', () => {
         let sep = '?';
-        dl_url = pm_config.apiURL + 'api/mbox.lua';
+        let dl_url = apiURL + 'api/mbox.lua';
         for (let key in json.searchParams || {}) {
             dl_url += sep + key + "=" + encodeURIComponent(json.searchParams[key]);
             sep = '&';
@@ -2999,7 +2999,7 @@ function admin_email_preview(stats, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3647,7 +3647,7 @@ async function render_email(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3788,7 +3788,7 @@ async function render_email_chatty(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${pm_config.apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'

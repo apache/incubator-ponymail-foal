@@ -57,7 +57,7 @@ function listview_header(state, json) {
     document.getElementById('listview_title').inject(download);
     download.addEventListener('click', () => {
         let sep = '?';
-        dl_url = pm_config.apiURL + 'api/mbox.lua';
+        let dl_url = apiURL + 'api/mbox.lua';
         for (let key in json.searchParams || {}) {
             dl_url += sep + key + "=" + encodeURIComponent(json.searchParams[key]);
             sep = '&';
