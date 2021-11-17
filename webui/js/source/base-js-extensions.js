@@ -117,14 +117,14 @@ Date.prototype.ISOBare = function() {
 
 /* isArray: function to detect if an object is an array */
 
-isArray = function(value) {
+function isArrray(value) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
 };
 
 
 /* isHash: function to detect if an object is a hash */
 
-isHash = function(value) {
+function isHash(value) {
     return value && typeof value === 'object' && !isArray(value);
 };
 
