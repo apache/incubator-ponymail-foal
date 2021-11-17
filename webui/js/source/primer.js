@@ -83,6 +83,8 @@ function post_prime(state) {
 
 // onload function for list.html
 function parseURL(state) {
+    console.log("Running ParseURL");
+    console.log(state);
     let bits = window.location.search.substr(1).split(":", 3);
     let list = bits[0];
     let month = bits[1];

@@ -171,9 +171,6 @@ the License. -->
         $.mobile.keepNative = "input";
       });
     </script>
-    <script src="js/jquery.mobile-1.4.5.min.js"
-            integrity="sha256-Lsk+CDPOzTapLoAzWW0G/WeQeViS3FMzywpzPZV8SXk="></script>
-
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/config.js"></script>
@@ -182,9 +179,9 @@ the License. -->
     <div id="splash" class="splash fade-in"> &nbsp; </div>
     <div style="clear: both;"></div>
     <script type="text/javascript">
-      $.event.special.swipe.scrollSupressionThreshold = 20;
-      $.event.special.swipe.verticalDistanceThreshold = 30;
-      $( "#emails" ).on( "swipe", ponymail_swipe );
+      attachSwipe(document.getElementById("emails"));
+      document.addEventListener("swipeleft", ponymail_swipe);
+      document.addEventListener("swiperight", ponymail_swipe);
     </script>
   </body>
 </html>
