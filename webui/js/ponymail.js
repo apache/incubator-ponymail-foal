@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "35b7658";
+const PONYMAIL_REVISION = "7d8e568";
 
 
 
@@ -598,10 +598,7 @@ function toggle_quote(el) {
  Fetched from source/composer.js
 ******************************************/
 
-let mua_trigger = 'mailto:';
-let mua_list = null;
-let mua_mid = null;
-let mua_headers = {};
+let mua_headers = {}; // communication between compose_email and compose_send
 
 function compose_send() {
     let content = [];
@@ -626,6 +623,7 @@ function compose_send() {
 
 function compose_email(replyto, list) {
     let email = null;
+    let mua_trigger = null;
     let loggedIn = (ponymail_preferences.login && ponymail_preferences.login.credentials) ? true : false;
     if (replyto) email = full_emails[replyto || ''];
     let listname = list;
@@ -639,9 +637,7 @@ function compose_email(replyto, list) {
     } else {
         mua_trigger = mua_link(null, listname);
     }
-    mua_list = listname;
     mua_headers.to = listname;
-    mua_mid = email ? email['message-id'] : null;
 
     // Not logged in? MUA it is, then!
     if (!loggedIn) {
