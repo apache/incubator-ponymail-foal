@@ -15,10 +15,10 @@
  limitations under the License.
 */
 
-var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var datepicker_spawner = null
-var calendarpicker_spawner = null
-var units = {
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+let datepicker_spawner = null
+let calendarpicker_spawner = null
+const DATE_UNITS = {
     w: 'week',
     d: 'day',
     M: 'month',
@@ -116,7 +116,7 @@ function calcTimespan(what) {
         // Get unit and how many units
         var N = document.getElementById('datepicker_lti').value
         var unit = document.getElementById('datepicker_lts').value
-        var unitt = units[unit]
+        var unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -134,7 +134,7 @@ function calcTimespan(what) {
         // As above, get unit and no of units.
         var N = document.getElementById('datepicker_mti').value
         var unit = document.getElementById('datepicker_mts').value
-        var unitt = units[unit]
+        var unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -368,7 +368,7 @@ function datePickerValue(seedPeriod) {
         if (seedPeriod.match(/lte/)) {
             var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
             ptype = 'lt'
-            var unitt = units[m[2]]
+            var unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
@@ -379,7 +379,7 @@ function datePickerValue(seedPeriod) {
         if (seedPeriod.match(/gte/)) {
             ptype = 'mt'
             var m = seedPeriod.match(/gte=(\d+)([dMyw])/)
-            var unitt = units[m[2]]
+            var unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
