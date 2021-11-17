@@ -22,18 +22,20 @@
  Fetched from source/base-http-extensions.js
 ******************************************/
 
+'use strict';
+
 // URL calls currently 'in escrow'. This controls the spinny wheel animation
-var async_escrow = {}
-var async_maxwait = 250; // ms to wait before displaying spinner
-var async_status = 'clear';
-var async_cache = {}
+let async_escrow = {}
+const ASYNC_MAXWAIT = 250; // ms to wait before displaying spinner
+let async_status = 'clear';
+let async_cache = {}
 
 // Escrow spinner check
 async function escrow_check() {
     let now = new Date();
     let show_spinner = false;
-    for (var k in async_escrow) {
-        if ((now - async_escrow[k]) > async_maxwait) {
+    for (let k in async_escrow) {
+        if ((now - async_escrow[k]) > ASYNC_MAXWAIT) {
             show_spinner = true;
             break;
         }
@@ -45,7 +47,7 @@ async function escrow_check() {
             id: 'spinner',
             class: 'spinner'
         });
-        spinwheel = new HTML('div', {
+        let spinwheel = new HTML('div', {
             id: 'spinwheel',
             class: 'spinwheel'
         });
@@ -70,7 +72,7 @@ async function escrow_check() {
 }
 
 async function async_snap(error) {
-    msg = await error.text();
+    let msg = await error.text();
     msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
     if (error.status === 404) {
         msg += "\n\nYou may need to be logged in with additional permissions in order to view this resource.";
@@ -114,6 +116,7 @@ async function GET(url, callback, state) {
         // We expect a 2xx return code (usually 200 or 201), snap otherwise
         if ((res_json) || (res.status >= 200 && res.status < 300)) {
             console.log("Successfully fetched %s".format(url))
+            let js;
             if (res_json) {
                 js = res_json;
             } else {
@@ -131,6 +134,7 @@ async function GET(url, callback, state) {
         }
     }
 }
+
 
 /******************************************
  Fetched from source/base-js-extensions.js
@@ -192,8 +196,7 @@ Number.prototype.pretty = function(fix) {
  */
 
 Number.prototype.pad = function(n) {
-    var str;
-    str = String(this);
+    let str = String(this);
 
     /* Do we need to pad? if so, do it using String.repeat */
     if (str.length < n) {
@@ -205,10 +208,10 @@ Number.prototype.pad = function(n) {
 /* Func for converting TZ offset from minutes to +/-HHMM */
 
 Date.prototype.TZ_HHMM = function() {
-    var off_mins = this.getTimezoneOffset();
-    var off_hh =   Math.floor(Math.abs(off_mins/60));
-    var off_mm =   Math.abs(off_mins%60);
-    var sgn = off_mins > 0 ? '-' : '+';
+    let off_mins = this.getTimezoneOffset();
+    let off_hh =   Math.floor(Math.abs(off_mins/60));
+    let off_mm =   Math.abs(off_mins%60);
+    let sgn = off_mins > 0 ? '-' : '+';
     return sgn + off_hh.pad(2) + ':' + off_mm.pad(2);
 }
 
@@ -239,14 +242,14 @@ Date.prototype.ISOBare = function() {
 
 /* isArray: function to detect if an object is an array */
 
-isArray = function(value) {
+function isArray(value) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
 };
 
 
 /* isHash: function to detect if an object is a hash */
 
-isHash = function(value) {
+function isHash(value) {
     return value && typeof value === 'object' && !isArray(value);
 };
 
@@ -254,7 +257,7 @@ isHash = function(value) {
 /* Remove an array element by value */
 
 Array.prototype.remove = function(val) {
-    var i, item, j, len;
+    let i, item, j, len;
     for (i = j = 0, len = this.length; j < len; i = ++j) {
         item = this[i];
         if (item === val) {
@@ -269,8 +272,7 @@ Array.prototype.remove = function(val) {
 /* Check if array has value */
 Array.prototype.has = function(val) {
     var i, item, j, len;
-    for (i = j = 0, len = this.length; j < len; i = ++j) {
-        item = this[i];
+    for (let item of this) {
         if (item === val) {
             return true;
         }
@@ -291,14 +293,14 @@ function isEmpty(obj) {
  Fetched from source/body-fixups.js
 ******************************************/
 
-ponymail_url_regex = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)?" + "(?:" + "([01][0-9][0-9]|2[0-4][0-9]|25[0-5])" + "|" + "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" + "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" + "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" + "\\.?" + ")" + "(?::\\d{2,5})?" + "(?:[/?#]([^,<>()\\[\\] \\t\\r\\n]|(<[^:\\s]*?>|\\([^:\\s]*?\\)|\\[[^:\\s]*?\\]))*)?" + ")\\.?", "mi");
+const PONYMAIL_URL_RE = new RegExp("(" + "(?:(?:[a-z]+)://)" + "(?:\\S+(?::\\S*)?@)?" + "(?:" + "([01][0-9][0-9]|2[0-4][0-9]|25[0-5])" + "|" + "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" + "(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*" + "(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" + "\\.?" + ")" + "(?::\\d{2,5})?" + "(?:[/?#]([^,<>()\\[\\] \\t\\r\\n]|(<[^:\\s]*?>|\\([^:\\s]*?\\)|\\[[^:\\s]*?\\]))*)?" + ")\\.?", "mi");
 
 // Regex for things to potentially put inside quote objects:
 // - quotes
 // - forwarded emails
 // - inline quoting
 // - top posting with original email following
-ponymail_quote_regex = new RegExp("(" +
+const PONYMAIL_QUOTE_RE = new RegExp("(" +
     // Typical encapsulation of context by ticketing systems and/or bug trackers
     "(---\\r?\\n([^\\r\\n]*?\\r?\\n)*?---$)|" +
     "(" +
@@ -328,10 +330,10 @@ ponymail_quote_regex = new RegExp("(" +
     ")", "mi");
 
 // Somewhat simplified method for catching email footers/trailers that we don't need
-ponymail_trailer_regex = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
+const PONYMAIL_TRAILER_RE = new RegExp("^--[\r\n]+.*", "mi"); //(--\r?\n([^\r\n]*?\r?\n){1,6}$)|[\r\n.]+^((--+ \r?\n|--+\r?\n|__+\r?\n|--+\\s*[^\r\n]+\\s*--+\r?\n)(.*\r?\n)+)+$", "m");
 
 // This is a regex for capturing code diff blocks in an email
-ponymail_diff_regex = new RegExp(
+const PONYMAIL_DIFF_RE = new RegExp(
     "(" +
     "^-{3} .+?[\r\n]+" + // Starts with a "--- /foo/bar/baz"
     "^\\+{3} .+?[\r\n]+" + // Then a "+++ /foo/bar/baz"
@@ -355,7 +357,7 @@ function fixup_urls(splicer) {
     textbits = [];
 
     /* Find the first link, if any */
-    i = splicer.search(ponymail_url_regex);
+    i = splicer.search(PONYMAIL_URL_RE);
     urls = 0;
 
     /* While we have more links, ... */
@@ -375,7 +377,7 @@ function fixup_urls(splicer) {
         }
 
         /* Find the URL and cut it out as a link */
-        m = splicer.match(ponymail_url_regex);
+        m = splicer.match(PONYMAIL_URL_RE);
         if (m) {
             url = m[1];
             i = url.length;
@@ -387,7 +389,7 @@ function fixup_urls(splicer) {
         }
 
         /* Find the next link */
-        i = splicer.search(ponymail_url_regex);
+        i = splicer.search(PONYMAIL_URL_RE);
     }
 
     /* push the remaining text into textbits */
@@ -424,9 +426,9 @@ function legit_trailer(a) {
 function cut_trailer(splicer) {
     if (!chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
-        splicer.innerText = splicer.innerText.replace(ponymail_trailer_regex, legit_trailer, 3);
+        splicer.innerText = splicer.innerText.replace(PONYMAIL_TRAILER_RE, legit_trailer, 3);
     } else {
-        splicer = splicer.replace(ponymail_trailer_regex, legit_trailer);
+        splicer = splicer.replace(PONYMAIL_TRAILER_RE, legit_trailer);
 
     }
     return splicer;
@@ -464,7 +466,7 @@ function fixup_diffs(splicer) {
     let textbits = [];
 
     /* Find the first link, if any */
-    i = splicer.search(ponymail_diff_regex);
+    i = splicer.search(PONYMAIL_DIFF_RE);
     diffs = 0;
 
     /* While we have more links, ... */
@@ -484,7 +486,7 @@ function fixup_diffs(splicer) {
         }
 
         /* Find the URL and cut it out as a link */
-        m = splicer.match(ponymail_diff_regex);
+        m = splicer.match(PONYMAIL_DIFF_RE);
         if (m) {
             diff = m[1];
             i = diff.length;
@@ -496,7 +498,7 @@ function fixup_diffs(splicer) {
         }
 
         /* Find the next link */
-        i = splicer.search(ponymail_diff_regex);
+        i = splicer.search(PONYMAIL_DIFF_RE);
     }
 
     /* push the remaining text into textbits */
@@ -518,7 +520,7 @@ function fixup_quotes(splicer) {
     textbits = [];
 
     /* Find the first quote, if any */
-    i = splicer.search(ponymail_quote_regex);
+    i = splicer.search(PONYMAIL_QUOTE_RE);
     quotes = 0;
 
     /* While we have more quotes, ... */
@@ -541,7 +543,7 @@ function fixup_quotes(splicer) {
         }
 
         /* Find the quote and cut it out as a div */
-        m = splicer.match(ponymail_quote_regex);
+        m = splicer.match(PONYMAIL_QUOTE_RE);
         if (m) {
             quote = m[0];
             i = quote.length;
@@ -567,7 +569,7 @@ function fixup_quotes(splicer) {
         }
 
         /* Find the next quotes */
-        i = splicer.search(ponymail_quote_regex);
+        i = splicer.search(PONYMAIL_QUOTE_RE);
     }
 
     /* push the remaining text into textbits */
@@ -588,6 +590,7 @@ function toggle_quote(el) {
         quote.style.display = 'none';
     }
 }
+
 
 /******************************************
  Fetched from source/composer.js
@@ -864,8 +867,8 @@ function construct_thread(thread, cid, nestlevel, included) {
     email.inject(wrapper);
     if (isArray(thread.children)) {
         thread.children.sort((a, b) => a.epoch - b.epoch);
-        for (var i = 0; i < thread.children.length; i++) {
-            let reply = construct_thread(thread.children[i], cid, nestlevel, included);
+        for (let child of thread.children) {
+            let reply = construct_thread(child, cid, nestlevel, included);
             cid++;
             if (reply) {
                 email.inject(reply);
@@ -948,14 +951,15 @@ function construct_single_thread(state, json) {
     div.inject(email);
 }
 
+
 /******************************************
  Fetched from source/datepicker.js
 ******************************************/
 
-var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var datepicker_spawner = null
-var calendarpicker_spawner = null
-var units = {
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+let datepicker_spawner = null
+let calendarpicker_spawner = null
+const DATE_UNITS = {
     w: 'week',
     d: 'day',
     M: 'month',
@@ -1053,7 +1057,7 @@ function calcTimespan(what) {
         // Get unit and how many units
         var N = document.getElementById('datepicker_lti').value
         var unit = document.getElementById('datepicker_lts').value
-        var unitt = units[unit]
+        var unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -1071,7 +1075,7 @@ function calcTimespan(what) {
         // As above, get unit and no of units.
         var N = document.getElementById('datepicker_mti').value
         var unit = document.getElementById('datepicker_mts').value
-        var unitt = units[unit]
+        var unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -1305,7 +1309,7 @@ function datePickerValue(seedPeriod) {
         if (seedPeriod.match(/lte/)) {
             var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
             ptype = 'lt'
-            var unitt = units[m[2]]
+            var unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
@@ -1316,7 +1320,7 @@ function datePickerValue(seedPeriod) {
         if (seedPeriod.match(/gte/)) {
             ptype = 'mt'
             var m = seedPeriod.match(/gte=(\d+)([dMyw])/)
-            var unitt = units[m[2]]
+            var unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
@@ -1339,7 +1343,7 @@ function datePickerValue(seedPeriod) {
             var mr = seedPeriod.match(/(\d+)-(\d+)/)
             if (mr) {
                 dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
-                rv = months[dfrom.getMonth()] + ', ' + mr[1]
+                rv = MONTHS[dfrom.getMonth()] + ', ' + mr[1]
             }
         }
 
@@ -1679,51 +1683,52 @@ function showCalendarPicker(parent, seedDate) {
     drawCalendarPicker(div, seedDate)
 }
 
+
 /******************************************
  Fetched from source/init.js
 ******************************************/
 
-var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
+const PONYMAIL_VERSION = "1.0.1-Foal" // Current version of Pony Mail
 
-var apiURL = ''; // external API URL. Usually left blank.
+let apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
-var current_json = {};
-var current_state = {};
-var current_list = '';
-var current_domain = '';
-var current_year = 0;
-var current_month = 0;
-var current_quick_search = '';
-var select_primed = false;
-var ponymail_preferences = {};
-var ponymail_search_list = 'this';
+let current_json = {};
+let current_state = {};
+let current_list = '';
+let current_domain = '';
+let current_year = 0;
+let current_month = 0;
+let current_quick_search = '';
+let current_query = '';
+let select_primed = false;
+let ponymail_preferences = {};
+let ponymail_search_list = 'this';
 
-var current_listmode = 'threaded';
-var ponymail_max_nesting = 10; // max nesting level before unthreading to save space
+let current_listmode = 'threaded';
+let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
 
 // thread state
-var current_email_idx = undefined;
-var chatty_layout = true;
-var ponymail_date_format = {
+let current_email_idx = undefined;
+let chatty_layout = true;
+let ponymail_date_format = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
-var collated_json = {};
+let collated_json = {};
 
-console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
+console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(PONYMAIL_VERSION))
 // Adjust titles:
 document.title = prefs.title;
-let titles = document.getElementsByClassName("title");
-for (var i in titles) {
-    titles[i].innerText = prefs.title;
+for (let title of document.getElementsByClassName("title")) {
+    title.innerText = prefs.title;
 }
 
 // check local storage for settings
 console.log("Checking localStorage availability");
-var can_store = false;
+let can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
@@ -1755,7 +1760,7 @@ window.addEventListener('load', function() {
         }, [
             new HTML('p', {
                 class: 'muted'
-            }, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
+            }, "Powered by Apache Pony Mail (Foal v/%s)".format(PONYMAIL_VERSION))
         ])
     ]));
 });
@@ -1766,6 +1771,7 @@ window.onpopstate = function(event) {
         cached: true
     });
 };
+
 
 /******************************************
  Fetched from source/key-commands.js
@@ -2211,7 +2217,7 @@ function listview_header(state, json) {
     if (current_listmode == 'threaded') blobs = json.thread_struct;
 
     if (current_year && current_month) {
-        list_title += ", %s %u".format(months[current_month - 1], current_year);
+        list_title += ", %s %u".format(MONTHS[current_month - 1], current_year);
     } else {
         list_title += ", past month";
     }
@@ -2326,7 +2332,7 @@ function listview_list_lists(state, json) {
         lists.innerHTML = "";
 
         if (isHash(json.lists) && json.lists[current_domain]) {
-            lists_sorted = [];
+            let lists_sorted = [];
             for (var list in json.lists[current_domain]) {
                 lists_sorted.push([list, json.lists[current_domain][list]]);
             }
@@ -2531,6 +2537,7 @@ window.addEventListener('orientationchange', function() {
     }, 100);
 }, false);
 
+
 /******************************************
  Fetched from source/listview-threaded.js
 ******************************************/
@@ -2551,7 +2558,7 @@ function listview_threaded(json, start) {
 
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (n = s; n < (s + per_page); n++) {
+        for (let n = s; n < (s + per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
@@ -2740,6 +2747,7 @@ function listview_threaded_element(thread, idx) {
     return link_wrapper;
 }
 
+
 /******************************************
  Fetched from source/mgmt.js
 ******************************************/
@@ -2854,7 +2862,7 @@ async function admin_save_email(edit_attachment = false) {
     let from = document.getElementById('email_from').value;
     let subject = document.getElementById('email_subject').value;
     let listname = document.getElementById('email_listname').value;
-    let private = document.getElementById('email_private').value;
+    let is_private = document.getElementById('email_private').value;
     let body = document.getElementById('email_body').value;
     let attach = null;
     if (edit_attachment) {
@@ -2866,7 +2874,7 @@ async function admin_save_email(edit_attachment = false) {
         from: from,
         subject: subject,
         list: listname,
-        private: private,
+        private: is_private,
         body: body,
         attachments: attach
     })
@@ -3167,6 +3175,7 @@ function admin_init() {
         GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
     }
 }
+
 
 /******************************************
  Fetched from source/preferences.js
@@ -4213,7 +4222,7 @@ function calendar_scroll(me, x) {
 function calendar_click(year, month) {
     current_year = year;
     current_month = month;
-    searching = false;
+    let searching = false;
     let q = "";
     let calendar_current_list = current_list;
     let calendar_current_domain = current_domain;
@@ -4286,10 +4295,10 @@ async function sidebar_stats(json) {
         if (par.name.length == 0) {
             par.name = par.email;
         }
-        pdiv = new HTML('div', {
+        let pdiv = new HTML('div', {
             class: "sidebar_stats_participant"
         });
-        pimg = new HTML('img', {
+        let pimg = new HTML('img', {
             class: "gravatar_sm",
             src: gravatar_url.format(par.gravatar)
         })
