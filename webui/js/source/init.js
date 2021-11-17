@@ -48,7 +48,7 @@ let collated_json = {};
 console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(PONYMAIL_VERSION))
 // Adjust titles:
 document.title = prefs.title;
-for (let title in document.getElementsByClassName("title")) {
+for (let title of document.getElementsByClassName("title")) {
     title.innerText = prefs.title;
 }
 
