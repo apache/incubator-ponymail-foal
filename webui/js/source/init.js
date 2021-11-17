@@ -15,47 +15,46 @@
  limitations under the License.
  */
 
-var ponymail_version = "1.0.1-Foal" // Current version of Pony Mail
+const PONYMAIL_VERSION = "1.0.1-Foal" // Current version of Pony Mail
 
-var apiURL = ''; // external API URL. Usually left blank.
+const apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
-var current_json = {};
-var current_state = {};
-var current_list = '';
-var current_domain = '';
-var current_year = 0;
-var current_month = 0;
-var current_quick_search = '';
-var select_primed = false;
-var ponymail_preferences = {};
-var ponymail_search_list = 'this';
+let current_json = {};
+let current_state = {};
+let current_list = '';
+let current_domain = '';
+let current_year = 0;
+let current_month = 0;
+let current_quick_search = '';
+let select_primed = false;
+let ponymail_preferences = {};
+let ponymail_search_list = 'this';
 
-var current_listmode = 'threaded';
-var ponymail_max_nesting = 10; // max nesting level before unthreading to save space
+let current_listmode = 'threaded';
+let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
 
 // thread state
-var current_email_idx = undefined;
-var chatty_layout = true;
-var ponymail_date_format = {
+let current_email_idx = undefined;
+let chatty_layout = true;
+let ponymail_date_format = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
-var collated_json = {};
+let collated_json = {};
 
-console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(ponymail_version))
+console.log("/******* Apache Pony Mail (Foal v/%s) Initializing ********/".format(PONYMAIL_VERSION))
 // Adjust titles:
 document.title = prefs.title;
-let titles = document.getElementsByClassName("title");
-for (var i in titles) {
-    titles[i].innerText = prefs.title;
+for (let title in document.getElementsByClassName("title")) {
+    title.innerText = prefs.title;
 }
 
 // check local storage for settings
 console.log("Checking localStorage availability");
-var can_store = false;
+let can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
@@ -87,7 +86,7 @@ window.addEventListener('load', function() {
         }, [
             new HTML('p', {
                 class: 'muted'
-            }, "Powered by Apache Pony Mail (Foal v/%s)".format(ponymail_version))
+            }, "Powered by Apache Pony Mail (Foal v/%s)".format(PONYMAIL_VERSION))
         ])
     ]));
 });
