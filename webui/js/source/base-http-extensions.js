@@ -15,6 +15,7 @@
  limitations under the License.
  */
 
+'use strict';
 
 // URL calls currently 'in escrow'. This controls the spinny wheel animation
 let async_escrow = {}
