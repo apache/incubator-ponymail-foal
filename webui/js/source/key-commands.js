@@ -196,8 +196,8 @@ function keyCommands(e) {
 // swipe left/right for next/previous page on mobile
 function ponymail_swipe(event) {
     // Only accept "big" swipes
-    let len = Math.abs(event.swipestart.coords[0] - event.swipestop.coords[0]);
-    let direction = event.swipestart.coords[0] > event.swipestop.coords[0] ? 'left' : 'right';
+    let len = Math.abs(event.detail.swipestart.coords[0] - event.detail.swipestop.coords[0]);
+    let direction = event.detail.swipestart.coords[0] > event.detail.swipestop.coords[0] ? 'left' : 'right';
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
