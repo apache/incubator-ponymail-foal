@@ -63,7 +63,7 @@ async function wordCloud(hash, width, height, obj) {
         var word = hashSorted[n]
         var size = 0;
         var expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
-        console.log(expected_area)
+        //console.log(expected_area)
         
         var textBox = document.createElementNS(SVG_NAMESPACE, "text");
         textBox.textContent = word
