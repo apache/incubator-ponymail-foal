@@ -179,9 +179,9 @@ the License. -->
     <div id="splash" class="splash fade-in"> &nbsp; </div>
     <div style="clear: both;"></div>
     <script type="text/javascript">
-      attachSwipe(document.getElementById("emails"));
-      document.addEventListener("swipeleft", ponymail_swipe);
-      document.addEventListener("swiperight", ponymail_swipe);
+      let swipeDetect = new SwipeDetector(document.getElementById("emails"));
+      swipeDetect.setCallback('left', ponymail_swipe);
+      swipeDetect.setCallback('right', ponymail_swipe);
     </script>
   </body>
 </html>
