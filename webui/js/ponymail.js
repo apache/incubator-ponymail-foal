@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "fa5e39b";
+const PONYMAIL_REVISION = "35b7658";
 
 
 
@@ -1690,7 +1690,7 @@ function showCalendarPicker(parent, seedDate) {
  Fetched from source/init.js
 ******************************************/
 
-const PONYMAIL_VERSION = "1.0.1-Foal"; // Current version of Pony Mail
+const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
 let apiURL = ''; // external API URL. Usually left blank.
 
