@@ -5,6 +5,7 @@ cd $(dirname "$0") || exit 1
 
 test -r build.sh || { echo "Must be run from the directory containing build.sh!"; exit 1; }
 
+REVISION=`git rev-parse --short HEAD`
 echo "Combining JS..."
 echo '/*
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -23,9 +24,12 @@ echo '/*
  limitations under the License.
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
+
+const PONYMAIL_REVISION = "'$REVISION'";
 ' > ../ponymail.js
 for f in `ls *.js`; do
     printf "\n\n/******************************************\n Fetched from source/${f}\n******************************************/\n\n" >> ../ponymail.js
     perl -0pe 's/\/\*.*?\*\/[\r\n]*//sm' ${f} >> ../ponymail.js
 done
 echo "Done!"
+

@@ -15,7 +15,7 @@
  limitations under the License.
  */
 
-const PONYMAIL_VERSION = "1.0.1-Foal" // Current version of Pony Mail
+const PONYMAIL_VERSION = "1.0.1-Foal"; // Current version of Pony Mail
 
 let apiURL = ''; // external API URL. Usually left blank.
 
@@ -87,7 +87,7 @@ window.addEventListener('load', function() {
         }, [
             new HTML('p', {
                 class: 'muted'
-            }, "Powered by Apache Pony Mail (Foal v/%s)".format(PONYMAIL_VERSION))
+            }, "Powered by Apache Pony Mail (Foal v/%s ~%s)".format(PONYMAIL_VERSION, PONYMAIL_REVISION))
         ])
     ]));
 });
