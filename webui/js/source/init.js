@@ -27,6 +27,7 @@ let current_domain = '';
 let current_year = 0;
 let current_month = 0;
 let current_quick_search = '';
+let current_query = '';
 let select_primed = false;
 let ponymail_preferences = {};
 let ponymail_search_list = 'this';
