@@ -59,7 +59,7 @@ async function sidebar_stats(json) {
         });
         let pimg = new HTML('img', {
             class: "gravatar_sm",
-            src: gravatar_url.format(par.gravatar)
+            src: GRAVATAR_URL.format(par.gravatar)
         })
         pdiv.inject(pimg);
         pdiv.inject(new HTML('b', {}, par.name + ": "));

@@ -15,9 +15,7 @@
  limitations under the License.
 */
 
-var months_shortened = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-var default_start_year = 1990;
-var default_end_year = 2100;
+const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var calendar_index = 0;
 var calendar_years_shown = 4;
 
@@ -67,8 +65,8 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
         });
         ydiv.inject(txt(Y));
         ydiv.inject(new HTML('br'));
-        for (var i = 0; i < months_shortened.length; i++) {
-            let mon = months_shortened[i];
+        for (var i = 0; i < MONTHS_SHORTENED.length; i++) {
+            let mon = MONTHS_SHORTENED[i];
             let mdiv = new HTML('div', {
                 onclick: 'calendar_click(%u, %u);'.format(Y, i + 1),
                 class: 'sidebar_calendar_month'

@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "5ecd672";
+const PONYMAIL_REVISION = "8e55477";
 
 
 
@@ -2140,7 +2140,7 @@ function listview_flat_element(eml, idx) {
     // Add gravatar
     let gravatar = new HTML('img', {
         class: "gravatar",
-        src: gravatar_url.format(eml.gravatar)
+        src: GRAVATAR_URL.format(eml.gravatar)
     });
     element.inject(gravatar);
 
@@ -2643,7 +2643,7 @@ function listview_threaded_element(thread, idx) {
     // Add gravatar
     let gravatar = new HTML('img', {
         class: "gravatar",
-        src: gravatar_url.format(eml.gravatar)
+        src: GRAVATAR_URL.format(eml.gravatar)
     });
     element.inject(gravatar);
 
@@ -3748,7 +3748,7 @@ async function render_email_chatty(state, json) {
     });
     let gravatar = new HTML('img', {
         class: "chatty_gravatar",
-        src: gravatar_url.format(json.gravatar)
+        src: GRAVATAR_URL.format(json.gravatar)
     });
     let author_name = json.from.replace(/\s*<.+>/, "").replace(/"/g, '');
     let author_email = json.from.match(/\s*<(.+@.+)>\s*/);
@@ -4071,9 +4071,7 @@ function search_set_list(what) {
  Fetched from source/sidebar-calendar.js
 ******************************************/
 
-var months_shortened = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-var default_start_year = 1990;
-var default_end_year = 2100;
+const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var calendar_index = 0;
 var calendar_years_shown = 4;
 
@@ -4123,8 +4121,8 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
         });
         ydiv.inject(txt(Y));
         ydiv.inject(new HTML('br'));
-        for (var i = 0; i < months_shortened.length; i++) {
-            let mon = months_shortened[i];
+        for (var i = 0; i < MONTHS_SHORTENED.length; i++) {
+            let mon = MONTHS_SHORTENED[i];
             let mdiv = new HTML('div', {
                 onclick: 'calendar_click(%u, %u);'.format(Y, i + 1),
                 class: 'sidebar_calendar_month'
@@ -4300,7 +4298,7 @@ async function sidebar_stats(json) {
         });
         let pimg = new HTML('img', {
             class: "gravatar_sm",
-            src: gravatar_url.format(par.gravatar)
+            src: GRAVATAR_URL.format(par.gravatar)
         })
         pdiv.inject(pimg);
         pdiv.inject(new HTML('b', {}, par.name + ": "));

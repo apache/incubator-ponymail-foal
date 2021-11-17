@@ -119,7 +119,7 @@ function listview_threaded_element(thread, idx) {
     // Add gravatar
     let gravatar = new HTML('img', {
         class: "gravatar",
-        src: gravatar_url.format(eml.gravatar)
+        src: GRAVATAR_URL.format(eml.gravatar)
     });
     element.inject(gravatar);
 

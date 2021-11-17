@@ -66,11 +66,7 @@ var prefs = {
     title: "Apache Pony Mail"       // Default browser window title
 }
 
-// array of prefs we have now. This is needed in case we change/break the existing
-// structure saved in elasticsearch for users. Update when needed!
-var pref_keys = ['displayMode','groupBy','sortOrder','compactQuotes','notifications','hideStats','theme', 'fullname', 'autoScale']
-
 // Gravatar support. Defaults to using the gravatar proxy.
-var gravatar_url = "/api/gravatar?md5=%s";
+const GRAVATAR_URL = "/api/gravatar?md5=%s";
 // For performance or other reasons, this can be set to the origin by uncommenting the below:
-// var gravatar_url = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm";
+// const GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm";

@@ -76,7 +76,7 @@ function listview_flat_element(eml, idx) {
     // Add gravatar
     let gravatar = new HTML('img', {
         class: "gravatar",
-        src: gravatar_url.format(eml.gravatar)
+        src: GRAVATAR_URL.format(eml.gravatar)
     });
     element.inject(gravatar);
 
