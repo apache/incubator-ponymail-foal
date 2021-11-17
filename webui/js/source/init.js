@@ -17,7 +17,7 @@
 
 const PONYMAIL_VERSION = "1.0.1-Foal" // Current version of Pony Mail
 
-const apiURL = ''; // external API URL. Usually left blank.
+let apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
 let current_json = {};
