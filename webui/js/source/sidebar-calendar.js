@@ -166,7 +166,7 @@ function calendar_scroll(me, x) {
 function calendar_click(year, month) {
     current_year = year;
     current_month = month;
-    searching = false;
+    let searching = false;
     let q = "";
     let calendar_current_list = current_list;
     let calendar_current_domain = current_domain;
