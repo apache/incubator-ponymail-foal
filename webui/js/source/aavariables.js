@@ -15,6 +15,9 @@
  limitations under the License.
  */
 
+ /* jshint -W097 */
+'use strict';
+
 const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
 let apiURL = ''; // external API URL. Usually left blank.
@@ -36,7 +39,7 @@ let current_listmode = 'threaded';
 let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
 
 // thread state
-let current_email_idx = undefined;
+let current_email_idx;
 let chatty_layout = true;
 let ponymail_date_format = {
     weekday: 'long',
