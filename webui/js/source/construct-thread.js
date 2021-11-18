@@ -65,7 +65,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     }
     cid %= 5;
     let color = ['286090', 'ccab0a', 'c04331', '169e4e', '6d4ca5'][cid];
-    let email = undefined;
+    let email;
     if (nestlevel < max_nesting) {
         email = new HTML('div', {
             class: 'email_wrapper',

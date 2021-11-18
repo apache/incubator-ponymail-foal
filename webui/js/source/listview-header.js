@@ -127,7 +127,7 @@ function listview_list_lists(state, json) {
     let lists = document.getElementById('list_picker_ul');
     let searching = (state && state.search === true) ? true : false;
     if (state && state.to) {
-        let tab = undefined;
+        let tab;
         let tabs = lists.childNodes;
         for (let xtab of tabs) {
             if ((state.to == 'search' && xtab.getAttribute('id') == 'tab_search') || (xtab.innerText == state.to || xtab.getAttribute('data-list') == state.to)) {

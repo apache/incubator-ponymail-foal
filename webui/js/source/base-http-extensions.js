@@ -76,10 +76,10 @@ async function async_snap(error) {
 
 // Asynchronous GET call
 async function GET(url, callback, state) {
-    console.log("Fetching JSON resource at %s".format(url))
+    console.log("Fetching JSON resource at %s".format(url));
     let pkey = "GET-%s-%s".format(callback, url);
-    let res = undefined;
-    let res_json = undefined;
+    let res;
+    let res_json;
     state = state || {};
     state.url = url;
     if (state && state.cached === true && async_cache[url]) {
