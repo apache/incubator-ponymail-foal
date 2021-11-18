@@ -443,7 +443,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         if not lid:
             lid = textlib.normalize_lid(msg.get("list-id"), strict=True)
-            assert lid is not None, f"Invalid list-id {lid} provided"
+            if lid is None:
+                raise ValueError(f"Invalid list-id {lid} provided")
         if self.cropout:
             crops = self.cropout.split(" ")
             # Regex replace?
@@ -632,7 +633,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         """
 
         lid = textlib.normalize_lid(mlist.list_id, strict=True)
-        assert lid is not None, f"Invalid list id {lid}"
+        if lid is None:
+            raise ValueError(f"Invalid list id {lid}")
 
         private = False
         if hasattr(mlist, "archive_public") and mlist.archive_public is True:

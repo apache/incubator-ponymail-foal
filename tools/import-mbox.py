@@ -575,7 +575,8 @@ if args.dir:
     maildir = args.dir
 if args.listid:
     list_override = textlib.normalize_lid(args.listid[0], strict=True)
-    assert list_override is not None, "Invalid list-ID provided"
+    if list_override is None:
+        raise ValueError("Invalid list-ID provided")
 if args.project:
     project = args.project[0]
 if args.domain:
