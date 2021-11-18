@@ -160,7 +160,7 @@ function keyCommands(e) {
                 return;
             case 'r':
                 console.log(G_current_open_email);
-                if (G_current_open_email && full_emails[G_current_open_email]) {
+                if (G_current_open_email && G_full_emails[G_current_open_email]) {
                     compose_email(G_current_open_email);
                 }
                 return;

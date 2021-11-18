@@ -25,7 +25,7 @@ function compose_email(replyto, list) {
     let email = null;
     let mua_trigger = null;
     let loggedIn = (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) ? true : false;
-    if (replyto) email = full_emails[replyto || ''];
+    if (replyto) email = G_full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
     if (email) {

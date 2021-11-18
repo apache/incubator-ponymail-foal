@@ -1,5 +1,3 @@
-let full_emails = {};
-
 // Function for parsing email addresses from a to or cc line
 function get_rcpts(addresses) {
     let list_of_emails = []
@@ -19,7 +17,7 @@ function get_rcpts(addresses) {
 
 async function render_email(state, json) {
     let div = state.div;
-    full_emails[json.mid] = json; // Save for composer if replying later...
+    G_full_emails[json.mid] = json; // Save for composer if replying later...
     if (state.scroll) {
         let rect = div.getBoundingClientRect();
         try {
