@@ -18,13 +18,13 @@
 
 // Generic modal function
 function modal(title, msg, type, isHTML) {
-    let modal = document.getElementById('modal');
+    let modalId = document.getElementById('modal');
     let text = document.getElementById('modal_text');
-    if (modal == undefined) {
+    if (modalId == undefined) {
         text = new HTML('p', {
             id: 'modal_text'
         }, "");
-        modal = new HTML('div', {
+        modalId = new HTML('div', {
             id: 'modal'
         }, [
             new HTML('div', {
@@ -40,15 +40,15 @@ function modal(title, msg, type, isHTML) {
                 new HTML('div', {}, text)
             ])
         ]);
-        document.body.appendChild(modal);
+        document.body.appendChild(modalId);
 
     }
     if (type) {
-        modal.setAttribute("class", "modal_" + type);
+        modalId.setAttribute("class", "modal_" + type);
     } else {
-        modal.setAttribute("class", undefined);
+        modalId.setAttribute("class", undefined);
     }
-    modal.style.display = 'block';
+    modalId.style.display = 'block';
     document.getElementById('modal_title').innerText = title;
     // If we trust HTML, use it. Otherwise only show as textNode.
     if (isHTML) {
