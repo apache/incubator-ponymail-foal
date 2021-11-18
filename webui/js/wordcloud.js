@@ -59,8 +59,7 @@ async function wordCloud(hash, width, height, obj) {
     svg.setAttribute("width",  width)
     svg.setAttribute("height",  height)
     svg.setAttribute("class", "wordcloud")
-    for (let n = 0; n < hashSorted.length; n++) {
-        let word = hashSorted[n]
+    for (let word of hashSorted) {
         let size = 0;
         let expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
         //console.log(expected_area)
@@ -81,13 +80,11 @@ async function wordCloud(hash, width, height, obj) {
                 break
             }
         }
-        
-        
-        
+
         let popped = false
-        
+
         // Try with random placement
-        
+
         textBox = makeWord(word, size)
         textBox.setAttribute("id", "svg_wc_" + word)
         svg.appendChild(textBox)
@@ -101,13 +98,13 @@ async function wordCloud(hash, width, height, obj) {
                 }
                 textBox.setAttribute("font-size", ss + "px")
                 
-                let w = textBox.getBoundingClientRect()
+                w = textBox.getBoundingClientRect()
                 for (let l = 0; l < 80; l++) {
                     let nx = 4 + (Math.random() * (width-8-w.width))
                     let ny = 4 + w.height + ((l/80) * (height-8-w.height))
                     let it = false
-                    for (let b = 0; b < boxes.length; b++) {
-                        if (fastIntersect(textBox, boxes[b], nx, ny)) {
+                    for (let box of boxes) {
+                        if (fastIntersect(textBox, box, nx, ny)) {
                             it = true
                             break
                         }
@@ -136,8 +133,7 @@ async function wordCloud(hash, width, height, obj) {
     }
     
     // Try to size up texts a bit
-    for (let i =0; i < boxes.length; i++) {
-        let textBox = boxes[i]
+    for (let textBox of boxes) {
         let osize = parseFloat(textBox.getAttribute('font-size'))
         let psize = osize
         for (let n = 1; n < 1.4; n+=0.2) {
@@ -145,8 +141,8 @@ async function wordCloud(hash, width, height, obj) {
             textBox.setAttribute("font-size", nsize + "px")
             let w = textBox.getBoundingClientRect()
             let good = true
-            for (let b =0; b < boxes.length; b++) {
-                if (fastIntersect(textBox, boxes[b])) {
+            for (let box of boxes) {
+                if (fastIntersect(textBox, box)) {
                     good = false
                     break
                 }
