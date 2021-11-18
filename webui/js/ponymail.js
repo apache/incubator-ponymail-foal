@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "89e842a";
+const PONYMAIL_REVISION = "aebb932";
 
 
 
@@ -327,7 +327,6 @@ Array.prototype.remove = function(val) {
 
 /* Check if array has value */
 Array.prototype.has = function(val) {
-    var i, item, j, len;
     for (let item of this) {
         if (item === val) {
             return true;
