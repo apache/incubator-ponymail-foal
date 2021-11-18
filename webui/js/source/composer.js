@@ -55,6 +55,9 @@ function compose_email(replyto, list) {
             ]);
             composer("Reply to thread:", p);
             return;
+        } else {
+            modal("Please log in", "You need to be logged in before you can start a new thread.", "warning");
+            return
         }
     }
 
