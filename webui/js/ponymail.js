@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "d688d32";
+const PONYMAIL_REVISION = "7e08bf3";
 
 
 
@@ -40,6 +40,7 @@ let G_current_year = 0;
 let G_current_month = 0;
 let G_current_quick_search = '';
 let G_current_query = '';
+let G_current_open_email = null;
 let G_select_primed = false;
 let G_ponymail_preferences = {};
 let G_ponymail_search_list = 'this';
@@ -50,6 +51,10 @@ const PONYMAIL_MAX_NESTING = 10; // max nesting level before unthreading to save
 // thread state
 let G_current_email_idx;
 let G_chatty_layout = true;
+
+// emails (composer, key-commands, render-email)
+let full_emails = {};
+
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',
@@ -679,7 +684,7 @@ function compose_email(replyto, list) {
     let email = null;
     let mua_trigger = null;
     let loggedIn = (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) ? true : false;
-    if (replyto) email = full_emails[replyto || ''];
+    if (replyto) email = G_full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
     if (email) {
@@ -847,8 +852,6 @@ function mua_link(email, xlist) {
  Fetched from source/construct-thread.js
 ******************************************/
 
-let current_open_email = null;
-
 function expand_email_threaded(idx, flat) {
     let placeholder = document.getElementById('email_%u'.format(idx));
     if (placeholder) {
@@ -870,7 +873,7 @@ function expand_email_threaded(idx, flat) {
             // Construct the base scaffolding for all emails
             let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
-                current_open_email = eml.tid || eml.mid;
+                G_current_open_email = eml.tid || eml.mid;
             }
             let thread = construct_thread(eml);
             placeholder.inject(thread);
@@ -1908,9 +1911,9 @@ function keyCommands(e) {
                 compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
-                console.log(current_open_email);
-                if (current_open_email && full_emails[current_open_email]) {
-                    compose_email(current_open_email);
+                console.log(G_current_open_email);
+                if (G_current_open_email && G_full_emails[G_current_open_email]) {
+                    compose_email(G_current_open_email);
                 }
                 return;
             case 'Escape':
@@ -3495,8 +3498,6 @@ function unshortenID(mid) {
  Fetched from source/render-email.js
 ******************************************/
 
-let full_emails = {};
-
 // Function for parsing email addresses from a to or cc line
 function get_rcpts(addresses) {
     let list_of_emails = []
@@ -3516,7 +3517,7 @@ function get_rcpts(addresses) {
 
 async function render_email(state, json) {
     let div = state.div;
-    full_emails[json.mid] = json; // Save for composer if replying later...
+    G_full_emails[json.mid] = json; // Save for composer if replying later...
     if (state.scroll) {
         let rect = div.getBoundingClientRect();
         try {
@@ -3748,7 +3749,7 @@ async function render_email_chatty(state, json) {
     author_field.inject([gravatar, author_nametag]);
     div.inject(author_field);
     let chatty_body = fixup_quotes(json.body);
-    if (json.mid == current_open_email) {
+    if (json.mid == G_current_open_email) {
         let header = new HTML('h4', {
             class: 'chatty_title_inline'
         }, json.subject);
