@@ -70,7 +70,7 @@ async function wordCloud(hash, width, height, obj) {
         textBox.setAttribute("font-size", "100px")
         svg.appendChild(textBox)
         
-        w = textBox.getBoundingClientRect();
+        let w = textBox.getBoundingClientRect();
         
         for (let s = 100; s > 0; s-=5) {
                         
@@ -87,11 +87,8 @@ async function wordCloud(hash, width, height, obj) {
         let popped = false
         
         // Try with random placement
-        let w
         
-        
-        
-        let textBox = makeWord(word, ss)
+        textBox = makeWord(word, size)
         textBox.setAttribute("id", "svg_wc_" + word)
         svg.appendChild(textBox)
         if (!popped) {
@@ -159,7 +156,6 @@ async function wordCloud(hash, width, height, obj) {
                 break
             }
             psize = nsize
-            ts++
         }
     }
     document.body.removeChild(svg)
