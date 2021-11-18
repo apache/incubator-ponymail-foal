@@ -49,6 +49,12 @@ var pm_config = {
     LOTS_OF_LISTS: 25 // Beyond this number of list domains we start using the old phonebook.
 }
 
+// Gravatar support. Defaults to using the gravatar proxy.
+const GRAVATAR_URL = "/api/gravatar?md5=%s"; // This must agree with apiURL above
+// TODO generate the correct URL if apiURL changes
+
+// For performance or other reasons, this can be set to the origin by uncommenting the below:
+// const GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm";
 
 
 // Localized preferences (defaults)
@@ -65,8 +71,3 @@ var prefs = {
     UTC: false,                     // Use UTC for timestamps in UI. If false, use browser local time.
     title: "Apache Pony Mail"       // Default browser window title
 }
-
-// Gravatar support. Defaults to using the gravatar proxy.
-const GRAVATAR_URL = "/api/gravatar?md5=%s";
-// For performance or other reasons, this can be set to the origin by uncommenting the below:
-// const GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm";
