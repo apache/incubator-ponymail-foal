@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "fd180bb";
+const PONYMAIL_REVISION = "89e842a";
 
 
 
@@ -3883,9 +3883,9 @@ async function render_email_chatty(state, json) {
 #}, "Some text inside a div")
  */
 
-var txt = (msg) => document.createTextNode(msg);
+const txt = (msg) => document.createTextNode(msg);
 
-var HTML = (function() {
+const HTML = (function() {
     function HTML(type, params, children) {
 
         /* create the raw element, or clone if passed an existing element */
@@ -4076,8 +4076,8 @@ function search_set_list(what) {
 ******************************************/
 
 const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-var calendar_index = 0;
-var calendar_years_shown = 4;
+let calendar_index = 0;
+let calendar_years_shown = 4;
 
 function renderCalendar(FY, FM, LY, LM, activity = null) {
     calendar_index = 0;
