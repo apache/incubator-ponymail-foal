@@ -82,7 +82,7 @@ async def process(
 
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata, list_override="@" in lid and lid or None)
-    except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
+    except (ValueError, AssertionError) as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError or ValueError
         return aiohttp.web.Response(
             headers={
                 "content-type": "text/plain",

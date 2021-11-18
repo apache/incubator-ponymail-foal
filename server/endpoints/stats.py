@@ -44,7 +44,7 @@ async def process(
     try:
         query_defuzzed = plugins.defuzzer.defuzz(indata)
         query_defuzzed_nodate = plugins.defuzzer.defuzz(indata, nodate=True)
-    except AssertionError as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError
+    except (ValueError, AssertionError) as e:  # If defuzzer encounters syntax errors, it will throw an AssertionError or ValueError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(e))
     results = await plugins.messages.query(
         session, query_defuzzed, query_limit=server.config.database.max_hits
