@@ -41,7 +41,7 @@ function listview_flat(json, start) {
 
     let s = start || 0;
     if (json.emails && json.emails.length) {
-        for (n = s; n < (s + current_per_page); n++) {
+        for (n = s; n < (s + G_current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
             if (json.emails[z]) {
                 let item = listview_flat_element(json.emails[z], z);

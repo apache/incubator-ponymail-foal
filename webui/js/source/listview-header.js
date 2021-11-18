@@ -16,8 +16,6 @@
  */
 let prev_listview_json = {};
 let prev_listview_state = {};
-let current_index_pos = 0;
-let current_per_page = 0;
 
 function listview_header(state, json) {
     if (isEmpty(json)) { // Bad search request?
@@ -66,8 +64,8 @@ function listview_header(state, json) {
     });
 
     let chevrons = document.getElementById('listview_chevrons');
-    current_per_page = calc_per_page();
-    current_index_pos = state.pos || 0;
+    G_current_per_page = calc_per_page();
+    G_current_index_pos = state.pos || 0;
     let first = 1;
     if (state && state.pos) {
         first = 1 + state.pos;
@@ -76,10 +74,10 @@ function listview_header(state, json) {
         chevrons.innerHTML = "No topics to show";
         blobs = [];
     } else {
-        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + current_per_page - 1, blobs.length), blobs.length || 0);
+        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + G_current_per_page - 1, blobs.length), blobs.length || 0);
     }
 
-    let pprev = Math.max(0, first - current_per_page - 1);
+    let pprev = Math.max(0, first - G_current_per_page - 1);
     let cback = new HTML('button', {
         onclick: 'listview_header({pos: %u}, G_current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
@@ -88,10 +86,10 @@ function listview_header(state, json) {
     }, " "));
     chevrons.inject(cback);
 
-    let pnext = first + current_per_page - 1;
+    let pnext = first + G_current_per_page - 1;
     let cforward = new HTML('button', {
         onclick: 'listview_header({pos: %u}, G_current_json);'.format(pnext),
-        disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
+        disabled: (first + G_current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
     }, " "));

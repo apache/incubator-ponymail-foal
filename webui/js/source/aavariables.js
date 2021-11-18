@@ -44,7 +44,12 @@ let G_current_email_idx;
 let G_chatty_layout = true;
 
 // emails (composer, key-commands, render-email)
-let full_emails = {};
+let G_full_emails = {};
+
+// listview-*.js, key-commands
+let G_current_index_pos = 0;
+let G_current_per_page = 0;
+
 
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',

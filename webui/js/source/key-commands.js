@@ -172,18 +172,18 @@ function keyCommands(e) {
                     let blobs = G_current_json.emails;
                     if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
                     let no_emails = blobs.length;
-                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
+                    if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos + G_current_per_page) < no_emails) {
                         listview_header({
-                            pos: current_index_pos + current_per_page
+                            pos: G_current_index_pos + G_current_per_page
                         }, G_current_json);
                     }
                 }
                 return;
             case 'ArrowLeft': // quick previous
                 if (G_current_json) { // IF list view...
-                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
+                    if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos - G_current_per_page) >= 0) {
                         listview_header({
-                            pos: current_index_pos - current_per_page
+                            pos: G_current_index_pos - G_current_per_page
                         }, G_current_json);
                     }
                 }
@@ -202,9 +202,9 @@ function ponymail_swipe(event) {
     if (len < 20) return false;
     if (direction == 'right') {
         if (G_current_json) { // IF list view...
-            if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
+            if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos - G_current_per_page) >= 0) {
                 listview_header({
-                    pos: current_index_pos - current_per_page
+                    pos: G_current_index_pos - G_current_per_page
                 }, G_current_json);
             }
         }
@@ -213,9 +213,9 @@ function ponymail_swipe(event) {
             let blobs = G_current_json.emails;
             if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
             let no_emails = blobs.length;
-            if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
+            if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos + G_current_per_page) < no_emails) {
                 listview_header({
-                    pos: current_index_pos + current_per_page
+                    pos: G_current_index_pos + G_current_per_page
                 }, G_current_json);
             }
         }

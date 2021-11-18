@@ -30,7 +30,7 @@ function listview_threaded(json, start) {
 
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (let n = s; n < (s + current_per_page); n++) {
+        for (let n = s; n < (s + G_current_per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
