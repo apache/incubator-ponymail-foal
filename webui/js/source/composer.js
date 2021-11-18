@@ -13,7 +13,7 @@ function compose_send() {
     }
 
     let request = new XMLHttpRequest();
-    request.open("POST", "/api/compose.lua");
+    request.open("POST", "%sapi/compose.lua".format(apiURL));
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 

@@ -18,7 +18,7 @@
 // logout: log out a user
 // call the logout URL, then refresh this page - much simple!
 function logout() {
-    GET("/api/preferences.lua?logout=true", () => location.href = document.location);
+    GET("%sapi/preferences.lua?logout=true".format(apiURL), () => location.href = document.location);
 }
 
 function init_preferences(state, json) {

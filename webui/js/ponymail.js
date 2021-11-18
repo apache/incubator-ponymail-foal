@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "1cff7c7";
+const PONYMAIL_REVISION = "3aca082";
 
 
 
@@ -702,7 +702,7 @@ function compose_send() {
     }
 
     let request = new XMLHttpRequest();
-    request.open("POST", "/api/compose.lua");
+    request.open("POST", "%sapi/compose.lua".format(apiURL));
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
@@ -3179,7 +3179,7 @@ function admin_init() {
 // logout: log out a user
 // call the logout URL, then refresh this page - much simple!
 function logout() {
-    GET("/api/preferences.lua?logout=true", () => location.href = document.location);
+    GET("%sapi/preferences.lua?logout=true".format(apiURL), () => location.href = document.location);
 }
 
 function init_preferences(state, json) {
