@@ -50,6 +50,9 @@ let G_full_emails = {};
 let G_current_index_pos = 0;
 let G_current_per_page = 0;
 
+// sidebar calendar
+const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
 
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',

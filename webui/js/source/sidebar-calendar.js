@@ -15,9 +15,7 @@
  limitations under the License.
 */
 
-const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 let calendar_index = 0;
-let calendar_years_shown = 4;
 
 function renderCalendar(FY, FM, LY, LM, activity = null) {
     calendar_index = 0;
@@ -121,8 +119,8 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     cdiv.inject(chevron);
 
     // If we have > 4 years, hide the rest
-    if (N > calendar_years_shown) {
-        for (let i = calendar_years_shown; i < N; i++) {
+    if (N > CALENDAR_YEARS_SHOWN) {
+        for (let i = CALENDAR_YEARS_SHOWN; i < N; i++) {
             let obj = document.getElementById('sidebar_calendar_' + i);
             if (obj) {
                 obj.style.display = "none";
@@ -133,6 +131,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
 }
 
 function calendar_scroll(me, x) {
+    console.log(me)
     let years = document.getElementsByClassName('sidebar_calendar_year');
     calendar_index = Math.max(Math.min(years.length - x, calendar_index + x), 0);
     if (calendar_index > 0) {
