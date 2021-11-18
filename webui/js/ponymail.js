@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "7e08bf3";
+const PONYMAIL_REVISION = "7560f1d";
 
 
 
@@ -53,7 +53,12 @@ let G_current_email_idx;
 let G_chatty_layout = true;
 
 // emails (composer, key-commands, render-email)
-let full_emails = {};
+let G_full_emails = {};
+
+// listview-*.js, key-commands
+let G_current_index_pos = 0;
+let G_current_per_page = 0;
+
 
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
@@ -1924,18 +1929,18 @@ function keyCommands(e) {
                     let blobs = G_current_json.emails;
                     if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
                     let no_emails = blobs.length;
-                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
+                    if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos + G_current_per_page) < no_emails) {
                         listview_header({
-                            pos: current_index_pos + current_per_page
+                            pos: G_current_index_pos + G_current_per_page
                         }, G_current_json);
                     }
                 }
                 return;
             case 'ArrowLeft': // quick previous
                 if (G_current_json) { // IF list view...
-                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
+                    if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos - G_current_per_page) >= 0) {
                         listview_header({
-                            pos: current_index_pos - current_per_page
+                            pos: G_current_index_pos - G_current_per_page
                         }, G_current_json);
                     }
                 }
@@ -1954,9 +1959,9 @@ function ponymail_swipe(event) {
     if (len < 20) return false;
     if (direction == 'right') {
         if (G_current_json) { // IF list view...
-            if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
+            if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos - G_current_per_page) >= 0) {
                 listview_header({
-                    pos: current_index_pos - current_per_page
+                    pos: G_current_index_pos - G_current_per_page
                 }, G_current_json);
             }
         }
@@ -1965,9 +1970,9 @@ function ponymail_swipe(event) {
             let blobs = G_current_json.emails;
             if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
             let no_emails = blobs.length;
-            if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
+            if (G_current_email_idx == undefined && G_current_json && (G_current_index_pos + G_current_per_page) < no_emails) {
                 listview_header({
-                    pos: current_index_pos + current_per_page
+                    pos: G_current_index_pos + G_current_per_page
                 }, G_current_json);
             }
         }
@@ -2098,7 +2103,7 @@ function listview_flat(json, start) {
 
     let s = start || 0;
     if (json.emails && json.emails.length) {
-        for (n = s; n < (s + current_per_page); n++) {
+        for (n = s; n < (s + G_current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
             if (json.emails[z]) {
                 let item = listview_flat_element(json.emails[z], z);
@@ -2190,8 +2195,6 @@ function listview_flat_element(eml, idx) {
 
 let prev_listview_json = {};
 let prev_listview_state = {};
-let current_index_pos = 0;
-let current_per_page = 0;
 
 function listview_header(state, json) {
     if (isEmpty(json)) { // Bad search request?
@@ -2240,8 +2243,8 @@ function listview_header(state, json) {
     });
 
     let chevrons = document.getElementById('listview_chevrons');
-    current_per_page = calc_per_page();
-    current_index_pos = state.pos || 0;
+    G_current_per_page = calc_per_page();
+    G_current_index_pos = state.pos || 0;
     let first = 1;
     if (state && state.pos) {
         first = 1 + state.pos;
@@ -2250,10 +2253,10 @@ function listview_header(state, json) {
         chevrons.innerHTML = "No topics to show";
         blobs = [];
     } else {
-        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + current_per_page - 1, blobs.length), blobs.length || 0);
+        chevrons.innerHTML = "Showing <b>%u through %u</b> of <b>%u</b> topics&nbsp;".format(first, Math.min(first + G_current_per_page - 1, blobs.length), blobs.length || 0);
     }
 
-    let pprev = Math.max(0, first - current_per_page - 1);
+    let pprev = Math.max(0, first - G_current_per_page - 1);
     let cback = new HTML('button', {
         onclick: 'listview_header({pos: %u}, G_current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
@@ -2262,10 +2265,10 @@ function listview_header(state, json) {
     }, " "));
     chevrons.inject(cback);
 
-    let pnext = first + current_per_page - 1;
+    let pnext = first + G_current_per_page - 1;
     let cforward = new HTML('button', {
         onclick: 'listview_header({pos: %u}, G_current_json);'.format(pnext),
-        disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
+        disabled: (first + G_current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
     }, " "));
@@ -2544,7 +2547,7 @@ function listview_threaded(json, start) {
 
     let s = start || 0;
     if (json.thread_struct && json.thread_struct.length) {
-        for (let n = s; n < (s + current_per_page); n++) {
+        for (let n = s; n < (s + G_current_per_page); n++) {
             let z = json.thread_struct.length - n - 1; // reverse order by default
             if (json.thread_struct[z]) {
                 let item = listview_threaded_element(json.thread_struct[z], z);
