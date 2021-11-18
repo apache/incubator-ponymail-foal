@@ -38,8 +38,10 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         formdata["e"] = formdata["date"]
     # classic start and end month params
     if "s" in formdata and "e" in formdata:
-        assert re.match(r"\d{4}-\d{1,2}$", formdata["s"]), "Keyword 's' must be of type YYYY-MM"
-        assert re.match(r"\d{4}-\d{1,2}$", formdata["e"]), "Keyword 'e' must be of type YYYY-MM"
+        if not re.match(r"\d{4}-\d{1,2}$", formdata["s"]):
+            raise ValueError("Keyword 's' must be of type YYYY-MM")
+        if not re.match(r"\d{4}-\d{1,2}$", formdata["e"]):
+            raise ValueError("Keyword 'e' must be of type YYYY-MM")
         syear, smonth = formdata["s"].split("-", 1)
         eyear, emonth = formdata["e"].split("-", 1)
         _estart, eend = calendar.monthrange(int(eyear), int(emonth))
@@ -103,13 +105,15 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     fqdn = formdata.get("domain", "*")  # If left out entirely, assume wildcard search
     listname = formdata.get("list", "*")  # If left out entirely, assume wildcard search
     if list_override:  # Certain requests use the full list ID as a single variable. Allow for that if so.
-        assert list_override.count("@") == 1, "list_override must contain exactly one @ character"
+        if not list_override.count("@") == 1:
+            raise ValueError("list_override must contain exactly one @ character")
         listname, fqdn = list_override.split("@", 1)
-    assert fqdn, "You must specify a domain part of the mailing list(s) to search, or * for wildcard search."
-    assert listname, "You must specify a list part of the mailing list(s) to search, or * for wildcard search."
-    assert (
-        "@" not in listname
-    ), "The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching."
+    if not fqdn:
+        raise ValueError("You must specify a domain part of the mailing list(s) to search, or * for wildcard search.")
+    if not listname:
+        raise ValueError("You must specify a list part of the mailing list(s) to search, or * for wildcard search.")
+    if "@" in listname:
+        raise ValueError("The list component of the List ID(s) cannot contain @, please use both list and domain keywords for searching.")
     list_raw = "<%s.%s>" % (listname, fqdn)
 
     # Default is to look in a specific list
