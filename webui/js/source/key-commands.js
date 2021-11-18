@@ -159,9 +159,9 @@ function keyCommands(e) {
                 compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
-                console.log(current_open_email);
-                if (current_open_email && full_emails[current_open_email]) {
-                    compose_email(current_open_email);
+                console.log(G_current_open_email);
+                if (G_current_open_email && full_emails[G_current_open_email]) {
+                    compose_email(G_current_open_email);
                 }
                 return;
             case 'Escape':

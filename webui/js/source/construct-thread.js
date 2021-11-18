@@ -14,7 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-let current_open_email = null;
 
 function expand_email_threaded(idx, flat) {
     let placeholder = document.getElementById('email_%u'.format(idx));
@@ -37,7 +36,7 @@ function expand_email_threaded(idx, flat) {
             // Construct the base scaffolding for all emails
             let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
-                current_open_email = eml.tid || eml.mid;
+                G_current_open_email = eml.tid || eml.mid;
             }
             let thread = construct_thread(eml);
             placeholder.inject(thread);

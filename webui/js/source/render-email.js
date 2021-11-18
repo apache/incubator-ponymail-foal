@@ -251,7 +251,7 @@ async function render_email_chatty(state, json) {
     author_field.inject([gravatar, author_nametag]);
     div.inject(author_field);
     let chatty_body = fixup_quotes(json.body);
-    if (json.mid == current_open_email) {
+    if (json.mid == G_current_open_email) {
         let header = new HTML('h4', {
             class: 'chatty_title_inline'
         }, json.subject);
