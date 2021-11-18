@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "7560f1d";
+const PONYMAIL_REVISION = "f707f15";
 
 
 
@@ -59,6 +59,9 @@ let G_full_emails = {};
 let G_current_index_pos = 0;
 let G_current_per_page = 0;
 
+// sidebar calendar
+const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
 
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
@@ -4060,9 +4063,7 @@ function search_set_list(what) {
  Fetched from source/sidebar-calendar.js
 ******************************************/
 
-const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 let calendar_index = 0;
-let calendar_years_shown = 4;
 
 function renderCalendar(FY, FM, LY, LM, activity = null) {
     calendar_index = 0;
@@ -4166,8 +4167,8 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     cdiv.inject(chevron);
 
     // If we have > 4 years, hide the rest
-    if (N > calendar_years_shown) {
-        for (let i = calendar_years_shown; i < N; i++) {
+    if (N > CALENDAR_YEARS_SHOWN) {
+        for (let i = CALENDAR_YEARS_SHOWN; i < N; i++) {
             let obj = document.getElementById('sidebar_calendar_' + i);
             if (obj) {
                 obj.style.display = "none";
@@ -4178,6 +4179,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
 }
 
 function calendar_scroll(me, x) {
+    console.log(me)
     let years = document.getElementsByClassName('sidebar_calendar_year');
     calendar_index = Math.max(Math.min(years.length - x, calendar_index + x), 0);
     if (calendar_index > 0) {
