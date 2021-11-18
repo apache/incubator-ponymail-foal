@@ -16,15 +16,15 @@
  */
 
 function search(query, date) {
-    let list = current_list;
+    let list = G_current_list;
     let global = false;
-    let domain = current_domain;
-    if (ponymail_search_list == 'global') {
+    let domain = G_current_domain;
+    if (G_ponymail_search_list == 'global') {
         list = '*';
         domain = '*';
         global = true;
     }
-    if (ponymail_search_list == 'domain') {
+    if (G_ponymail_search_list == 'domain') {
         list = '*';
         global = true;
     }
@@ -34,7 +34,7 @@ function search(query, date) {
 
     let header_from = document.getElementById('header_from');
     let header_subject = document.getElementById('header_subject');
-    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
+    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(G_apiURL, date, list, domain, query);
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
         newhref += "&header_from=%s".format(header_from.value);
@@ -65,7 +65,7 @@ function search(query, date) {
 
 // set the list(s) to search, update links
 function search_set_list(what) {
-    ponymail_search_list = what;
+    G_ponymail_search_list = what;
     let links = document.getElementsByClassName('searchlistoption');
     let whatxt = "this list"
     for (let el of links) {

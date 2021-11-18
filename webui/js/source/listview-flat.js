@@ -49,7 +49,7 @@ function listview_flat(json, start) {
 
                 // Hidden placeholder for expanding email(s)
                 let placeholder = new HTML('div', {
-                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    class: G_chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
                     id: 'email_%u'.format(z)
                 });
                 list.inject(placeholder);

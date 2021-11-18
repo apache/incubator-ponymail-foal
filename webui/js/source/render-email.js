@@ -29,7 +29,7 @@ async function render_email(state, json) {
             console.log("Scrolled to %u".format(rect.top - 48));
         } catch (e) {}
     }
-    if (chatty_layout) {
+    if (G_chatty_layout) {
         return render_email_chatty(state, json);
     }
 
@@ -137,7 +137,7 @@ async function render_email(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -192,7 +192,7 @@ async function render_email(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -202,7 +202,7 @@ async function render_email(state, json) {
     toolbar.inject(sourcebutton);
 
     // Admin button?
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
             target: '_self',
@@ -227,7 +227,7 @@ async function render_email_chatty(state, json) {
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
-        ldate = "%s %s".format(when.toLocaleDateString('en-US', ponymail_date_format), when.toLocaleTimeString());
+        ldate = "%s %s".format(when.toLocaleDateString('en-US', PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
     } catch (e) {
 
     }
@@ -278,7 +278,7 @@ async function render_email_chatty(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -324,7 +324,7 @@ async function render_email_chatty(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -334,7 +334,7 @@ async function render_email_chatty(state, json) {
     toolbar.inject(sourcebutton);
 
     // Admin button?
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
             target: '_self',

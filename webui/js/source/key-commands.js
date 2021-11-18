@@ -61,7 +61,7 @@ function modal(title, msg, type, isHTML) {
 
 // Helper for determining if an email is open or not...
 function anyOpen() {
-    let open = (current_email_idx !== undefined) ? true : false;
+    let open = (G_current_email_idx !== undefined) ? true : false;
     console.log("Emails open? " + open);
     return open;
 }
@@ -92,13 +92,13 @@ function hideWindows(force_all) {
     }
 
     // Check for individually opened email
-    if (current_email_idx !== undefined) {
-        console.log("Hiding placeholder at index %u".format(current_email_idx));
-        let placeholder = document.getElementById('email_%u'.format(current_email_idx));
+    if (G_current_email_idx !== undefined) {
+        console.log("Hiding placeholder at index %u".format(G_current_email_idx));
+        let placeholder = document.getElementById('email_%u'.format(G_current_email_idx));
         if (placeholder) {
             placeholder.style.display = 'none';
         }
-        current_email_idx = undefined; // undef this even if we can't find the email
+        G_current_email_idx = undefined; // undef this even if we can't find the email
         if (force_all !== true) return;
     }
 
@@ -156,7 +156,7 @@ function keyCommands(e) {
                 showHelp();
                 return;
             case 'c':
-                compose_email(null, `${current_list}@${current_domain}`);
+                compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
                 console.log(current_open_email);
@@ -168,23 +168,23 @@ function keyCommands(e) {
                 hideWindows();
                 return;
             case 'ArrowRight': // quick-next
-                if (current_json) { // IF list view...
-                    let blobs = current_json.emails;
-                    if (current_listmode == 'threaded') blobs = current_json.thread_struct;
+                if (G_current_json) { // IF list view...
+                    let blobs = G_current_json.emails;
+                    if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
                     let no_emails = blobs.length;
-                    if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
+                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
                         listview_header({
                             pos: current_index_pos + current_per_page
-                        }, current_json);
+                        }, G_current_json);
                     }
                 }
                 return;
             case 'ArrowLeft': // quick previous
-                if (current_json) { // IF list view...
-                    if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
+                if (G_current_json) { // IF list view...
+                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
                         listview_header({
                             pos: current_index_pos - current_per_page
-                        }, current_json);
+                        }, G_current_json);
                     }
                 }
                 return;
@@ -201,22 +201,22 @@ function ponymail_swipe(event) {
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
-        if (current_json) { // IF list view...
-            if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
+        if (G_current_json) { // IF list view...
+            if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
                 listview_header({
                     pos: current_index_pos - current_per_page
-                }, current_json);
+                }, G_current_json);
             }
         }
     } else if (direction == 'left') {
-        if (current_json) { // IF list view...
-            let blobs = current_json.emails;
-            if (current_listmode == 'threaded') blobs = current_json.thread_struct;
+        if (G_current_json) { // IF list view...
+            let blobs = G_current_json.emails;
+            if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
             let no_emails = blobs.length;
-            if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
+            if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
                 listview_header({
                     pos: current_index_pos + current_per_page
-                }, current_json);
+                }, G_current_json);
             }
         }
     }

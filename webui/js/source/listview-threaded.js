@@ -37,7 +37,7 @@ function listview_threaded(json, start) {
                 list.inject(item);
                 // Hidden placeholder for expanding email(s)
                 let placeholder = new HTML('div', {
-                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    class: G_chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
                     id: 'email_%u'.format(z)
                 });
                 list.inject(placeholder);
@@ -49,7 +49,7 @@ function listview_threaded(json, start) {
 }
 
 function find_email(id) {
-    let json = current_json;
+    let json = G_current_json;
     for (let i = 0; i < json.emails.length; i++) {
         if (json.emails[i].id == id) return json.emails[i];
     }
@@ -134,7 +134,7 @@ function listview_threaded_element(thread, idx) {
     element.inject(author);
 
     // If needed, inject ML name
-    if (current_domain == 'inbox' || current_list == '*') {
+    if (G_current_domain == 'inbox' || G_current_list == '*') {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
         author.inject(new HTML('span', {
@@ -151,7 +151,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
-    if (current_json.list.match(/\*/) || current_json.domain == '*') {
+    if (G_current_json.list.match(/\*/) || G_current_json.domain == '*') {
         let kbd = new HTML('kbd', {
             class: 'listview_kbd'
         }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))

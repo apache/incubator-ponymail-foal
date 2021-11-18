@@ -27,14 +27,14 @@ function listview_header(state, json) {
     let list_title = json.list;
     prev_listview_json = json;
     prev_listview_state = state;
-    if (current_list == 'virtual' && current_domain == 'inbox') {
+    if (G_current_list == 'virtual' && G_current_domain == 'inbox') {
         list_title = "Virtual inbox, past 30 days";
     }
     let blobs = json.emails ? json.emails : [];
-    if (current_listmode == 'threaded') blobs = json.thread_struct;
+    if (G_current_listmode == 'threaded') blobs = json.thread_struct;
 
-    if (current_year && current_month) {
-        list_title += ", %s %u".format(MONTHS[current_month - 1], current_year);
+    if (G_current_year && G_current_month) {
+        list_title += ", %s %u".format(MONTHS[G_current_month - 1], G_current_year);
     } else {
         list_title += ", past month";
     }
@@ -57,7 +57,7 @@ function listview_header(state, json) {
     document.getElementById('listview_title').inject(download);
     download.addEventListener('click', () => {
         let sep = '?';
-        let dl_url = apiURL + 'api/mbox.lua';
+        let dl_url = G_apiURL + 'api/mbox.lua';
         for (let key in json.searchParams || {}) {
             dl_url += sep + key + "=" + encodeURIComponent(json.searchParams[key]);
             sep = '&';
@@ -81,7 +81,7 @@ function listview_header(state, json) {
 
     let pprev = Math.max(0, first - current_per_page - 1);
     let cback = new HTML('button', {
-        onclick: 'listview_header({pos: %u}, current_json);'.format(pprev),
+        onclick: 'listview_header({pos: %u}, G_current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-left'
@@ -90,7 +90,7 @@ function listview_header(state, json) {
 
     let pnext = first + current_per_page - 1;
     let cforward = new HTML('button', {
-        onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),
+        onclick: 'listview_header({pos: %u}, G_current_json);'.format(pnext),
         disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
@@ -109,7 +109,7 @@ function listview_header(state, json) {
     chevrons.inject(crefresh);
 
     if (state && state.pos != undefined) {
-        if (current_listmode == 'threaded') {
+        if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
         } else {
             listview_flat(json, state.pos);
@@ -118,7 +118,7 @@ function listview_header(state, json) {
 
     let tm = document.getElementById('threaded_mobile_img');
     if (tm) {
-        if (current_listmode == 'threaded') tm.setAttribute("src", "images/threading_enabled.png");
+        if (G_current_listmode == 'threaded') tm.setAttribute("src", "images/threading_enabled.png");
         else tm.setAttribute("src", "images/threading_disabled.png");
     }
 }
@@ -141,22 +141,22 @@ function listview_list_lists(state, json) {
         return;
     }
     if (!json) {
-        json = ponymail_preferences;
+        json = G_ponymail_preferences;
     }
     if (lists) {
         lists.innerHTML = "";
 
-        if (isHash(json.lists) && json.lists[current_domain]) {
+        if (isHash(json.lists) && json.lists[G_current_domain]) {
             let lists_sorted = [];
-            for (let list in json.lists[current_domain]) {
-                lists_sorted.push([list, json.lists[current_domain][list]]);
+            for (let list in json.lists[G_current_domain]) {
+                lists_sorted.push([list, json.lists[G_current_domain][list]]);
             }
             lists_sorted.sort((a, b) => b[1] - a[1]);
             let alists = [];
             for (let list of lists_sorted) alists.push(list[0]);
-            if (current_list != '*' && current_domain != '*') {
-                alists.remove(current_list);
-                alists.unshift(current_list);
+            if (G_current_list != '*' && G_current_domain != '*') {
+                alists.remove(G_current_list);
+                alists.unshift(G_current_list);
             }
             let maxlists = (searching && 3 || 4);
             if (alists.length == maxlists + 1) maxlists++; // skip drop-down if only one additional list (#54)
@@ -165,13 +165,13 @@ function listview_list_lists(state, json) {
                 let listname = alists[i];
                 let listnametxt = listname;
                 if (pm_config.long_tabs) {
-                    listnametxt = '%s@%s'.format(listname, current_domain);
+                    listnametxt = '%s@%s'.format(listname, G_current_domain);
                 }
                 let li = new HTML('li', {
                     onclick: 'switch_list(this, "tab");',
-                    class: (listname == current_list && !searching) ? 'active' : null
+                    class: (listname == G_current_list && !searching) ? 'active' : null
                 }, listnametxt);
-                li.setAttribute("data-list", '%s@%s'.format(listname, current_domain));
+                li.setAttribute("data-list", '%s@%s'.format(listname, G_current_domain));
                 lists.inject(li);
             }
 
@@ -195,7 +195,7 @@ function listview_list_lists(state, json) {
                 li.inject(otherlists);
                 for (let listname of other_lists_sorted) {
                     let opt = new HTML('option', {
-                        value: "%s@%s".format(listname, current_domain)
+                        value: "%s@%s".format(listname, G_current_domain)
                     }, listname);
                     otherlists.inject(opt);
                 }
@@ -217,11 +217,11 @@ function listview_list_lists(state, json) {
             otherlists.inject(new HTML('option', {
                 disabled: 'disabled',
                 selected: 'selected'
-            }, "%s@%s".format(current_list, current_domain)));
+            }, "%s@%s".format(G_current_list, G_current_domain)));
             li.inject(otherlists);
             for (let listname of all_lists_narrow) {
                 let opt = new HTML('option', {
-                    value: "%s@%s".format(listname, current_domain)
+                    value: "%s@%s".format(listname, G_current_domain)
                 }, listname);
                 otherlists.inject(opt);
             }
@@ -243,7 +243,7 @@ function listview_list_lists(state, json) {
     if (isHash(json.lists)) {
         let no_projects = 0;
         let select = document.getElementById('project_select');
-        if (!select || select_primed) return;
+        if (!select || G_select_primed) return;
         let opts = {}
         let doms = [];
         for (let domain in json.lists) {
@@ -254,7 +254,7 @@ function listview_list_lists(state, json) {
             doms.push(domain);
             no_projects++;
         }
-        if (no_projects > 1 || current_domain == '*') {
+        if (no_projects > 1 || G_current_domain == '*') {
             select.innerHTML = "";
             let title = new HTML('option', {
                 disabled: 'disabled',
@@ -267,7 +267,7 @@ function listview_list_lists(state, json) {
                 select.inject(opts[dom]);
             }
             select.style.display = "inline-block";
-            select_primed = true; // mark it primed so we don't generate it again later
+            G_select_primed = true; // mark it primed so we don't generate it again later
         }
     }
 }
@@ -275,11 +275,11 @@ function listview_list_lists(state, json) {
 
 function switch_project(domain) {
     // TODO: improve this
-    if (ponymail_preferences && ponymail_preferences.lists[domain]) {
+    if (G_ponymail_preferences && G_ponymail_preferences.lists[domain]) {
         // Switch to the most populous, but not commits/cvs
         let lists_sorted = [];
-        for (let list in ponymail_preferences.lists[domain]) {
-            lists_sorted.push([list, ponymail_preferences.lists[domain][list]]);
+        for (let list in G_ponymail_preferences.lists[domain]) {
+            lists_sorted.push([list, G_ponymail_preferences.lists[domain][list]]);
         }
         lists_sorted.sort((a, b) => b[1] - a[1]);
         let lists = [];
@@ -322,10 +322,10 @@ function switch_list(list, from) {
         listid = list.getAttribute("data-list") || list.innerText;
     }
     let bits = listid.split("@");
-    current_list = bits[0];
-    current_domain = bits[1];
-    current_year = 0;
-    current_month = 0;
+    G_current_list = bits[0];
+    G_current_domain = bits[1];
+    G_current_year = 0;
+    G_current_month = 0;
 
     let newhref = "list.html?%s".format(listid);
     if (location.href !== newhref) {

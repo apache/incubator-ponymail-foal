@@ -35,7 +35,7 @@ async function admin_del_attachment(hash) {
         document: hash
     });
     // remove attachment
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
 
     // Edit email in place
@@ -57,7 +57,7 @@ async function admin_hide_email() {
         action: "hide",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email hidden", "Server responded with: " + response, "help");
@@ -74,7 +74,7 @@ async function admin_unhide_email() {
         action: "unhide",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email unhidden", "Server responded with: " + response, "help");
@@ -93,7 +93,7 @@ async function admin_delete_email() {
         action: "delete",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email removed", "Server responded with: " + response, "help");
@@ -123,7 +123,7 @@ async function admin_save_email(edit_attachment = false) {
         body: body,
         attachments: attach
     })
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (edit_attachment && rv.status == 200) return
     if (rv.status == 200) {
@@ -249,7 +249,7 @@ function admin_email_preview(stats, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -395,13 +395,13 @@ function admin_audit_view(state, json) {
 
 function admin_audit_next() {
     audit_page++;
-    GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
+    GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);
 }
 
 // Onload function for admin.html
 function admin_init() {
     init_preferences(); // blank call to load defaults like social rendering
-    GET('%sapi/preferences.lua'.format(apiURL), (state, json) => {
+    GET('%sapi/preferences.lua'.format(G_apiURL), (state, json) => {
         mgmt_prefs = json
         init_preferences(state, json);
     }, null);
@@ -414,9 +414,9 @@ function admin_init() {
         }
         // Email handling?
         else {
-            GET('%sapi/email.json?id=%s'.format(apiURL, mid), admin_email_preview, null);
+            GET('%sapi/email.json?id=%s'.format(G_apiURL, mid), admin_email_preview, null);
         }
     } else { // View audit log
-        GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
+        GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);
     }
 }

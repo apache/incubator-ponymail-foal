@@ -146,7 +146,7 @@ function legit_trailer(a) {
 
 // Function for cutting away trailers
 function cut_trailer(splicer) {
-    if (!chatty_layout) return splicer; // only invoke in social rendering mode
+    if (!G_chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
         splicer.innerText = splicer.innerText.replace(PONYMAIL_TRAILER_RE, legit_trailer, 3);
     } else {
@@ -179,7 +179,7 @@ function color_diff_lines(diff) {
 
 // Function for coloring diffs
 function fixup_diffs(splicer) {
-    if (!chatty_layout) return splicer; // only invoke in social rendering mode
+    if (!G_chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
         splicer = splicer.innerText;
     }
@@ -233,7 +233,7 @@ function fixup_quotes(splicer) {
     if (splicer[splicer.length - 1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
     let hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
     hideQuotes = true;
-    if (prefs.compactQuotes === false && !chatty_layout) {
+    if (prefs.compactQuotes === false && !G_chatty_layout) {
         hideQuotes = false;
     }
     if (!hideQuotes) return splicer; // We'll bail here for now. Dunno why not.

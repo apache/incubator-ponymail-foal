@@ -162,20 +162,20 @@ function calendar_scroll(me, x) {
 
 
 function calendar_click(year, month) {
-    current_year = year;
-    current_month = month;
+    G_current_year = year;
+    G_current_month = month;
     let searching = false;
     let q = "";
-    let calendar_current_list = current_list;
-    let calendar_current_domain = current_domain;
-    if (current_json && current_json.searchParams) {
-        q = current_json.searchParams.q || "";
-        calendar_current_list = current_json.searchParams.list;
-        calendar_current_domain = current_json.searchParams.domain;
+    let calendar_current_list = G_current_list;
+    let calendar_current_domain = G_current_domain;
+    if (G_current_json && G_current_json.searchParams) {
+        q = G_current_json.searchParams.q || "";
+        calendar_current_list = G_current_json.searchParams.list;
+        calendar_current_domain = G_current_json.searchParams.domain;
         // Weave in header parameters
-        for (let key of Object.keys((current_json.searchParams || {}))) {
+        for (let key of Object.keys((G_current_json.searchParams || {}))) {
             if (key.match(/^header_/)) {
-                let value = current_json.searchParams[key];
+                let value = G_current_json.searchParams[key];
                 q += `&${key}=${value}`;
             }
         }
@@ -186,7 +186,7 @@ function calendar_click(year, month) {
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(G_apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),
         update_calendar: false,
         search: (q && q.length > 0)

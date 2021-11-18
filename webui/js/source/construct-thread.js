@@ -23,10 +23,10 @@ function expand_email_threaded(idx, flat) {
         if (placeholder.style.display == 'block') {
             console.log("Collapsing thread at index %u".format(idx));
             placeholder.style.display = 'none';
-            current_email_idx = undefined;
+            G_current_email_idx = undefined;
             return false;
         }
-        current_email_idx = idx;
+        G_current_email_idx = idx;
         console.log("Expanding thread at index %u".format(idx));
         placeholder.style.display = 'block';
 
@@ -35,7 +35,7 @@ function expand_email_threaded(idx, flat) {
             console.log("Already constructed this thread, bailing!");
         } else {
             // Construct the base scaffolding for all emails
-            let eml = flat ? current_json.emails[idx] : current_json.thread_struct[idx];
+            let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
                 current_open_email = eml.tid || eml.mid;
             }
@@ -59,7 +59,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     cid = (cid || 0) + 1;
     nestlevel = (nestlevel || 0) + 1;
     let mw = calc_email_width();
-    let max_nesting = ponymail_max_nesting;
+    let max_nesting = PONYMAIL_MAX_NESTING;
     if (mw < 700) {
         max_nesting = Math.floor(mw / 250);
     }
@@ -71,7 +71,7 @@ function construct_thread(thread, cid, nestlevel, included) {
             class: 'email_wrapper',
             id: 'email_%s'.format(thread.tid || thread.id)
         });
-        if (chatty_layout) {
+        if (G_chatty_layout) {
             email.style.border = "none !important";
         } else {
             email.style.borderLeft = '3px solid #%s'.format(color);
@@ -101,7 +101,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {
+        GET("%sapi/email.lua?id=%s".format(G_apiURL, tid), render_email, {
             cached: true,
             scroll: doScroll,
             id: tid,
@@ -113,7 +113,7 @@ function construct_thread(thread, cid, nestlevel, included) {
 
 // Singular thread construction via permalinks
 function construct_single_thread(state, json) {
-    current_json = json;
+    G_current_json = json;
     if (json) {
         // Old schema has json.error filled on error, simplified schema has json.message filled and json.okay set to false
         let error_message = json.okay === false ? json.message : json.error;
@@ -153,7 +153,7 @@ function construct_single_thread(state, json) {
         notice.inject(a);
     }
 
-    if (chatty_layout) {
+    if (G_chatty_layout) {
         let listname = json.thread.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
         div.setAttribute("class", "email_placeholder_chatty");
         div.inject(new HTML('h4', {

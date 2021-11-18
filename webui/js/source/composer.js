@@ -8,12 +8,12 @@ function compose_send() {
     // Push the subject and email body into the form data
     content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
     content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
-    if (ponymail_preferences.login && ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
         content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
     }
 
     let request = new XMLHttpRequest();
-    request.open("POST", "%sapi/compose.lua".format(apiURL));
+    request.open("POST", "%sapi/compose.lua".format(G_apiURL));
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
@@ -24,7 +24,7 @@ function compose_send() {
 function compose_email(replyto, list) {
     let email = null;
     let mua_trigger = null;
-    let loggedIn = (ponymail_preferences.login && ponymail_preferences.login.credentials) ? true : false;
+    let loggedIn = (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) ? true : false;
     if (replyto) email = full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
@@ -78,10 +78,10 @@ function compose_email(replyto, list) {
     let s = new HTML('select', {
         id: 'composer_alt'
     });
-    s.inject(new HTML('option', {}, ponymail_preferences.login.credentials.email));
-    if (ponymail_preferences.login && ponymail_preferences.login.alternates) {
-        for (let z = 0; z < ponymail_preferences.login.alternates.length; z++) {
-            s.inject(new HTML('option', {}, ponymail_preferences.login.alternates[z]));
+    s.inject(new HTML('option', {}, G_ponymail_preferences.login.credentials.email));
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates) {
+        for (let z = 0; z < G_ponymail_preferences.login.alternates.length; z++) {
+            s.inject(new HTML('option', {}, G_ponymail_preferences.login.alternates[z]));
         }
     }
     form.push(new HTML('br'));

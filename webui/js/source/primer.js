@@ -19,19 +19,19 @@
 /* List View Rendering main func */
 function renderListView(state, json) {
     if (json) {
-        current_json = json;
+        G_current_json = json;
     }
-    current_state = state;
+    G_current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
         renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
-        current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
+        G_current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
     }
     listview_header(state, json);
-    if (current_listmode == 'threaded') {
+    if (G_current_listmode == 'threaded') {
         listview_threaded(json, 0);
     } else {
         listview_flat(json, 0);
@@ -56,21 +56,21 @@ function primeListView(state) {
     console.log("Priming user interface for List View..");
     state = state || {};
     state.prime = true;
-    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, state);
+    GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, state);
 }
 
 // callback from when prefs have loaded
 function post_prime(state) {
-    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, current_list, current_domain);
-    if (current_year && current_month) {
-        sURL += "&d=%u-%u".format(current_year, current_month);
+    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, G_current_list, G_current_domain);
+    if (G_current_year && G_current_month) {
+        sURL += "&d=%u-%u".format(G_current_year, G_current_month);
     }
     if (!(state && state.search)) {
         if (state && state.array) {
-            collated_json = {};
+            G_collated_json = {};
             for (let entry of state.array) {
                 let list = entry.split('@');
-                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
+                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, list[0], list[1]);
                 GET(sURL, render_virtual_inbox, state);
             }
         } else {
@@ -90,17 +90,17 @@ function parseURL(state) {
     let month = bits[1];
     let query = bits[2];
     state = state || {};
-    current_query = query || "";
-    current_month = 0;
-    current_year = 0;
+    G_current_query = query || "";
+    G_current_month = 0;
+    G_current_year = 0;
 
     // If "month" (year-month) is specified,
     // we should set the current vars
     if (month) {
         try {
             let dbits = month.split("-");
-            current_year = dbits[0];
-            current_month = dbits[1];
+            G_current_year = dbits[0];
+            G_current_month = dbits[1];
         } catch (e) {}
     }
     // Is this a valid list?
@@ -108,16 +108,16 @@ function parseURL(state) {
         // multi-list??
         if (list.match(/,/)) {
             state.array = list.split(',');
-            current_domain = 'inbox';
-            current_list = 'virtual';
+            G_current_domain = 'inbox';
+            G_current_list = 'virtual';
         } else {
             let lbits = list.split("@");
             if (lbits.length > 1) {
-                current_list = lbits[0];
-                current_domain = lbits[1];
+                G_current_list = lbits[0];
+                G_current_domain = lbits[1];
             } else {
-                current_domain = lbits;
-                current_list = '';
+                G_current_domain = lbits;
+                G_current_list = '';
             }
         }
     }
@@ -148,9 +148,9 @@ function parse_permalink() {
     }
     mid = unshortenID(mid);  // In case of old school shortened links
     init_preferences(); // blank call to load defaults like social rendering
-    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
+    GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
-    GET('%sapi/thread.lua?id=%s'.format(apiURL, mid), construct_single_thread, {
+    GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
         cached: true
     });
 }
@@ -159,13 +159,13 @@ function parse_permalink() {
 // Virtual inbox ŕendering
 function render_virtual_inbox(state, json) {
     if (json) {
-        collated_json.emails = collated_json.emails || [];
-        collated_json.thread_struct = collated_json.thread_struct || [];
+        G_collated_json.emails = G_collated_json.emails || [];
+        G_collated_json.thread_struct = G_collated_json.thread_struct || [];
         for (let email of json.emails) {
-            collated_json.emails.push(email);
+            G_collated_json.emails.push(email);
         }
         for (let thread_struct of json.thread_struct) {
-            collated_json.thread_struct.push(thread_struct);
+            G_collated_json.thread_struct.push(thread_struct);
         }
     }
 
@@ -175,8 +175,8 @@ function render_virtual_inbox(state, json) {
 
     if (true) {
         console.log("Rendering multi-list")
-        current_json = collated_json;
-        current_json.participants = [];
+        G_current_json = G_collated_json;
+        G_current_json.participants = [];
 
         async_escrow['rendering'] = new Date();
         if (!state || state.update_calendar !== false) {
@@ -184,16 +184,16 @@ function render_virtual_inbox(state, json) {
         }
         // sort threads by date
         if (isArray(json.thread_struct)) {
-            current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
+            G_current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
         }
-        listview_header(state, current_json);
-        if (current_listmode == 'threaded') {
-            listview_threaded(current_json, 0);
+        listview_header(state, G_current_json);
+        if (G_current_listmode == 'threaded') {
+            listview_threaded(G_current_json, 0);
         } else {
-            listview_flat(current_json, 0);
+            listview_flat(G_current_json, 0);
         }
 
-        sidebar_stats(current_json); // This comes last, takes the longest with WC enabled.
+        sidebar_stats(G_current_json); // This comes last, takes the longest with WC enabled.
         delete async_escrow['rendering'];
     }
 }

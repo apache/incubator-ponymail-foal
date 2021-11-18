@@ -20,47 +20,47 @@
 
 const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
-let apiURL = ''; // external API URL. Usually left blank.
+let G_apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
-let current_json = {};
-let current_state = {};
-let current_list = '';
-let current_domain = '';
-let current_year = 0;
-let current_month = 0;
-let current_quick_search = '';
-let current_query = '';
-let select_primed = false;
-let ponymail_preferences = {};
-let ponymail_search_list = 'this';
+let G_current_json = {};
+let G_current_state = {};
+let G_current_list = '';
+let G_current_domain = '';
+let G_current_year = 0;
+let G_current_month = 0;
+let G_current_quick_search = '';
+let G_current_query = '';
+let G_select_primed = false;
+let G_ponymail_preferences = {};
+let G_ponymail_search_list = 'this';
 
-let current_listmode = 'threaded';
-let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
+let G_current_listmode = 'threaded';
+const PONYMAIL_MAX_NESTING = 10; // max nesting level before unthreading to save space
 
 // thread state
-let current_email_idx;
-let chatty_layout = true;
-let ponymail_date_format = {
+let G_current_email_idx;
+let G_chatty_layout = true;
+const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
-let collated_json = {};
+let G_collated_json = {};
 
-if (pm_config.apiURL) {
-    apiURL = pm_config.apiURL;
-    console.log("Setting API URL to " + apiURL);
+if (pm_config.G_apiURL) {
+    G_apiURL = pm_config.G_apiURL;
+    console.log("Setting API URL to " + G_apiURL);
 }
 
 // check local storage for settings
 console.log("Checking localStorage availability");
-let can_store = false;
+let G_can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
-        can_store = true;
+        G_can_store = true;
         console.log("localStorage available!");
     } catch (e) {
         console.log("no localStorage available!");

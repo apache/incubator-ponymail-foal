@@ -18,18 +18,18 @@
 // logout: log out a user
 // call the logout URL, then refresh this page - much simple!
 function logout() {
-    GET("%sapi/preferences.lua?logout=true".format(apiURL), () => location.href = document.location);
+    GET("%sapi/preferences.lua?logout=true".format(G_apiURL), () => location.href = document.location);
 }
 
 function init_preferences(state, json) {
-    ponymail_preferences = json || {};
+    G_ponymail_preferences = json || {};
     // First, load session local settings, if possible
-    if (can_store) {
-        let local_preferences = window.localStorage.getItem('ponymail_preferences');
+    if (G_can_store) {
+        let local_preferences = window.localStorage.getItem('G_ponymail_preferences');
         if (local_preferences) {
             let ljson = JSON.parse(local_preferences);
-            if (ljson.chatty_layout !== undefined) {
-                chatty_layout = ljson.chatty_layout;
+            if (ljson.G_chatty_layout !== undefined) {
+                G_chatty_layout = ljson.G_chatty_layout;
             }
         }
     }
@@ -37,14 +37,14 @@ function init_preferences(state, json) {
     // color some links
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
 
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) {
         let prefsmenu = document.getElementById('prefs_dropdown');
         let uimg = document.getElementById('uimg');
         uimg.setAttribute("src", "images/user.png");
-        uimg.setAttribute("title", "Logged in as %s".format(ponymail_preferences.login.credentials.fullname));
+        uimg.setAttribute("title", "Logged in as %s".format(G_ponymail_preferences.login.credentials.fullname));
 
         // Generate user menu
         prefsmenu.innerHTML = "";
@@ -72,12 +72,12 @@ function init_preferences(state, json) {
         listview_list_lists(state, json);
         if (state && state.prime) {
             // If lists is accessible, show it
-            if (json.lists[current_domain] && (current_list == '*' || json.lists[current_domain][current_list] != undefined)) {
+            if (json.lists[G_current_domain] && (G_current_list == '*' || json.lists[G_current_domain][G_current_list] != undefined)) {
                 post_prime(state);
-            } else if  (current_domain == '*') { // assume a match
+            } else if  (G_current_domain == '*') { // assume a match
                 post_prime(state);
             } else { // otherwise, bork
-                if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
+                if (G_current_list.length > 0 && (!json.lists[G_current_domain] || Object.keys(json.lists[G_current_domain]).length > 0)) {
                     let eml = document.getElementById('emails');
                     eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
                     eml.inject(new HTML('br'));
@@ -86,7 +86,7 @@ function init_preferences(state, json) {
                         onclick: 'location.href="oauth.html";'
                     }, "Click here to log in via OAuth"));
                 } else {
-                    switch_project(current_domain);
+                    switch_project(G_current_domain);
                 }
             }
         }
@@ -94,40 +94,40 @@ function init_preferences(state, json) {
 }
 
 function save_preferences() {
-    if (can_store) {
+    if (G_can_store) {
         let ljson = {
-            chatty_layout: chatty_layout
+            G_chatty_layout: G_chatty_layout
         };
         let lstring = JSON.stringify(ljson);
-        window.localStorage.setItem('ponymail_preferences', lstring);
+        window.localStorage.setItem('G_ponymail_preferences', lstring);
         console.log("Saved local preferences");
     }
 }
 
 
 function set_theme(theme) {
-    current_listmode = theme;
-    renderListView(current_state, current_json);
+    G_current_listmode = theme;
+    renderListView(G_current_state, G_current_json);
     save_preferences();
 }
 
 function set_skin(skin) {
-    chatty_layout = !chatty_layout;
+    G_chatty_layout = !G_chatty_layout;
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
     hideWindows(true);
-    renderListView(current_state, current_json);
+    renderListView(G_current_state, G_current_json);
     save_preferences();
 }
 
 // set_skin, but for permalinks
 function set_skin_permalink(skin) {
-    chatty_layout = !chatty_layout;
+    G_chatty_layout = !G_chatty_layout;
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
     hideWindows(true);
     save_preferences();
