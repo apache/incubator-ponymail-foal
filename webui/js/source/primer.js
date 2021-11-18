@@ -133,7 +133,7 @@ function parseURL(state) {
     } else {
         primeListView(state);
     }
-};
+}
 
 
 

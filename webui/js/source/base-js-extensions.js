@@ -49,7 +49,7 @@ String.prototype.format = function() {
         }
     });
     return rtn;
-}
+};
 
 
 /**
@@ -88,7 +88,7 @@ Date.prototype.TZ_HHMM = function() {
     let off_mm =   Math.abs(off_mins%60);
     let sgn = off_mins > 0 ? '-' : '+';
     return sgn + off_hh.pad(2) + ':' + off_mm.pad(2);
-}
+};
 
 
 
@@ -119,14 +119,14 @@ Date.prototype.ISOBare = function() {
 
 function isArray(value) {
     return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number' && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
-};
+}
 
 
 /* isHash: function to detect if an object is a hash */
 
 function isHash(value) {
     return value && typeof value === 'object' && !isArray(value);
-};
+}
 
 
 /* Remove an array element by value */
@@ -156,8 +156,8 @@ Array.prototype.has = function(val) {
 
 function isEmpty(obj) {
     return (
-        obj
-        && Object.keys(obj).length === 0
-        && Object.getPrototypeOf(obj) === Object.prototype
-    )
+        obj &&
+        Object.keys(obj).length === 0 &&
+        Object.getPrototypeOf(obj) === Object.prototype
+    );
 }
