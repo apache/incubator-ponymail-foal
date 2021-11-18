@@ -71,9 +71,9 @@ function anyOpen() {
 function hideWindows(force_all) {
 
     // First, check if we want to hide a modal
-    let modal = document.getElementById('modal');
-    if (modal && modal.style.display == 'block') {
-        modal.style.display = 'none';
+    let modalId = document.getElementById('modal');
+    if (modalId && modalId.style.display == 'block') {
+        modalId.style.display = 'none';
         if (force_all !== true) return;
     }
 

@@ -127,9 +127,9 @@ function compose_email(replyto, list) {
 
 // Generic modal function
 function composer(title, contents) {
-    let modal = document.getElementById('composer_modal');
-    if (modal == undefined) {
-        modal = new HTML('div', {
+    let composer_modal = document.getElementById('composer_modal');
+    if (composer_modal == undefined) {
+        composer_modal = new HTML('div', {
             id: 'composer_modal'
         }, [
             new HTML('div', {
@@ -147,14 +147,14 @@ function composer(title, contents) {
                 }, contents)
             ])
         ]);
-        document.body.appendChild(modal);
+        document.body.appendChild(composer_modal);
 
     } else {
         document.getElementById('composer_modal_title').innerText = title;
         document.getElementById('composer_modal_contents').innerHTML = '';
         document.getElementById('composer_modal_contents').inject(contents || '');
     }
-    modal.style.display = 'block';
+    composer_modal.style.display = 'block';
 }
 
 // Constructor for email body in replies...
