@@ -1,0 +1,12 @@
+# Development style guide
+
+## ECMAScript Standards
+Foal uses ECMAScript 9th edition (2018) as the base scripting language for the browser interface.
+All global variables must be declared with `G_` prepended, such as: `G_APIURL` or `G_current_json`
+
+## Python Standards
+Foal requires Python 3.7 or above, following the PEP8 specifications with a 120 character maximum per line.
+
+Linting can be done using [Black](https://github.com/psf/black/): `black -l 120 foo.py`
+
+All code should be typed and is checked with [mypy](https://github.com/python/mypy/)
