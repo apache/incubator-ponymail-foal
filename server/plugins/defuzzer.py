@@ -47,6 +47,23 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
             "gt": "%04u/%02u/01 00:00:00" % (int(syear), int(smonth)),
             "lt": "%04u/%02u/%02u 23:59:59" % (int(eyear), int(emonth), eend),
         }
+    # days ago to start, and number of days to match
+    elif "dfrom" in formdata and "dto" in formdata:
+        dfrom = formdata["dfrom"]
+        dto = formdata["dto"]
+        if re.match(r"\d+$", dfrom) and re.match(r"\d+$", dto):
+            ef = int(dfrom)
+            et = int(dto)
+            if ef > 0 and et > 0:
+                if et > ef:
+                    et = ef # avoid overruning into the future
+                daterange = { 
+                    "gte": "now-%dd" % ef,
+                    "lte": "now-%dd" % (ef - et),
+                }
+        else:
+            raise ValueError("Keywords 'dfrom' and 'dto' must be numeric")
+
     # Advanced date formatting
     elif "d" in formdata:
         # The more/less than N days/weeks/months/years ago
