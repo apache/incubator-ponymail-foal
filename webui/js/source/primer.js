@@ -68,8 +68,8 @@ function post_prime(state) {
     if (!(state && state.search)) {
         if (state && state.array) {
             collated_json = {};
-            for (var i = 0; i < state.array.length; i++) {
-                let list = state.array[i].split('@');
+            for (let entry of state.array) {
+                let list = entry.split('@');
                 sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
                 GET(sURL, render_virtual_inbox, state);
             }
@@ -161,15 +161,15 @@ function render_virtual_inbox(state, json) {
     if (json) {
         collated_json.emails = collated_json.emails || [];
         collated_json.thread_struct = collated_json.thread_struct || [];
-        for (var i = 0; i < json.emails.length; i++) {
-            collated_json.emails.push(json.emails[i]);
+        for (let email of json.emails) {
+            collated_json.emails.push(email);
         }
-        for (var i = 0; i < json.thread_struct.length; i++) {
-            collated_json.thread_struct.push(json.thread_struct[i]);
+        for (let thread_struct of json.thread_struct) {
+            collated_json.thread_struct.push(thread_struct);
         }
     }
 
-    for (var k in async_escrow) {
+    for (let _ in async_escrow) {
         return;
     }
 
@@ -206,8 +206,8 @@ function unshortenID(mid) {
     // Some old shortlinks begin with 'B', so let's be backwards compatible for now.
     if (mid[0] == 'Z' || mid[0] == 'B') {
         // remove padding
-        var id1 = parseInt(mid.substr(1, 7).replace(/-/g, ""), 36)
-        var id2 = parseInt(mid.substr(8, 7).replace(/-/g, ""), 36)
+        let id1 = parseInt(mid.substr(1, 7).replace(/-/g, ""), 36)
+        let id2 = parseInt(mid.substr(8, 7).replace(/-/g, ""), 36)
         id1 = id1.toString(16)
         id2 = id2.toString(16)
 

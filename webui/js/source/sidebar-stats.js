@@ -43,7 +43,7 @@ async function sidebar_stats(json) {
     // Top 10 participants
     obj.inject("Found %u emails by %u authors, divided into %u topics.".format(json.emails.length, json.numparts, json.no_threads));
     obj.inject(new HTML('h5', {}, "Most active authors:"));
-    for (var i = 0; i < json.participants.length; i++) {
+    for (let i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
             break;
         }

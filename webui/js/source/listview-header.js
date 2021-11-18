@@ -129,8 +129,7 @@ function listview_list_lists(state, json) {
     if (state && state.to) {
         let tab = undefined;
         let tabs = lists.childNodes;
-        for (var i = 0; i < tabs.length; i++) {
-            let xtab = tabs[i];
+        for (let xtab of tabs) {
             if ((state.to == 'search' && xtab.getAttribute('id') == 'tab_search') || (xtab.innerText == state.to || xtab.getAttribute('data-list') == state.to)) {
                 tab = xtab;
                 tab.setAttribute("class", state.to == 'search' ? 'search' : 'active');
@@ -149,19 +148,19 @@ function listview_list_lists(state, json) {
 
         if (isHash(json.lists) && json.lists[current_domain]) {
             let lists_sorted = [];
-            for (var list in json.lists[current_domain]) {
+            for (let list in json.lists[current_domain]) {
                 lists_sorted.push([list, json.lists[current_domain][list]]);
             }
             lists_sorted.sort((a, b) => b[1] - a[1]);
             let alists = [];
-            for (var i = 0; i < lists_sorted.length; i++) alists.push(lists_sorted[i][0]);
+            for (let list of lists_sorted) alists.push(list[0]);
             if (current_list != '*' && current_domain != '*') {
                 alists.remove(current_list);
                 alists.unshift(current_list);
             }
             let maxlists = (searching && 3 || 4);
             if (alists.length == maxlists + 1) maxlists++; // skip drop-down if only one additional list (#54)
-            for (var i = 0; i < alists.length; i++) {
+            for (let i = 0; i < alists.length; i++) {
                 if (i >= maxlists) break;
                 let listname = alists[i];
                 let listnametxt = listname;
@@ -178,7 +177,7 @@ function listview_list_lists(state, json) {
 
             if (alists.length > maxlists) {
                 let other_lists_sorted = [];
-                for (var i = maxlists; i < alists.length; i++) {
+                for (let i = maxlists; i < alists.length; i++) {
                     other_lists_sorted.push(alists[i]);
                 }
                 other_lists_sorted.sort();
@@ -194,8 +193,7 @@ function listview_list_lists(state, json) {
                     selected: 'selected'
                 }, 'Other lists (%u):'.format(other_lists_sorted.length)));
                 li.inject(otherlists);
-                for (var i = 0; i < other_lists_sorted.length; i++) {
-                    let listname = other_lists_sorted[i];
+                for (let listname of other_lists_sorted) {
                     let opt = new HTML('option', {
                         value: "%s@%s".format(listname, current_domain)
                     }, listname);
@@ -205,8 +203,8 @@ function listview_list_lists(state, json) {
             }
             // All lists, for narrow UI
             let all_lists_narrow = [];
-            for (var i = 0; i < alists.length; i++) {
-                all_lists_narrow.push(alists[i]);
+            for (let alist of alists) {
+                all_lists_narrow.push(alist);
             }
             all_lists_narrow.sort();
             let li = new HTML('li', {
@@ -221,8 +219,7 @@ function listview_list_lists(state, json) {
                 selected: 'selected'
             }, "%s@%s".format(current_list, current_domain)));
             li.inject(otherlists);
-            for (var i = 0; i < all_lists_narrow.length; i++) {
-                let listname = all_lists_narrow[i];
+            for (let listname of all_lists_narrow) {
                 let opt = new HTML('option', {
                     value: "%s@%s".format(listname, current_domain)
                 }, listname);
@@ -249,7 +246,7 @@ function listview_list_lists(state, json) {
         if (!select || select_primed) return;
         let opts = {}
         let doms = [];
-        for (var domain in json.lists) {
+        for (let domain in json.lists) {
             let option = new HTML('option', {
                 value: domain
             }, domain);
@@ -266,8 +263,8 @@ function listview_list_lists(state, json) {
             }, "Available projects (%u):".format(no_projects));
             select.inject(title);
             doms.sort();
-            for (var i = 0; i < doms.length; i++) {
-                select.inject(opts[doms[i]]);
+            for (let dom of doms) {
+                select.inject(opts[dom]);
             }
             select.style.display = "inline-block";
             select_primed = true; // mark it primed so we don't generate it again later
@@ -281,12 +278,12 @@ function switch_project(domain) {
     if (ponymail_preferences && ponymail_preferences.lists[domain]) {
         // Switch to the most populous, but not commits/cvs
         let lists_sorted = [];
-        for (var list in ponymail_preferences.lists[domain]) {
+        for (let list in ponymail_preferences.lists[domain]) {
             lists_sorted.push([list, ponymail_preferences.lists[domain][list]]);
         }
         lists_sorted.sort((a, b) => b[1] - a[1]);
         let lists = [];
-        for (var i = 0; i < lists_sorted.length; i++) lists.push(lists_sorted[i][0]);
+        for (let list of lists_sorted) lists.push(list[0]);
         let listname = lists[0];
         let n = 1;
         if (lists.length > n) {

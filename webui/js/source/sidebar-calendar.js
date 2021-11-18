@@ -58,14 +58,14 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     cdiv.inject(chevron);
 
     // Create divs for each year, assign all visible
-    for (var Y = SY; Y >= FY; Y--) {
+    for (let Y = SY; Y >= FY; Y--) {
         let ydiv = new HTML('div', {
             class: 'sidebar_calendar_year',
             id: 'sidebar_calendar_' + N++
         });
         ydiv.inject(txt(Y));
         ydiv.inject(new HTML('br'));
-        for (var i = 0; i < MONTHS_SHORTENED.length; i++) {
+        for (let i = 0; i < MONTHS_SHORTENED.length; i++) {
             let mon = MONTHS_SHORTENED[i];
             let mdiv = new HTML('div', {
                 onclick: 'calendar_click(%u, %u);'.format(Y, i + 1),
@@ -122,7 +122,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
 
     // If we have > 4 years, hide the rest
     if (N > calendar_years_shown) {
-        for (var i = calendar_years_shown; i < N; i++) {
+        for (let i = calendar_years_shown; i < N; i++) {
             let obj = document.getElementById('sidebar_calendar_' + i);
             if (obj) {
                 obj.style.display = "none";
@@ -147,7 +147,7 @@ function calendar_scroll(me, x) {
     }
 
 
-    for (var i = 0; i < years.length; i++) {
+    for (let i = 0; i < years.length; i++) {
         let year = years[i];
         if (typeof(year) == 'object') {
             if (i >= calendar_index && i < (calendar_index + Math.abs(x))) {

@@ -68,8 +68,7 @@ function search_set_list(what) {
     ponymail_search_list = what;
     let links = document.getElementsByClassName('searchlistoption');
     let whatxt = "this list"
-    for (let i = 0; i < links.length; i++) {
-        let el = links[i];
+    for (let el of links) {
         if (el.getAttribute("id").match(what)) {
             el.setAttribute("class", "searchlistoption checked");
             whatxt = el.innerText.toLowerCase();
