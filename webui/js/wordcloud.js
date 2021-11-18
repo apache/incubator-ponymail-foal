@@ -22,11 +22,11 @@ function fastIntersect(x,y,nx,ny) {
     if (x.getAttribute("id") == y.getAttribute("id")) { // can't collide with itself
         return false
     }
-    var spacing = 2 // number of pixels to keep elements apart
+    let spacing = 2 // number of pixels to keep elements apart
     nx = nx ? nx : 0
     ny = ny ? ny : 0
-    var a = x.getBoundingClientRect()
-    var b = y.getBoundingClientRect()
+    let a = x.getBoundingClientRect()
+    let b = y.getBoundingClientRect()
     return !(b.left-spacing > (a.right+nx)
         || b.right+spacing < (a.left+nx)
         || b.top-spacing > (a.bottom+ny)
@@ -34,7 +34,7 @@ function fastIntersect(x,y,nx,ny) {
 }
 
 function makeWord(word, size) {
-    var textBox = document.createElementNS(SVG_NAMESPACE, "text");
+    let textBox = document.createElementNS(SVG_NAMESPACE, "text");
     textBox.setAttribute("font-size", size + "px")
     textBox.setAttribute("x", "0")
     textBox.setAttribute("y", "40")
@@ -45,36 +45,36 @@ function makeWord(word, size) {
 }
 
 async function wordCloud(hash, width, height, obj) {
-    var total = 0
-    var boxes = []
-    var space = width * height
-    for (i in hash) {
+    let total = 0
+    let boxes = []
+    let space = width * height
+    for (let i in hash) {
         total += Math.sqrt(hash[i])
     }
-    var hashSorted = []
-    for (word in hash) hashSorted.push(word)
+    let hashSorted = []
+    for (let word in hash) hashSorted.push(word)
     hashSorted = hashSorted.sort(function(a,b) { return hash[a] > hash[b] })
-    var svg = document.createElementNS(SVG_NAMESPACE, "svg");
+    let svg = document.createElementNS(SVG_NAMESPACE, "svg");
     document.body.appendChild(svg)
     svg.setAttribute("width",  width)
     svg.setAttribute("height",  height)
     svg.setAttribute("class", "wordcloud")
-    for (var n = 0; n < hashSorted.length; n++) {
-        var word = hashSorted[n]
-        var size = 0;
-        var expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
+    for (let n = 0; n < hashSorted.length; n++) {
+        let word = hashSorted[n]
+        let size = 0;
+        let expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
         //console.log(expected_area)
         
-        var textBox = document.createElementNS(SVG_NAMESPACE, "text");
+        let textBox = document.createElementNS(SVG_NAMESPACE, "text");
         textBox.textContent = word
         textBox.setAttribute("font-size", "100px")
         svg.appendChild(textBox)
         
         w = textBox.getBoundingClientRect();
         
-        for (var s = 100; s > 0; s-=5) {
+        for (let s = 100; s > 0; s-=5) {
                         
-            var area = w.width * w.height * ( (s/100)*(s/100) );
+            let area = w.width * w.height * ( (s/100)*(s/100) );
             if (area <= expected_area ) {
                 size = s;
                 svg.removeChild(textBox)
@@ -84,37 +84,32 @@ async function wordCloud(hash, width, height, obj) {
         
         
         
-        var theta = 50;
-        var prop = height/width
-        var popped = false
-        
-        var angle = 0;
+        let popped = false
         
         // Try with random placement
-        var gw = svg.getBoundingClientRect()
-        var w
+        let w
         
         
         
-        var textBox = makeWord(word, ss)
+        let textBox = makeWord(word, ss)
         textBox.setAttribute("id", "svg_wc_" + word)
         svg.appendChild(textBox)
         if (!popped) {
             textBox.setAttribute("x", 0)
             textBox.setAttribute("y", 0)
-            for (var ss = size; ss > 5; ss *= 0.9) {
+            for (let ss = size; ss > 5; ss *= 0.9) {
                // alert(ss)
                 if (popped) {
                     break
                 }
                 textBox.setAttribute("font-size", ss + "px")
                 
-                var w = textBox.getBoundingClientRect()
-                for (var l = 0; l < 80; l++) {
-                    var nx = 4 + (Math.random() * (width-8-w.width))
-                    var ny = 4 + w.height + ((l/80) * (height-8-w.height))
-                    var it = false
-                    for (var b = 0; b < boxes.length; b++) {
+                let w = textBox.getBoundingClientRect()
+                for (let l = 0; l < 80; l++) {
+                    let nx = 4 + (Math.random() * (width-8-w.width))
+                    let ny = 4 + w.height + ((l/80) * (height-8-w.height))
+                    let it = false
+                    for (let b = 0; b < boxes.length; b++) {
                         if (fastIntersect(textBox, boxes[b], nx, ny)) {
                             it = true
                             break
@@ -133,7 +128,7 @@ async function wordCloud(hash, width, height, obj) {
         
         
         if (popped) {
-            var color = 'hsl('+ Math.random()*360 +', 40%, 50%)';
+            let color = 'hsl('+ Math.random()*360 +', 40%, 50%)';
             textBox.setAttribute("fill", color)
             boxes.push(textBox)
         } else {
@@ -144,17 +139,16 @@ async function wordCloud(hash, width, height, obj) {
     }
     
     // Try to size up texts a bit
-    var ts = 0
-    for (var i =0; i < boxes.length; i++) {
-        var textBox = boxes[i]
-        var osize = parseFloat(textBox.getAttribute('font-size'))
-        var psize = osize
-        for (var n = 1; n < 1.4; n+=0.2) {
-            var nsize = osize * n
+    for (let i =0; i < boxes.length; i++) {
+        let textBox = boxes[i]
+        let osize = parseFloat(textBox.getAttribute('font-size'))
+        let psize = osize
+        for (let n = 1; n < 1.4; n+=0.2) {
+            let nsize = osize * n
             textBox.setAttribute("font-size", nsize + "px")
-            var w = textBox.getBoundingClientRect()
-            var good = true
-            for (var b =0; b < boxes.length; b++) {
+            let w = textBox.getBoundingClientRect()
+            let good = true
+            for (let b =0; b < boxes.length; b++) {
                 if (fastIntersect(textBox, boxes[b])) {
                     good = false
                     break
