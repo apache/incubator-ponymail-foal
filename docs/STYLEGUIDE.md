@@ -1,5 +1,6 @@
 # Development style guide
 
+__This document is a work in progress. More to come later, feedback and suggestions are most welcome.__
 ## ECMAScript Standards
 - Foal uses ECMAScript 9th edition (2018) as the base scripting language for the browser interface.
 - All global variables must be declared with `G_` prepended, such as: `G_APIURL` or `G_current_json`
