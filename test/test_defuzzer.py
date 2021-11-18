@@ -23,6 +23,6 @@ import pytest
 from server.plugins.defuzzer import defuzz
 
 def test_defuzzer_1():
-    with pytest.raises(AssertionError) as excinfo:
+    with pytest.raises(ValueError) as excinfo:
         defuzz({'list': '@'})
     assert 'cannot contain @' in str(excinfo.value)
