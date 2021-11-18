@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "253a01a";
+const PONYMAIL_REVISION = "d688d32";
 
 
 
@@ -29,47 +29,47 @@ const PONYMAIL_REVISION = "253a01a";
 
 const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
-let apiURL = ''; // external API URL. Usually left blank.
+let G_apiURL = ''; // external API URL. Usually left blank.
 
 // Stuff regarding what we're doing right now
-let current_json = {};
-let current_state = {};
-let current_list = '';
-let current_domain = '';
-let current_year = 0;
-let current_month = 0;
-let current_quick_search = '';
-let current_query = '';
-let select_primed = false;
-let ponymail_preferences = {};
-let ponymail_search_list = 'this';
+let G_current_json = {};
+let G_current_state = {};
+let G_current_list = '';
+let G_current_domain = '';
+let G_current_year = 0;
+let G_current_month = 0;
+let G_current_quick_search = '';
+let G_current_query = '';
+let G_select_primed = false;
+let G_ponymail_preferences = {};
+let G_ponymail_search_list = 'this';
 
-let current_listmode = 'threaded';
-let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
+let G_current_listmode = 'threaded';
+const PONYMAIL_MAX_NESTING = 10; // max nesting level before unthreading to save space
 
 // thread state
-let current_email_idx;
-let chatty_layout = true;
-let ponymail_date_format = {
+let G_current_email_idx;
+let G_chatty_layout = true;
+const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
-let collated_json = {};
+let G_collated_json = {};
 
-if (pm_config.apiURL) {
-    apiURL = pm_config.apiURL;
-    console.log("Setting API URL to " + apiURL);
+if (pm_config.G_apiURL) {
+    G_apiURL = pm_config.G_apiURL;
+    console.log("Setting API URL to " + G_apiURL);
 }
 
 // check local storage for settings
 console.log("Checking localStorage availability");
-let can_store = false;
+let G_can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
-        can_store = true;
+        G_can_store = true;
         console.log("localStorage available!");
     } catch (e) {
         console.log("no localStorage available!");
@@ -480,7 +480,7 @@ function legit_trailer(a) {
 
 // Function for cutting away trailers
 function cut_trailer(splicer) {
-    if (!chatty_layout) return splicer; // only invoke in social rendering mode
+    if (!G_chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
         splicer.innerText = splicer.innerText.replace(PONYMAIL_TRAILER_RE, legit_trailer, 3);
     } else {
@@ -513,7 +513,7 @@ function color_diff_lines(diff) {
 
 // Function for coloring diffs
 function fixup_diffs(splicer) {
-    if (!chatty_layout) return splicer; // only invoke in social rendering mode
+    if (!G_chatty_layout) return splicer; // only invoke in social rendering mode
     if (typeof splicer == 'object') {
         splicer = splicer.innerText;
     }
@@ -567,7 +567,7 @@ function fixup_quotes(splicer) {
     if (splicer[splicer.length - 1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
     let hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
     hideQuotes = true;
-    if (prefs.compactQuotes === false && !chatty_layout) {
+    if (prefs.compactQuotes === false && !G_chatty_layout) {
         hideQuotes = false;
     }
     if (!hideQuotes) return splicer; // We'll bail here for now. Dunno why not.
@@ -662,12 +662,12 @@ function compose_send() {
     // Push the subject and email body into the form data
     content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
     content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
-    if (ponymail_preferences.login && ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
         content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
     }
 
     let request = new XMLHttpRequest();
-    request.open("POST", "%sapi/compose.lua".format(apiURL));
+    request.open("POST", "%sapi/compose.lua".format(G_apiURL));
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
@@ -678,7 +678,7 @@ function compose_send() {
 function compose_email(replyto, list) {
     let email = null;
     let mua_trigger = null;
-    let loggedIn = (ponymail_preferences.login && ponymail_preferences.login.credentials) ? true : false;
+    let loggedIn = (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) ? true : false;
     if (replyto) email = full_emails[replyto || ''];
     let listname = list;
     mua_headers = {};
@@ -732,10 +732,10 @@ function compose_email(replyto, list) {
     let s = new HTML('select', {
         id: 'composer_alt'
     });
-    s.inject(new HTML('option', {}, ponymail_preferences.login.credentials.email));
-    if (ponymail_preferences.login && ponymail_preferences.login.alternates) {
-        for (let z = 0; z < ponymail_preferences.login.alternates.length; z++) {
-            s.inject(new HTML('option', {}, ponymail_preferences.login.alternates[z]));
+    s.inject(new HTML('option', {}, G_ponymail_preferences.login.credentials.email));
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates) {
+        for (let z = 0; z < G_ponymail_preferences.login.alternates.length; z++) {
+            s.inject(new HTML('option', {}, G_ponymail_preferences.login.alternates[z]));
         }
     }
     form.push(new HTML('br'));
@@ -856,10 +856,10 @@ function expand_email_threaded(idx, flat) {
         if (placeholder.style.display == 'block') {
             console.log("Collapsing thread at index %u".format(idx));
             placeholder.style.display = 'none';
-            current_email_idx = undefined;
+            G_current_email_idx = undefined;
             return false;
         }
-        current_email_idx = idx;
+        G_current_email_idx = idx;
         console.log("Expanding thread at index %u".format(idx));
         placeholder.style.display = 'block';
 
@@ -868,7 +868,7 @@ function expand_email_threaded(idx, flat) {
             console.log("Already constructed this thread, bailing!");
         } else {
             // Construct the base scaffolding for all emails
-            let eml = flat ? current_json.emails[idx] : current_json.thread_struct[idx];
+            let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
                 current_open_email = eml.tid || eml.mid;
             }
@@ -892,7 +892,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     cid = (cid || 0) + 1;
     nestlevel = (nestlevel || 0) + 1;
     let mw = calc_email_width();
-    let max_nesting = ponymail_max_nesting;
+    let max_nesting = PONYMAIL_MAX_NESTING;
     if (mw < 700) {
         max_nesting = Math.floor(mw / 250);
     }
@@ -904,7 +904,7 @@ function construct_thread(thread, cid, nestlevel, included) {
             class: 'email_wrapper',
             id: 'email_%s'.format(thread.tid || thread.id)
         });
-        if (chatty_layout) {
+        if (G_chatty_layout) {
             email.style.border = "none !important";
         } else {
             email.style.borderLeft = '3px solid #%s'.format(color);
@@ -934,7 +934,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(apiURL, tid), render_email, {
+        GET("%sapi/email.lua?id=%s".format(G_apiURL, tid), render_email, {
             cached: true,
             scroll: doScroll,
             id: tid,
@@ -946,7 +946,7 @@ function construct_thread(thread, cid, nestlevel, included) {
 
 // Singular thread construction via permalinks
 function construct_single_thread(state, json) {
-    current_json = json;
+    G_current_json = json;
     if (json) {
         // Old schema has json.error filled on error, simplified schema has json.message filled and json.okay set to false
         let error_message = json.okay === false ? json.message : json.error;
@@ -986,7 +986,7 @@ function construct_single_thread(state, json) {
         notice.inject(a);
     }
 
-    if (chatty_layout) {
+    if (G_chatty_layout) {
         let listname = json.thread.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
         div.setAttribute("class", "email_placeholder_chatty");
         div.inject(new HTML('h4', {
@@ -1810,7 +1810,7 @@ function modal(title, msg, type, isHTML) {
 
 // Helper for determining if an email is open or not...
 function anyOpen() {
-    let open = (current_email_idx !== undefined) ? true : false;
+    let open = (G_current_email_idx !== undefined) ? true : false;
     console.log("Emails open? " + open);
     return open;
 }
@@ -1841,13 +1841,13 @@ function hideWindows(force_all) {
     }
 
     // Check for individually opened email
-    if (current_email_idx !== undefined) {
-        console.log("Hiding placeholder at index %u".format(current_email_idx));
-        let placeholder = document.getElementById('email_%u'.format(current_email_idx));
+    if (G_current_email_idx !== undefined) {
+        console.log("Hiding placeholder at index %u".format(G_current_email_idx));
+        let placeholder = document.getElementById('email_%u'.format(G_current_email_idx));
         if (placeholder) {
             placeholder.style.display = 'none';
         }
-        current_email_idx = undefined; // undef this even if we can't find the email
+        G_current_email_idx = undefined; // undef this even if we can't find the email
         if (force_all !== true) return;
     }
 
@@ -1905,7 +1905,7 @@ function keyCommands(e) {
                 showHelp();
                 return;
             case 'c':
-                compose_email(null, `${current_list}@${current_domain}`);
+                compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
                 console.log(current_open_email);
@@ -1917,23 +1917,23 @@ function keyCommands(e) {
                 hideWindows();
                 return;
             case 'ArrowRight': // quick-next
-                if (current_json) { // IF list view...
-                    let blobs = current_json.emails;
-                    if (current_listmode == 'threaded') blobs = current_json.thread_struct;
+                if (G_current_json) { // IF list view...
+                    let blobs = G_current_json.emails;
+                    if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
                     let no_emails = blobs.length;
-                    if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
+                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
                         listview_header({
                             pos: current_index_pos + current_per_page
-                        }, current_json);
+                        }, G_current_json);
                     }
                 }
                 return;
             case 'ArrowLeft': // quick previous
-                if (current_json) { // IF list view...
-                    if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
+                if (G_current_json) { // IF list view...
+                    if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
                         listview_header({
                             pos: current_index_pos - current_per_page
-                        }, current_json);
+                        }, G_current_json);
                     }
                 }
                 return;
@@ -1950,22 +1950,22 @@ function ponymail_swipe(event) {
     console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
-        if (current_json) { // IF list view...
-            if (current_email_idx == undefined && current_json && (current_index_pos - current_per_page) >= 0) {
+        if (G_current_json) { // IF list view...
+            if (G_current_email_idx == undefined && G_current_json && (current_index_pos - current_per_page) >= 0) {
                 listview_header({
                     pos: current_index_pos - current_per_page
-                }, current_json);
+                }, G_current_json);
             }
         }
     } else if (direction == 'left') {
-        if (current_json) { // IF list view...
-            let blobs = current_json.emails;
-            if (current_listmode == 'threaded') blobs = current_json.thread_struct;
+        if (G_current_json) { // IF list view...
+            let blobs = G_current_json.emails;
+            if (G_current_listmode == 'threaded') blobs = G_current_json.thread_struct;
             let no_emails = blobs.length;
-            if (current_email_idx == undefined && current_json && (current_index_pos + current_per_page) < no_emails) {
+            if (G_current_email_idx == undefined && G_current_json && (current_index_pos + current_per_page) < no_emails) {
                 listview_header({
                     pos: current_index_pos + current_per_page
-                }, current_json);
+                }, G_current_json);
             }
         }
     }
@@ -2062,7 +2062,7 @@ function list_index_onepage(state, json) {
 
 // onload function for index.html
 function prime_list_index() {
-    GET('%sapi/preferences.lua'.format(apiURL), list_index_onepage, {});
+    GET('%sapi/preferences.lua'.format(G_apiURL), list_index_onepage, {});
 }
 
 /******************************************
@@ -2103,7 +2103,7 @@ function listview_flat(json, start) {
 
                 // Hidden placeholder for expanding email(s)
                 let placeholder = new HTML('div', {
-                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    class: G_chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
                     id: 'email_%u'.format(z)
                 });
                 list.inject(placeholder);
@@ -2198,14 +2198,14 @@ function listview_header(state, json) {
     let list_title = json.list;
     prev_listview_json = json;
     prev_listview_state = state;
-    if (current_list == 'virtual' && current_domain == 'inbox') {
+    if (G_current_list == 'virtual' && G_current_domain == 'inbox') {
         list_title = "Virtual inbox, past 30 days";
     }
     let blobs = json.emails ? json.emails : [];
-    if (current_listmode == 'threaded') blobs = json.thread_struct;
+    if (G_current_listmode == 'threaded') blobs = json.thread_struct;
 
-    if (current_year && current_month) {
-        list_title += ", %s %u".format(MONTHS[current_month - 1], current_year);
+    if (G_current_year && G_current_month) {
+        list_title += ", %s %u".format(MONTHS[G_current_month - 1], G_current_year);
     } else {
         list_title += ", past month";
     }
@@ -2228,7 +2228,7 @@ function listview_header(state, json) {
     document.getElementById('listview_title').inject(download);
     download.addEventListener('click', () => {
         let sep = '?';
-        let dl_url = apiURL + 'api/mbox.lua';
+        let dl_url = G_apiURL + 'api/mbox.lua';
         for (let key in json.searchParams || {}) {
             dl_url += sep + key + "=" + encodeURIComponent(json.searchParams[key]);
             sep = '&';
@@ -2252,7 +2252,7 @@ function listview_header(state, json) {
 
     let pprev = Math.max(0, first - current_per_page - 1);
     let cback = new HTML('button', {
-        onclick: 'listview_header({pos: %u}, current_json);'.format(pprev),
+        onclick: 'listview_header({pos: %u}, G_current_json);'.format(pprev),
         disabled: (first == 1) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-left'
@@ -2261,7 +2261,7 @@ function listview_header(state, json) {
 
     let pnext = first + current_per_page - 1;
     let cforward = new HTML('button', {
-        onclick: 'listview_header({pos: %u}, current_json);'.format(pnext),
+        onclick: 'listview_header({pos: %u}, G_current_json);'.format(pnext),
         disabled: (first + current_per_page - 1 >= blobs.length) ? 'true' : null
     }, new HTML('span', {
         class: 'glyphicon glyphicon-chevron-right'
@@ -2280,7 +2280,7 @@ function listview_header(state, json) {
     chevrons.inject(crefresh);
 
     if (state && state.pos != undefined) {
-        if (current_listmode == 'threaded') {
+        if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
         } else {
             listview_flat(json, state.pos);
@@ -2289,7 +2289,7 @@ function listview_header(state, json) {
 
     let tm = document.getElementById('threaded_mobile_img');
     if (tm) {
-        if (current_listmode == 'threaded') tm.setAttribute("src", "images/threading_enabled.png");
+        if (G_current_listmode == 'threaded') tm.setAttribute("src", "images/threading_enabled.png");
         else tm.setAttribute("src", "images/threading_disabled.png");
     }
 }
@@ -2312,22 +2312,22 @@ function listview_list_lists(state, json) {
         return;
     }
     if (!json) {
-        json = ponymail_preferences;
+        json = G_ponymail_preferences;
     }
     if (lists) {
         lists.innerHTML = "";
 
-        if (isHash(json.lists) && json.lists[current_domain]) {
+        if (isHash(json.lists) && json.lists[G_current_domain]) {
             let lists_sorted = [];
-            for (let list in json.lists[current_domain]) {
-                lists_sorted.push([list, json.lists[current_domain][list]]);
+            for (let list in json.lists[G_current_domain]) {
+                lists_sorted.push([list, json.lists[G_current_domain][list]]);
             }
             lists_sorted.sort((a, b) => b[1] - a[1]);
             let alists = [];
             for (let list of lists_sorted) alists.push(list[0]);
-            if (current_list != '*' && current_domain != '*') {
-                alists.remove(current_list);
-                alists.unshift(current_list);
+            if (G_current_list != '*' && G_current_domain != '*') {
+                alists.remove(G_current_list);
+                alists.unshift(G_current_list);
             }
             let maxlists = (searching && 3 || 4);
             if (alists.length == maxlists + 1) maxlists++; // skip drop-down if only one additional list (#54)
@@ -2336,13 +2336,13 @@ function listview_list_lists(state, json) {
                 let listname = alists[i];
                 let listnametxt = listname;
                 if (pm_config.long_tabs) {
-                    listnametxt = '%s@%s'.format(listname, current_domain);
+                    listnametxt = '%s@%s'.format(listname, G_current_domain);
                 }
                 let li = new HTML('li', {
                     onclick: 'switch_list(this, "tab");',
-                    class: (listname == current_list && !searching) ? 'active' : null
+                    class: (listname == G_current_list && !searching) ? 'active' : null
                 }, listnametxt);
-                li.setAttribute("data-list", '%s@%s'.format(listname, current_domain));
+                li.setAttribute("data-list", '%s@%s'.format(listname, G_current_domain));
                 lists.inject(li);
             }
 
@@ -2366,7 +2366,7 @@ function listview_list_lists(state, json) {
                 li.inject(otherlists);
                 for (let listname of other_lists_sorted) {
                     let opt = new HTML('option', {
-                        value: "%s@%s".format(listname, current_domain)
+                        value: "%s@%s".format(listname, G_current_domain)
                     }, listname);
                     otherlists.inject(opt);
                 }
@@ -2388,11 +2388,11 @@ function listview_list_lists(state, json) {
             otherlists.inject(new HTML('option', {
                 disabled: 'disabled',
                 selected: 'selected'
-            }, "%s@%s".format(current_list, current_domain)));
+            }, "%s@%s".format(G_current_list, G_current_domain)));
             li.inject(otherlists);
             for (let listname of all_lists_narrow) {
                 let opt = new HTML('option', {
-                    value: "%s@%s".format(listname, current_domain)
+                    value: "%s@%s".format(listname, G_current_domain)
                 }, listname);
                 otherlists.inject(opt);
             }
@@ -2414,7 +2414,7 @@ function listview_list_lists(state, json) {
     if (isHash(json.lists)) {
         let no_projects = 0;
         let select = document.getElementById('project_select');
-        if (!select || select_primed) return;
+        if (!select || G_select_primed) return;
         let opts = {}
         let doms = [];
         for (let domain in json.lists) {
@@ -2425,7 +2425,7 @@ function listview_list_lists(state, json) {
             doms.push(domain);
             no_projects++;
         }
-        if (no_projects > 1 || current_domain == '*') {
+        if (no_projects > 1 || G_current_domain == '*') {
             select.innerHTML = "";
             let title = new HTML('option', {
                 disabled: 'disabled',
@@ -2438,7 +2438,7 @@ function listview_list_lists(state, json) {
                 select.inject(opts[dom]);
             }
             select.style.display = "inline-block";
-            select_primed = true; // mark it primed so we don't generate it again later
+            G_select_primed = true; // mark it primed so we don't generate it again later
         }
     }
 }
@@ -2446,11 +2446,11 @@ function listview_list_lists(state, json) {
 
 function switch_project(domain) {
     // TODO: improve this
-    if (ponymail_preferences && ponymail_preferences.lists[domain]) {
+    if (G_ponymail_preferences && G_ponymail_preferences.lists[domain]) {
         // Switch to the most populous, but not commits/cvs
         let lists_sorted = [];
-        for (let list in ponymail_preferences.lists[domain]) {
-            lists_sorted.push([list, ponymail_preferences.lists[domain][list]]);
+        for (let list in G_ponymail_preferences.lists[domain]) {
+            lists_sorted.push([list, G_ponymail_preferences.lists[domain][list]]);
         }
         lists_sorted.sort((a, b) => b[1] - a[1]);
         let lists = [];
@@ -2493,10 +2493,10 @@ function switch_list(list, from) {
         listid = list.getAttribute("data-list") || list.innerText;
     }
     let bits = listid.split("@");
-    current_list = bits[0];
-    current_domain = bits[1];
-    current_year = 0;
-    current_month = 0;
+    G_current_list = bits[0];
+    G_current_domain = bits[1];
+    G_current_year = 0;
+    G_current_month = 0;
 
     let newhref = "list.html?%s".format(listid);
     if (location.href !== newhref) {
@@ -2548,7 +2548,7 @@ function listview_threaded(json, start) {
                 list.inject(item);
                 // Hidden placeholder for expanding email(s)
                 let placeholder = new HTML('div', {
-                    class: chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    class: G_chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
                     id: 'email_%u'.format(z)
                 });
                 list.inject(placeholder);
@@ -2560,7 +2560,7 @@ function listview_threaded(json, start) {
 }
 
 function find_email(id) {
-    let json = current_json;
+    let json = G_current_json;
     for (let i = 0; i < json.emails.length; i++) {
         if (json.emails[i].id == id) return json.emails[i];
     }
@@ -2645,7 +2645,7 @@ function listview_threaded_element(thread, idx) {
     element.inject(author);
 
     // If needed, inject ML name
-    if (current_domain == 'inbox' || current_list == '*') {
+    if (G_current_domain == 'inbox' || G_current_list == '*') {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
         author.inject(new HTML('span', {
@@ -2662,7 +2662,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
-    if (current_json.list.match(/\*/) || current_json.domain == '*') {
+    if (G_current_json.list.match(/\*/) || G_current_json.domain == '*') {
         let kbd = new HTML('kbd', {
             class: 'listview_kbd'
         }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
@@ -2772,7 +2772,7 @@ async function admin_del_attachment(hash) {
         document: hash
     });
     // remove attachment
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
 
     // Edit email in place
@@ -2794,7 +2794,7 @@ async function admin_hide_email() {
         action: "hide",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email hidden", "Server responded with: " + response, "help");
@@ -2811,7 +2811,7 @@ async function admin_unhide_email() {
         action: "unhide",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email unhidden", "Server responded with: " + response, "help");
@@ -2830,7 +2830,7 @@ async function admin_delete_email() {
         action: "delete",
         document: admin_current_email
     });
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (rv.status == 200) {
         modal("Email removed", "Server responded with: " + response, "help");
@@ -2860,7 +2860,7 @@ async function admin_save_email(edit_attachment = false) {
         body: body,
         attachments: attach
     })
-    let rv = await POST('%sapi/mgmt.json'.format(apiURL), formdata, {});
+    let rv = await POST('%sapi/mgmt.json'.format(G_apiURL), formdata, {});
     let response = await rv.text();
     if (edit_attachment && rv.status == 200) return
     if (rv.status == 200) {
@@ -2986,7 +2986,7 @@ function admin_email_preview(stats, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3132,13 +3132,13 @@ function admin_audit_view(state, json) {
 
 function admin_audit_next() {
     audit_page++;
-    GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
+    GET('%sapi/mgmt.json?action=log&page=%u&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);
 }
 
 // Onload function for admin.html
 function admin_init() {
     init_preferences(); // blank call to load defaults like social rendering
-    GET('%sapi/preferences.lua'.format(apiURL), (state, json) => {
+    GET('%sapi/preferences.lua'.format(G_apiURL), (state, json) => {
         mgmt_prefs = json
         init_preferences(state, json);
     }, null);
@@ -3151,10 +3151,10 @@ function admin_init() {
         }
         // Email handling?
         else {
-            GET('%sapi/email.json?id=%s'.format(apiURL, mid), admin_email_preview, null);
+            GET('%sapi/email.json?id=%s'.format(G_apiURL, mid), admin_email_preview, null);
         }
     } else { // View audit log
-        GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(apiURL, audit_page, audit_size), admin_audit_view, null);
+        GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);
     }
 }
 
@@ -3166,18 +3166,18 @@ function admin_init() {
 // logout: log out a user
 // call the logout URL, then refresh this page - much simple!
 function logout() {
-    GET("%sapi/preferences.lua?logout=true".format(apiURL), () => location.href = document.location);
+    GET("%sapi/preferences.lua?logout=true".format(G_apiURL), () => location.href = document.location);
 }
 
 function init_preferences(state, json) {
-    ponymail_preferences = json || {};
+    G_ponymail_preferences = json || {};
     // First, load session local settings, if possible
-    if (can_store) {
-        let local_preferences = window.localStorage.getItem('ponymail_preferences');
+    if (G_can_store) {
+        let local_preferences = window.localStorage.getItem('G_ponymail_preferences');
         if (local_preferences) {
             let ljson = JSON.parse(local_preferences);
-            if (ljson.chatty_layout !== undefined) {
-                chatty_layout = ljson.chatty_layout;
+            if (ljson.G_chatty_layout !== undefined) {
+                G_chatty_layout = ljson.G_chatty_layout;
             }
         }
     }
@@ -3185,14 +3185,14 @@ function init_preferences(state, json) {
     // color some links
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
 
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) {
         let prefsmenu = document.getElementById('prefs_dropdown');
         let uimg = document.getElementById('uimg');
         uimg.setAttribute("src", "images/user.png");
-        uimg.setAttribute("title", "Logged in as %s".format(ponymail_preferences.login.credentials.fullname));
+        uimg.setAttribute("title", "Logged in as %s".format(G_ponymail_preferences.login.credentials.fullname));
 
         // Generate user menu
         prefsmenu.innerHTML = "";
@@ -3220,12 +3220,12 @@ function init_preferences(state, json) {
         listview_list_lists(state, json);
         if (state && state.prime) {
             // If lists is accessible, show it
-            if (json.lists[current_domain] && (current_list == '*' || json.lists[current_domain][current_list] != undefined)) {
+            if (json.lists[G_current_domain] && (G_current_list == '*' || json.lists[G_current_domain][G_current_list] != undefined)) {
                 post_prime(state);
-            } else if  (current_domain == '*') { // assume a match
+            } else if  (G_current_domain == '*') { // assume a match
                 post_prime(state);
             } else { // otherwise, bork
-                if (current_list.length > 0 && (!json.lists[current_domain] || Object.keys(json.lists[current_domain]).length > 0)) {
+                if (G_current_list.length > 0 && (!json.lists[G_current_domain] || Object.keys(json.lists[G_current_domain]).length > 0)) {
                     let eml = document.getElementById('emails');
                     eml.innerText = "We couldn't find this list. It may not exist or require you to be logged in with specific credentials.";
                     eml.inject(new HTML('br'));
@@ -3234,7 +3234,7 @@ function init_preferences(state, json) {
                         onclick: 'location.href="oauth.html";'
                     }, "Click here to log in via OAuth"));
                 } else {
-                    switch_project(current_domain);
+                    switch_project(G_current_domain);
                 }
             }
         }
@@ -3242,40 +3242,40 @@ function init_preferences(state, json) {
 }
 
 function save_preferences() {
-    if (can_store) {
+    if (G_can_store) {
         let ljson = {
-            chatty_layout: chatty_layout
+            G_chatty_layout: G_chatty_layout
         };
         let lstring = JSON.stringify(ljson);
-        window.localStorage.setItem('ponymail_preferences', lstring);
+        window.localStorage.setItem('G_ponymail_preferences', lstring);
         console.log("Saved local preferences");
     }
 }
 
 
 function set_theme(theme) {
-    current_listmode = theme;
-    renderListView(current_state, current_json);
+    G_current_listmode = theme;
+    renderListView(G_current_state, G_current_json);
     save_preferences();
 }
 
 function set_skin(skin) {
-    chatty_layout = !chatty_layout;
+    G_chatty_layout = !G_chatty_layout;
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
     hideWindows(true);
-    renderListView(current_state, current_json);
+    renderListView(G_current_state, G_current_json);
     save_preferences();
 }
 
 // set_skin, but for permalinks
 function set_skin_permalink(skin) {
-    chatty_layout = !chatty_layout;
+    G_chatty_layout = !G_chatty_layout;
     let cl = document.getElementById('chatty_link');
     if (cl) {
-        cl.setAttribute("class", chatty_layout ? "enabled" : "disabled");
+        cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
     hideWindows(true);
     save_preferences();
@@ -3290,19 +3290,19 @@ function set_skin_permalink(skin) {
 /* List View Rendering main func */
 function renderListView(state, json) {
     if (json) {
-        current_json = json;
+        G_current_json = json;
     }
-    current_state = state;
+    G_current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
         renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
-        current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
+        G_current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
     }
     listview_header(state, json);
-    if (current_listmode == 'threaded') {
+    if (G_current_listmode == 'threaded') {
         listview_threaded(json, 0);
     } else {
         listview_flat(json, 0);
@@ -3327,21 +3327,21 @@ function primeListView(state) {
     console.log("Priming user interface for List View..");
     state = state || {};
     state.prime = true;
-    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, state);
+    GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, state);
 }
 
 // callback from when prefs have loaded
 function post_prime(state) {
-    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, current_list, current_domain);
-    if (current_year && current_month) {
-        sURL += "&d=%u-%u".format(current_year, current_month);
+    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, G_current_list, G_current_domain);
+    if (G_current_year && G_current_month) {
+        sURL += "&d=%u-%u".format(G_current_year, G_current_month);
     }
     if (!(state && state.search)) {
         if (state && state.array) {
-            collated_json = {};
+            G_collated_json = {};
             for (let entry of state.array) {
                 let list = entry.split('@');
-                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(apiURL, list[0], list[1]);
+                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, list[0], list[1]);
                 GET(sURL, render_virtual_inbox, state);
             }
         } else {
@@ -3361,17 +3361,17 @@ function parseURL(state) {
     let month = bits[1];
     let query = bits[2];
     state = state || {};
-    current_query = query || "";
-    current_month = 0;
-    current_year = 0;
+    G_current_query = query || "";
+    G_current_month = 0;
+    G_current_year = 0;
 
     // If "month" (year-month) is specified,
     // we should set the current vars
     if (month) {
         try {
             let dbits = month.split("-");
-            current_year = dbits[0];
-            current_month = dbits[1];
+            G_current_year = dbits[0];
+            G_current_month = dbits[1];
         } catch (e) {}
     }
     // Is this a valid list?
@@ -3379,16 +3379,16 @@ function parseURL(state) {
         // multi-list??
         if (list.match(/,/)) {
             state.array = list.split(',');
-            current_domain = 'inbox';
-            current_list = 'virtual';
+            G_current_domain = 'inbox';
+            G_current_list = 'virtual';
         } else {
             let lbits = list.split("@");
             if (lbits.length > 1) {
-                current_list = lbits[0];
-                current_domain = lbits[1];
+                G_current_list = lbits[0];
+                G_current_domain = lbits[1];
             } else {
-                current_domain = lbits;
-                current_list = '';
+                G_current_domain = lbits;
+                G_current_list = '';
             }
         }
     }
@@ -3419,9 +3419,9 @@ function parse_permalink() {
     }
     mid = unshortenID(mid);  // In case of old school shortened links
     init_preferences(); // blank call to load defaults like social rendering
-    GET('%sapi/preferences.lua'.format(apiURL), init_preferences, null);
+    GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
-    GET('%sapi/thread.lua?id=%s'.format(apiURL, mid), construct_single_thread, {
+    GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
         cached: true
     });
 }
@@ -3430,13 +3430,13 @@ function parse_permalink() {
 // Virtual inbox ŕendering
 function render_virtual_inbox(state, json) {
     if (json) {
-        collated_json.emails = collated_json.emails || [];
-        collated_json.thread_struct = collated_json.thread_struct || [];
+        G_collated_json.emails = G_collated_json.emails || [];
+        G_collated_json.thread_struct = G_collated_json.thread_struct || [];
         for (let email of json.emails) {
-            collated_json.emails.push(email);
+            G_collated_json.emails.push(email);
         }
         for (let thread_struct of json.thread_struct) {
-            collated_json.thread_struct.push(thread_struct);
+            G_collated_json.thread_struct.push(thread_struct);
         }
     }
 
@@ -3446,8 +3446,8 @@ function render_virtual_inbox(state, json) {
 
     if (true) {
         console.log("Rendering multi-list")
-        current_json = collated_json;
-        current_json.participants = [];
+        G_current_json = G_collated_json;
+        G_current_json.participants = [];
 
         async_escrow['rendering'] = new Date();
         if (!state || state.update_calendar !== false) {
@@ -3455,16 +3455,16 @@ function render_virtual_inbox(state, json) {
         }
         // sort threads by date
         if (isArray(json.thread_struct)) {
-            current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
+            G_current_json.thread_struct.sort((a, b) => last_email(a) - last_email(b));
         }
-        listview_header(state, current_json);
-        if (current_listmode == 'threaded') {
-            listview_threaded(current_json, 0);
+        listview_header(state, G_current_json);
+        if (G_current_listmode == 'threaded') {
+            listview_threaded(G_current_json, 0);
         } else {
-            listview_flat(current_json, 0);
+            listview_flat(G_current_json, 0);
         }
 
-        sidebar_stats(current_json); // This comes last, takes the longest with WC enabled.
+        sidebar_stats(G_current_json); // This comes last, takes the longest with WC enabled.
         delete async_escrow['rendering'];
     }
 }
@@ -3526,7 +3526,7 @@ async function render_email(state, json) {
             console.log("Scrolled to %u".format(rect.top - 48));
         } catch (e) {}
     }
-    if (chatty_layout) {
+    if (G_chatty_layout) {
         return render_email_chatty(state, json);
     }
 
@@ -3634,7 +3634,7 @@ async function render_email(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3689,7 +3689,7 @@ async function render_email(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -3699,7 +3699,7 @@ async function render_email(state, json) {
     toolbar.inject(sourcebutton);
 
     // Admin button?
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
             target: '_self',
@@ -3724,7 +3724,7 @@ async function render_email_chatty(state, json) {
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
-        ldate = "%s %s".format(when.toLocaleDateString('en-US', ponymail_date_format), when.toLocaleTimeString());
+        ldate = "%s %s".format(when.toLocaleDateString('en-US', PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
     } catch (e) {
 
     }
@@ -3775,7 +3775,7 @@ async function render_email_chatty(state, json) {
         let alinks = [];
         for (let n = 0; n < json.attachments.length; n++) {
             let attachment = json.attachments[n];
-            let link = `${apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3821,7 +3821,7 @@ async function render_email_chatty(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -3831,7 +3831,7 @@ async function render_email_chatty(state, json) {
     toolbar.inject(sourcebutton);
 
     // Admin button?
-    if (ponymail_preferences.login && ponymail_preferences.login.credentials && ponymail_preferences.login.credentials.admin) {
+    if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
             target: '_self',
@@ -3989,15 +3989,15 @@ function toggleView(id) {
 ******************************************/
 
 function search(query, date) {
-    let list = current_list;
+    let list = G_current_list;
     let global = false;
-    let domain = current_domain;
-    if (ponymail_search_list == 'global') {
+    let domain = G_current_domain;
+    if (G_ponymail_search_list == 'global') {
         list = '*';
         domain = '*';
         global = true;
     }
-    if (ponymail_search_list == 'domain') {
+    if (G_ponymail_search_list == 'domain') {
         list = '*';
         global = true;
     }
@@ -4007,7 +4007,7 @@ function search(query, date) {
 
     let header_from = document.getElementById('header_from');
     let header_subject = document.getElementById('header_subject');
-    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(apiURL, date, list, domain, query);
+    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(G_apiURL, date, list, domain, query);
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
         newhref += "&header_from=%s".format(header_from.value);
@@ -4038,7 +4038,7 @@ function search(query, date) {
 
 // set the list(s) to search, update links
 function search_set_list(what) {
-    ponymail_search_list = what;
+    G_ponymail_search_list = what;
     let links = document.getElementsByClassName('searchlistoption');
     let whatxt = "this list"
     for (let el of links) {
@@ -4203,20 +4203,20 @@ function calendar_scroll(me, x) {
 
 
 function calendar_click(year, month) {
-    current_year = year;
-    current_month = month;
+    G_current_year = year;
+    G_current_month = month;
     let searching = false;
     let q = "";
-    let calendar_current_list = current_list;
-    let calendar_current_domain = current_domain;
-    if (current_json && current_json.searchParams) {
-        q = current_json.searchParams.q || "";
-        calendar_current_list = current_json.searchParams.list;
-        calendar_current_domain = current_json.searchParams.domain;
+    let calendar_current_list = G_current_list;
+    let calendar_current_domain = G_current_domain;
+    if (G_current_json && G_current_json.searchParams) {
+        q = G_current_json.searchParams.q || "";
+        calendar_current_list = G_current_json.searchParams.list;
+        calendar_current_domain = G_current_json.searchParams.domain;
         // Weave in header parameters
-        for (let key of Object.keys((current_json.searchParams || {}))) {
+        for (let key of Object.keys((G_current_json.searchParams || {}))) {
             if (key.match(/^header_/)) {
-                let value = current_json.searchParams[key];
+                let value = G_current_json.searchParams[key];
                 q += `&${key}=${value}`;
             }
         }
@@ -4227,7 +4227,7 @@ function calendar_click(year, month) {
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(G_apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),
         update_calendar: false,
         search: (q && q.length > 0)
