@@ -16,13 +16,16 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "e93bb0b";
+const PONYMAIL_REVISION = "2e94b83";
 
 
 
 /******************************************
  Fetched from source/aavariables.js
 ******************************************/
+
+ /* jshint -W097 */
+'use strict';
 
 const PONYMAIL_VERSION = "1.0.1"; // Current version of Pony Mail Foal
 
@@ -45,7 +48,7 @@ let current_listmode = 'threaded';
 let ponymail_max_nesting = 10; // max nesting level before unthreading to save space
 
 // thread state
-let current_email_idx = undefined;
+let current_email_idx;
 let chatty_layout = true;
 let ponymail_date_format = {
     weekday: 'long',
@@ -77,8 +80,6 @@ if (window.localStorage && window.localStorage.setItem) {
 /******************************************
  Fetched from source/base-http-extensions.js
 ******************************************/
-
-'use strict';
 
 // URL calls currently 'in escrow'. This controls the spinny wheel animation
 let async_escrow = {}
@@ -139,10 +140,10 @@ async function async_snap(error) {
 
 // Asynchronous GET call
 async function GET(url, callback, state) {
-    console.log("Fetching JSON resource at %s".format(url))
+    console.log("Fetching JSON resource at %s".format(url));
     let pkey = "GET-%s-%s".format(callback, url);
-    let res = undefined;
-    let res_json = undefined;
+    let res;
+    let res_json;
     state = state || {};
     state.url = url;
     if (state && state.cached === true && async_cache[url]) {
@@ -708,6 +709,9 @@ function compose_email(replyto, list) {
             ]);
             composer("Reply to thread:", p);
             return;
+        } else {
+            modal("Please log in", "You need to be logged in before you can start a new thread.", "warning");
+            return
         }
     }
 
@@ -780,9 +784,9 @@ function compose_email(replyto, list) {
 
 // Generic modal function
 function composer(title, contents) {
-    let modal = document.getElementById('composer_modal');
-    if (modal == undefined) {
-        modal = new HTML('div', {
+    let composer_modal = document.getElementById('composer_modal');
+    if (composer_modal == undefined) {
+        composer_modal = new HTML('div', {
             id: 'composer_modal'
         }, [
             new HTML('div', {
@@ -800,14 +804,14 @@ function composer(title, contents) {
                 }, contents)
             ])
         ]);
-        document.body.appendChild(modal);
+        document.body.appendChild(composer_modal);
 
     } else {
         document.getElementById('composer_modal_title').innerText = title;
         document.getElementById('composer_modal_contents').innerHTML = '';
         document.getElementById('composer_modal_contents').inject(contents || '');
     }
-    modal.style.display = 'block';
+    composer_modal.style.display = 'block';
 }
 
 // Constructor for email body in replies...
@@ -894,7 +898,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     }
     cid %= 5;
     let color = ['286090', 'ccab0a', 'c04331', '169e4e', '6d4ca5'][cid];
-    let email = undefined;
+    let email;
     if (nestlevel < max_nesting) {
         email = new HTML('div', {
             class: 'email_wrapper',
@@ -1763,13 +1767,13 @@ window.onpopstate = function(event) {
 
 // Generic modal function
 function modal(title, msg, type, isHTML) {
-    let modal = document.getElementById('modal');
+    let modalId = document.getElementById('modal');
     let text = document.getElementById('modal_text');
-    if (modal == undefined) {
+    if (modalId == undefined) {
         text = new HTML('p', {
             id: 'modal_text'
         }, "");
-        modal = new HTML('div', {
+        modalId = new HTML('div', {
             id: 'modal'
         }, [
             new HTML('div', {
@@ -1785,15 +1789,15 @@ function modal(title, msg, type, isHTML) {
                 new HTML('div', {}, text)
             ])
         ]);
-        document.body.appendChild(modal);
+        document.body.appendChild(modalId);
 
     }
     if (type) {
-        modal.setAttribute("class", "modal_" + type);
+        modalId.setAttribute("class", "modal_" + type);
     } else {
-        modal.setAttribute("class", undefined);
+        modalId.setAttribute("class", undefined);
     }
-    modal.style.display = 'block';
+    modalId.style.display = 'block';
     document.getElementById('modal_title').innerText = title;
     // If we trust HTML, use it. Otherwise only show as textNode.
     if (isHTML) {
@@ -1816,9 +1820,9 @@ function anyOpen() {
 function hideWindows(force_all) {
 
     // First, check if we want to hide a modal
-    let modal = document.getElementById('modal');
-    if (modal && modal.style.display == 'block') {
-        modal.style.display = 'none';
+    let modalId = document.getElementById('modal');
+    if (modalId && modalId.style.display == 'block') {
+        modalId.style.display = 'none';
         if (force_all !== true) return;
     }
 
@@ -2294,7 +2298,7 @@ function listview_list_lists(state, json) {
     let lists = document.getElementById('list_picker_ul');
     let searching = (state && state.search === true) ? true : false;
     if (state && state.to) {
-        let tab = undefined;
+        let tab;
         let tabs = lists.childNodes;
         for (let xtab of tabs) {
             if ((state.to == 'search' && xtab.getAttribute('id') == 'tab_search') || (xtab.innerText == state.to || xtab.getAttribute('data-list') == state.to)) {
