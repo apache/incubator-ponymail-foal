@@ -146,7 +146,6 @@ Array.prototype.remove = function(val) {
 
 /* Check if array has value */
 Array.prototype.has = function(val) {
-    var i, item, j, len;
     for (let item of this) {
         if (item === val) {
             return true;
