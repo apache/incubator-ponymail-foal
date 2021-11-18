@@ -37,7 +37,7 @@ function fixupPicker(obj) {
 }
 // makeSelect: Creates a <select> object with options
 function makeSelect(options, id, selval) {
-    var sel = document.createElement('select')
+    let sel = document.createElement('select')
     sel.addEventListener("focus", function(event) {
         $('html').on('hide.bs.dropdown', function(e) {
             return false;
@@ -49,8 +49,8 @@ function makeSelect(options, id, selval) {
     sel.setAttribute("name", id)
     sel.setAttribute("id", id)
     // For each options element, create it in the DOM
-    for (var key in options) {
-        var opt = document.createElement('option')
+    for (let key in options) {
+        let opt = document.createElement('option')
         // Hash or array?
         if (typeof key == "string") {
             opt.setAttribute("value", key)
@@ -74,15 +74,15 @@ function makeSelect(options, id, selval) {
 // and puts div2 into the right column,
 // and 'name' as text in the left one.
 function splitDiv(id, name, div2) {
-    var div = document.createElement('div')
-    var subdiv = document.createElement('div')
-    var radio = document.createElement('input')
+    let div = document.createElement('div')
+    let subdiv = document.createElement('div')
+    let radio = document.createElement('input')
     radio.setAttribute("type", "radio")
     radio.setAttribute("name", "datepicker_radio")
     radio.setAttribute("value", name)
     radio.setAttribute("id", "datepicker_radio_" + id)
     radio.setAttribute("onclick", "calcTimespan('" + id + "')")
-    var label = document.createElement('label')
+    let label = document.createElement('label')
     label.innerHTML = "&nbsp; " + name + ": "
     label.setAttribute("for", "datepicker_radio_" + id)
 
@@ -108,15 +108,15 @@ function splitDiv(id, name, div2) {
 // for the datepicker choice and puts it in the datepicker's
 // spawning input/select element.
 function calcTimespan(what) {
-    var wat = ""
-    var tval = ""
+    let wat = ""
+    let tval = ""
 
     // Less than N units ago?
     if (what == 'lt') {
         // Get unit and how many units
-        var N = document.getElementById('datepicker_lti').value
-        var unit = document.getElementById('datepicker_lts').value
-        var unitt = DATE_UNITS[unit]
+        let N = document.getElementById('datepicker_lti').value
+        let unit = document.getElementById('datepicker_lts').value
+        let unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -132,9 +132,9 @@ function calcTimespan(what) {
     // More than N units ago?
     if (what == 'mt') {
         // As above, get unit and no of units.
-        var N = document.getElementById('datepicker_mti').value
-        var unit = document.getElementById('datepicker_mts').value
-        var unitt = DATE_UNITS[unit]
+        let N = document.getElementById('datepicker_mti').value
+        let unit = document.getElementById('datepicker_mts').value
+        let unitt = DATE_UNITS[unit]
         if (parseInt(N) != 1) {
             unitt += "s"
         }
@@ -149,8 +149,8 @@ function calcTimespan(what) {
     // Date range?
     if (what == 'cd') {
         // Get From and To values
-        var f = document.getElementById('datepicker_cfrom').value
-        var t = document.getElementById('datepicker_cto').value
+        let f = document.getElementById('datepicker_cfrom').value
+        let t = document.getElementById('datepicker_cto').value
         // construct timespan val + description if both from and to are valid
         if (f.length > 0 && t.length > 0) {
             wat = "From " + f + " to " + t
@@ -172,16 +172,15 @@ function calcTimespan(what) {
     }
 }
 
-// datePicker: spawns a date picker with various
+// datePicker: spawns a date picker with letious
 // timespan options right next to the parent caller.
 function datePicker(parent, seedPeriod) {
     datepicker_spawner = parent
-    var div = document.getElementById('datepicker_popup')
+    let div = document.getElementById('datepicker_popup')
 
     // If the datepicker object doesn't exist, spawn it
     if (!div) {
         div = document.createElement('div')
-        var id = parseInt(Math.random() * 10000).toString(16)
         div.setAttribute("id", "datepicker_popup")
         div.setAttribute("class", "datepicker")
     }
@@ -191,21 +190,21 @@ function datePicker(parent, seedPeriod) {
     div.style.display = "block"
 
     // Position the datepicker next to whatever called it
-    var bb = parent.getBoundingClientRect()
+    let bb = parent.getBoundingClientRect()
     div.style.top = (bb.bottom + 8) + "px"
     div.style.left = (bb.left + 32) + "px"
 
 
     // -- Less than N $units ago
-    var ltdiv = document.createElement('div')
-    var lti = document.createElement('input')
+    let ltdiv = document.createElement('div')
+    let lti = document.createElement('input')
     lti.setAttribute("id", "datepicker_lti")
     lti.style.width = "48px"
     lti.setAttribute("onkeyup", "calcTimespan('lt')")
     lti.setAttribute("onblur", "calcTimespan('lt')")
     ltdiv.appendChild(lti)
 
-    var lts = makeSelect({
+    let lts = makeSelect({
         'd': "Day(s)",
         'w': 'Week(s)',
         'M': "Month(s)",
@@ -219,9 +218,9 @@ function datePicker(parent, seedPeriod) {
 
 
     // -- More than N $units ago
-    var mtdiv = document.createElement('div')
+    let mtdiv = document.createElement('div')
 
-    var mti = document.createElement('input')
+    let mti = document.createElement('input')
     mti.style.width = "48px"
     mti.setAttribute("id", "datepicker_mti")
     mti.setAttribute("onkeyup", "calcTimespan('mt')")
@@ -229,7 +228,7 @@ function datePicker(parent, seedPeriod) {
     mtdiv.appendChild(mti)
 
 
-    var mts = makeSelect({
+    let mts = makeSelect({
         'd': "Day(s)",
         'w': 'Week(s)',
         'M': "Month(s)",
@@ -244,9 +243,9 @@ function datePicker(parent, seedPeriod) {
 
     // -- Calendar timespan
     // This is just two text fields, the calendarPicker sub-plugin populates them
-    var cdiv = document.createElement('div')
+    let cdiv = document.createElement('div')
 
-    var cfrom = document.createElement('input')
+    let cfrom = document.createElement('input')
     cfrom.style.width = "90px"
     cfrom.setAttribute("id", "datepicker_cfrom")
     cfrom.setAttribute("onfocus", "showCalendarPicker(this)")
@@ -254,7 +253,7 @@ function datePicker(parent, seedPeriod) {
     cdiv.appendChild(document.createTextNode('From: '))
     cdiv.appendChild(cfrom)
 
-    var cto = document.createElement('input')
+    let cto = document.createElement('input')
     cto.style.width = "90px"
     cto.setAttribute("id", "datepicker_cto")
     cto.setAttribute("onfocus", "showCalendarPicker(this)")
@@ -267,7 +266,7 @@ function datePicker(parent, seedPeriod) {
 
 
     // -- Magic button that sends the timespan back to the caller
-    var okay = document.createElement('input')
+    let okay = document.createElement('input')
     okay.setAttribute("type", "button")
     okay.setAttribute("value", "Okay")
     okay.setAttribute("onclick", "setDatepickerDate()")
@@ -282,18 +281,18 @@ function datePicker(parent, seedPeriod) {
     // This is for recalcing the set options if spawned from a
     // select/input box with an existing value derived from an
     // earlier call to datePicker
-    var ptype = ""
-    var pvalue = parent.hasAttribute("data") ? parent.getAttribute("data") : parent.value
+    let ptype = ""
+    let pvalue = parent.hasAttribute("data") ? parent.getAttribute("data") : parent.value
     if (pvalue.search(/=|-/) != -1) {
 
         // Less than N units ago?
         if (pvalue.match(/lte/)) {
-            var m = pvalue.match(/lte=(\d+)([dMyw])/)
+            let m = pvalue.match(/lte=(\d+)([dMyw])/)
             ptype = 'lt'
             if (m) {
                 document.getElementById('datepicker_lti').value = m[1]
-                var sel = document.getElementById('datepicker_lts')
-                for (var i in sel.options) {
+                let sel = document.getElementById('datepicker_lts')
+                for (let i in sel.options) {
                     if (parseInt(i) >= 0) {
                         if (sel.options[i].value == m[2]) {
                             sel.options[i].selected = "selected"
@@ -309,12 +308,12 @@ function datePicker(parent, seedPeriod) {
         // More than N units ago?
         if (pvalue.match(/gte/)) {
             ptype = 'mt'
-            var m = pvalue.match(/gte=(\d+)([dMyw])/)
+            let m = pvalue.match(/gte=(\d+)([dMyw])/)
             if (m) {
                 document.getElementById('datepicker_mti').value = m[1]
-                var sel = document.getElementById('datepicker_mts')
+                let sel = document.getElementById('datepicker_mts')
                 // Go through the unit values, select the one we use
-                for (var i in sel.options) {
+                for (let i in sel.options) {
                     if (parseInt(i) >= 0) {
                         if (sel.options[i].value == m[2]) {
                             sel.options[i].selected = "selected"
@@ -330,8 +329,8 @@ function datePicker(parent, seedPeriod) {
         if (pvalue.match(/dfr/)) {
             ptype = 'cd'
             // Make sure we have both a dfr and a dto here, catch them
-            var mf = pvalue.match(/dfr=(\d+-\d+-\d+)/)
-            var mt = pvalue.match(/dto=(\d+-\d+-\d+)/)
+            let mf = pvalue.match(/dfr=(\d+-\d+-\d+)/)
+            let mt = pvalue.match(/dto=(\d+-\d+-\d+)/)
             if (mf && mt) {
                 // easy peasy, just set two text fields!
                 document.getElementById('datepicker_cfrom').value = mf[1]
@@ -342,11 +341,11 @@ function datePicker(parent, seedPeriod) {
         if (pvalue.match(/(\d{4})-(\d+)/)) {
             ptype = 'cd'
             // Make sure we have both a dfr and a dto here, catch them
-            var m = pvalue.match(/(\d{4})-(\d+)/)
+            let m = pvalue.match(/(\d{4})-(\d+)/)
             if (m.length == 3) {
                 // easy peasy, just set two text fields!
-                var dfrom = new Date(parseInt(m[1]), parseInt(m[2]) - 1, 1, 0, 0, 0)
-                var dto = new Date(parseInt(m[1]), parseInt(m[2]), 0, 23, 59, 59)
+                let dfrom = new Date(parseInt(m[1]), parseInt(m[2]) - 1, 1, 0, 0, 0)
+                let dto = new Date(parseInt(m[1]), parseInt(m[2]), 0, 23, 59, 59)
                 document.getElementById('datepicker_cfrom').value = m[0] + "-" + dfrom.getDate()
                 document.getElementById('datepicker_cto').value = m[0] + "-" + dto.getDate()
             }
@@ -360,15 +359,13 @@ function datePickerValue(seedPeriod) {
     // This is for recalcing the set options if spawned from a
     // select/input box with an existing value derived from an
     // earlier call to datePicker
-    var ptype = ""
-    var rv = seedPeriod
+    let rv = seedPeriod
     if (seedPeriod && seedPeriod.search && seedPeriod.search(/=|-/) != -1) {
 
         // Less than N units ago?
         if (seedPeriod.match(/lte/)) {
-            var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
-            ptype = 'lt'
-            var unitt = DATE_UNITS[m[2]]
+            let m = seedPeriod.match(/lte=(\d+)([dMyw])/)
+            let unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
@@ -377,9 +374,8 @@ function datePickerValue(seedPeriod) {
 
         // More than N units ago?
         if (seedPeriod.match(/gte/)) {
-            ptype = 'mt'
-            var m = seedPeriod.match(/gte=(\d+)([dMyw])/)
-            var unitt = DATE_UNITS[m[2]]
+            let m = seedPeriod.match(/gte=(\d+)([dMyw])/)
+            let unitt = DATE_UNITS[m[2]]
             if (parseInt(m[1]) != 1) {
                 unitt += "s"
             }
@@ -388,9 +384,8 @@ function datePickerValue(seedPeriod) {
 
         // Date range?
         if (seedPeriod.match(/dfr/)) {
-            ptype = 'cd'
-            var mf = seedPeriod.match(/dfr=(\d+-\d+-\d+)/)
-            var mt = seedPeriod.match(/dto=(\d+-\d+-\d+)/)
+            let mf = seedPeriod.match(/dfr=(\d+-\d+-\d+)/)
+            let mt = seedPeriod.match(/dto=(\d+-\d+-\d+)/)
             if (mf && mt) {
                 rv = "From " + mf[1] + " to " + mt[1]
             }
@@ -398,10 +393,9 @@ function datePickerValue(seedPeriod) {
 
         // Month??
         if (seedPeriod.match(/^(\d+)-(\d+)$/)) {
-            ptype = 'mr' // just a made up thing...(month range)
-            var mr = seedPeriod.match(/(\d+)-(\d+)/)
+            let mr = seedPeriod.match(/(\d+)-(\d+)/)
             if (mr) {
-                dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
+                let dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
                 rv = MONTHS[dfrom.getMonth()] + ', ' + mr[1]
             }
         }
@@ -414,21 +408,17 @@ function datePickerDouble(seedPeriod) {
     // This basically takes a date-arg and doubles it backwards
     // so >=3M becomes =>6M etc. Also returns the cutoff for
     // the original date and the span in days of the original
-    var ptype = ""
-    var rv = seedPeriod
-    var dbl = seedPeriod
-    var tspan = 1
-    var dfrom = new Date()
-    var dto = new Date()
+    let dbl = seedPeriod
+    let tspan = 1
+    let dfrom = new Date()
+    let dto = new Date()
 
     // datepicker range?
     if (seedPeriod && seedPeriod.search && seedPeriod.search(/=/) != -1) {
 
         // Less than N units ago?
         if (seedPeriod.match(/lte/)) {
-            var m = seedPeriod.match(/lte=(\d+)([dMyw])/)
-            ptype = 'lt'
-            rv = "<" + m[1] + m[2] + " ago"
+            let m = seedPeriod.match(/lte=(\d+)([dMyw])/)
             dbl = "lte=" + (parseInt(m[1]) * 2) + m[2]
 
             // N months ago
@@ -457,11 +447,11 @@ function datePickerDouble(seedPeriod) {
 
         // More than N units ago?
         if (seedPeriod.match(/gte/)) {
-            ptype = 'mt'
-            var m = seedPeriod.match(/gte=(\d+)([dMyw])/)
-            rv = ">" + m[1] + m[2] + " ago"
+            let m = seedPeriod.match(/gte=(\d+)([dMyw])/)
             dbl = "gte=" + (parseInt(m[1]) * 2) + m[2]
-            tspan = parseInt(parseInt(m[1]) * 30.4)
+            // Can't really figure out a timespan for this, so...null!
+            // This also sort of invalidates use on the trend page, but meh..
+            tspan = null
             dfrom = null
 
             // Months
@@ -483,20 +473,14 @@ function datePickerDouble(seedPeriod) {
             if (m[2] == "w") {
                 dto.setDate(dto.getDate() - (parseInt(m[1]) * 7))
             }
-
-            // Can't really figure out a timespan for this, so...null!
-            // This also sort of invalidates use on the trend page, but meh..
-            tspan = null
         }
 
         // Date range?
         if (seedPeriod.match(/dfr/)) {
-            ptype = 'cd'
             // Find from and to
-            var mf = seedPeriod.match(/dfr=(\d+)-(\d+)-(\d+)/)
-            var mt = seedPeriod.match(/dto=(\d+)-(\d+)-(\d+)/)
+            let mf = seedPeriod.match(/dfr=(\d+)-(\d+)-(\d+)/)
+            let mt = seedPeriod.match(/dto=(\d+)-(\d+)-(\d+)/)
             if (mf && mt) {
-                rv = "from " + mf[1] + " to " + mt[1]
                 // Starts at 00:00:00 on from date
                 dfrom = new Date(parseInt(mf[1]), parseInt(mf[2]) - 1, parseInt(mf[3]), 0, 0, 0)
 
@@ -507,7 +491,7 @@ function datePickerDouble(seedPeriod) {
                 tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000 * 86400))
 
                 // double the distance
-                var dpast = new Date(dfrom)
+                let dpast = new Date(dfrom)
                 dpast.setDate(dpast.getDate() - tspan)
                 dbl = seedPeriod.replace(/dfr=[^|]+/, "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth() + 1) + '-' + dpast.getDate())
             } else {
@@ -526,10 +510,8 @@ function datePickerDouble(seedPeriod) {
     // Specific month?
     else if (seedPeriod.match(/^(\d+)-(\d+)$/)) {
         // just a made up thing...(month range)
-        ptype = 'mr'
-        var mr = seedPeriod.match(/(\d+)-(\d+)/)
+        let mr = seedPeriod.match(/(\d+)-(\d+)/)
         if (mr) {
-            rv = seedPeriod
             // Same as before, start at 00:00:00
             dfrom = new Date(parseInt(mr[1]), parseInt(mr[2]) - 1, 1, 0, 0, 0)
             // end at 23:59:59
@@ -539,7 +521,7 @@ function datePickerDouble(seedPeriod) {
             tspan = parseInt((dto.getTime() - dfrom.getTime() + 5000) / (1000 * 86400))
 
             // Double timespan
-            var dpast = new Date(dfrom)
+            let dpast = new Date(dfrom)
             dpast.setDate(dpast.getDate() - tspan)
             dbl = "dfr=" + (dpast.getFullYear()) + '-' + (dpast.getMonth() + 1) + '-' + dpast.getDate() + "|dto=" + (dto.getFullYear()) + '-' + (dto.getMonth() + 1) + '-' + dto.getDate()
         } else {
@@ -576,7 +558,7 @@ function findParent(el, name) {
 
 // function for hiding the date picker
 function blurDatePicker(evt) {
-    var es = evt ? (evt.target || evt.srcElement) : null;
+    let es = evt ? (evt.target || evt.srcElement) : null;
     if ((!es || !es.parentNode || (!findParent(es, "datepicker_popup") && !findParent(es, "calendarpicker_popup"))) && !(es ? es : "null").toString().match(/javascript:void/)) {
         document.getElementById('datepicker_popup').style.display = "none"
         $('html').trigger('hide.bs.dropdown')
@@ -590,28 +572,28 @@ function drawCalendarPicker(obj, date) {
     obj.focus()
 
     // Default to NOW for calendar.
-    var now = new Date()
+    let now = new Date()
 
     // if called with an existing date (YYYY-MM-DD),
     // convert it to a JS date object and use that for
     // rendering the calendar
     if (date) {
-        var ar = date.split(/-/)
+        let ar = date.split(/-/)
         now = new Date(ar[0], parseInt(ar[1]) - 1, ar[2])
     }
-    var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    var mat = now
+    let days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    let mat = now
 
     // Go to first day of the month
     mat.setDate(1)
 
     obj.innerHTML = "<h3>" + months[mat.getMonth()] + ", " + mat.getFullYear() + ":</h3>"
-    var tm = mat.getMonth()
+    let tm = mat.getMonth()
 
     // -- Nav buttons --
 
     // back-a-year button
-    var a = document.createElement('a')
+    let a = document.createElement('a')
     fixupPicker(a)
     a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear() - 1) + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
@@ -645,15 +627,15 @@ function drawCalendarPicker(obj, date) {
 
 
     // Table containing the dates of the selected month
-    var table = document.createElement('table')
+    let table = document.createElement('table')
 
     table.setAttribute("border", "1")
     table.style.margin = "0 auto"
 
     // Add header day names
-    var tr = document.createElement('tr');
-    for (var m = 0; m < 7; m++) {
-        var td = document.createElement('th')
+    let tr = document.createElement('tr');
+    for (let m = 0; m < 7; m++) {
+        let td = document.createElement('th')
         td.innerHTML = days[m]
         tr.appendChild(td)
     }
@@ -661,13 +643,13 @@ function drawCalendarPicker(obj, date) {
 
     // Until we hit the first day in a month, add blank days
     tr = document.createElement('tr');
-    var weekday = mat.getDay()
+    let weekday = mat.getDay()
     if (weekday == 0) {
         weekday = 7
     }
     weekday--;
-    for (var i = 0; i < weekday; i++) {
-        var td = document.createElement('td')
+    for (let i = 0; i < weekday; i++) {
+        let td = document.createElement('td')
         tr.appendChild(td)
     }
 
@@ -682,7 +664,7 @@ function drawCalendarPicker(obj, date) {
             table.appendChild(tr)
             tr = document.createElement('tr');
         }
-        td = document.createElement('td')
+        let td = document.createElement('td')
         // onclick for setting the calendarPicker's parent to this val.
         td.setAttribute("onclick", "setCalendarDate('" + mat.getFullYear() + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
         td.innerHTML = mat.getDate()
@@ -705,7 +687,7 @@ function setCalendarDate(what) {
 
 
     calendarpicker_spawner.value = what
-    var div = document.getElementById('calendarpicker_popup')
+    let div = document.getElementById('calendarpicker_popup')
     div.parentNode.focus()
     div.style.display = "none"
     calcTimespan('cd')
@@ -717,14 +699,14 @@ function showCalendarPicker(parent, seedDate) {
 
     // If supplied with a YYYY-MM-DD date, use this to seed the calendar
     if (!seedDate) {
-        var m = parent.value.match(/(\d+-\d+(-\d+)?)/)
+        let m = parent.value.match(/(\d+-\d+(-\d+)?)/)
         if (m) {
             seedDate = m[1]
         }
     }
 
     // Show or create the calendar object
-    var div = document.getElementById('calendarpicker_popup')
+    let div = document.getElementById('calendarpicker_popup')
     if (!div) {
         div = document.createElement('div')
         div.setAttribute("id", "calendarpicker_popup")
@@ -733,7 +715,7 @@ function showCalendarPicker(parent, seedDate) {
         div.innerHTML = "Calendar goes here..."
     }
     div.style.display = "block"
-    var bb = parent.getBoundingClientRect()
+    let bb = parent.getBoundingClientRect()
 
     // Align with the calling object, slightly below
     div.style.top = (bb.bottom + 8) + "px"

@@ -37,7 +37,6 @@ const HTML = (function() {
     function HTML(type, params, children) {
 
         /* create the raw element, or clone if passed an existing element */
-        var child, j, len, val;
         if (typeof type === 'object') {
             this.element = type.cloneNode();
         } else {
@@ -46,8 +45,8 @@ const HTML = (function() {
 
         /* If params have been passed, set them */
         if (isHash(params)) {
-            for (var key in params) {
-                val = params[key];
+            for (let key in params) {
+                let val = params[key];
 
                 /* Standard string value? */
                 if (typeof val === "string" || typeof val === 'number') {
@@ -59,7 +58,7 @@ const HTML = (function() {
                 } else if (isHash(val)) {
 
                     /* Are we trying to set multiple sub elements, like a style? */
-                    for (var subkey in val) {
+                    for (let subkey in val) {
                         let subval = val[subkey];
                         if (!this.element[key]) {
                             throw "No such attribute, " + key + "!";
@@ -80,6 +79,7 @@ const HTML = (function() {
 
                 /* If children is an array of elems, iterate and add */
                 if (isArray(children)) {
+                    let child, j, len;
                     for (j = 0, len = children.length; j < len; j++) {
                         child = children[j];
 
@@ -112,7 +112,7 @@ const HTML = (function() {
  */
 
 HTMLElement.prototype.inject = function(child) {
-    var item, j, len;
+    let item, j, len;
     if (isArray(child)) {
         for (j = 0, len = child.length; j < len; j++) {
             item = child[j];
@@ -137,7 +137,7 @@ HTMLElement.prototype.inject = function(child) {
  */
 
 HTMLElement.prototype.empty = function() {
-    var ndiv;
+    let ndiv;
     ndiv = this.cloneNode();
     this.parentNode.replaceChild(ndiv, this);
     return ndiv;

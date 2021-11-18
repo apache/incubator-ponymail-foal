@@ -50,7 +50,7 @@ function listview_threaded(json, start) {
 
 function find_email(id) {
     let json = current_json;
-    for (var i = 0; i < json.emails.length; i++) {
+    for (let i = 0; i < json.emails.length; i++) {
         if (json.emails[i].id == id) return json.emails[i];
     }
     return null;
@@ -82,7 +82,7 @@ function count_people(thread, hash) {
         }
     }
     let n = 0;
-    for (var _ in ppl) n++;
+    for (let _ in ppl) n++;
     return n;
 }
 

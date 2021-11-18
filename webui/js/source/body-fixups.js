@@ -75,7 +75,7 @@ function fixup_urls(splicer) {
         //splicer = splicer.innerText;
     }
     /* Array holding text and links */
-    var i, m, t, textbits, url, urls;
+    let i, m, t, textbits, url, urls;
     textbits = [];
 
     /* Find the first link, if any */
@@ -159,7 +159,7 @@ function cut_trailer(splicer) {
 function color_diff_lines(diff) {
     let lines = diff.split(/[\r\n]+/);
     let ret = [];
-    for (var z = 0; z < lines.length; z++) {
+    for (let z = 0; z < lines.length; z++) {
         let line = lines[z];
         let color = 'grey';
         if (line[0] == '@') color = 'blue';
@@ -184,7 +184,7 @@ function fixup_diffs(splicer) {
         splicer = splicer.innerText;
     }
     /* Array holding text and links */
-    var i, m, t, diff, diffs;
+    let i, m, t, diff, diffs;
     let textbits = [];
 
     /* Find the first link, if any */
@@ -231,7 +231,7 @@ function fixup_diffs(splicer) {
 // Function for turning quotes into quote segments
 function fixup_quotes(splicer) {
     if (splicer[splicer.length - 1] !== "\n") splicer += "\n"; //tweak to make quotes match the last line if no newline on it.
-    var hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
+    let hideQuotes, i, m, qdiv, quote, quotes, t, textbits;
     hideQuotes = true;
     if (prefs.compactQuotes === false && !chatty_layout) {
         hideQuotes = false;
@@ -259,7 +259,7 @@ function fixup_quotes(splicer) {
             t = splicer.substr(0, i);
             let diffed = fixup_diffs(cut_trailer(t));
             if (isArray(diffed)) {
-                for (var z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));
+                for (let z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));
             } else textbits.push(fixup_urls(diffed));
             splicer = splicer.substr(i);
         }
@@ -297,7 +297,7 @@ function fixup_quotes(splicer) {
     /* push the remaining text into textbits */
     let diffed = fixup_diffs(cut_trailer(splicer));
     if (isArray(diffed)) {
-        for (var z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);
+        for (let z = 0; z < diffed.length; z++) diffed[z] = fixup_urls(diffed[z]);
     } else diffed = fixup_urls(diffed);
     textbits.push(new HTML('span', {}, diffed));
 
