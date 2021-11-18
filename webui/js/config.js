@@ -15,7 +15,7 @@
  limitations under the License.
 */
 
-var pm_config = {
+const pm_config = {
     oauth: {
         // OAuth settings
          apache: {
@@ -58,7 +58,7 @@ const GRAVATAR_URL = "/api/gravatar?md5=%s"; // This must agree with apiURL abov
 
 
 // Localized preferences (defaults)
-var prefs = {
+const prefs = {
     subscribeLinks: false,          // Add subscribe button in stats pane?
     displayMode: 'threaded',        // threaded or flat
     groupBy: 'thread',              // thread or date

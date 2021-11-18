@@ -31,9 +31,9 @@
 #}, "Some text inside a div")
  */
 
-var txt = (msg) => document.createTextNode(msg);
+const txt = (msg) => document.createTextNode(msg);
 
-var HTML = (function() {
+const HTML = (function() {
     function HTML(type, params, children) {
 
         /* create the raw element, or clone if passed an existing element */

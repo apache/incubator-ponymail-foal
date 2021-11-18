@@ -16,8 +16,8 @@
 */
 
 const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-var calendar_index = 0;
-var calendar_years_shown = 4;
+let calendar_index = 0;
+let calendar_years_shown = 4;
 
 function renderCalendar(FY, FM, LY, LM, activity = null) {
     calendar_index = 0;
