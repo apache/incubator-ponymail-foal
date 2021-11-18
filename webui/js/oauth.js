@@ -17,11 +17,11 @@
 
 // Sometimes we don't need ponymail.js, so let's redefine GetAsync here
 function GetAsync(theUrl, xstate, callback) {
-    var xmlHttp = null;
+    let xmlHttp = null;
     if (window.XMLHttpRequest) {
         xmlHttp = new XMLHttpRequest();
     } else {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
     if (pm_config.URLBase && pm_config.URLBase.length > 0) {
         theUrl = pm_config.URLBase + theUrl
@@ -48,15 +48,15 @@ function GetAsync(theUrl, xstate, callback) {
 
 // redirect to the oauth provider
 function oauthPortal(key) {
-    var ot = pm_config.oauth[key]
-    var state = parseInt(Math.random()*1000000000) + '' + parseInt(Math.random()*1000000000)
+    let ot = pm_config.oauth[key]
+    let state = parseInt(Math.random()*1000000000) + '' + parseInt(Math.random()*1000000000)
     // google is different (as usual)
     if (key == 'google') {
         location.href = ot.oauth_portal + "?state=" + state + "&client_id=" + (ot.client_id ? ot.client_id : "") + "&response_type=id_token&scope=email&redirect_uri=" + escape(window.location)
     } else {
-        var cid = ""
+        let cid = ""
         if (ot.construct) {
-            for (var k in ot) {
+            for (let k in ot) {
                 cid += "&" + k + "=" + escape(ot[k])
             }
         }
@@ -88,13 +88,13 @@ function parseOauthResponse(json) {
 // Func for rendering all available oauth options
 function oauthOptions() {
     // get the oauth div
-    var oobj = document.getElementById('oauthtypes') 
+    let oobj = document.getElementById('oauthtypes') 
     oobj.innerHTML = ""
     // For each enabled oauth plugin, list it.
-    for (var key in pm_config.oauth) {
-        var ot = pm_config.oauth[key]
+    for (let key in pm_config.oauth) {
+        let ot = pm_config.oauth[key]
         if (true) { // dunno why this is here, but whatever.
-            var img = document.createElement('img')
+            let img = document.createElement('img')
             img.setAttribute("src", "images/oauth_" + key + ".png")
             img.setAttribute("title", "Log on with " + ot.name)
             img.setAttribute("onclick", "oauthPortal('" + key + "');")
@@ -124,7 +124,7 @@ function oauthWelcome(args) {
     }
     // Is this a callback from an oauth provider? If so, run the oauth stuff
     if (args && args.length >= 40) {
-        var key = args.match(/key=([a-z]+)/i)
+        let key = args.match(/key=([a-z]+)/i)
         if (key) {
             key = key[1]
         }
