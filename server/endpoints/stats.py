@@ -48,6 +48,22 @@ async def process(
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=400, text=str(ve))
     except AssertionError as ae:  # If defuzzer encounters internal errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(ae))
+    
+    # since: check if there have been recent updates to the data
+    if 'since' in indata:
+        since = indata.get('since', None)
+        if since:
+            epoch = int(since)
+        else:
+            epoch = int(time.time())
+        query_since = query_defuzzed.copy()
+        query_since['must'].append({"range" : { "epoch": { "gt": epoch}}})
+        results = await plugins.messages.query(
+            session, query_since, query_limit=1, metadata_only=True
+        )
+        if len(results) == 0:
+            return {"changed" : False}
+
     results = await plugins.messages.query(
         session, query_defuzzed, query_limit=server.config.database.max_hits
     )
