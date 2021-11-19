@@ -67,7 +67,6 @@ components:
       required:
       - list
       - domain
-      - q
     SingleEmailRequest:
       properties:
         id:
