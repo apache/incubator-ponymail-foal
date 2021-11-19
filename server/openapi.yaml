@@ -45,8 +45,15 @@ components:
           type: string
           example: "2021-12"
         d:
-          description: Optional advanced date parameters. Uses gte (greater than or equal) or lte (less than or equal) to narrow results
-          example: "lte=2019-01"
+          description: |
+            Optional advanced date parameters. There are various options for specifying the date range:
+            - a single month: yyyy-mm
+            - gte (greater than or equal) or lte (less than or equal) a number of Months, weeks, years or days (Mwyd)
+            - dfr=yyyy-mm-dd|dto=yyy-mm-dd - a range of days (inclusive)
+          example: |
+            - "2019-01"
+            - "lte=10d", "gte=2y"
+            - "dfr=2021-9-21|dto=2021-10-31"
           type: string
         dfrom:
           description: Optional start date, expressed as days ago. Used with dto.
