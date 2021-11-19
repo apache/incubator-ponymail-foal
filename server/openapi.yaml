@@ -48,6 +48,14 @@ components:
           description: Optional advanced date parameters. Uses gte (greater than or equal) or lte (less than or equal) to narrow results
           example: "lte=2019-01"
           type: string
+        dfrom:
+          description: Optional start date, expressed as days ago. Used with dto.
+          type: string
+          example: 31
+        dto:
+          description: Optional start date, expressed as days to capture starting from dfrom
+          type: string
+          example: 10
         q:
           description: "Free text query to search for. Can use + or - to denote mandatory presence or absence of words"
           type: string
