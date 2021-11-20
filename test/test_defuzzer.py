@@ -22,7 +22,15 @@ import pytest
 
 from server.plugins.defuzzer import defuzz
 
+def test_defuzzer_0():
+    with pytest.raises(ValueError) as excinfo:
+        defuzz({})
+    assert 'You must specify a domain' in str(excinfo.value)
+    with pytest.raises(ValueError) as excinfo:
+        defuzz({'domain': 'invalid'})
+    assert 'You must specify a list' in str(excinfo.value)
+
 def test_defuzzer_1():
     with pytest.raises(ValueError) as excinfo:
-        defuzz({'list': '@'})
+        defuzz({'list': '@', 'domain': 'invalid'})
     assert 'cannot contain @' in str(excinfo.value)
