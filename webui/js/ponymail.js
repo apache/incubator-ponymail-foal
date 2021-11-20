@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "f707f15";
+const PONYMAIL_REVISION = "1cc461d";
 
 
 
@@ -4333,7 +4333,7 @@ class SwipeDetector {
         target.addEventListener("touchend", this.touchEnd, false);
     }
 
-    setCallback(direction = "left", callback_function ) {
+    setCallback(direction, callback_function ) {
         document.addEventListener(`swipe${direction}`, callback_function);
     }
 
