@@ -107,8 +107,8 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
             raise ValueError("list_override must contain exactly one @ character")
         listname, fqdn = list_override.split("@", 1)
     else:
-        fqdn = formdata.get("domain")  # Must be provided
-        listname = formdata.get("list")  # Must be provided
+        fqdn = formdata.get("domain", '')  # Must be provided
+        listname = formdata.get("list", '')  # Must be provided
     if not fqdn:
         raise ValueError("You must specify a domain part of the mailing list(s) to search, or * for wildcard search.")
     if not listname:
