@@ -688,7 +688,7 @@ a.dropdown-toggle {
 }
 
 #display_options_dropdown, #login_dropdown {
-    z-index: 10;
+    z-index: 1001;
     background-color: white;
 }
 
@@ -724,7 +724,7 @@ a.dropdown-toggle {
 
 #display_options_dropdown {
     width: 380px;
-    z-index: 12;
+    z-index: 1001;
 }
 
 .navbar-default {
