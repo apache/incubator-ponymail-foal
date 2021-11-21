@@ -692,6 +692,16 @@ a.dropdown-toggle {
     background-color: white;
 }
 
+#display_options_dropdown > div {
+    width: 45%;
+    float: left;
+    margin: 2%;
+}
+
+#display_options_dropdown > div:first-child {
+    border-right: 2px solid #3333;
+}
+
 #preferences_ul {
     width: 160px;
     position: absolute;
@@ -731,7 +741,7 @@ a.dropdown-toggle {
     height: 48px;
 }
 
-@media only screen and (max-width: 440px) {
+@media only screen and (max-width: 480px) {
     #preferences_ul #display_options_dropdown {
         width: 300px;
         position: absolute;
