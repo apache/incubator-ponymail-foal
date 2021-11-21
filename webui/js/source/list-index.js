@@ -35,11 +35,11 @@ function list_index(state, json) {
     } else {
         let letters = 'abcdefghijklmnopqrstuvwxyz#';
         for (let i = 0; i < letters.length; i++) {
-            letter = letters[i].toUpperCase(); // declared above
+            let xletter = letters[i].toUpperCase(); // declared above
             let li = new HTML('li', {
-                onclick: 'list_index({letter: "%s"});'.format(letter),
-                class: (letter == 'A') ? 'active' : null
-            }, letter);
+                onclick: 'list_index({letter: "%s"});'.format(xletter),
+                class: (xletter == 'A') ? 'active' : null
+            }, xletter);
             lists.inject(li);
         }
     }
