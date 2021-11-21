@@ -600,6 +600,18 @@ a.dropdown-toggle {
     min-width: 300px;
     animation: fadein 0.5s;
   }
+
+  .listview_email_compact {
+    min-width: 300px;
+    height: 32px;
+    animation: fadein 0.5s;
+  }
+
+  .listview_email_compact .listview_email_subject {
+      display: block;
+      line-height: 38px;
+      margin-left: 24px;
+  }
   
   @keyframes fadein {
       from {
@@ -828,8 +840,17 @@ a.dropdown-toggle {
     border-left: 3px solid #AAA;
 }
 
+.listview_email_compact:first-of-type {
+    border: 1.25px solid #CCC9;
+    border-left: 3px solid #AAA;
+}
 
 .listview_email_flat:hover {
+    border-left: 3px solid #369;
+    background: #FFE;
+}
+
+.listview_email_compact:hover {
     border-left: 3px solid #369;
     background: #FFE;
 }
