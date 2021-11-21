@@ -549,6 +549,31 @@ a.dropdown-toggle {
   font-weight: bold;
 }
 
+
+/* Compacted email item */
+.listview_email_compact {
+    background: #FFF;
+    border: 1.25px solid #CCC9;
+    border-left: 3px solid #AAA;
+    border-top: none;
+    height: 24px;
+    line-height: 24px;
+    padding-top: 2px;
+    font-size: 1.25rem;
+    float: left;
+    width: 100%;
+}
+
+.listview_email_compact .listview_email_author {
+    height: 24px;
+    line-height: 24px;
+}
+
+.listview_email_compact .gravatar {
+    height: 20px;
+    width: 20px;
+}
+
 /* Hide labels, expand subject when mobile */
 @media only screen and (max-width: 600px) {
   #portrait_notice {
@@ -921,6 +946,8 @@ a .listview_email_threaded {
   color: #234 !important;
   text-decoration: none;
 }
+
+
 
 
 .email_quote {
