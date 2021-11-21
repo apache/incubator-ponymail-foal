@@ -34,14 +34,38 @@ function init_preferences(state, json) {
         }
     }
 
-    // color some links
-    let cl = document.getElementById('chatty_link');
+    // Set chatty/plain email rendering mode:
+    let cl = document.getElementById('chatty_link'); //  legacy button
     if (cl) {
         cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
     }
+    let cle = document.getElementById('email_mode_chatty');
+    if (cle) {
+        cle.checked = G_chatty_layout;
+    }
+    let cld = document.getElementById('email_mode_plain');
+    if (cld) {
+        cld.checked = !G_chatty_layout;
+    }
+
+    // Set list display mode:
+    let dmt = document.getElementById('display_mode_threaded');
+    if (dmt) {
+        dmt.checked = (G_current_listmode == 'threaded');
+    }
+    let dmf = document.getElementById('display_mode_flat');
+    if (dmf) {
+        dmf.checked = (G_current_listmode == 'flat');
+    }
+    let dmtr = document.getElementById('display_mode_treeview');
+    if (dmtr) {
+        dmtr.checked = (G_current_listmode == 'treeview');
+    }
+
+
 
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) {
-        let prefsmenu = document.getElementById('prefs_dropdown');
+        let prefsmenu = document.getElementById('login_dropdown') || document.getElementById('prefs_dropdown');
         let uimg = document.getElementById('uimg');
         uimg.setAttribute("src", "images/user.png");
         uimg.setAttribute("title", "Logged in as %s".format(G_ponymail_preferences.login.credentials.fullname));
@@ -57,7 +81,7 @@ function init_preferences(state, json) {
         prefsmenu.inject(li);
 
     } else {
-        let prefsmenu = document.getElementById('prefs_dropdown');
+        let prefsmenu = document.getElementById('login_dropdown') || document.getElementById('prefs_dropdown');
         if (prefsmenu) {
             prefsmenu.innerHTML = "";
             let login = new HTML('a', {
@@ -112,7 +136,11 @@ function set_theme(theme) {
 }
 
 function set_skin(skin) {
-    G_chatty_layout = !G_chatty_layout;
+    if (typeof(enable_chatty) === "boolean") {
+        G_chatty_layout = enable_chatty;
+    } else {
+        G_chatty_layout = !G_chatty_layout;
+    }
     let cl = document.getElementById('chatty_link');
     if (cl) {
         cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");
@@ -123,8 +151,12 @@ function set_skin(skin) {
 }
 
 // set_skin, but for permalinks
-function set_skin_permalink(skin) {
-    G_chatty_layout = !G_chatty_layout;
+function set_skin_permalink(enable_chatty) {
+    if (typeof(enable_chatty) === "boolean") {
+        G_chatty_layout = enable_chatty;
+    } else {
+        G_chatty_layout = !G_chatty_layout;
+    }
     let cl = document.getElementById('chatty_link');
     if (cl) {
         cl.setAttribute("class", G_chatty_layout ? "enabled" : "disabled");

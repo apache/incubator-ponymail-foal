@@ -84,43 +84,42 @@ the License. -->
       <form id="project_select_form">
         <select style="float: left; margin-top: 12px; display: none;" id="project_select" onchange='switch_project(this.value);'></select>
       </form>
-           
-    <div id="prefs" style="float: left;">
-      
-      
-      <ul class="nav navbar-nav" id="userprefs" style="position: absolute; right: 18px;">
+
+    <!-- User preferences and display options -->
+    <div id="preferences">
+      <ul class="nav" id="preferences_ul">
         <li class="dropdown navbar-right">
-          <!-- themes -->
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img id="timg" src="images/themes.png" alt="Themes logo" style="width: 32px;" title="Theme selector"/>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <img src="images/cog.png" alt="Display Settings" style="width: 32px;" title="Display Settings "/>
             <span class="caret"></span>
           </a>
-            <ul class="dropdown-menu" id="themes_dropdown">
-              <li><a href="javascript:void(0)" onclick="set_theme('threaded')">Threaded view</a></li>
-              <li><a href="javascript:void(0)" onclick="set_theme('flat')">Flat view</a></li>
-              <li><a href="javascript:void(0)" onclick="set_theme('treeview')">Tree view</a></li>
-              <!-- <li><a href="api/static.lua/" onclick="location.href='/api/static.lua/' + current_list + '@' + current_domain;return false;">Static HTML lists</a></li> -->
-          </ul>
+            <div class="dropdown-menu" id="display_options_dropdown">
+              <div style="width: 45%; display: inline-block; float: left; border-radius: 5px; border: 0.75px solid #3339; margin: 1%; padding: 1%;">
+                <b>List display mode:</b><hr/>
+              <input type="radio" id="display_mode_threaded" name="ui_threading" value="threaded" onchange="set_theme('threaded');"><label for="display_mode_threaded">Threaded view</label><br/>
+              <input type="radio" id="display_mode_flat" name="ui_threading" value="threaded" onchange="set_theme('flat');"><label for="display_mode_flat">Flat view</label><br/>
+              <input type="radio" id="display_mode_treeview" name="ui_threading" value="threaded" onchange="set_theme('treeview');"><label for="display_mode_treeview">Treeview</label><br/>
+
+              </div>
+              <div style="width: 45%; display: inline-block; float: right; border-radius: 5px; border: 1px solid #3339; margin: 1%; padding: 1%;">
+                <b>Email display mode:</b><hr/>
+                <input type="radio" id="email_mode_chatty" name="ui_emailmode" value="chatty" onchange="set_skin(true);"><label for="email_mode_chatty">Modern rendering</label><br/>
+                <input type="radio" id="email_mode_plain" name="ui_emailmode" value="plain" onchange="set_skin(false);"><label for="email_mode_plain">Legacy rendering</label><br/>
+
+              </div>
+
+            </div>
         </li>
-      <li id="threading_mobile" class="navbar-right" style="display: none;">
-          <img onclick="set_theme( (current_listmode == 'threaded') ? 'flat' : 'threaded');" title="Enabl or disable threaded view" id="threaded_mobile_img" src="images/threading_disabled.png" alt="Threading disabled" style="width: 32px;"/>
+
+        <li class="dropdown navbar-right" id="login">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img id="uimg" src="images/user_loggedout.png" alt="Logged out" style="width: 32px;"  title="Not logged in"/>
+              <span class="caret"></span></a>
+              <ul class="dropdown-menu" id="login_dropdown">
+            </ul>
         </li>
-      <li class="dropdown navbar-right" id="login">
-          
-          <!-- user prefs -->
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img id="uimg" src="images/user_loggedout.png" alt="Logged out" style="width: 32px; margin-top: -4px;"  title="Not logged in"/>
-            <span class="caret"></span></a>
-            <ul class="dropdown-menu" id="prefs_dropdown">
-            
-          </ul>
-      </li>
-      
-      
-      <li>
-        <div title="Enable/disable social rendering" onclick="set_skin('chatty');" id="chatty_link" > </div>
-      </li>
       </ul>
-      
     </div>
+
     
     </div>
     </header>

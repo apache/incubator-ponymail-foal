@@ -46,26 +46,36 @@ the License. -->
       <div class="navbar-header collapse navbar-collapse">
       <a class="navbar-brand" href="./"><span><img src="images/logo.png" alt="Foal logo" style="margin-top: -10px !important;" height="30"/>&nbsp;</a>
       </div>
-      
-             
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="float: left;">
-      
-      <ul class="nav navbar-nav" id="userprefs" style="position: absolute; right: 18px;">
-      <li>
-        <div title="Enable/disable social rendering" onclick="set_skin_permalink('chatty');" id="chatty_link" > </div>
-      </li>
-        <li class="dropdown navbar-right" id="login">
 
-          <!-- user prefs -->
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img id="uimg" src="images/user_loggedout.png" alt="Logged out" style="width: 32px; margin-top: -4px;"  title="Not logged in"/>
-            <span class="caret"></span></a>
-          <ul class="dropdown-menu" id="prefs_dropdown">
 
-          </ul>
-        </li>
-      </ul>
-      
-    </div>
+      <!-- User preferences and display options -->
+      <div id="preferences">
+        <ul class="nav" id="preferences_ul">
+          <li class="dropdown navbar-right">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <img src="images/cog.png" alt="Display Settings" style="width: 32px;" title="Display Settings "/>
+              <span class="caret"></span>
+            </a>
+            <div class="dropdown-menu" id="display_options_dropdown">
+
+              <div style="width: 95%; display: inline-block; float: right; border-radius: 5px; border: 1px solid #3339; margin: 1%; padding: 1%;">
+                <b>Email display mode:</b><hr/>
+                <input type="radio" id="email_mode_chatty" name="ui_emailmode" value="chatty" onchange="set_skin_permalink(true);"><label for="email_mode_chatty">Modern rendering</label><br/>
+                <input type="radio" id="email_mode_plain" name="ui_emailmode" value="plain" onchange="set_skin_permalink(false);"><label for="email_mode_plain">Legacy rendering</label><br/>
+
+              </div>
+
+            </div>
+          </li>
+
+          <li class="dropdown navbar-right" id="login">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img id="uimg" src="images/user_loggedout.png" alt="Logged out" style="width: 32px;"  title="Not logged in"/>
+              <span class="caret"></span></a>
+            <ul class="dropdown-menu" id="login_dropdown">
+            </ul>
+          </li>
+        </ul>
+      </div>
     
     </div>
     

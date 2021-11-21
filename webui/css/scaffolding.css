@@ -644,64 +644,70 @@ a.dropdown-toggle {
     margin-top: -16px;
     margin-left: 39px;
   }
-  #userprefs {
-    width: 100px;
-    position: absolute;
-    right: 18px;
-    top: 0px;
-  }
   #project_select_form {
     display: none;
   }
-  #prefs #login {
-    width:64px;
-    display: inline;
-    margin-top: -20px !important;
-  }
-  
-  #threading_mobile {
-    margin-top: -4px !important;
-  }
-  
+
 }
 
-#userprefs {
+#display_options_dropdown, #login_dropdown {
+    z-index: 10;
+    background-color: white;
+}
+
+#preferences_ul {
+    width: 160px;
     position: absolute;
-    right: 18px;
-    top: 0px;
+    right: 16px;
+    top: 12px;
+    z-index: 9;
+    display: inline;
+    list-style: none;
+    margin: 0;
+}
+
+#preferences_ul li{
+    display: inline;
+}
+
+#preferences_ul > li > a > img {
+    margin-top: -5px;
+}
+
+#preferences_ul li a {
+    display: inline !important;
+}
+
+#preferences_ul .dropdown-menu {
+    position: absolute;
+    margin-top: 10px;
+    left: auto;
+    right: 0;
+}
+
+#display_options_dropdown {
+    width: 380px;
+    z-index: 12;
+}
+
+.navbar-default {
+    height: 48px;
+}
+
+@media only screen and (max-width: 440px) {
+    #preferences_ul #display_options_dropdown {
+        width: 300px;
+    }
 }
 
 @media only screen and (max-width: 860px) {
   .navbar-brand {
     display: none;
   }
-  #userprefs {
-    width: 100px;
-    z-index: 9;
-  }
   .dropdown-toggle {
     height: 40px;
   }
-  #prefs ul li {
-    display: none;
-  }
-  
-  #prefs ul li#login {
-    display: inline-block;
-    margin-top: -10px;
-  }
-  #prefs ul #prefs_dropdown li {
-    display: inline-block;
-    background: #FFC;
-    color: #333;
-  }
-  
-  #threading_mobile {
-    display: inline !important;
-    float: right;
-    margin-top: 4px;
-  }
-  
+
 }
 
 @media only screen and (max-width: 1200px) {
@@ -1054,7 +1060,7 @@ a.chatty_title {
   font-size: 2.8rem;
   margin-top: 12px;
   width: 32px;
-  height: 27px;
+  height: 26px;
   margin-right: 10px;
   background-image: url(../images/sr_off.png);
   background-size: contain;
