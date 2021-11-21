@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "d31a784";
+const PONYMAIL_REVISION = "cbc214e";
 
 
 
@@ -845,10 +845,8 @@ function mua_link(email, xlist) {
     }
     let eml_raw_short = composer_re(email);
     let subject = "RE: " + email.subject || '';
-    let truncated = false;
     let N = 16000; // Anything above 16K can cause namespace issues with links.
     if (eml_raw_short.length > N) {
-        truncated = true;
         eml_raw_short = eml_raw_short.substring(0, N) + "\n[message truncated...]";
     }
     let listname = email.list_raw.replace(/[<>]/g, '').replace('.', '@', 1);
