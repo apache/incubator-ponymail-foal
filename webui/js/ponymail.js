@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "80677b9";
+const PONYMAIL_REVISION = "fe71caf";
 
 
 
@@ -2525,7 +2525,7 @@ function switch_list(list, from) {
 
 window.addEventListener('orientationchange', function() {
     window.setTimeout(function() {
-        if (anyOpen() == false && location.href.match(/\/list(\.html)?/)) {
+        if (anyOpen() == false && location.href.match(/\/list(\.html)?/) && location.search.length) {
             listview_header(prev_listview_state, prev_listview_json);
         }
     }, 100);
