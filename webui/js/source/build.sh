@@ -31,5 +31,11 @@ for f in `ls *.js`; do
     printf "\n\n/******************************************\n Fetched from source/${f}\n******************************************/\n\n" >> ../ponymail.js
     perl -0pe 's/\/\*.*?\*\/[\r\n]*//sm' ${f} >> ../ponymail.js
 done
+
+# Adjust JS caches in .html
+for f in `ls ../../*.html`; do
+    echo ${f}
+    perl -0pe 's/\?revision=[a-f0-9]+/?revision='${REVISION}'/sm' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
+done
 echo "Done!"
 
