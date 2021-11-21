@@ -31,6 +31,12 @@ function init_preferences(state, json) {
             if (ljson.G_chatty_layout !== undefined) {
                 G_chatty_layout = ljson.G_chatty_layout;
             }
+            if (ljson.G_current_listmode !== undefined) {
+                G_current_listmode = ljson.G_current_listmode;
+            }
+            if (ljson.G_current_listmode_compact !== undefined) {
+                G_current_listmode_compact = ljson.G_current_listmode_compact;
+            }
         }
     }
 
@@ -120,7 +126,9 @@ function init_preferences(state, json) {
 function save_preferences() {
     if (G_can_store) {
         let ljson = {
-            G_chatty_layout: G_chatty_layout
+            G_chatty_layout: G_chatty_layout,
+            G_current_listmode: G_current_listmode,
+            G_current_listmode_compact: G_current_listmode_compact
         };
         let lstring = JSON.stringify(ljson);
         window.localStorage.setItem('G_ponymail_preferences', lstring);
