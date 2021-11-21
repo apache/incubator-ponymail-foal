@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "44efe36";
+const PONYMAIL_REVISION = "a9c2820";
 
 
 
@@ -38,7 +38,6 @@ let G_current_list = '';
 let G_current_domain = '';
 let G_current_year = 0;
 let G_current_month = 0;
-let G_current_quick_search = '';
 let G_current_query = '';
 let G_current_open_email = null;
 let G_select_primed = false;
@@ -46,6 +45,7 @@ let G_ponymail_preferences = {};
 let G_ponymail_search_list = 'this';
 
 let G_current_listmode = 'threaded';
+let G_current_listmode_compact = false;
 const PONYMAIL_MAX_NESTING = 10; // max nesting level before unthreading to save space
 
 // thread state
@@ -2088,7 +2088,7 @@ function calc_per_page() {
         html.clientHeight, html.scrollHeight);
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
-    let email_h = 40;
+    let email_h = G_current_listmode_compact ? 24 : 40;
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
         email_h = 80;
@@ -2133,7 +2133,7 @@ function listview_flat_element(eml, idx) {
     });
 
     let element = new HTML('div', {
-        class: "listview_email_flat"
+        class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
     let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
@@ -2166,11 +2166,12 @@ function listview_flat_element(eml, idx) {
         class: 'listview_email_subject email_unread'
     }, suba);
     as.inject(subject);
-
-    let body = new HTML('div', {
-        class: 'listview_email_body'
-    }, eml.body);
-    as.inject(body);
+    if (!G_current_listmode_compact) { // No body in compact mode
+        let body = new HTML('div', {
+            class: 'listview_email_body'
+        }, eml.body);
+        as.inject(body);
+    }
 
     element.inject(as);
 
@@ -2631,7 +2632,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let element = new HTML('div', {
-        class: "listview_email_flat"
+        class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
     let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
@@ -2682,10 +2683,12 @@ function listview_threaded_element(thread, idx) {
     }, suba);
     as.inject(subject);
 
-    let body = new HTML('div', {
-        class: 'listview_email_body'
-    }, eml.body);
-    as.inject(body);
+    if (!G_current_listmode_compact) { // No body teaser in compact mode
+        let body = new HTML('div', {
+            class: 'listview_email_body'
+        }, eml.body);
+        as.inject(body);
+    }
 
     element.inject(as);
 
@@ -3188,6 +3191,12 @@ function init_preferences(state, json) {
             if (ljson.G_chatty_layout !== undefined) {
                 G_chatty_layout = ljson.G_chatty_layout;
             }
+            if (ljson.G_current_listmode !== undefined) {
+                G_current_listmode = ljson.G_current_listmode;
+            }
+            if (ljson.G_current_listmode_compact !== undefined) {
+                G_current_listmode_compact = ljson.G_current_listmode_compact;
+            }
         }
     }
 
@@ -3217,6 +3226,12 @@ function init_preferences(state, json) {
     let dmtr = document.getElementById('display_mode_treeview');
     if (dmtr) {
         dmtr.checked = (G_current_listmode == 'treeview');
+    }
+
+    // Compact list view
+    let dmc = document.getElementById('display_mode_compact');
+    if (dmc) {
+        dmc.checked = G_current_listmode_compact;
     }
 
 
@@ -3277,7 +3292,9 @@ function init_preferences(state, json) {
 function save_preferences() {
     if (G_can_store) {
         let ljson = {
-            G_chatty_layout: G_chatty_layout
+            G_chatty_layout: G_chatty_layout,
+            G_current_listmode: G_current_listmode,
+            G_current_listmode_compact: G_current_listmode_compact
         };
         let lstring = JSON.stringify(ljson);
         window.localStorage.setItem('G_ponymail_preferences', lstring);
@@ -3286,8 +3303,11 @@ function save_preferences() {
 }
 
 
-function set_theme(theme) {
+function set_theme(theme, compact_mode) {
     G_current_listmode = theme;
+    if (compact_mode !== undefined) {
+        G_current_listmode_compact = compact_mode;
+    }
     renderListView(G_current_state, G_current_json);
     save_preferences();
 }
