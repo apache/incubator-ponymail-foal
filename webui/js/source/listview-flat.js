@@ -26,7 +26,7 @@ function calc_per_page() {
     let email_h = G_current_listmode_compact ? 24 : 40;
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
-        email_h = 80;
+        email_h = G_current_listmode_compact ? 36 : 80;
     }
     height -= 180;
     let per_page = Math.max(5, Math.floor(height / email_h));
