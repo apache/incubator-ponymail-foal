@@ -23,7 +23,7 @@ function calc_per_page() {
         html.clientHeight, html.scrollHeight);
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
-    let email_h = 40;
+    let email_h = G_current_listmode_compact ? 24 : 40;
     if (width < 600) {
         console.log("Using narrow view, halving emails per page...");
         email_h = 80;
@@ -68,7 +68,7 @@ function listview_flat_element(eml, idx) {
     });
 
     let element = new HTML('div', {
-        class: "listview_email_flat"
+        class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
     let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
@@ -101,11 +101,12 @@ function listview_flat_element(eml, idx) {
         class: 'listview_email_subject email_unread'
     }, suba);
     as.inject(subject);
-
-    let body = new HTML('div', {
-        class: 'listview_email_body'
-    }, eml.body);
-    as.inject(body);
+    if (!G_current_listmode_compact) { // No body in compact mode
+        let body = new HTML('div', {
+            class: 'listview_email_body'
+        }, eml.body);
+        as.inject(body);
+    }
 
     element.inject(as);
 

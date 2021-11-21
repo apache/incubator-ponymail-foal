@@ -111,7 +111,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let element = new HTML('div', {
-        class: "listview_email_flat"
+        class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
     let date = new Date(eml.epoch * 1000.0);
     let now = new Date();
@@ -162,10 +162,12 @@ function listview_threaded_element(thread, idx) {
     }, suba);
     as.inject(subject);
 
-    let body = new HTML('div', {
-        class: 'listview_email_body'
-    }, eml.body);
-    as.inject(body);
+    if (!G_current_listmode_compact) { // No body teaser in compact mode
+        let body = new HTML('div', {
+            class: 'listview_email_body'
+        }, eml.body);
+        as.inject(body);
+    }
 
     element.inject(as);
 
