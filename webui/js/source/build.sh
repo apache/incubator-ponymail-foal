@@ -35,7 +35,7 @@ done
 # Adjust JS caches in .html
 for f in `ls ../../*.html`; do
     echo ${f}
-    perl -0pe 's/\?revision=[a-f0-9]+/?revision='${REVISION}'/sm' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
+    perl -0pe 's/\?revision=[a-f0-9]+/?revision='${REVISION}'/smg' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
 done
 echo "Done!"
 
