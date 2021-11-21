@@ -697,6 +697,11 @@ a.dropdown-toggle {
 @media only screen and (max-width: 440px) {
     #preferences_ul #display_options_dropdown {
         width: 300px;
+        position: absolute;
+        left: -140px;
+        right: auto;
+        font-weight: normal;
+        font-size: 1.15rem;
     }
 }
 
