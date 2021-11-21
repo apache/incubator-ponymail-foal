@@ -68,6 +68,12 @@ function init_preferences(state, json) {
         dmtr.checked = (G_current_listmode == 'treeview');
     }
 
+    // Compact list view
+    let dmc = document.getElementById('display_mode_compact');
+    if (dmc) {
+        dmc.checked = G_current_listmode_compact;
+    }
+
 
 
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials) {
@@ -137,8 +143,11 @@ function save_preferences() {
 }
 
 
-function set_theme(theme) {
+function set_theme(theme, compact_mode) {
     G_current_listmode = theme;
+    if (compact_mode !== undefined) {
+        G_current_listmode_compact = compact_mode;
+    }
     renderListView(G_current_state, G_current_json);
     save_preferences();
 }
