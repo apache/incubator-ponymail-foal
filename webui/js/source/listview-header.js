@@ -342,7 +342,7 @@ function switch_list(list, from) {
 
 window.addEventListener('orientationchange', function() {
     window.setTimeout(function() {
-        if (anyOpen() == false) {
+        if (anyOpen() == false && location.href.match(/\/list(\.html)?/)) {
             listview_header(prev_listview_state, prev_listview_json);
         }
     }, 100);
