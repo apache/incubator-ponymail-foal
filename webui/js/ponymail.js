@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "9ded650";
+const PONYMAIL_REVISION = "d67caa9";
 
 
 
@@ -3655,7 +3655,7 @@ async function render_email(state, json) {
         });
         let rcpt_key = new HTML('div', {
             class: 'email_key'
-        }, "CC: ");
+        }, "To/Cc: ");
         let rcpt_value = new HTML('div', {
                 class: 'email_value'
             },
