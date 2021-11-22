@@ -67,7 +67,7 @@ USED_UI_FIELDS = [
     "subject",
 ]
 # The following fields are currently excluded:
-# from_raw, permalinks, dbid, date, references, html_source_only, forum, size, to, cc
+# cc, date, dbid, forum, html_source_only, from_raw, permalinks, references, size, to
 # The body_short contents may replace the body contents, but it is not returned separately
 
 
