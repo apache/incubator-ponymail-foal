@@ -99,7 +99,7 @@ async function render_email(state, json) {
         });
         let rcpt_key = new HTML('div', {
             class: 'email_key'
-        }, "CC: ");
+        }, "To/Cc: ");
         let rcpt_value = new HTML('div', {
                 class: 'email_value'
             },
