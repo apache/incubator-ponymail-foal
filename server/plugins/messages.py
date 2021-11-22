@@ -318,7 +318,8 @@ async def query(
     query_limit=10000,
     hide_deleted=True,
     metadata_only=False,
-    epoch_order="desc"
+    epoch_order="desc",
+    source_fields=None
 ):
     """
     Advanced query and grab for stats.py
@@ -334,6 +335,8 @@ async def query(
     }
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
+    elif source_fields:
+        es_query["_source"] = source_fields
     else:
         es_query["_source"] = { "excludes": ["body"] }
     async for hit in session.database.scan(
@@ -344,14 +347,15 @@ async def query(
         # If email was delete/hidden and we're not doing an admin query, ignore it
         if hide_deleted and doc.get("deleted", False):
             continue
-        doc["id"] = doc["mid"]
         if plugins.aaa.can_access_email(session, doc):
+            if "mid" in doc: # might be missing when using source_fields
+                doc["id"] = doc["mid"]
             # Calculate gravatars if not present in source
-            if not metadata_only and "gravatar" not in doc:
+            if not metadata_only and not source_fields and "gravatar" not in doc:
                 doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
-            if not metadata_only:
+            if "body_short" in doc:
                 # The body_short field is set to SHORT_BODY_MAX_LEN+1 if the body is longer
                 # than SHORT_BODY_MAX_LEN, so we know if it has been truncated
                 if len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:

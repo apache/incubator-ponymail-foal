@@ -59,14 +59,10 @@ async def process(
         query_since = query_defuzzed.copy()
         query_since['must'].append({"range" : { "epoch": { "gt": epoch}}})
         results = await plugins.messages.query(
-            session, query_since, query_limit=1, metadata_only=True
+            session, query_since, query_limit=1, source_fields=[''] # don't need any fields
         )
         if len(results) == 0:
             return {"changed" : False}
-
-    results = await plugins.messages.query(
-        session, query_defuzzed, query_limit=server.config.database.max_hits
-    )
 
     # statsOnly: Whether to only send statistical info (for n-grams etc), and not the
     # thread struct and message bodies
@@ -75,6 +71,14 @@ async def process(
     # emailsOnly: return email summaries only, not derived data:
     # i.e. omit thread_struct, top 10 participants and word-cloud   
     emailsOnly = 'emailsOnly' in indata
+
+    source_fields = None
+    if statsOnly:
+        source_fields = ['epoch']
+
+    results = await plugins.messages.query(
+        session, query_defuzzed, query_limit=server.config.database.max_hits, source_fields=source_fields
+    )
 
     wordcloud = None
     if server.config.ui.wordcloud and not emailsOnly and not statsOnly:
