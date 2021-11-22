@@ -5,7 +5,12 @@ cd $(dirname "$0") || exit 1
 
 test -r build.sh || { echo "Must be run from the directory containing build.sh!"; exit 1; }
 
-REVISION=`git rev-parse --short HEAD`
+# Javascript revision (for updating HTML)
+JS_REV=$(git log -1 --pretty=%h -- ..)
+
+# Javascript source revision (for creating ponymail.js)
+JS_SRCR_EV=$(git log -1 --pretty=%h -- .)
+
 echo "Combining JS..."
 echo '/*
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,7 +30,7 @@ echo '/*
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
 
-const PONYMAIL_REVISION = "'$REVISION'";
+const PONYMAIL_REVISION = "'$JS_SRC_REV'";
 ' > ../ponymail.js
 for f in `ls *.js`; do
     printf "\n\n/******************************************\n Fetched from source/${f}\n******************************************/\n\n" >> ../ponymail.js
@@ -35,7 +40,9 @@ done
 # Adjust JS caches in .html
 for f in `ls ../../*.html`; do
     echo ${f}
-    perl -0pe 's/\?revision=[a-f0-9]+/?revision='${REVISION}'/smg' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
+    perl -0pe 's/\?revision=[a-f0-9]+/?revision='${JS_REV}'/smg' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
 done
+
+git status
 echo "Done!"
 
