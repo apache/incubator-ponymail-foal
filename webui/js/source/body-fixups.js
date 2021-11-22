@@ -45,7 +45,7 @@ const PONYMAIL_QUOTE_RE = new RegExp("(" +
     ")" +
     ")+|" + //OR...
     "(" +
-    "^(-{5,10}).+?\\1[\r\n]+" + // ----- Forwarded Message -----
+    "^(-{5,10}) .+? \\1[\r\n]+" + // ----- Forwarded Message -----
     "(^\\w+:\\s+.+[\r\n]+){3,10}[\r\n]+" + // Between three and ten header fields (we ask for at least 3, so as to not quote PGP blocks)
     "[\\S\\s]+" + // Whatever comes next...
     ")+" +
