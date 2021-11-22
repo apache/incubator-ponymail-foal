@@ -28,7 +28,7 @@ echo '/*
  See the License for the specific language governing permissions and
  limitations under the License.
 */
-// THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT source/*.js!!
+// THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
 const PONYMAIL_REVISION = "'$JS_SRC_REV'";
 ' > ../ponymail.js
