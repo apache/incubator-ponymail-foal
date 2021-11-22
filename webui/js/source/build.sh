@@ -9,7 +9,7 @@ test -r build.sh || { echo "Must be run from the directory containing build.sh!"
 JS_REV=$(git log -1 --pretty=%h -- ..)
 
 # Javascript source revision (for creating ponymail.js)
-JS_SRCR_EV=$(git log -1 --pretty=%h -- .)
+JS_SRC_REV=$(git log -1 --pretty=%h -- .)
 
 echo "Combining JS..."
 echo '/*
