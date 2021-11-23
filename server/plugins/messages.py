@@ -333,10 +333,15 @@ async def query(
         "query": {"bool": query_defuzzed},
         "sort": [{"epoch": {"order": epoch_order}}],
     }
+    # must fetch private and deleted
+    MUST_HAVE = [ 'private', 'deleted']
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
-    elif source_fields:
-        es_query["_source"] = source_fields
+    elif not source_fields is None:
+        es_query["_source"] = source_fields.copy()
+        for hdr in MUST_HAVE:
+            if not hdr in source_fields:
+                es_query["_source"].append(hdr)
     else:
         es_query["_source"] = { "excludes": ["body"] }
     async for hit in session.database.scan(
@@ -351,7 +356,7 @@ async def query(
             if "mid" in doc: # might be missing when using source_fields
                 doc["id"] = doc["mid"]
             # Calculate gravatars if not present in source
-            if not metadata_only and not source_fields and "gravatar" not in doc:
+            if not metadata_only and source_fields is None and "gravatar" not in doc:
                 doc["gravatar"] = gravatar(doc)
             if not session.credentials:
                 doc = anonymize(doc)
@@ -365,6 +370,11 @@ async def query(
                 # stats.py is expecting doc['body'], not body_short
                 del doc["body_short"]
             trim_email(doc)
+            # drop any added fields
+            if not source_fields is None:
+                for hdr in MUST_HAVE:
+                    if not hdr in source_fields:
+                        del doc[hdr]
             docs.append(doc)
             hits += 1
             if hits > query_limit:

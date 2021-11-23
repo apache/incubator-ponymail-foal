@@ -59,7 +59,7 @@ async def process(
         query_since = query_defuzzed.copy()
         query_since['must'].append({"range" : { "epoch": { "gt": epoch}}})
         results = await plugins.messages.query(
-            session, query_since, query_limit=1, source_fields=[''] # don't need any fields
+            session, query_since, query_limit=1, source_fields=[] # don't need any fields
         )
         if len(results) == 0:
             return {"changed" : False}
