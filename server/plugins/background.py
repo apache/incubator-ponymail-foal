@@ -62,13 +62,13 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     limit = database.max_lists
 
     # Fetch aggregations of all public emails
-    s = Search(using=db.client, index=database.db_prefix + "-mbox").filter(
+    s = Search(using=db.client, index=db.dbs.mbox).filter(
         "term", private=False
     )
     s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
 
     res = await db.search(
-        index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
+        index=db.dbs.mbox, body=s.to_dict(), size=0
     )
 
     for ml in res["aggregations"]["per_list"]["buckets"]:
@@ -79,13 +79,13 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
         }
 
     # Ditto, for private emails
-    s = Search(using=db.client, index=database.db_prefix + "-mbox").filter(
+    s = Search(using=db.client, index=db.dbs.mbox).filter(
         "term", private=True
     )
     s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
 
     res = await db.search(
-        index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
+        index=db.dbs.mbox, body=s.to_dict(), size=0
     )
 
     for ml in res["aggregations"]["per_list"]["buckets"]:
@@ -96,12 +96,12 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
         }
 
     # Get 90 day activity, if any
-    s = Search(using=db.client, index=database.db_prefix + "-mbox")
+    s = Search(using=db.client, index=db.dbs.mbox)
     s = s.filter('range', date = {'gte': ACTIVITY_TIMESPAN})
     s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
 
     res = await db.search(
-        index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
+        index=db.dbs.mbox, body=s.to_dict(), size=0
     )
 
     for ml in res["aggregations"]["per_list"]["buckets"]:
@@ -124,7 +124,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
 
     # Fetch aggregations of all public emails
     s = (
-        Search(using=db, index=database.db_prefix + "-mbox")
+        Search(using=db, index=db.dbs.mbox)
         .query("match", private=False)
         .filter("range", date={"lt": "now+1d", "gt": "now-14d"})
     )
@@ -136,7 +136,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
     )
 
     res = await db.search(
-        index=database.db_prefix + "-mbox", body=s.to_dict(), size=0
+        index=db.dbs.mbox, body=s.to_dict(), size=0
     )
 
     no_emails = res["hits"]["total"]["value"]
@@ -152,12 +152,12 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
     thread_count = 0
 
     s = (
-        Search(using=db.client, index=database.db_prefix + "-mbox")
+        Search(using=db.client, index=db.dbs.mbox)
         .query("match", private=False)
         .filter("range", date={"lt": "now+1d", "gt": "now-14d"})
     )
     async for doc in db.scan(
-        index=database.db_prefix + "-mbox",
+        index=db.dbs.mbox,
         query=s.to_dict(),
         _source_includes=[
             "message-id",
