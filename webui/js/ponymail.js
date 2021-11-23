@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "d67caa9";
+const PONYMAIL_REVISION = "7ec8504";
 
 
 
@@ -2295,11 +2295,6 @@ function listview_header(state, json) {
         }
     }
 
-    let tm = document.getElementById('threaded_mobile_img');
-    if (tm) {
-        if (G_current_listmode == 'threaded') tm.setAttribute("src", "images/threading_enabled.png");
-        else tm.setAttribute("src", "images/threading_disabled.png");
-    }
 }
 
 function listview_list_lists(state, json) {
