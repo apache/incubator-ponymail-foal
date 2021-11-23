@@ -70,6 +70,9 @@ USED_UI_FIELDS = [
 # cc, date, dbid, forum, html_source_only, from_raw, permalinks, references, size, to
 # The body_short contents may replace the body contents, but it is not returned separately
 
+# must always fetch private and deleted
+MUST_HAVE = [ 'private', 'deleted']
+
 
 def trim_email(doc, external=False):
     """Trims away document fields not used by the UI"""
@@ -333,15 +336,14 @@ async def query(
         "query": {"bool": query_defuzzed},
         "sort": [{"epoch": {"order": epoch_order}}],
     }
-    # must fetch private and deleted
-    MUST_HAVE = [ 'private', 'deleted']
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
     elif not source_fields is None:
-        es_query["_source"] = source_fields.copy()
+        temp = source_fields.copy()
         for hdr in MUST_HAVE:
             if not hdr in source_fields:
-                es_query["_source"].append(hdr)
+                temp.append(hdr)
+        es_query["_source"] = temp
     else:
         es_query["_source"] = { "excludes": ["body"] }
     async for hit in session.database.scan(
@@ -373,7 +375,7 @@ async def query(
             # drop any added fields
             if not source_fields is None:
                 for hdr in MUST_HAVE:
-                    if not hdr in source_fields:
+                    if not hdr in source_fields and hdr in doc:
                         del doc[hdr]
             docs.append(doc)
             hits += 1
