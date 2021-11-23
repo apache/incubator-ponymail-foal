@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "7ec8504";
+const PONYMAIL_REVISION = "e7a03d9";
 
 
 
@@ -4310,8 +4310,12 @@ async function sidebar_stats(json) {
         }
     }
 
+    let wc = document.getElementById('sidebar_wordcloud');
     if (!json.emails || isHash(json.emails) || json.emails.length == 0) {
         obj.innerText = "No emails found...";
+        if (wc) {
+            wc.innerHTML = "";
+        }
         return;
     }
 
@@ -4344,7 +4348,6 @@ async function sidebar_stats(json) {
     }
 
     // Word cloud, if applicable
-    let wc = document.getElementById('sidebar_wordcloud');
     if (wc && json.cloud) {
         wc.innerHTML = "";
         wc.inject(new HTML('h5', {}, "Popular topics:"));
