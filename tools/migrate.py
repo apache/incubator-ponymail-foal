@@ -33,7 +33,6 @@ import email.utils
 import hashlib
 import multiprocessing
 import os
-import re
 import time
 import sys
 import archiver
@@ -126,7 +125,6 @@ class MultiDocProcessor:
                 if bulk_array:
                     bulk_push(bulk_array, new_es, self.graceful)
                     bulk_array[:] = []
-                continue
             elif params == "DONE":  # Close up shop completely
                 if bulk_array:
                     bulk_push(bulk_array, new_es, self.graceful)
@@ -276,8 +274,6 @@ async def main(no_jobs, graceful):
 
     processes = MultiDocProcessor(old_es_url, new_es_url, process_document, no_jobs)
 
-    # processed_last_count = 0
-    # current_executor = 0
     docs_read = 0
     async for doc in async_scan(
         client=ols_es_async,
