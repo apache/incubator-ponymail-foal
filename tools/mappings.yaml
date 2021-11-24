@@ -43,31 +43,31 @@ mailinglist:
 mbox:
   dynamic: strict
   properties:
-    attachments:
+    attachments: # array, empty if no attachments found
       properties:
         content_type:
           type: keyword
         filename:
           type: keyword
-        hash:
+        hash: # this is the _id for the item in the attachments
           type: keyword
         size:
           type: long
     body:
       type: text
-    body_short:
+    body_short: # first N (default 200) chars of the body
       type: text
     cc:
       type: text
-    date:
+    date: # epoch expressed in UTC (historically this may have been generated using local time)
       format: yyyy/MM/dd HH:mm:ss
       store: true
       type: date
-    dbid:
+    dbid: # This is the _id used for the source index
       type: keyword
-    epoch:
+    epoch: # parsed from Date: header: default if missing: Unix epoch
       type: long
-    forum:
+    forum: # list@domain
       type: keyword
     from:
       type: text
@@ -75,17 +75,17 @@ mbox:
       type: keyword
     gravatar:
       type: text
-    html_source_only:
+    html_source_only: # body is stored as HTML (html2text was not available)
       type: boolean
     in-reply-to:
       type: keyword
-    list:
+    list: # <list.domain>
       type: text
-    list_raw:
+    list_raw: # <list.domain>
       type: keyword
     message-id:
       type: keyword
-    mid:
+    mid: # same as the _id of this entry
       type: keyword
     permalinks:
       type: keyword
@@ -95,7 +95,7 @@ mbox:
       type: boolean
     references:
       type: text
-    size:
+    size: # size of the raw source
       type: long
     subject:
       fielddata: true
