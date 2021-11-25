@@ -32,7 +32,6 @@ import base64
 import email.utils
 import hashlib
 import multiprocessing
-import os
 import time
 import sys
 import archiver
@@ -42,7 +41,7 @@ MIGRATION_MAGIC_NUMBER = "2"
 
 
 # Max number of parallel conversions to perform before pushing. 75-ish percent of max cores.
-cores = len(os.sched_getaffinity(0))
+cores = multiprocessing.cpu_count()
 MAX_PARALLEL_OPS = max(min(int((cores + 1) * 0.75), cores - 1), 1)
 
 class MultiDocProcessor:
