@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "a24acd3";
+const PONYMAIL_REVISION = "5836133";
 
 
 
@@ -66,12 +66,15 @@ const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
 // datepicker
 const DAYS_SHORTENED = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
+// render_email_chatty
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
+const PONYMAIL_TIME_FORMAT = { timeStyle: 'long'}; // ensure TZ is shown
+
 let G_collated_json = {};
 
 if (pm_config.G_apiURL) {
@@ -3781,7 +3784,7 @@ async function render_email_chatty(state, json) {
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
-        ldate = "%s %s".format(when.toLocaleDateString(undefined, PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
+        ldate = "%s %s".format(when.toLocaleDateString(undefined, PONYMAIL_DATE_FORMAT), when.toLocaleTimeString(undefined, PONYMAIL_TIME_FORMAT));
     } catch (e) {
 
     }
