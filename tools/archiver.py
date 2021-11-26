@@ -475,7 +475,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                             )
                         else:
                             hval += t[0].decode(t[1], errors="ignore")
-                    msg_metadata[key] = hval
+                    msg_metadata[key] = hval.strip()
             except Exception as err:
                 print("Could not decode headers, ignoring..: %s" % err)
         message_date = None
