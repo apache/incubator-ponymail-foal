@@ -340,7 +340,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         name = "foal"
 
     # This is a list of headers which are stored in msg_metadata
-    keys = [
+    HDR_KEYS = [
         "archived-at",
         "delivered-to",
         "from",
@@ -357,6 +357,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         "x-mailman-rule-hits",
         "x-mailman-rule-misses",
     ]
+    # keys that need to be decoded
+    HDR_KEYS_DECODE = ["to", "from", "subject", "message-id"]
 
     def __init__(
         self, generator=None, parse_html=False, ignore_body=None, verbose=False
@@ -456,7 +458,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         def default_empty_string(value):
             return str(value) if value else ""
-        msg_metadata = dict([(k, default_empty_string(msg.get(k))) for k in self.keys])
+        msg_metadata = dict([(k, default_empty_string(msg.get(k))) for k in self.HDR_KEYS])
         mid = (
             hashlib.sha224(
                 str("%s-%s" % (lid, msg_metadata["archived-at"])).encode("utf-8")
@@ -464,7 +466,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             + "@"
             + (lid if lid else "none")
         )
-        for key in ["to", "from", "subject", "message-id"]:
+        for key in self.HDR_KEYS_DECODE:
             try:
                 hval = ""
                 if msg_metadata.get(key):
