@@ -225,7 +225,7 @@ async function render_email_chatty(state, json) {
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
-        ldate = "%s %s".format(when.toLocaleDateString(undefined, PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
+        ldate = "%s %s".format(when.toLocaleDateString(undefined, PONYMAIL_DATE_FORMAT), when.toLocaleTimeString(undefined, PONYMAIL_TIME_FORMAT));
     } catch (e) {
 
     }

@@ -57,12 +57,15 @@ const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
 // datepicker
 const DAYS_SHORTENED = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
+// render_email_chatty
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
 };
+const PONYMAIL_TIME_FORMAT = { timeStyle: 'long'}; // ensure TZ is shown
+
 let G_collated_json = {};
 
 if (pm_config.G_apiURL) {
