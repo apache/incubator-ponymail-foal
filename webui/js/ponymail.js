@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "49337f6";
+const PONYMAIL_REVISION = "a24acd3";
 
 
 
@@ -3781,7 +3781,7 @@ async function render_email_chatty(state, json) {
     let when = new Date(json.epoch * 1000.0);
     let ldate = when.toISOString();
     try {
-        ldate = "%s %s".format(when.toLocaleDateString('en-US', PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
+        ldate = "%s %s".format(when.toLocaleDateString(undefined, PONYMAIL_DATE_FORMAT), when.toLocaleTimeString());
     } catch (e) {
 
     }
