@@ -54,6 +54,9 @@ let G_current_per_page = 0;
 const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
 
+// datepicker
+const DAYS_SHORTENED = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
     year: 'numeric',

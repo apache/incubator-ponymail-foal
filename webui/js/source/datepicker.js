@@ -581,7 +581,6 @@ function drawCalendarPicker(obj, date) {
         let ar = date.split(/-/)
         now = new Date(ar[0], parseInt(ar[1]) - 1, ar[2])
     }
-    let days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     let mat = now
 
     // Go to first day of the month
@@ -636,7 +635,7 @@ function drawCalendarPicker(obj, date) {
     let tr = document.createElement('tr');
     for (let m = 0; m < 7; m++) {
         let td = document.createElement('th')
-        td.innerHTML = days[m]
+        td.innerHTML = DAYS_SHORTENED[m]
         tr.appendChild(td)
     }
     table.appendChild(tr)
