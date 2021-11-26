@@ -40,6 +40,7 @@ function listview_flat(json, start) {
     list.innerHTML = "";
 
     let s = start || 0;
+    let n;
     if (json.emails && json.emails.length) {
         for (n = s; n < (s + G_current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
@@ -70,8 +71,6 @@ function listview_flat_element(eml, idx) {
     let element = new HTML('div', {
         class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
-    let date = new Date(eml.epoch * 1000.0);
-    let now = new Date();
 
     // Add gravatar
     let gravatar = new HTML('img', {
@@ -114,6 +113,10 @@ function listview_flat_element(eml, idx) {
     let labels = new HTML('div', {
         class: 'listview_email_labels'
     });
+
+    let date = new Date(eml.epoch * 1000.0);
+    let now = new Date();
+
     let dl = new HTML('span', {
         class: 'label label-default'
     }, date.ISOBare());
