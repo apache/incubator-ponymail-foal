@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "e7a03d9";
+const PONYMAIL_REVISION = "49337f6";
 
 
 
@@ -62,6 +62,9 @@ let G_current_per_page = 0;
 // sidebar calendar
 const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
+
+// datepicker
+const DAYS_SHORTENED = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 const PONYMAIL_DATE_FORMAT = {
     weekday: 'long',
@@ -1586,7 +1589,6 @@ function drawCalendarPicker(obj, date) {
         let ar = date.split(/-/)
         now = new Date(ar[0], parseInt(ar[1]) - 1, ar[2])
     }
-    let days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     let mat = now
 
     // Go to first day of the month
@@ -1641,7 +1643,7 @@ function drawCalendarPicker(obj, date) {
     let tr = document.createElement('tr');
     for (let m = 0; m < 7; m++) {
         let td = document.createElement('th')
-        td.innerHTML = days[m]
+        td.innerHTML = DAYS_SHORTENED[m]
         tr.appendChild(td)
     }
     table.appendChild(tr)
@@ -2103,6 +2105,7 @@ function listview_flat(json, start) {
     list.innerHTML = "";
 
     let s = start || 0;
+    let n;
     if (json.emails && json.emails.length) {
         for (n = s; n < (s + G_current_per_page); n++) {
             let z = json.emails.length - n - 1; // reverse order by default
@@ -2133,8 +2136,6 @@ function listview_flat_element(eml, idx) {
     let element = new HTML('div', {
         class: G_current_listmode_compact ? "listview_email_compact" : "listview_email_flat"
     }, " ");
-    let date = new Date(eml.epoch * 1000.0);
-    let now = new Date();
 
     // Add gravatar
     let gravatar = new HTML('img', {
@@ -2177,6 +2178,10 @@ function listview_flat_element(eml, idx) {
     let labels = new HTML('div', {
         class: 'listview_email_labels'
     });
+
+    let date = new Date(eml.epoch * 1000.0);
+    let now = new Date();
+
     let dl = new HTML('span', {
         class: 'label label-default'
     }, date.ISOBare());
