@@ -167,6 +167,7 @@ class SlurpThread(Thread):
             stime = time.time()
             tmpname = ""
             delete_file = False
+            useMboxo = False
             if imap:
                 imap4 = mla[2]
                 tmpname = "IMAP"
@@ -203,6 +204,7 @@ class SlurpThread(Thread):
                 if maildir:
                     messages = mailbox.Maildir(tmpname, create=False)
                 else:
+                    useMboxo = (not noMboxo)
                     messages = mailbox.mbox(
                         tmpname, None if noMboxo else MboxoFactory, create=False
                     )
@@ -242,7 +244,7 @@ class SlurpThread(Thread):
                 file = messages.get_file(key, True)
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
-                if message.__class__.__name__ == "MboxoFactory":
+                if useMboxo:
                     file = MboxoReader(file)
                 message_raw = file.read()
                 file.close()
