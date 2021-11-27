@@ -84,6 +84,8 @@ noMboxo = False  # Don't skip MBoxo patch
 
 rootURL = ""
 
+dumpfile = None # for args.dump
+
 def bulk_insert(name, json, xes, dbindex, wc="quorum"):
 
     sys.stderr.flush()
@@ -376,6 +378,10 @@ class SlurpThread(Thread):
 
                     # Nothing more to do if dry run
                     if args.dry:
+                        if dumpfile:
+                            import json as JSON
+                            JSON.dump(json, dumpfile, indent=2, sort_keys=True, ensure_ascii=False)
+                            dumpfile.write(",\n")
                         continue
                     ja.append(json)
                     jas.append(json_source)
@@ -503,6 +509,13 @@ parser.add_argument(
     help="Do not save emails to elasticsearch, only test importing",
 )
 parser.add_argument(
+    "--dump",
+    dest="dump",
+    type=str,
+    nargs=1,
+    help="Dump mbox json (only if dry-run)",
+)
+parser.add_argument(
     "--verbose",
     dest="verbose",
     action="store_true",
@@ -626,6 +639,10 @@ if args.verbose:
 
 if args.dry:
     print("Dry-run; continuing to check input data")
+    if args.dump:
+        print("Writing mbox output to %s" % args.dump[0])
+        dumpfile = open(args.dump[0], 'w')
+        dumpfile.write("[\n")
 else:
     # Fetch config and set up ES
     es = Elastic()
@@ -860,6 +877,10 @@ if args.dups:
             print("The mid %s was used by:" % mid)
             for msg in duplicates[mid]:
                 print(msg)
+
+if dumpfile:
+    dumpfile.write("]\n")
+    dumpfile.close()
 
 print(
     "All done! %u records inserted/updated after %u seconds. %u records were bad and ignored"
