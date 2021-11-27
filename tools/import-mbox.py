@@ -370,21 +370,24 @@ class SlurpThread(Thread):
                         continue
 
                     count += 1
-                    ja.append(json)
-                    jas.append(json_source)
                     if args.verbose and verbose_logger:
                         # TODO optionally show other fields (e.g. From_ line)
                         verbose_logger.info("MID:%(mid)s MSGID:%(message-id)s", json)
+
+                    # Nothing more to do if dry run
+                    if args.dry:
+                        continue
+                    ja.append(json)
+                    jas.append(json_source)
                     if contents:
-                        if not args.dry:
-                            for key in contents:
-                                es.index(
-                                    index=es.db_attachment,
-                                    doc_type="_doc",
-                                    id=key,
-                                    body={"source": contents[key]},
-                                )
-                    if len(ja) >= 40 and not args.dry:
+                        for key in contents:
+                            es.index(
+                                index=es.db_attachment,
+                                doc_type="_doc",
+                                id=key,
+                                body={"source": contents[key]},
+                            )
+                    if len(ja) >= 40:
                         bulk_insert(self.name, ja, es, es.db_mbox)
                         ja = []
 
@@ -414,6 +417,7 @@ class SlurpThread(Thread):
 
             goodies += count
             baddies += bad
+            print(len(ja))
             if len(ja) > 0 and not args.dry:
                 bulk_insert(self.name, ja, es, es.db_mbox)
             ja = []
