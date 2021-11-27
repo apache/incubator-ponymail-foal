@@ -237,10 +237,6 @@ class SlurpThread(Thread):
             bad = 0
 
             for key in messages.iterkeys():
-                message = messages.get(key)
-                if not message:
-                    self.printid("Message %u could not be extracted from %s, ignoring it" % (key, tmpname))
-                    continue
                 file = messages.get_file(key, True)
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
@@ -248,6 +244,11 @@ class SlurpThread(Thread):
                     file = MboxoReader(file)
                 message_raw = file.read()
                 file.close()
+                message = email.message_from_bytes(message_raw, policy=archiver.policy)
+                if not message:
+                    self.printid("Message %u could not be extracted from %s, ignoring it" % (key, tmpname))
+                    continue
+
                 # If --filter is set, discard any messages not matching by continuing to next email
                 if (
                     fromFilter
