@@ -92,6 +92,14 @@ if config.has_option("mailman", "plugin"):
 # Access URL once archived
 aURL = config.get("archiver", "baseurl")
 
+# Get/Set email parsing policy (primarily ascii/7bit vs native utf8)
+# (may be used by import-mbox)
+policy = email.policy.default        # Default (8bit) lines in Python >=3.3
+policy_choice = config.get("archiver", "policy", fallback="default")
+if policy_choice == "strict":
+    policy = email.policy.compat32   # 7bit lines
+elif policy_choice == "smtputf8":
+    policy = email.policy.SMTPUTF8   # 8bit/unicode lines
 
 def encode_base64(buff: bytes) -> str:
     """ Convert bytes to base64 as text string (no newlines) """
@@ -969,13 +977,6 @@ def main():
     try:
         raw_message = input_stream.read()
         
-        # Get/Set email parsing policy (primarily ascii/7bit vs native utf8)
-        policy = email.policy.default        # Default (8bit) lines in Python >=3.3
-        policy_choice = config.get("archiver", "policy", fallback="default")
-        if policy_choice == "strict":
-            policy = email.policy.compat32   # 7bit lines
-        elif policy_choice == "smtputf8":
-            policy = email.policy.SMTPUTF8   # 8bit/unicode lines
         try:
             msg = email.message_from_bytes(raw_message, policy=policy)
         except Exception as err:
