@@ -94,12 +94,14 @@ aURL = config.get("archiver", "baseurl")
 
 # Get/Set email parsing policy (primarily ascii/7bit vs native utf8)
 # (may be used by import-mbox)
-policy = email.policy.default        # Default (8bit) lines in Python >=3.3
 policy_choice = config.get("archiver", "policy", fallback="default")
+policy: typing.Any
 if policy_choice == "strict":
     policy = email.policy.compat32   # 7bit lines
 elif policy_choice == "smtputf8":
     policy = email.policy.SMTPUTF8   # 8bit/unicode lines
+else:
+    policy = email.policy.default        # Default (8bit) lines in Python >=3.3
 
 def encode_base64(buff: bytes) -> str:
     """ Convert bytes to base64 as text string (no newlines) """
