@@ -380,6 +380,9 @@ class SlurpThread(Thread):
                     if args.dry:
                         if dumpfile:
                             import json as JSON
+                            # drop fields with timestamps
+                            del(json['_notes'])
+                            del(json['_archived_at'])
                             JSON.dump(json, dumpfile, indent=2, sort_keys=True, ensure_ascii=False)
                             dumpfile.write(",\n")
                         continue
