@@ -417,7 +417,6 @@ class SlurpThread(Thread):
 
             goodies += count
             baddies += bad
-            print(len(ja))
             if len(ja) > 0 and not args.dry:
                 bulk_insert(self.name, ja, es, es.db_mbox)
             ja = []
