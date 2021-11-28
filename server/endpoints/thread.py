@@ -29,14 +29,18 @@ async def process(
     mailid = indata.get("id", "")
     email = await plugins.messages.get_email(session, permalink=mailid)
     if not email:
+        email = await plugins.messages.get_email(session, messageid=mailid)
+    if not email:
         mailid = mailid.replace(" ", "+")  # Some Message-IDs have + in them, this can confuse since + means space.
         email = await plugins.messages.get_email(session, messageid=mailid)
+    if not email:
+        return None
     if indata.get("find_parent"):
         parent = await plugins.messages.find_parent(session, email)
         if parent:
             email = parent
     if email and isinstance(email, dict):
-        thread, emails, pdocs = await plugins.messages.fetch_children(session, email, short=True)
+        thread, emails, _pdocs = await plugins.messages.fetch_children(session, email, short=True)
     else:
         return None
 
