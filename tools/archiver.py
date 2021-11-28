@@ -96,7 +96,7 @@ aURL = config.get("archiver", "baseurl")
 # (may be used by import-mbox)
 policy_choice = config.get("archiver", "policy", fallback="default")
 policy: typing.Any
-if policy_choice == "strict":
+if policy_choice == "compat32":
     policy = email.policy.compat32   # 7bit lines
 elif policy_choice == "smtputf8":
     policy = email.policy.SMTPUTF8   # 8bit/unicode lines

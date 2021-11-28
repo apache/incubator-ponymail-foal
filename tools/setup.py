@@ -386,7 +386,7 @@ archiver:
     #generator:             dkim|full (dkim recommended)
     generator:              %s
     nonce:                  %s
-    policy:                 default   # message parsing policy: default, strict, smtputf8
+    policy:                 default   # message parsing policy: default, compat32, smtputf8
 
 debug:
     #cropout:               string to crop from list-id
