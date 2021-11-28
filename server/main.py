@@ -66,6 +66,7 @@ class Server(plugins.server.BaseServer):
         self.runners = plugins.offloader.ExecutorPool()
         self.server = None
         self.streamlock = asyncio.Lock()
+        self.api_logger = None
 
         # Make a pool of database connections for async queries
         pool_size = self.config.database.pool_size
@@ -96,6 +97,12 @@ class Server(plugins.server.BaseServer):
             es_trace_logger = logging.getLogger('elasticsearch.trace')
             es_trace_logger.setLevel(args.trace)
             es_trace_logger.addHandler(logging.StreamHandler())
+        if args.apilog:
+            import logging
+            self.api_logger = logging.getLogger('ponymail.apilog')
+            self.api_logger.setLevel(args.apilog)
+            self.api_logger.addHandler(logging.StreamHandler())
+            
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
@@ -121,6 +128,8 @@ class Server(plugins.server.BaseServer):
         # Parse form data if any
         try:
             indata = await plugins.formdata.parse_formdata(body_type, request)
+            if self.api_logger:
+                self.api_logger.info(indata)
         except ValueError as e:
             return aiohttp.web.Response(headers=headers, status=400, text=str(e))
 
@@ -220,6 +229,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--trace",
         help="elasticsearch.trace level (e.g. INFO or DEBUG)",
+    )
+    parser.add_argument(
+        "--apilog",
+        help="api log level (e.g. INFO or DEBUG)",
     )
     cliargs = parser.parse_args()
     pubsub_server = Server(cliargs)
