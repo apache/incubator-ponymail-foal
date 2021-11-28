@@ -30,8 +30,11 @@ async def process(
     email = await plugins.messages.get_email(session, permalink=mailid)
     if not email:
         email = await plugins.messages.get_email(session, messageid=mailid)
-    if not email:
-        mailid = mailid.replace(" ", "+")  # Some Message-IDs have + in them, this can confuse since + means space.
+    # The id is passed via the path thread/id
+    # This means that + is converted into space
+    # So we need to try both space and '+', and hope no msg ids contain both
+    if not email and ' ' in mailid: # only try again if we need to
+        mailid = mailid.replace(" ", "+")
         email = await plugins.messages.get_email(session, messageid=mailid)
     if not email:
         return None
