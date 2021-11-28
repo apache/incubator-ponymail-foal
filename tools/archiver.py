@@ -93,7 +93,7 @@ if config.has_option("mailman", "plugin"):
 aURL = config.get("archiver", "baseurl")
 
 # Get/Set email parsing policy (primarily ascii/7bit vs native utf8)
-# (may be used by import-mbox)
+# (used by import-mbox)
 policy_choice = config.get("archiver", "policy", fallback="default")
 policy: typing.Any
 if policy_choice == "compat32":
@@ -101,7 +101,7 @@ if policy_choice == "compat32":
 elif policy_choice == "smtputf8":
     policy = email.policy.SMTPUTF8   # 8bit/unicode lines
 else:
-    policy = email.policy.default        # Default (8bit) lines in Python >=3.3
+    policy = email.policy.default    # Default (8bit) lines in Python >=3.3
 
 def encode_base64(buff: bytes) -> str:
     """ Convert bytes to base64 as text string (no newlines) """
