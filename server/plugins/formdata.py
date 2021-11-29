@@ -32,11 +32,8 @@ ERRONEOUS_PAYLOAD = "Erroneous payload received"
 async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
     indata = {}
     # Do we have query string arguments?
-    if "?" in request.path_qs:
-        query_string = request.path_qs.split("?", 1)[1]
-        # Some args have no values, e.g. quick, emailsOnly
-        for key, val in urllib.parse.parse_qsl(query_string, keep_blank_values=True):
-            indata[key] = val
+    for key, val in request.query.items():
+        indata[key] = val
     # PUT/POST form data?
     if request.method in ["PUT", "POST"]:
         if request.can_read_body:
