@@ -30,10 +30,9 @@ ERRONEOUS_PAYLOAD = "Erroneous payload received"
 
 
 async def parse_formdata(body_type, request: aiohttp.web.BaseRequest) -> dict:
-    indata = {}
-    # Do we have query string arguments?
-    for key, val in request.query.items():
-        indata[key] = val
+    # Start with query string data for seeding our data dictionary
+    indata = {k: v for k, v in request.query.items()}
+
     # PUT/POST form data?
     if request.method in ["PUT", "POST"]:
         if request.can_read_body:
