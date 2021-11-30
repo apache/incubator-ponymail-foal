@@ -31,8 +31,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tools/requirements.txt
         pip install html2text # optional dependency, but needed for tests
-    - name: Check server version
+    - name: Check versions
       run: |
+        webui/js/source/build.sh
         server/update_version.sh
     - name: Test with pytest
       run: |
