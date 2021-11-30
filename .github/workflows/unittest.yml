@@ -15,6 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
       with:
+        fetch-depth: 0
         persist-credentials: false
     - uses: actions/checkout@master   
       with:
