@@ -36,7 +36,7 @@ jobs:
         git log -1 --pretty='%ct %h' -- endpoints
         git log -1 --pretty='%ct %h' -- plugins
         git log -1 --pretty='%ct %h' -- main.py
-        update_version.sh
+        ./update_version.sh
     - name: Test with pytest
       run: |
         pip install pytest
