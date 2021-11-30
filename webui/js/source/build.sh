@@ -43,6 +43,4 @@ for f in `ls ../../*.html`; do
     perl -0pe 's/\?revision=[a-f0-9]+/?revision='${JS_REV}'/smg' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
 done
 
-git status
-echo "Done!"
-
+git diff --exit-code
