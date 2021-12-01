@@ -352,10 +352,10 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
     # This is a list of headers which are stored in msg_metadata
     HDR_KEYS = [
         "archived-at",
-        "delivered-to",
+        "delivered-to", # does not appear to be used at all
         "from",
         "cc",
-        "content-type",
+        "content-type", # not referenced from msg_metadata
         "to",
         "date",
         "in-reply-to",
