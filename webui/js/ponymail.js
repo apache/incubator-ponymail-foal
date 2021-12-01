@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'ae9032f';
+const PONYMAIL_REVISION = 'ff56c7e';
 
 
 /******************************************
@@ -2156,6 +2156,18 @@ function listview_flat_element(eml, idx) {
     }, authorName);
     element.inject(author);
 
+    // reasons to show the list name
+    let showList = G_current_domain == 'inbox' || G_current_list == '*' || G_current_domain == '*';
+
+    // If space and needed, inject ML name
+    if (!G_current_listmode_compact && showList) {
+        author.style.lineHeight = '16px';
+        author.inject(new HTML('br'));
+        author.inject(new HTML('span', {
+            class: "label label-primary",
+            style: "font-style: italic; font-size: 1rem;"
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1)));
+    }
 
     // Combined space for subject + body teaser
     let as = new HTML('div', {
@@ -2163,6 +2175,12 @@ function listview_flat_element(eml, idx) {
     });
 
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
+    if (G_current_listmode_compact && showList) {
+        let kbd = new HTML('kbd', {
+            class: 'listview_kbd'
+        }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
+        suba = [kbd, suba];
+    }
     let subject = new HTML('div', {
         class: 'listview_email_subject email_unread'
     }, suba);
@@ -2654,8 +2672,11 @@ function listview_threaded_element(thread, idx) {
     }, authorName);
     element.inject(author);
 
-    // If needed, inject ML name
-    if (G_current_domain == 'inbox' || G_current_list == '*') {
+    // reasons to show the list name
+    let showList = G_current_domain == 'inbox' || G_current_list == '*' || G_current_domain == '*';
+
+    // If space and needed, inject ML name
+    if (!G_current_listmode_compact && showList) {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
         author.inject(new HTML('span', {
@@ -2672,7 +2693,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
-    if (G_current_json.list.match(/\*/) || G_current_json.domain == '*') {
+    if (G_current_listmode_compact && showList) {
         let kbd = new HTML('kbd', {
             class: 'listview_kbd'
         }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
