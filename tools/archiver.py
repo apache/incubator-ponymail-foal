@@ -362,10 +362,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         "message-id",
         "subject",
         "references",
-        # The following don't appear to be needed currently
-        "x-message-id-hash",
-        "x-mailman-rule-hits",
-        "x-mailman-rule-misses",
     ]
     # keys that need to be decoded
     HDR_KEYS_DECODE = ["to", "from", "subject", "message-id"]
