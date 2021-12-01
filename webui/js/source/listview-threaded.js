@@ -154,7 +154,7 @@ function listview_threaded_element(thread, idx) {
     });
 
     let suba = new HTML('a', {}, eml.subject === '' ? '(No subject)' : eml.subject);
-    if (G_current_json.list.match(/\*/) || G_current_json.domain == '*') {
+    if (G_current_listmode_compact && showList) {
         let kbd = new HTML('kbd', {
             class: 'listview_kbd'
         }, eml.list_raw.replace(/[<>]/g, '').replace('.', '@', 1))
