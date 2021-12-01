@@ -133,8 +133,11 @@ function listview_threaded_element(thread, idx) {
     }, authorName);
     element.inject(author);
 
-    // If needed, inject ML name
-    if (G_current_domain == 'inbox' || G_current_list == '*') {
+    // reasons to show the list name
+    let showList = G_current_domain == 'inbox' || G_current_list == '*' || G_current_domain == '*';
+
+    // If space and needed, inject ML name
+    if (!G_current_listmode_compact && showList) {
         author.style.lineHeight = '16px';
         author.inject(new HTML('br'));
         author.inject(new HTML('span', {
