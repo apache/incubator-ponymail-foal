@@ -5,14 +5,33 @@ cd $(dirname "$0") || exit 1
 
 test -r build.sh || { echo "Must be run from the directory containing build.sh!"; exit 1; }
 
+git diff --exit-code -- *.js || echo "Please commit source changes before updating ponymail.js!"
+
 # Javascript revision (for updating HTML)
-JS_REV=$(git log -1 --pretty=%h -- ..)
+# Need to include the ponymail sources here, but not ponymail.js itself
+JS_REV=$({
+    for f in *.js ../*.js
+    do
+      if [ "$f" != '../ponymail.js' ]
+      then
+        git log -1 --pretty='%ct %h' -- $f
+      fi
+    done
+} | sort -r | head -1 | cut -d' ' -f 2)
 
 # Javascript source revision (for creating ponymail.js)
-JS_SRC_REV=$(git log -1 --pretty=%h -- .)
+# Only check ponymail sources here
+JS_SRC_REV=$({
+  for f in *.js
+  do
+    git log -1 --pretty='%ct %h' -- $f
+  done
+} | sort -r | head -1 | cut -d' ' -f 2)
 
 echo "Combining JS..."
-echo '/*
+{
+cat <<EOD
+/*
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
@@ -30,16 +49,17 @@ echo '/*
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = "'$JS_SRC_REV'";
-' > ../ponymail.js
+const PONYMAIL_REVISION = '$JS_SRC_REV';
+EOD
+
 for f in `ls *.js`; do
-    printf "\n\n/******************************************\n Fetched from source/${f}\n******************************************/\n\n" >> ../ponymail.js
-    perl -0pe 's/\/\*.*?\*\/[\r\n]*//sm' ${f} >> ../ponymail.js
+    printf "\n\n/******************************************\n Fetched from source/${f}\n******************************************/\n\n"
+    perl -0pe 's/\/\*.*?\*\/[\r\n]*//sm' ${f}
 done
+} > ../ponymail.js
 
 # Adjust JS caches in .html
 for f in `ls ../../*.html`; do
-    echo ${f}
     perl -0pe 's/\?revision=[a-f0-9]+/?revision='${JS_REV}'/smg' ${f} > ${f}.tmp && mv ${f}.tmp ${f}
 done
 
