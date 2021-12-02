@@ -16,12 +16,11 @@
  */
 
 function calc_email_width() {
-    // Figure out how many emails per page
+    // Get email width; used for calculating reply nesting offsets
     let body = document.body;
     let html = document.documentElement;
-    let width = Math.max(body.scrollWidth, body.offsetWidth,
+    return Math.max(body.scrollWidth, body.offsetWidth,
         html.clientWidth, html.scrollWidth, html.offsetWidth);
-    return width;
 }
 
 function listview_threaded(json, start) {
@@ -50,8 +49,8 @@ function listview_threaded(json, start) {
 
 function find_email(id) {
     let json = G_current_json;
-    for (let i = 0; i < json.emails.length; i++) {
-        if (json.emails[i].id == id) return json.emails[i];
+    for (let email of json.emails) {
+        if (email.id == id) return email;
     }
     return null;
 }
@@ -59,12 +58,10 @@ function find_email(id) {
 function count_replies(thread) {
     let reps = 0;
     if (isArray(thread.children)) {
-        for (let i = 0; i < thread.children.length; i++) {
-            if (thread.children[i].tid == thread.tid) reps--;
-            if (true) {
-                reps++;
-                reps += count_replies(thread.children[i]);
-            }
+        for (let child of thread.children) {
+            if (child.tid == thread.tid) reps--;
+            reps++;
+            reps += count_replies(thread.children[i]);
         }
     }
     return reps;
@@ -75,10 +72,8 @@ function count_people(thread, hash) {
     let eml = find_email(thread.tid);
     if (eml) ppl[eml.from] = true;
     if (isArray(thread.children)) {
-        for (let i = 0; i < thread.children.length; i++) {
-            if (true) {
-                count_people(thread.children[i], ppl);
-            }
+        for (let child of thread.children) {
+            count_people(child, ppl);
         }
     }
     let n = 0;
@@ -90,8 +85,8 @@ function count_people(thread, hash) {
 function last_email(thread) {
     let newest = thread.epoch;
     if (isArray(thread.children)) {
-        for (let i = 0; i < thread.children.length; i++) {
-            newest = Math.max(newest, last_email(thread.children[i]));
+        for (let child of thread.children) {
+            newest = Math.max(newest, last_email(child));
         }
     }
     return newest;
