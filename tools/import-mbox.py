@@ -112,13 +112,13 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
     except Exception as err:
         print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dbindex))
 
-class DownloadThread(Thread):
+class DownloadThread(Thread): # handles Pipermail
     def assign(self, url):
         self.url = url
     def run(self):
         global lists
         mldata = urlopen(self.url).read()
-        tmpfile = tempfile.NamedTemporaryFile(mode="w+b", buffering=1, delete=False)
+        tmpfile = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
         try:
             if ml.find(".gz") != -1:
                 mldata = gzip.decompress(mldata)
