@@ -190,7 +190,7 @@ class SlurpThread(Thread):
                             bf.close()  # explicit early close
                             bmd = gzip.decompress(bmd)
                             tmpfile = tempfile.NamedTemporaryFile(
-                                mode="w+b", buffering=1, delete=False
+                                mode="w+b", delete=False
                             )
                             tmpfile.write(bmd)
                             tmpfile.flush()
