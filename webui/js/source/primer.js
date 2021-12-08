@@ -204,7 +204,9 @@ function unshortenID(mid) {
     // all short links begin with 'Z'. If not, it's not a short link
     // so let's just pass it through unaltered if so.
     // Some old shortlinks begin with 'B', so let's be backwards compatible for now.
-    if (mid[0] == 'Z' || mid[0] == 'B') {
+    // Shortlinks are also 15 chars (including prefix)
+    // They should also consist of base 36 chars or '-'
+    if ((mid[0] == 'Z' || mid[0] == 'B') && mid.length == 15){
         // remove padding
         let id1 = parseInt(mid.substr(1, 7).replace(/-/g, ""), 36)
         let id2 = parseInt(mid.substr(8, 7).replace(/-/g, ""), 36)
