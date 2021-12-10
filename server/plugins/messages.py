@@ -499,7 +499,7 @@ class ThreadConstructor:
         for cur_email in sorted(self.emails, key=lambda x: x["epoch"]):
             author = cur_email.get("from")
             if author not in self.authors:
-                self.authors[author] = [0, cur_email.get("gravatar")]
+                self.authors[author] = [0, cur_email.get("gravatar", "")]
             self.authors[author][0] += 1
             subject = cur_email.get("subject", "").replace(
                 "\n", ""
