@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   sodipodi:docname="deadpony.svg"
-   inkscape:version="1.1 (1:1.1+202105261517+ce6663b3b7)"
+   sodipodi:docname="logos.svg"
+   inkscape:version="1.1.1 (1:1.1+202109281949+c3084ef5ed)"
    id="svg8"
    version="1.1"
    viewBox="0 0 210 297"
@@ -24,11 +24,11 @@
      inkscape:window-width="2488"
      showgrid="false"
      inkscape:document-rotation="0"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g847"
      inkscape:document-units="mm"
-     inkscape:cy="600.35714"
-     inkscape:cx="228.57143"
-     inkscape:zoom="1.4"
+     inkscape:cy="696.37391"
+     inkscape:cx="228.67328"
+     inkscape:zoom="3.959798"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -44,7 +44,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -103,36 +102,26 @@
          id="path869"
          d="m 199.46592,643.46283 c -4.74534,0.22253 -9.52669,4.92909 -7.95829,9.87096 1.01777,3.59173 4.53156,7.18924 8.55609,5.9933 4.51297,-0.73113 8.17812,-5.73484 6.1907,-10.20019 -1.09862,-2.75287 -3.57814,-5.67185 -6.7885,-5.66407 z"
          style="fill:#553035;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.69966;stroke-linecap:round;stroke-linejoin:bevel" />
-      <text
-         inkscape:export-ydpi="248.28294"
-         inkscape:export-xdpi="248.28294"
-         inkscape:export-filename="/x1/incubator-ponymail-foal/webui/images/jim.png"
+      <g
+         aria-label="X"
          transform="matrix(0.76455072,0.76455072,-0.65397885,0.65397885,0,0)"
          id="text873"
-         y="124.26717"
-         x="83.493828"
-         style="font-style:normal;font-weight:normal;font-size:11.4431px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.286077"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Dyuthi;-inkscape-font-specification:Dyuthi;stroke-width:0.286077"
-           y="124.26717"
-           x="83.493828"
-           id="tspan871"
-           sodipodi:role="line">X</tspan></text>
-      <text
-         inkscape:export-ydpi="248.28294"
-         inkscape:export-xdpi="248.28294"
-         inkscape:export-filename="/x1/incubator-ponymail-foal/webui/images/jim.png"
-         xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:11.4431px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.286078"
-         x="90.469566"
-         y="116.07934"
+         style="font-size:11.4431px;line-height:1.25;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.286077">
+        <path
+           d="m 85.468992,117.23257 q 0,0 0.02235,0 0.597857,0 0.849292,0.44141 0.223498,0.40789 -0.0447,0.86606 l -1.313051,2.30203 1.313051,2.16234 q 0.279372,0.46376 0.0447,0.91634 -0.234673,0.45259 -0.849292,0.45259 h -0.02235 q -0.541983,0 -0.743131,-0.45259 l -0.866055,-1.89973 -0.866055,1.89973 q -0.206736,0.447 -0.743131,0.45259 0,0 -0.122924,0 -0.497283,0 -0.748718,-0.447 -0.245848,-0.447 0.0447,-0.92193 l 1.318639,-2.16234 -1.318639,-2.30203 q -0.257023,-0.447 -0.03911,-0.86606 0.217911,-0.44141 0.743131,-0.44141 h 0.122924 q 0.54757,0 0.743131,0.45259 l 0.866055,1.97237 0.866055,-1.97237 q 0.195561,-0.45259 0.743131,-0.45259 z"
+           style="font-family:Dyuthi;-inkscape-font-specification:Dyuthi"
+           id="path2428" />
+      </g>
+      <g
+         aria-label="X"
+         transform="matrix(0.76455072,0.76455072,-0.65397885,0.65397885,0,0)"
          id="text873-3"
-         transform="matrix(0.76455072,0.76455072,-0.65397885,0.65397885,0,0)"><tspan
-           sodipodi:role="line"
-           id="tspan871-1"
-           x="90.469566"
-           y="116.07934"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Dyuthi;-inkscape-font-specification:Dyuthi;stroke-width:0.286078">X</tspan></text>
+         style="font-size:11.4431px;line-height:1.25;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.286078">
+        <path
+           d="m 92.44473,109.04474 q 0,0 0.02235,0 0.597857,0 0.849293,0.44141 0.223498,0.40788 -0.0447,0.86605 l -1.313051,2.30203 1.313051,2.16234 q 0.279373,0.46376 0.0447,0.91635 -0.234673,0.45258 -0.849293,0.45258 h -0.02235 q -0.541982,0 -0.743131,-0.45258 l -0.866055,-1.89974 -0.866055,1.89974 q -0.206735,0.44699 -0.743131,0.45258 0,0 -0.122923,0 -0.497284,0 -0.748719,-0.447 -0.245848,-0.44699 0.0447,-0.92193 l 1.318638,-2.16234 -1.318638,-2.30203 q -0.257023,-0.447 -0.03911,-0.86605 0.21791,-0.44141 0.743131,-0.44141 h 0.122923 q 0.547571,0 0.743131,0.45258 l 0.866055,1.97237 0.866055,-1.97237 q 0.195561,-0.45258 0.743131,-0.45258 z"
+           style="font-family:Dyuthi;-inkscape-font-specification:Dyuthi"
+           id="path2431" />
+      </g>
       <path
          inkscape:export-ydpi="248.28294"
          inkscape:export-xdpi="248.28294"
@@ -182,10 +171,10 @@
          id="path897-7"
          cx="-9.068902"
          cy="142.67772"
-         r="14.939027"
          inkscape:export-filename="/x1/incubator-ponymail-foal/webui/images/jim.png"
          inkscape:export-xdpi="248.28294"
-         inkscape:export-ydpi="248.28294" />
+         inkscape:export-ydpi="248.28294"
+         r="14.939027" />
       <path
          style="fill:#5e625b;stroke-width:0.264583"
          d="m -14.349905,167.26841 c -5.581264,-2.78127 -5.385393,-10.50239 0.33314,-13.13218 1.172937,-0.53939 1.727861,-0.60837 4.8947908,-0.60837 3.379777,0 3.653327,0.04 5.086416,0.74374 5.65287,2.7759 5.53958,10.5694 -0.191624,13.18199 -0.866955,0.39521 -1.754643,0.4835 -4.908988,0.48826 -3.6100328,0.005 -3.9358318,-0.0366 -5.2137348,-0.67344 z m 0.605505,-7.43014 c 0.246366,-0.0945 0.599634,-0.53267 0.78504,-0.97362 0.465627,-1.1074 0.06301,-2.17455 -0.954206,-2.52916 -2.034767,-0.70932 -3.479785,1.51276 -1.967309,3.02523 0.651895,0.6519 1.302914,0.79742 2.136475,0.47755 z m 11.3336218,-0.37648 c 0.92233,-0.72551 0.93162,-1.88703 0.0224,-2.79629 -0.52705,-0.52706 -0.831139,-0.63575 -1.389058,-0.49653 -1.646605,0.4109 -2.183429,2.03836 -1.065045,3.22882 0.712401,0.75832 1.52197,0.77962 2.431743,0.064 z"
