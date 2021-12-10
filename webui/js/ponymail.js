@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '82a522d';
+const PONYMAIL_REVISION = '93de1a2';
 
 
 /******************************************
@@ -2601,6 +2601,7 @@ function listview_threaded(json, start) {
 
 function find_email(id) {
     let json = G_current_json;
+    if (!json.emails) return null;
     for (let email of json.emails) {
         if (email.id == id) return email;
     }
@@ -2775,13 +2776,6 @@ function listview_threaded_element(thread, idx) {
 /******************************************
  Fetched from source/listview-treeview.js
 ******************************************/
-
-function find_email(json, id) {
-    if (!json) return
-    for (let eml of json.emails || []) {
-        if (id === eml.id) return eml
-    }
-}
 
 function listview_treeview(json, start) {
     let list = document.getElementById('emails');
