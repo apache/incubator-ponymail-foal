@@ -34,7 +34,10 @@ the License.
     border-bottom: 10px solid rgba(120, 200, 30, 0.95);
     border-left: 10px solid rgba(220,190,30,0.95);
     transform: translateZ(0);
-    animation: spin1 1s 0s ease-in-out, spin2 1s 1s ease-in-out, spin3 1s 2s ease-in-out, spin4 1s 3s ease-in-out;
+    animation:  spin1 1s 0s ease-in-out, spin2 1s 1s ease-in-out, spin3 1s 2s ease-in-out, spin4 1s 3s ease-in-out,
+                spin1 1s 4s ease-in-out, spin2 1s 5s ease-in-out, spin3 1s 6s ease-in-out, spin4 1s 7s ease-in-out,
+                spin1 1s 8s ease-in-out, spin2 1s 9s ease-in-out, spin3 1s 10s ease-in-out, spin4 1s 11s ease-in-out,
+                spin1 1s 12s ease-in-out, spin2 1s 13s ease-in-out, spin3 1s 14s ease-in-out, spin4 1s 15s ease-in-out;
 }
 
 .spinwheel, .spinwheel:after {
