@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '509ab7c';
+const PONYMAIL_REVISION = 'c2b4372';
 
 
 /******************************************
@@ -2776,6 +2776,16 @@ function listview_threaded_element(thread, idx) {
  Fetched from source/listview-treeview.js
 ******************************************/
 
+function email_idx(email) {
+    // Locates the index position of an email in our current json storage
+    for (const [idx, eml] of G_current_json.emails.entries()) {
+        if (eml.id === email.id) {
+            return idx
+        }
+    }
+    return 0
+}
+
 function listview_treeview(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
@@ -2793,7 +2803,7 @@ function listview_treeview(json, start) {
         for (let n = s; n < (s + G_current_per_page); n++) {
             let z = email_ordered.length - n - 1; // reverse order by default
             if (email_ordered[z]) {
-                let item = listview_flat_element(email_ordered[z], z);
+                let item = listview_flat_element(email_ordered[z], email_idx(email_ordered[z]));
                 list.inject(item);
 
                 // Hidden placeholder for expanding email(s)
