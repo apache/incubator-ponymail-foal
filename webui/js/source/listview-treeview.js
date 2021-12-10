@@ -21,10 +21,10 @@ function listview_treeview(json, start) {
     let s = start || 0;
     let email_ordered = [];
     for (let thread of json.thread_struct) {
-        let eml = find_email(json, thread.tid);
+        let eml = find_email(thread.tid);
         if (eml) email_ordered.push(eml);
         for (let child of thread.children) {
-            let eml = find_email(json, child.tid);
+            let eml = find_email(child.tid);
             if (eml) email_ordered.push(eml);
         }
     }

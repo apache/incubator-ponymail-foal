@@ -48,9 +48,8 @@ function listview_threaded(json, start) {
 }
 
 function find_email(id) {
-    let json = G_current_json;
-    if (!json.emails) return null;
-    for (let email of json.emails) {
+    if (!G_current_json.emails) return null;
+    for (let email of G_current_json.emails) {
         if (email.id == id) return email;
     }
     return null;
