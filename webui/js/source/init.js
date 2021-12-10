@@ -32,7 +32,7 @@ window.addEventListener('keyup', keyCommands);
 
 window.addEventListener('load', function() {
     document.body.appendChild(new HTML('footer', {
-        class: 'footer'
+        class: 'footer hidden-xs'
     }, [
         new HTML('div', {
             class: 'container'
