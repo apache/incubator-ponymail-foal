@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'd024a91';
+const PONYMAIL_REVISION = 'e672215';
 
 
 /******************************************
@@ -178,7 +178,6 @@ async function GET(url, callback, state) {
             // Since this is an async request, the request may have been canceled
             // by the time we get a response. Only do callback if not.
             if (async_escrow[pkey] !== undefined) {
-                delete async_escrow[pkey]; // move out of escrow when fetched
                 res = rv;
             }
         } catch (e) {
@@ -196,6 +195,7 @@ async function GET(url, callback, state) {
                 js = res_json;
             } else {
                 js = await res.json();
+                delete async_escrow[pkey]; // move out of escrow when fetched
                 async_cache[url] = js;
             }
             if (callback) {
@@ -205,6 +205,7 @@ async function GET(url, callback, state) {
             }
         } else {
             console.log("URL %s returned HTTP code %u, snapping!".format(url, res.status));
+            delete async_escrow[pkey]; // move out of escrow when fetched
             async_snap(res);
         }
     }
