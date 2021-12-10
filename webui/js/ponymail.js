@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'e672215';
+const PONYMAIL_REVISION = '5615048';
 
 
 /******************************************
@@ -1755,7 +1755,7 @@ window.addEventListener('keyup', keyCommands);
 
 window.addEventListener('load', function() {
     document.body.appendChild(new HTML('footer', {
-        class: 'footer'
+        class: 'footer hidden-xs'
     }, [
         new HTML('div', {
             class: 'container'
