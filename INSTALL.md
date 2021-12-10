@@ -86,6 +86,12 @@ alias entry should look like this:
 inbox: "| /path/to/foal/tools/archiver.py"
 ~~~
 
+For privately archived emails, use the `--private` flag for your command:
+
+~~~text
+inbox: "| /path/to/foal/tools/archiver.py --private"
+~~~
+
 Once you have added the entry, be sure to run the `newaliases` command to update the compiled alias list.
 `archiver.py` will automatically sort out which list the email is for, if there is a List-ID header.
 You can override or manually set a list using the `--lid` flag:
