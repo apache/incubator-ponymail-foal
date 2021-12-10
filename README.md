@@ -12,6 +12,10 @@ This repository aims to contain the next generation of Apache Pony Mail,
 a pure Python version of Apache Pony Mail with support for ElasticSearch 
 7.x and above.
 
+<img src="https://github.com/apache/incubator-ponymail-foal/blob/master/webui/images/foal-demo1.png" style="width: 95%"/>
+
+<img src="https://github.com/apache/incubator-ponymail-foal/blob/master/webui/images/foal-demo2.png" style="width: 95%"/>
+
 
 ## New features in Foal:
 Among other things, Foal sports the following new features:
