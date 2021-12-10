@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '8eb39b3';
+const PONYMAIL_REVISION = '8e9d30b';
 
 
 /******************************************
@@ -2600,7 +2600,7 @@ function count_replies(thread) {
         for (let child of thread.children) {
             if (child.tid == thread.tid) reps--;
             reps++;
-            reps += count_replies(thread.children[i]);
+            reps += count_replies(child);
         }
     }
     return reps;
