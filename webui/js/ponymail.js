@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '5615048';
+const PONYMAIL_REVISION = '61f8ff6';
 
 
 /******************************************
@@ -2083,6 +2083,11 @@ function prime_list_index() {
  Fetched from source/listview-flat.js
 ******************************************/
 
+let compact_email_height = 24;  // a normal email element is 24 pixels high
+let preview_email_height = 40;
+
+let narrow_width = 600;  // <= 600 pixels and we're in narrow view
+
 function calc_per_page() {
     // Figure out how many emails per page
     let body = document.body;
@@ -2091,12 +2096,13 @@ function calc_per_page() {
         html.clientHeight, html.scrollHeight);
     let width = Math.max(body.scrollWidth,
         html.clientWidth, html.scrollWidth);
-    let email_h = G_current_listmode_compact ? 24 : 40;
-    if (width < 600) {
-        console.log("Using narrow view, halving emails per page...");
-        email_h = G_current_listmode_compact ? 36 : 80;
+    let email_h = G_current_listmode_compact ? compact_email_height : preview_email_height;
+    if (width < narrow_width) {
+        console.log("Using narrow view, reducing emails per page...");
+        email_h = G_current_listmode_compact ? compact_email_height * 1.5 : preview_email_height*2;
     }
-    height -= 180;
+    height -= document.getElementById("emails").scrollHeight + 4; // top area height plus spacing
+    email_h += 2;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
     console.log("Viewport is %ux%u. We can show %u emails per page".format(width, height, per_page));
