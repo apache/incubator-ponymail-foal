@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '72e3a65';
+const PONYMAIL_REVISION = '509ab7c';
 
 
 /******************************************
@@ -2099,9 +2099,9 @@ function calc_per_page() {
     let email_h = G_current_listmode_compact ? compact_email_height : preview_email_height;
     if (width < narrow_width) {
         console.log("Using narrow view, reducing emails per page...");
-        email_h = G_current_listmode_compact ? compact_email_height * 1.5 : preview_email_height*2;
+        email_h = G_current_listmode_compact ? compact_email_height * 1.5 : preview_email_height * 2;
     }
-    height -= document.getElementById("emails").scrollHeight + 4; // top area height plus spacing
+    height -= document.getElementById("emails").getBoundingClientRect().y + 16; // top area height plus footer
     email_h += 2;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
