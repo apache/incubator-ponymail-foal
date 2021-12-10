@@ -61,7 +61,7 @@ function count_replies(thread) {
         for (let child of thread.children) {
             if (child.tid == thread.tid) reps--;
             reps++;
-            reps += count_replies(thread.children[i]);
+            reps += count_replies(child);
         }
     }
     return reps;
