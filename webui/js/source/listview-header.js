@@ -29,7 +29,7 @@ function listview_header(state, json) {
         list_title = "Virtual inbox, past 30 days";
     }
     let blobs = json.emails ? json.emails : [];
-    if (G_current_listmode == 'threaded') blobs = json.thread_struct;
+    if (G_current_listmode == 'threaded' || G_current_listmode == 'treeview') blobs = json.thread_struct;
 
     if (G_current_year && G_current_month) {
         list_title += ", %s %u".format(MONTHS[G_current_month - 1], G_current_year);
@@ -105,12 +105,14 @@ function listview_header(state, json) {
         class: 'glyphicon glyphicon-refresh'
     }, " "));
     chevrons.inject(crefresh);
-
+    console.log(G_current_listmode)
     if (state && state.pos != undefined) {
         if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
-        } else {
+        } else if (G_current_listmode == 'flat') {
             listview_flat(json, state.pos);
+        } else {
+            listview_treeview(json, state.pos);
         }
     }
 

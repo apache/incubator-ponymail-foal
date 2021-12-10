@@ -33,6 +33,8 @@ function renderListView(state, json) {
     listview_header(state, json);
     if (G_current_listmode == 'threaded') {
         listview_threaded(json, 0);
+    } else if (G_current_listmode == 'treeview') {
+        listview_treeview(json, 0);
     } else {
         listview_flat(json, 0);
     }
@@ -189,6 +191,8 @@ function render_virtual_inbox(state, json) {
         listview_header(state, G_current_json);
         if (G_current_listmode == 'threaded') {
             listview_threaded(G_current_json, 0);
+        } else if (G_current_listmode == 'treeview') {
+            listview_treeview(G_current_json, 0);
         } else {
             listview_flat(G_current_json, 0);
         }
