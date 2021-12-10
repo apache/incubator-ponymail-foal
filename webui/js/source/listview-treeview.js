@@ -15,13 +15,6 @@
  limitations under the License.
  */
 
-function find_email(json, id) {
-    if (!json) return
-    for (let eml of json.emails || []) {
-        if (id === eml.id) return eml
-    }
-}
-
 function listview_treeview(json, start) {
     let list = document.getElementById('emails');
     list.innerHTML = "";
