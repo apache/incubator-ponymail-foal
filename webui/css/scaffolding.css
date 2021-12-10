@@ -745,7 +745,7 @@ a.dropdown-toggle {
     #preferences_ul #display_options_dropdown {
         width: 300px;
         position: absolute;
-        left: -140px;
+        left: -240px;
         right: auto;
         font-weight: normal;
         font-size: 1.15rem;
