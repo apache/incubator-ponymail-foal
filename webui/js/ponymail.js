@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '61f8ff6';
+const PONYMAIL_REVISION = 'ad20497';
 
 
 /******************************************
@@ -2242,7 +2242,7 @@ function listview_header(state, json) {
         list_title = "Virtual inbox, past 30 days";
     }
     let blobs = json.emails ? json.emails : [];
-    if (G_current_listmode == 'threaded') blobs = json.thread_struct;
+    if (G_current_listmode == 'threaded' || G_current_listmode == 'treeview') blobs = json.thread_struct;
 
     if (G_current_year && G_current_month) {
         list_title += ", %s %u".format(MONTHS[G_current_month - 1], G_current_year);
@@ -2318,12 +2318,14 @@ function listview_header(state, json) {
         class: 'glyphicon glyphicon-refresh'
     }, " "));
     chevrons.inject(crefresh);
-
+    console.log(G_current_listmode)
     if (state && state.pos != undefined) {
         if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
-        } else {
+        } else if (G_current_listmode == 'flat') {
             listview_flat(json, state.pos);
+        } else {
+            listview_treeview(json, state.pos);
         }
     }
 
@@ -2767,6 +2769,46 @@ function listview_threaded_element(thread, idx) {
     link_wrapper.inject(element);
 
     return link_wrapper;
+}
+
+
+/******************************************
+ Fetched from source/listview-treeview.js
+******************************************/
+
+function find_email(json, id) {
+    for (let eml of json.emails) {
+        if (id === eml.id) return eml
+    }
+}
+
+function listview_treeview(json, start) {
+    let list = document.getElementById('emails');
+    list.innerHTML = "";
+    let s = start || 0;
+    let email_ordered = [];
+    for (let thread of json.thread_struct) {
+        email_ordered.push(find_email(json, thread.tid));
+        for (let child of thread.children) email_ordered.push(find_email(json, child.tid));
+    }
+    if (email_ordered.length) {
+        for (let n = s; n < (s + G_current_per_page); n++) {
+            let z = email_ordered.length - n - 1; // reverse order by default
+            if (email_ordered[z]) {
+                let item = listview_flat_element(email_ordered[z], z);
+                list.inject(item);
+
+                // Hidden placeholder for expanding email(s)
+                let placeholder = new HTML('div', {
+                    class: G_chatty_layout ? 'email_placeholder_chatty' : 'email_placeholder',
+                    id: 'email_%u'.format(z)
+                });
+                list.inject(placeholder);
+            }
+        }
+    } else {
+        list.inject(txt("No emails found..."));
+    }
 }
 
 
@@ -3392,6 +3434,8 @@ function renderListView(state, json) {
     listview_header(state, json);
     if (G_current_listmode == 'threaded') {
         listview_threaded(json, 0);
+    } else if (G_current_listmode == 'treeview') {
+        listview_treeview(json, 0);
     } else {
         listview_flat(json, 0);
     }
@@ -3548,6 +3592,8 @@ function render_virtual_inbox(state, json) {
         listview_header(state, G_current_json);
         if (G_current_listmode == 'threaded') {
             listview_threaded(G_current_json, 0);
+        } else if (G_current_listmode == 'treeview') {
+            listview_treeview(G_current_json, 0);
         } else {
             listview_flat(G_current_json, 0);
         }
