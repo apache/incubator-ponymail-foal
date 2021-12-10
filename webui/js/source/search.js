@@ -30,6 +30,8 @@ function search(query, date) {
     }
 
     let listid = '%s@%s'.format(list, domain);
+    G_current_list = list;
+    G_current_domain = domain;
     let newhref = "list?%s:%s:%s".format(listid, date, query);
 
     let header_from = document.getElementById('header_from');
@@ -56,7 +58,9 @@ function search(query, date) {
     listview_list_lists({
         url: sURL,
         search: true,
-        query: query
+        query: query,
+        list: list,
+        domain: domain
     });
     hideWindows(true);
     document.getElementById('q').value = query;

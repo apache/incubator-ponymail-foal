@@ -229,6 +229,7 @@ function listview_list_lists(state, json) {
         }, "Search: %s".format(state.query));
         li.setAttribute("data-url", state.url);
         li.setAttribute("data-href", location.href);
+        li.setAttribute("data-list", '%s@%s'.format(state.list, state.domain));
         lists.inject(li);
     }
 
@@ -297,8 +298,12 @@ function switch_project(domain) {
 function switch_list(list, from) {
     let listid = list;
     if (typeof list == 'object') {
+        listid = list.getAttribute("data-list") || list.innerText;
         let dataURL = list.getAttribute('data-url');
         if (dataURL) {
+            let bits = listid.split("@");
+            G_current_list = bits[0];
+            G_current_domain = bits[1];
             GET(dataURL, renderListView, {
                 search: true,
                 cached: true
@@ -312,7 +317,6 @@ function switch_list(list, from) {
             });
             return;
         }
-        listid = list.getAttribute("data-list") || list.innerText;
     }
     let bits = listid.split("@");
     G_current_list = bits[0];
