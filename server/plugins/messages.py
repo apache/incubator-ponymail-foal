@@ -71,7 +71,8 @@ USED_UI_FIELDS = [
 # The body_short contents may replace the body contents, but it is not returned separately
 
 # must always fetch private and deleted
-MUST_HAVE = [ 'private', 'deleted']
+# list_raw is needed for authentication
+MUST_HAVE = [ 'private', 'deleted', 'list_raw']
 
 
 def trim_email(doc, external=False):
