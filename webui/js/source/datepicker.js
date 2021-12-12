@@ -586,7 +586,7 @@ function drawCalendarPicker(obj, date) {
     // Go to first day of the month
     mat.setDate(1)
 
-    obj.innerHTML = "<h3>" + months[mat.getMonth()] + ", " + mat.getFullYear() + ":</h3>"
+    obj.innerHTML = "<h3>" + MONTHS[mat.getMonth()] + ", " + mat.getFullYear() + ":</h3>"
     let tm = mat.getMonth()
 
     // -- Nav buttons --
@@ -596,7 +596,7 @@ function drawCalendarPicker(obj, date) {
     fixupPicker(a)
     a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear() - 1) + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
-    a.innerHTML = "≪"
+    a.setAttribute("class", "glyphicon glyphicon-fast-backward");
     obj.appendChild(a)
 
     // back-a-month button
@@ -604,7 +604,7 @@ function drawCalendarPicker(obj, date) {
     fixupPicker(a)
     a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + mat.getFullYear() + '-' + (mat.getMonth()) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
-    a.innerHTML = "&lt;"
+    a.setAttribute("class", "glyphicon glyphicon-step-backward");
     obj.appendChild(a)
 
     // forward-a-month button
@@ -612,7 +612,7 @@ function drawCalendarPicker(obj, date) {
     fixupPicker(a)
     a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + mat.getFullYear() + '-' + (mat.getMonth() + 2) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
-    a.innerHTML = "&gt;"
+    a.setAttribute("class", "glyphicon glyphicon-step-forward");
     obj.appendChild(a)
 
     // forward-a-year button
@@ -620,7 +620,7 @@ function drawCalendarPicker(obj, date) {
     fixupPicker(a)
     a.setAttribute("onclick", "drawCalendarPicker(this.parentNode, '" + (mat.getFullYear() + 1) + '-' + (mat.getMonth() + 1) + '-' + mat.getDate() + "');")
     a.setAttribute("href", "javascript:void(0);")
-    a.innerHTML = "≫"
+    a.setAttribute("class", "glyphicon glyphicon-fast-forward");
     obj.appendChild(a)
     obj.appendChild(document.createElement('br'))
 
