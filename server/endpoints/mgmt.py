@@ -128,7 +128,7 @@ async def process(
         new_from = indata.get("from")
         new_subject = indata.get("subject")
         new_list = indata.get("list", "")
-        private = indata.get("private", "no") == "yes"
+        private = indata.get("private", "yes") == "yes" # Assume private unless notified otherwise
         new_body = indata.get("body", "")
         attach_edit = indata.get("attachments", None)
 
