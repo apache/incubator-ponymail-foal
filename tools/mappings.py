@@ -45,6 +45,18 @@ parser.add_argument(
     action="store_true",
     help="Create the missing mapping(s)",
 )
+parser.add_argument(
+    "--shards",
+    dest="shards",
+    type=int,
+    help="Create the missing indices",
+)
+parser.add_argument(
+    "--replicas",
+    dest="replicas",
+    type=int,
+    help="Create the missing indices",
+)
 parser.add_argument('names', nargs='*')
 args = parser.parse_args()
 
@@ -53,6 +65,22 @@ def check_mapping(index):
   mappings_expected = mapping_file[index]['properties']
 
   index_name = elastic.index_name(index)
+
+  # Check that index exists
+  if not elastic.indices.exists(index_name):
+    if args.shards and args.replicas is not None:
+      print("Creating index")
+      settings = {"number_of_shards": args.shards, "number_of_replicas": args.replicas}
+      elastic.indices.create(
+        index=index_name, body={"mappings": mapping_file[index], "settings": settings}
+      )
+      print("Created index!")
+      return
+    else:
+      print("Index not found!")
+      print("Specify --shards and --replicas to create the index")
+      return
+
   # actual mappings
   mappings = elastic.indices.get_mapping(index=index_name)[index_name]['mappings']['properties']
 
