@@ -16,10 +16,22 @@ account:
           type: keyword
     internal:
       properties:
+        admin:
+          type: boolean
+        oauth_data:
+          properties:
+            authoritative:
+              type: keyword
+            email:
+              type: keyword
+            name:
+              type: keyword
+            oauth_domain:
+              type: keyword
+            uid:
+              type: keyword
         oauth_provider:
           type: keyword
-        oauth_data:
-          type: object
     request_id:
       type: keyword
 attachment:
