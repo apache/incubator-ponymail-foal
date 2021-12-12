@@ -210,6 +210,9 @@ class _indices_wrap:
     def exists(self, *args, **kwargs):
         return self.es.indices.exists(*args, **kwargs)
 
+    def create(self, *args, **kwargs):
+        return self.es.indices.create(*args, **kwargs)
+
     def get_mapping(self, **kwargs):
         return self.es.indices.get_mapping(**kwargs)
 
