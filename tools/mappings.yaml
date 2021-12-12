@@ -8,8 +8,6 @@ account:
       type: keyword
     credentials:
       properties:
-        altemail:
-          type: object
         email:
           type: keyword
         name:
