@@ -45,6 +45,7 @@ parser.add_argument(
     action="store_true",
     help="Create the missing mapping(s)",
 )
+parser.add_argument('names', nargs='*')
 args = parser.parse_args()
 
 def check_mapping(index):
@@ -58,6 +59,7 @@ def check_mapping(index):
   if mappings == mappings_expected:
     print("Mappings are as expected, hoorah!")
   else:
+    print("Mappings differ:")
     unexpected = set(mappings) - set(mappings_expected)
     for name in unexpected:
       data = {name: mappings[name]}
@@ -71,7 +73,6 @@ def check_mapping(index):
       else:
         print("Missing: " + str(data))
 
-
-for type in mapping_file.keys():
+for type in args.names if len(args.names) > 0 else mapping_file.keys():
   print("Checking " + type)
   check_mapping(type)
