@@ -86,13 +86,6 @@ async def process(
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=400, text=str(ve))
     except AssertionError as ae:  # If defuzzer encounters internal errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(ae))
-    results = await plugins.messages.query(
-        session,
-        query_defuzzed,
-        query_limit=server.config.database.max_hits,
-        metadata_only=True,
-        epoch_order="asc"
-    )
 
     dlstem = f"{lid}_{domain}"
     if yyyymm:
@@ -109,7 +102,13 @@ async def process(
     response = aiohttp.web.StreamResponse(status=200, headers=headers)
     response.enable_chunked_encoding()
     await response.prepare(request)
-    for email in results:
+
+    async for email in plugins.messages.query_each(
+        session,
+        query_defuzzed,
+        metadata_only=True,
+        epoch_order="asc"
+    ):
         mboxrd_source = await convert_source(session, email)
         # Ensure each non-empty source ends with a blank line
         if not mboxrd_source.endswith("\n\n"):

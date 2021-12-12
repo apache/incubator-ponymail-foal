@@ -316,10 +316,9 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     return None
 
 
-async def query(
+async def query_each(
     session: plugins.session.SessionObject,
     query_defuzzed,
-    query_limit=10000,
     hide_deleted=True,
     metadata_only=False,
     epoch_order="desc",
@@ -328,9 +327,8 @@ async def query(
     """
     Advanced query and grab for stats.py
     Also called by mbox.py (using metadata_only=True)
+    Yields results singly
     """
-    docs = []
-    hits = 0
     assert session.database, DATABASE_NOT_CONNECTED
     preserve_order = True if epoch_order == "asc" else False
     es_query = {
@@ -378,10 +376,36 @@ async def query(
                 for hdr in MUST_HAVE:
                     if not hdr in source_fields and hdr in doc:
                         del doc[hdr]
-            docs.append(doc)
-            hits += 1
-            if hits > query_limit:
-                break
+            yield doc
+
+
+async def query(
+    session: plugins.session.SessionObject,
+    query_defuzzed,
+    query_limit=10000,
+    hide_deleted=True,
+    metadata_only=False,
+    epoch_order="desc",
+    source_fields=None
+):
+    """
+    Advanced query and grab for stats.py
+    Also called by mbox.py (using metadata_only=True)
+    """
+    docs = []
+    hits = 0
+    async for doc in query_each(
+        session,
+        query_defuzzed,
+        hide_deleted=hide_deleted,
+        metadata_only=metadata_only,
+        epoch_order=epoch_order,
+        source_fields=source_fields
+    ):
+        docs.append(doc)
+        hits += 1
+        if hits > query_limit:
+            break
     return docs
 
 
