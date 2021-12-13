@@ -157,7 +157,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
         .query("match", private=False)
         .filter("range", date={"lt": "now+1d", "gt": "now-14d"})
     )
-    async for doc in db.scan(
+    async for docs in db.scan(
         index=db.dbs.mbox,
         query=s.to_dict(),
         _source_includes=[
@@ -170,28 +170,30 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
         ],
     ):
 
-        found = False
-        message_id = doc["_source"].get("message-id")
-        irt = doc["_source"].get("in-reply-to")
-        references = doc["_source"].get("references")
-        list_raw = doc["_source"].get("list_raw", "_")
-        subject = doc["_source"].get("subject", "_")
-        if irt and irt in seen_emails:
-            seen_emails[message_id] = irt
-            found = True
-        elif references:
-            for refid in re.split(r"\s+", references):
-                if refid in seen_emails:
-                    seen_emails[message_id] = refid
-                    found = True
-        if not found:
-            subject = PYPONY_RE_PREFIX.sub("", subject)
-            subject += list_raw
-            if subject in seen_topics:
-                seen_emails[message_id] = subject
-            else:
-                seen_topics.append(subject)
-                thread_count += 1
+        for doc in docs:
+            found = False
+            
+            message_id = doc["_source"].get("message-id")
+            irt = doc["_source"].get("in-reply-to")
+            references = doc["_source"].get("references")
+            list_raw = doc["_source"].get("list_raw", "_")
+            subject = doc["_source"].get("subject", "_")
+            if irt and irt in seen_emails:
+                seen_emails[message_id] = irt
+                found = True
+            elif references:
+                for refid in re.split(r"\s+", references):
+                    if refid in seen_emails:
+                        seen_emails[message_id] = refid
+                        found = True
+            if not found:
+                subject = PYPONY_RE_PREFIX.sub("", subject)
+                subject += list_raw
+                if subject in seen_topics:
+                    seen_emails[message_id] = subject
+                else:
+                    seen_topics.append(subject)
+                    thread_count += 1
 
     await db.client.close()
 
