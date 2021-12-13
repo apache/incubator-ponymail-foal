@@ -94,6 +94,7 @@ the License. -->
             <span class="caret"></span>
           </a>
             <div class="dropdown-menu" id="display_options_dropdown">
+              <div style="display: block; width: 100%;">
               <div>
                 <b>List display mode:</b><br/><br/>
               <input type="radio" id="display_mode_threaded" name="ui_threading" value="threaded" onchange="set_theme('threaded');"> <label for="display_mode_threaded">Threaded view</label><br/>
@@ -108,7 +109,11 @@ the License. -->
                 <input type="radio" id="email_mode_plain" name="ui_emailmode" value="plain" onchange="set_skin(false);"> <label for="email_mode_plain">Legacy rendering</label><br/>
 
               </div>
-
+              </div>
+              <hr/>
+              <div style="display: block; width: 100%; text-align: center;">
+                <input type="checkbox" id="G_show_stats_sidebar" name="ui_stats_sidebar" value="compact" onchange="set_show_stats(this.checked);"> <label for="G_show_stats_sidebar">Show side-bar stats</label><br/>
+              </div>
             </div>
         </li>
 
