@@ -35,7 +35,7 @@ async def process(
         if "@" in ml:
             lname, ldomain = ml.split("@", 1)
             can_access = True
-            if entry.get("private", False):
+            if entry.get("private", True):
                 can_access = plugins.aaa.can_access_list(session, ml)
             if server.config.ui.focus_domain != "*":
                 if '*' in server.config.ui.focus_domain:
