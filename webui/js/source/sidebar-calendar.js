@@ -19,10 +19,24 @@ let calendar_index = 0;
 let current_calendar_size = CALENDAR_YEARS_SHOWN;
 let calendar_state = {}
 
+
+function calendar_max_height() {
+    let body = document.body;
+    let html = document.documentElement;
+    let height = Math.max(body.scrollHeight,
+        html.clientHeight, html.scrollHeight);
+    let width = Math.max(body.scrollWidth,
+        html.clientWidth, html.scrollWidth);
+    let year_height = 48; // Height of one calendar year
+    height -= document.getElementById("emails").getBoundingClientRect().y + 16; // top area height plus footer
+    let number_of_years = Math.max(5, Math.floor(height / year_height));
+    return number_of_years;
+}
+
 function renderCalendar(state) {
     calendar_state = state ? state : calendar_state;
     calendar_index = 0;
-    current_calendar_size = G_show_stats_sidebar ? CALENDAR_YEARS_SHOWN : CALENDAR_YEARS_SHOWN * 3;
+    current_calendar_size = G_show_stats_sidebar ? CALENDAR_YEARS_SHOWN : calendar_max_height();
     // Only render if calendar div is present
     let cal = document.getElementById('sidebar_calendar');
     if (!cal) {
