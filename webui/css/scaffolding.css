@@ -452,7 +452,7 @@ a.dropdown-toggle {
 
 #list_picker_ul > li {
     display: inline-block;
-    border: 1px solid #6666;
+    border: 1px solid #E0E0E0;
     background: #F9F9F9;
     border-radius: 0px;
     margin: 0px;
@@ -469,8 +469,8 @@ a.dropdown-toggle {
     text-overflow: ellipsis;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    border-top: 3px solid #6666;
-    border-bottom: 1px solid #6666;
+    border-top: 3px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;
 }
 
 #list_picker li.active {
@@ -511,7 +511,7 @@ a.dropdown-toggle {
 /* ListView email wrapper */
 #emails {
     background: #FFF;
-    border: 1.5px groove #FFF9;
+    border: 1px solid #E0E0E0;
     min-height: auto;
     position: relative;
     overflow-y: hidden;
@@ -527,8 +527,9 @@ a.dropdown-toggle {
     padding-top: 2px;
     font-size: 1.25rem;
     float: left;
-    width: 100%;
+    width: calc(100% - 4px);
     position: relative;
+    margin: 2px;
 }
 
 .listview_email_as {
@@ -557,17 +558,17 @@ a.dropdown-toggle {
     background: #FFF;
     border-left: 3px solid #AAA;
     border-top: none;
-    height: 24px;
-    line-height: 24px;
-    padding-top: 2px;
+    height: 20px;
+    line-height: 20px;
     font-size: 1.25rem;
     float: left;
-    width: 100%;
+    width: calc(100% - 4px);
+    margin: 2px;
 }
 
 .listview_email_compact .listview_email_author {
-    height: 24px;
-    line-height: 24px;
+    height: 20px;
+    line-height: 20px;
 }
 
 .listview_email_compact .gravatar {
@@ -834,7 +835,7 @@ a.dropdown-toggle {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #1d4f75 !important;
-  line-height: 17px;
+  line-height: 20px;
 }
 
 
@@ -847,11 +848,19 @@ a.dropdown-toggle {
 }
 
 a > .listview_email_flat {
-    border-top: 1px solid #CCC9;
+    border-top: 1px solid #E0E0E0;
 }
 
 a > .listview_email_compact {
-    border-top: 1px solid #CCC9;
+    border-top: 1px solid #E0E0E0;
+}
+
+a:first-child > .listview_email_flat {
+    border-top: none;
+}
+
+a:first-child > .listview_email_compact {
+    border-top: none;
 }
 
 
