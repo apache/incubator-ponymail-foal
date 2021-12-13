@@ -95,7 +95,6 @@ async def process(
         # author entries are now [count, gravatar]
         # as we cannot reconstruct the correct gravatar from an anonymised address
         all_authors = sorted(authors.items(), key=lambda x: x[1][0], reverse=True)  # sort in reverse by author count
-        print(all_authors)
         top10_authors = []
         for author, data in all_authors[:10]:
             name, address = email.utils.parseaddr(author)
