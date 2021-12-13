@@ -170,11 +170,11 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
     counter = counter + 1
     if counter > 250:
         return []
-    docs = await get_email(session, irt=pdoc["message-id"])
+    docs = await get_email_irt(session, pdoc["message-id"])
 
     thread = []
     emails = []
-    for doc in docs or []:
+    for doc in docs:
         # Make sure email is accessible
         if doc.get("deleted"):
             continue
@@ -212,9 +212,12 @@ async def get_email(
     session: plugins.session.SessionObject,
     permalink: str = None,
     messageid=None,
-    irt=None,
     source=False,
-):
+) -> typing.Optional[dict]:
+    """
+    Returns a matching mbox or source document or None
+    The calling code is responsible for checking if the entry is accessible
+    """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
     if source:
@@ -223,7 +226,6 @@ async def get_email(
     # emails in DBs that may have been incorrectly analyzed.
     aggtype = "match"
     doc = None
-    docs = None
     if permalink:
         try:
             doc = await session.database.get(index=doctype, id=permalink)
@@ -250,14 +252,6 @@ async def get_email(
         )
         if len(res["hits"]["hits"]) == 1:
             doc = res["hits"]["hits"][0]
-    elif irt:
-        xirt = '"%s"' % irt.replace('"', '\\"')
-        res = await session.database.search(
-            index=doctype,
-            size=250,
-            body={"query": {"bool": {"must": [ {"simple_query_string": { "query": xirt, "fields":["in-reply-to", "references"]}}]}}},
-        )
-        docs = res["hits"]["hits"]
 
     # Did we find a single doc?
     if doc and isinstance(doc, dict):
@@ -269,20 +263,41 @@ async def get_email(
                 doc = anonymize(doc)
             return doc
 
-    # multi-doc return?
-    elif docs is not None and isinstance(docs, list):
-        docs_returned = []
-        for doc in docs:
-            doc = doc["_source"]
-            doc["id"] = doc["mid"]
-            if doc and plugins.aaa.can_access_email(session, doc):
-                trim_email(doc)
-                if not session.credentials:
-                    doc = anonymize(doc)
-                docs_returned.append(doc)
-        return docs_returned
     # no doc?
     return None
+
+async def get_email_irt(
+    session: plugins.session.SessionObject,
+    irt,
+    source=False,
+) -> typing.List[dict]:
+    """
+    Returns a list of mbox or source document(s) that are related. May be empty.
+    The calling code is responsible for checking if entries are accessible
+    """
+    assert session.database, DATABASE_NOT_CONNECTED
+    doctype = session.database.dbs.db_mbox
+    if source:
+        doctype = session.database.dbs.db_source
+
+    xirt = '"%s"' % irt.replace('"', '\\"')
+    res = await session.database.search(
+        index=doctype,
+        size=250,
+        body={"query": {"bool": {"must": [ {"simple_query_string": { "query": xirt, "fields":["in-reply-to", "references"]}}]}}},
+    )
+    docs = res["hits"]["hits"]
+
+    docs_returned = []
+    for doc in docs:
+        doc = doc["_source"]
+        doc["id"] = doc["mid"]
+        if doc and plugins.aaa.can_access_email(session, doc):
+            trim_email(doc)
+            if not session.credentials:
+                doc = anonymize(doc)
+            docs_returned.append(doc)
+    return docs_returned
 
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
