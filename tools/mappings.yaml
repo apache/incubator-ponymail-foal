@@ -39,6 +39,7 @@ attachment:
   properties:
     source:
       type: binary
+# Only used for MailMan lists: see https://github.com/apache/incubator-ponymail-foal/issues/176
 mailinglist:
   dynamic: strict
   properties:
