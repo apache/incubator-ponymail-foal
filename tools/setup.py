@@ -118,6 +118,9 @@ parser.add_argument(
     "--defaults", dest="defaults", action="store_true", help="Use default settings"
 )
 parser.add_argument(
+    "--devel", dest="devel", action="store_true", help="Use developer settings (shards=1, replicas=0)"
+)
+parser.add_argument(
     "--clobber",
     dest="clobber",
     action="store_true",
@@ -186,6 +189,19 @@ if args.defaults:
     wce = True
     shards = 3
     replicas = 1
+    genname = "dkim"
+    urlPrefix = ""
+    nonce = None
+
+if args.devel:
+    dburl =  DEFAULT_DB_URL
+    dbname = "ponymail"
+    mlserver = "localhost"
+    mldom = "example.org"
+    wc = "Y"
+    wce = True
+    shards = 1
+    replicas = 0
     genname = "dkim"
     urlPrefix = ""
     nonce = None
@@ -268,7 +284,7 @@ while genname == "":
     except ValueError:
         pass
 
-if genname == "dkim" and (nonce is None and not args.defaults):
+if genname == "dkim" and (nonce is None and not args.defaults and not args.devel):
     print(
         "DKIM hasher chosen. It is recommended you set a cryptographic nonce for this generator, though not required."
     )
