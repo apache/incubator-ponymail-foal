@@ -530,6 +530,7 @@ a.dropdown-toggle {
     width: calc(100% - 4px);
     position: relative;
     margin: 2px;
+    margin-bottom: -2px;
 }
 
 .listview_email_as {
