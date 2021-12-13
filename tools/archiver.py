@@ -767,24 +767,6 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             # otherwise fail as before
             raise err
 
-        # If MailMan and list info is present, save/update it in ES:
-        if (
-            hasattr(mlist, "description")
-            and hasattr(mlist, "list_name")
-            and mlist.description
-            and mlist.list_name
-        ):
-            elastic.index(
-                index=elastic.db_mailinglist,
-                id=lid,
-                body={
-                    "list": lid,
-                    "name": mlist.list_name,
-                    "description": mlist.description,
-                    "private": private,
-                },
-            )
-
         if logger:
             logger.info("Pony Mail archived message %s successfully", ojson["mid"])
         oldrefs = []

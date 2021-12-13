@@ -43,7 +43,6 @@ class Elastic:
     db_account:         str
     db_session:         str
     db_notification:    str
-    db_mailinglist:     str
     db_auditlog:        str
     dbname:             str
 
@@ -60,7 +59,6 @@ class Elastic:
         self.db_attachment = dbname + '-attachment'
         self.db_session = dbname + '-session'
         self.db_notification = dbname + '-notification'
-        self.db_mailinglist = dbname + '-mailinglist'
         self.db_auditlog = dbname + '-auditlog'
         self.db_version = 0
 

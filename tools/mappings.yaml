@@ -39,18 +39,6 @@ attachment:
   properties:
     source:
       type: binary
-# Only used for MailMan lists: see https://github.com/apache/incubator-ponymail-foal/issues/176
-mailinglist:
-  dynamic: strict
-  properties:
-    description:
-      type: keyword
-    list:
-      type: keyword
-    name:
-      type: keyword
-    private:
-      type: boolean
 mbox:
   dynamic: strict
   properties:
