@@ -469,7 +469,7 @@ a.dropdown-toggle {
     text-overflow: ellipsis;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    border-top: 2px solid #6666;
+    border-top: 3px solid #6666;
     border-bottom: 1px solid #6666;
 }
 
@@ -477,12 +477,13 @@ a.dropdown-toggle {
     z-index: 1;
     height: 27px;
     background: #FFF;
-    border-top: 2px solid #369;
-    border-bottom: 1px solid #FFF;
+    border-top: 3px solid #369;
+    border-bottom: -2px solid #FFF;
+    font-weight: bold;
 }
 
 #list_picker li:not(.active):not(.others):hover {
-    border-top: 2px solid #693;
+    border-top: 3px solid #693;
     border-bottom: 1px solid #FFF;
     cursor: pointer;
     height: 27px;
