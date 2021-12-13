@@ -33,13 +33,13 @@ class Timeout (elasticsearch.exceptions.ConnectionTimeout):
 
 class DBNames:
     def __init__(self, dbprefix):
-        self.mbox = f"{dbprefix}-mbox"
-        self.source = f"{dbprefix}-source"
-        self.attachment = f"{dbprefix}-attachment"
-        self.account = f"{dbprefix}-account"
-        self.session = f"{dbprefix}-session"
-        self.notification = f"{dbprefix}-notification"
-        self.auditlog = f"{dbprefix}-auditlog"
+        self.db_mbox = f"{dbprefix}-mbox"
+        self.db_source = f"{dbprefix}-source"
+        self.db_attachment = f"{dbprefix}-attachment"
+        self.db_account = f"{dbprefix}-account"
+        self.db_session = f"{dbprefix}-session"
+        self.db_notification = f"{dbprefix}-notification"
+        self.db_auditlog = f"{dbprefix}-auditlog"
 
 
 DBError = elasticsearch.ElasticsearchException
@@ -71,7 +71,7 @@ class Database:
 
     async def search(self, index="", **kwargs):
         if not index:
-            index = self.dbs.mbox
+            index = self.dbs.db_mbox
         try:
             res = await self.client.search(index=index, **kwargs)
             return res
@@ -80,19 +80,19 @@ class Database:
 
     async def get(self, index="", **kwargs):
         if not index:
-            index = self.dbs.mbox
+            index = self.dbs.db_mbox
         res = await self.client.get(index=index, **kwargs)
         return res
 
     async def delete(self, index="", **kwargs):
         if not index:
-            index = self.dbs.session
+            index = self.dbs.db_session
         res = await self.client.delete(index=index, **kwargs)
         return res
 
     async def index(self, index="", **kwargs):
         if not index:
-            index = self.dbs.session
+            index = self.dbs.db_session
         res = await self.client.index(index=index, **kwargs)
         return res
 
@@ -108,7 +108,7 @@ class Database:
 
     async def update(self, index="", **kwargs):
         if not index:
-            index = self.dbs.session
+            index = self.dbs.db_session
         res = await self.client.update(index=index, **kwargs)
         return res
 

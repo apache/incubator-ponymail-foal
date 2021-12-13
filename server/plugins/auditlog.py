@@ -50,11 +50,11 @@ async def view(
     assert session.database, "No database connection could be found!"
     if not filter:
         res = await session.database.search(
-            index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
+            index=session.database.dbs.db_auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
         )
     else:
         res = await session.database.search(
-            index=session.database.dbs.auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
+            index=session.database.dbs.db_auditlog, size=num_entries, from_=page * num_entries, sort="date:desc",
             body={
                 "query": {"bool": {"must": [{"terms": {"action": filter}}]}}
             },
@@ -79,7 +79,7 @@ async def add_entry(session: plugins.session.SessionObject, action: str, target:
     assert session.credentials, "No session credentials could be found!"
     assert session.database, "Session not connected to database!"
     await session.database.index(
-        index=session.database.dbs.auditlog,
+        index=session.database.dbs.db_auditlog,
         body={
             "date": time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(time.time())),
             "action": action,

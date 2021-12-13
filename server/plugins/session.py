@@ -143,14 +143,14 @@ async def get_session(
     if session_id and session.database:
         try:
             session_doc = await session.database.get(
-                session.database.dbs.session, id=session_id
+                session.database.dbs.db_session, id=session_id
             )
             last_update = session_doc["_source"]["updated"]
             session.cookie = session_id
             # Check that this cookie ain't too old. If it is, delete it and return bare-bones session object
             if (now - last_update) > FOAL_MAX_SESSION_AGE:
                 session.database.delete(
-                    index=session.database.dbs.session, id=session_id
+                    index=session.database.dbs.db_session, id=session_id
                 )
                 return session
 
@@ -158,7 +158,7 @@ async def get_session(
             cid = session_doc["_source"]["cid"]
             if cid:
                 account_doc = await session.database.get(
-                    session.database.dbs.account, id=cid
+                    session.database.dbs.db_account, id=cid
                 )
                 creds = account_doc["_source"]["credentials"]
                 internal = account_doc["_source"]["internal"]
@@ -212,7 +212,7 @@ async def save_session(session: SessionObject):
     """Save a session object in the ES database"""
     assert session.database, DATABASE_NOT_CONNECTED
     await session.database.index(
-        index=session.database.dbs.session,
+        index=session.database.dbs.db_session,
         id=session.cookie,
         body={
             "cookie": session.cookie,
@@ -225,7 +225,7 @@ async def save_session(session: SessionObject):
 async def remove_session(session: SessionObject):
     """Remove a session object in the ES database"""
     assert session.database, DATABASE_NOT_CONNECTED
-    await session.database.delete(index=session.database.dbs.session, id=session.cookie)
+    await session.database.delete(index=session.database.dbs.db_session, id=session.cookie)
 
 
 async def save_credentials(session: SessionObject):
@@ -233,7 +233,7 @@ async def save_credentials(session: SessionObject):
     assert session.database, DATABASE_NOT_CONNECTED
     assert session.credentials, "Session object without credentials, cannot save!"
     await session.database.index(
-        index=session.database.dbs.account,
+        index=session.database.dbs.db_account,
         id=session.cid,
         body={
             "cid": session.cid,

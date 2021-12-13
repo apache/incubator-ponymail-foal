@@ -58,14 +58,14 @@ async def process(
                 email["deleted"] = True
                 if server.config.ui.fully_delete and email["id"] and email["dbid"]:  # Full on GDPR blast?
                     await session.database.delete(
-                        index=session.database.dbs.mbox, id=email["id"],
+                        index=session.database.dbs.db_mbox, id=email["id"],
                     )
                     await session.database.delete(
-                        index=session.database.dbs.source, id=email["dbid"],
+                        index=session.database.dbs.db_source, id=email["dbid"],
                     )
                 else:  # Standard behavior: hide the email from everyone.
                     await session.database.update(
-                        index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                        index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
                     )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
@@ -80,7 +80,7 @@ async def process(
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = True
                 await session.database.update(
-                    index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
                 )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="hide", target=doc, lid=lid, log=f"Hid email {doc} from {lid} archives")
@@ -95,7 +95,7 @@ async def process(
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = False
                 await session.database.update(
-                    index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
                 )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="unhide", target=doc, lid=lid, log=f"Unhid email {doc} from {lid} archives")
@@ -110,14 +110,14 @@ async def process(
             try:
                 assert session.database, "Database not connected!"
                 attachment = await session.database.get(
-                    index=session.database.dbs.attachment, id=doc
+                    index=session.database.dbs.db_attachment, id=doc
                 )
             except plugins.database.DBError:
                 pass  # attachment not found
 
             if attachment and isinstance(attachment, dict):
                 await session.database.delete(
-                    index=session.database.dbs.attachment, id=attachment["_id"],
+                    index=session.database.dbs.db_attachment, id=attachment["_id"],
                 )
                 lid = "<system>"
                 await plugins.auditlog.add_entry(session, action="delatt", target=doc, lid=lid, log=f"Removed attachment {doc} from the archives")
@@ -164,7 +164,7 @@ async def process(
 
             # Save edited email
             await session.database.update(
-                index=session.database.dbs.mbox, body={"doc": email}, id=email["id"],
+                index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
             )
 
             # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
@@ -176,7 +176,7 @@ async def process(
                     source = source["_source"]
                     source["deleted"] = True
                     await session.database.update(
-                        index=session.database.dbs.source, body={"doc": source}, id=docid,
+                        index=session.database.dbs.db_source, body={"doc": source}, id=docid,
                     )
 
             await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,

@@ -67,7 +67,7 @@ async def process(
                         try:
                             assert session.database, "Database not connected!"
                             attachment = await session.database.get(
-                                index=session.database.dbs.attachment, id=indata.get("file")
+                                index=session.database.dbs.db_attachment, id=indata.get("file")
                             )
                             if attachment:
                                 blob = base64.decodebytes(attachment["_source"].get("source").encode("utf-8"))

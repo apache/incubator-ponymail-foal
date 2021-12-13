@@ -44,7 +44,7 @@ async def fetch_gravatar(gid):
 
 async def gravatar_exists_in_db(session, gid):
     res = await session.database.search(
-        index=session.database.dbs.mbox,
+        index=session.database.dbs.db_mbox,
         size=1,
         body={"query": {"bool": {"must": [{"term": {"gravatar": gid}}]}}},
     )

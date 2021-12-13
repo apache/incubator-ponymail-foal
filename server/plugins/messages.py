@@ -216,9 +216,9 @@ async def get_email(
     source=False,
 ):
     assert session.database, DATABASE_NOT_CONNECTED
-    doctype = session.database.dbs.mbox
+    doctype = session.database.dbs.db_mbox
     if source:
-        doctype = session.database.dbs.source
+        doctype = session.database.dbs.db_source
     # Older indexes may need a match instead of a strict terms agg in order to find
     # emails in DBs that may have been incorrectly analyzed.
     aggtype = "match"
@@ -287,7 +287,7 @@ async def get_email(
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
     assert session.database, DATABASE_NOT_CONNECTED
-    doctype = session.database.dbs.source
+    doctype = session.database.dbs.db_source
     try:
         doc = await session.database.get(index=doctype, id=permalink)
     except plugins.database.DBError:
@@ -457,7 +457,7 @@ async def get_activity_span(session, query_defuzzed):
     fuzz_private_only = dict(query_defuzzed)
     fuzz_private_only["filter"] = [{"term": {"private": True}}]
     res = await session.database.search(
-        index=session.database.dbs.mbox,
+        index=session.database.dbs.db_mbox,
         size=0,
         body={
             "query": {"bool": fuzz_private_only},
@@ -486,7 +486,7 @@ async def get_activity_span(session, query_defuzzed):
 
     # Get oldest and youngest doc in single scan, as well as a monthly histogram
     res = await session.database.search(
-        index=session.database.dbs.mbox,
+        index=session.database.dbs.db_mbox,
         size=0,
         body={"query": {"bool": query_defuzzed},
             "aggs": {
