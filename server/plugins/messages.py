@@ -316,7 +316,7 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
     return None
 
 
-async def query_each(
+async def query_batch(
     session: plugins.session.SessionObject,
     query_defuzzed,
     hide_deleted=True,
@@ -327,7 +327,7 @@ async def query_each(
     """
     Advanced query and grab for stats.py
     Also called by mbox.py (using metadata_only=True)
-    Yields results singly
+    Yields batches of scan results, filtered to remove inaccessible mails
     """
     assert session.database, DATABASE_NOT_CONNECTED
     preserve_order = True if epoch_order == "asc" else False
@@ -345,38 +345,42 @@ async def query_each(
         es_query["_source"] = temp
     else:
         es_query["_source"] = { "excludes": ["body"] }
-    async for hit in session.database.scan(
+    async for hits in session.database.scan(
         query=es_query,
         preserve_order=preserve_order
     ):
-        doc = hit["_source"]
-        # If email was delete/hidden and we're not doing an admin query, ignore it
-        if hide_deleted and doc.get("deleted", False):
-            continue
-        if plugins.aaa.can_access_email(session, doc):
-            if "mid" in doc: # might be missing when using source_fields
-                doc["id"] = doc["mid"]
-            # Calculate gravatars if not present in source
-            if not metadata_only and source_fields is None and "gravatar" not in doc:
-                doc["gravatar"] = gravatar(doc)
-            if not session.credentials:
-                doc = anonymize(doc)
-            if "body_short" in doc:
-                # The body_short field is set to SHORT_BODY_MAX_LEN+1 if the body is longer
-                # than SHORT_BODY_MAX_LEN, so we know if it has been truncated
-                if len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
-                    doc["body"] = doc["body_short"][:SHORT_BODY_MAX_LEN] + '...'
-                else:
-                    doc["body"] = doc["body_short"]
-                # stats.py is expecting doc['body'], not body_short
-                del doc["body_short"]
-            trim_email(doc)
-            # drop any added fields
-            if not source_fields is None:
-                for hdr in MUST_HAVE:
-                    if not hdr in source_fields and hdr in doc:
-                        del doc[hdr]
-            yield doc
+        docs = []
+        for hit in hits:
+            doc = hit["_source"]
+            # If email was delete/hidden and we're not doing an admin query, ignore it
+            if hide_deleted and doc.get("deleted", False):
+                continue
+            if plugins.aaa.can_access_email(session, doc):
+                if "mid" in doc: # might be missing when using source_fields
+                    doc["id"] = doc["mid"]
+                # Calculate gravatars if not present in source
+                if not metadata_only and source_fields is None and "gravatar" not in doc:
+                    doc["gravatar"] = gravatar(doc)
+                if not session.credentials:
+                    doc = anonymize(doc)
+                if "body_short" in doc:
+                    # The body_short field is set to SHORT_BODY_MAX_LEN+1 if the body is longer
+                    # than SHORT_BODY_MAX_LEN, so we know if it has been truncated
+                    if len(doc["body_short"] or "") > SHORT_BODY_MAX_LEN:
+                        doc["body"] = doc["body_short"][:SHORT_BODY_MAX_LEN] + '...'
+                    else:
+                        doc["body"] = doc["body_short"]
+                    # stats.py is expecting doc['body'], not body_short
+                    del doc["body_short"]
+                trim_email(doc)
+                # drop any added fields
+                if not source_fields is None:
+                    for hdr in MUST_HAVE:
+                        if not hdr in source_fields and hdr in doc:
+                            del doc[hdr]
+                docs.append(doc)
+        if len(docs) > 0:
+            yield docs
 
 
 async def query(
@@ -394,7 +398,7 @@ async def query(
     """
     docs = []
     hits = 0
-    async for doc in query_each(
+    async for batch in query_batch(
         session,
         query_defuzzed,
         hide_deleted=hide_deleted,
@@ -402,8 +406,11 @@ async def query(
         epoch_order=epoch_order,
         source_fields=source_fields
     ):
-        docs.append(doc)
-        hits += 1
+        for doc in batch:
+            docs.append(doc)
+            hits += 1
+            if hits > query_limit:
+                break
         if hits > query_limit:
             break
     return docs

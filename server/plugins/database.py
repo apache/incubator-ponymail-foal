@@ -120,7 +120,7 @@ class Database:
                    request_timeout=60,
                    clear_scroll=True,
                    scroll_kwargs=None,
-                   **kwargs) -> typing.AsyncIterator[dict]:
+                   **kwargs) -> typing.AsyncIterator[typing.List[dict]]:
         
         scroll_kwargs = scroll_kwargs or {}
 
@@ -137,8 +137,7 @@ class Database:
         # While we can scroll, fetch a page
         try:
             while scroll_id and resp["hits"]["hits"]:
-                for hit in resp["hits"]["hits"]:
-                    yield hit
+                yield resp["hits"]["hits"]
                 resp = await self.client.scroll(
                     body={"scroll_id": scroll_id, "scroll": scroll}, **scroll_kwargs
                 )

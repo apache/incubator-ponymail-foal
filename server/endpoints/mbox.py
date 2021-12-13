@@ -103,21 +103,22 @@ async def process(
     response.enable_chunked_encoding()
     await response.prepare(request)
 
-    async for email in plugins.messages.query_each(
+    async for emails in plugins.messages.query_batch(
         session,
         query_defuzzed,
         metadata_only=True,
         epoch_order="asc"
     ):
-        mboxrd_source = await convert_source(session, email)
-        # Ensure each non-empty source ends with a blank line
-        if not mboxrd_source.endswith("\n\n"):
-            mboxrd_source += "\n"
-        try:
-            async with server.streamlock:
-                await asyncio.wait_for(response.write(mboxrd_source.encode("utf-8")), timeout=5)
-        except (TimeoutError, RuntimeError, CancelledError):
-            break  # Writing stream failed, break it off.
+        for email in emails:
+            mboxrd_source = await convert_source(session, email)
+            # Ensure each non-empty source ends with a blank line
+            if not mboxrd_source.endswith("\n\n"):
+                mboxrd_source += "\n"
+            try:
+                async with server.streamlock:
+                    await asyncio.wait_for(response.write(mboxrd_source.encode("utf-8")), timeout=5)
+            except (TimeoutError, RuntimeError, CancelledError):
+                break  # Writing stream failed, break it off.
     return response
 
 
