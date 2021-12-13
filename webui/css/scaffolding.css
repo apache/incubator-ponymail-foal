@@ -511,22 +511,23 @@ a.dropdown-toggle {
 #emails {
     background: #FFF;
     border: 1.5px groove #FFF9;
-    min-height: 100px;
+    min-height: auto;
+    position: relative;
+    overflow-y: hidden;
 }
 
 
 /* Flat email item */
 .listview_email_flat {
     background: #FFF;
-    border: 1.25px solid #CCC9;
     border-left: 3px solid #AAA;
-    border-top: none;
     height: 40px;
     line-height: 40px;
     padding-top: 2px;
     font-size: 1.25rem;
     float: left;
     width: 100%;
+    position: relative;
 }
 
 .listview_email_as {
@@ -553,7 +554,6 @@ a.dropdown-toggle {
 /* Compacted email item */
 .listview_email_compact {
     background: #FFF;
-    border: 1.25px solid #CCC9;
     border-left: 3px solid #AAA;
     border-top: none;
     height: 24px;
@@ -845,15 +845,14 @@ a.dropdown-toggle {
   line-height: 17px;
 }
 
-.listview_email_flat:first-of-type {
-    border: 1.25px solid #CCC9;
-    border-left: 3px solid #AAA;
+a > .listview_email_flat {
+    border-top: 1px solid #CCC9;
 }
 
-.listview_email_compact:first-of-type {
-    border: 1.25px solid #CCC9;
-    border-left: 3px solid #AAA;
+a > .listview_email_compact {
+    border-top: 1px solid #CCC9;
 }
+
 
 .listview_email_flat:hover {
     border-left: 3px solid #369;
@@ -933,7 +932,7 @@ a.dropdown-toggle {
 
 .email_wrapper {
 
-    border: 1.25px solid #CCC9;
+    border-top: 1px solid #CCC9;
     border-left: 3px solid #AAA;
     font-family: Hack;
     margin-left: 8px;
@@ -942,7 +941,6 @@ a.dropdown-toggle {
     float: left;
     width: calc(100% - 10px);
     position: relative;
-
 }
 
 
