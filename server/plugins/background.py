@@ -61,6 +61,24 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
     db = plugins.database.Database(database)
     limit = database.max_lists
 
+    # Fetch aggregations of all private emails
+    # Do this first, so mixed lists are not marked private
+    s = Search(using=db.client, index=db.dbs.mbox).filter(
+        "term", private=True
+    )
+    s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
+
+    res = await db.search(
+        index=db.dbs.mbox, body=s.to_dict(), size=0
+    )
+
+    for ml in res["aggregations"]["per_list"]["buckets"]:
+        list_name = ml["key"].strip("<>").replace(".", "@", 1)
+        lists[list_name] = {
+            "count": 0,  # Sorting later
+            "private": True,
+        }
+
     # Fetch aggregations of all public emails
     s = Search(using=db.client, index=db.dbs.mbox).filter(
         "term", private=False
@@ -76,23 +94,6 @@ async def get_lists(database: plugins.configuration.DBConfig) -> dict:
         lists[list_name] = {
             "count": 0,   # We'll sort this later
             "private": False,
-        }
-
-    # Ditto, for private emails
-    s = Search(using=db.client, index=db.dbs.mbox).filter(
-        "term", private=True
-    )
-    s.aggs.bucket("per_list", "terms", field="list_raw", size=limit)
-
-    res = await db.search(
-        index=db.dbs.mbox, body=s.to_dict(), size=0
-    )
-
-    for ml in res["aggregations"]["per_list"]["buckets"]:
-        list_name = ml["key"].strip("<>").replace(".", "@", 1)
-        lists[list_name] = {
-            "count": 0,  # Sorting later
-            "private": True,
         }
 
     # Get 90 day activity, if any
