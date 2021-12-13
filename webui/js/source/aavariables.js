@@ -53,6 +53,7 @@ let G_current_per_page = 0;
 // sidebar calendar
 const MONTHS_SHORTENED = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const CALENDAR_YEARS_SHOWN = 4; // TODO: should this be configurable?
+let G_show_stats_sidebar = true; // Whether to show author stats or not
 
 // datepicker
 const DAYS_SHORTENED = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

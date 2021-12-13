@@ -696,12 +696,17 @@ a.dropdown-toggle {
 }
 
 #display_options_dropdown > div {
+    width: 100%;
+    overflow-y: auto;
+}
+
+#display_options_dropdown > div > div {
     width: 45%;
     float: left;
     margin: 2%;
 }
 
-#display_options_dropdown > div:first-child {
+#display_options_dropdown > div > div:first-child {
     border-right: 2px solid #3333;
 }
 

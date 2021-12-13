@@ -15,6 +15,7 @@
  limitations under the License.
 */
 
+
 async function sidebar_stats(json) {
     let obj = document.getElementById('sidebar_stats');
     if (!obj) {
@@ -46,7 +47,7 @@ async function sidebar_stats(json) {
 
     // Top 10 participants
     obj.inject("Found %u emails by %u authors, divided into %u topics.".format(json.emails.length, json.numparts, json.no_threads));
-    obj.inject(new HTML('h5', {}, "Most active authors:"));
+    obj.inject(new HTML('h5', {}, "Most active authors: "));
     for (let i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
             break;
@@ -82,5 +83,8 @@ async function sidebar_stats(json) {
             wordCloud(json.cloud, 220, 100, wc);
         }, 50);
     }
-
+    if (G_show_stats_sidebar === false) {
+        obj.style.display = "none";
+        wc.style.display = "none";
+    }
 }

@@ -16,10 +16,13 @@
 */
 
 let calendar_index = 0;
+let current_calendar_size = CALENDAR_YEARS_SHOWN;
+let calendar_state = {}
 
-function renderCalendar(FY, FM, LY, LM, activity = null) {
+function renderCalendar(state) {
+    calendar_state = state ? state : calendar_state;
     calendar_index = 0;
-
+    current_calendar_size = G_show_stats_sidebar ? CALENDAR_YEARS_SHOWN : CALENDAR_YEARS_SHOWN * 3;
     // Only render if calendar div is present
     let cal = document.getElementById('sidebar_calendar');
     if (!cal) {
@@ -29,10 +32,11 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     let now = new Date();
     let CY = now.getFullYear();
     let CM = now.getMonth() + 1;
-    let SY = Math.min(LY, CY); // last year in calendar, considering current date
+    let SY = Math.min(calendar_state.LY, CY); // last year in calendar, considering current date
+
     // If Last Year is into the future, set Last Month to this one.
-    if (LY > CY) {
-        LM = CM;
+    if (calendar_state.LY > CY) {
+        calendar_state.LM = CM;
     }
 
     let cdiv = new HTML('div', {
@@ -45,7 +49,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
         class: 'sidebar_calendar_chevron'
     });
     chevron.inject(new HTML('span', {
-        onclick: 'calendar_scroll(this, -4);',
+        onclick: 'calendar_scroll(this, -1);',
         style: {
             display: 'none'
         },
@@ -56,7 +60,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     cdiv.inject(chevron);
 
     // Create divs for each year, assign all visible
-    for (let Y = SY; Y >= FY; Y--) {
+    for (let Y = SY; Y >= calendar_state.FY; Y--) {
         let ydiv = new HTML('div', {
             class: 'sidebar_calendar_year',
             id: 'sidebar_calendar_' + N++
@@ -73,34 +77,34 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
             // Mark out-of-bounds segments
             let ym = '%04u-%02u'.format(Y, i+1);
             let c_active = true;
-            if (activity && !activity[ym]) {
+            if (calendar_state.activity && !calendar_state.activity[ym]) {
                 c_active = false;
             }
-            if ((Y == SY && i >= LM) || (Y == CY && i > CM)) {
+            if ((Y == SY && i >= calendar_state.LM) || (Y == CY && i > CM)) {
                 c_active = false;
             }
-            if (Y == FY && ((i + 1) < FM)) {
+            if (Y == calendar_state.FY && ((i + 1) < calendar_state.FM)) {
                 c_active = false;
             }
             if (!c_active) {
                 mdiv.setAttribute("class", "sidebar_calendar_month_nothing");
                 mdiv.setAttribute("onclick", "javascript:void(0);");
-            } else if (activity && activity[ym]) {
-                let count = activity[ym];
+            } else if (calendar_state.activity && calendar_state.activity[ym]) {
+                let count = calendar_state.activity[ym];
                 if (count >= 1000) {
                     count = Math.round(count/100.0); // nearest century
                     count = Math.floor(count/10) + "k" + (count % 10); // thousands and remainder
                 } else {
                     count = count.toString();
                 }
-                mdiv.inject(new HTML('span', {title: `${activity[ym].pretty()} emails this month`, class: 'calendar_count'}, count));
+                mdiv.inject(new HTML('span', {title: `${calendar_state.activity[ym].pretty()} emails this month`, class: 'calendar_count'}, count));
             }
             ydiv.inject(mdiv);
         }
         cdiv.inject(ydiv);
     }
 
-    cal.innerHTML = "<p style='text-align: center;'>Archives (%u - %u):</p>".format(FY, SY);
+    cal.innerHTML = "<p style='text-align: center;'>Archives (%u - %u):</p>".format(calendar_state.FY, SY);
     cal.inject(cdiv);
 
 
@@ -108,7 +112,7 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
         class: 'sidebar_calendar_chevron'
     });
     chevron.inject(new HTML('span', {
-        onclick: 'calendar_scroll(this, 4);',
+        onclick: 'calendar_scroll(this, 1);',
         style: {
             display: 'none'
         },
@@ -118,9 +122,9 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     }, " "));
     cdiv.inject(chevron);
 
-    // If we have > 4 years, hide the rest
-    if (N > CALENDAR_YEARS_SHOWN) {
-        for (let i = CALENDAR_YEARS_SHOWN; i < N; i++) {
+    // If we have > N years, hide the rest
+    if (N > current_calendar_size) {
+        for (let i = current_calendar_size; i < N; i++) {
             let obj = document.getElementById('sidebar_calendar_' + i);
             if (obj) {
                 obj.style.display = "none";
@@ -130,8 +134,8 @@ function renderCalendar(FY, FM, LY, LM, activity = null) {
     }
 }
 
-function calendar_scroll(me, x) {
-    console.log(me)
+function calendar_scroll(me, direction) {
+    let x = direction * current_calendar_size;
     let years = document.getElementsByClassName('sidebar_calendar_year');
     calendar_index = Math.max(Math.min(years.length - x, calendar_index + x), 0);
     if (calendar_index > 0) {

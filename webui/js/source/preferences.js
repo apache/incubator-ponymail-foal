@@ -37,6 +37,9 @@ function init_preferences(state, json) {
             if (ljson.G_current_listmode_compact !== undefined) {
                 G_current_listmode_compact = ljson.G_current_listmode_compact;
             }
+            if (ljson.G_show_stats_sidebar !== undefined) {
+                G_show_stats_sidebar = ljson.G_show_stats_sidebar;
+            }
         }
     }
 
@@ -52,6 +55,10 @@ function init_preferences(state, json) {
     let cld = document.getElementById('email_mode_plain');
     if (cld) {
         cld.checked = !G_chatty_layout;
+    }
+    let cla = document.getElementById('G_show_stats_sidebar');
+    if (cla) {
+        cla.checked = G_show_stats_sidebar;
     }
 
     // Set list display mode:
@@ -134,7 +141,8 @@ function save_preferences() {
         let ljson = {
             G_chatty_layout: G_chatty_layout,
             G_current_listmode: G_current_listmode,
-            G_current_listmode_compact: G_current_listmode_compact
+            G_current_listmode_compact: G_current_listmode_compact,
+            G_show_stats_sidebar: G_show_stats_sidebar
         };
         let lstring = JSON.stringify(ljson);
         window.localStorage.setItem('G_ponymail_preferences', lstring);
@@ -181,4 +189,17 @@ function set_skin_permalink(enable_chatty) {
     hideWindows(true);
     save_preferences();
     parse_permalink();
+}
+
+function set_show_stats(display) {
+    G_show_stats_sidebar = display;
+    if (display === false) {
+        document.getElementById('sidebar_stats').style.display = "none";
+        document.getElementById('sidebar_wordcloud').style.display = "none";
+    } else {
+        document.getElementById('sidebar_stats').style.display = "block";
+        document.getElementById('sidebar_wordcloud').style.display = "block";
+    }
+    save_preferences();
+    renderCalendar();
 }

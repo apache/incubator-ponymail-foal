@@ -24,7 +24,13 @@ function renderListView(state, json) {
     G_current_state = state;
     async_escrow['rendering'] = new Date();
     if (!state || state.update_calendar !== false) {
-        renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
+        renderCalendar({
+            FY: json.firstYear,
+            FM: json.firstMonth,
+            LY: json.lastYear,
+            LM: json.lastMonth,
+            activity: json.active_months
+        });
     }
     // sort threads by date
     if (isArray(json.thread_struct)) {
@@ -182,7 +188,13 @@ function render_virtual_inbox(state, json) {
 
         async_escrow['rendering'] = new Date();
         if (!state || state.update_calendar !== false) {
-            renderCalendar(json.firstYear, json.firstMonth, json.lastYear, json.lastMonth, json.active_months);
+            renderCalendar({
+                FY: json.firstYear,
+                FM: json.firstMonth,
+                LY: json.lastYear,
+                LM: json.lastMonth,
+                activity: json.active_months
+            });
         }
         // sort threads by date
         if (isArray(json.thread_struct)) {
