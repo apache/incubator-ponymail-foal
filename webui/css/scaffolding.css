@@ -542,11 +542,11 @@ a.dropdown-toggle {
 
 .listview_email_labels {
   float: right;
-  width: 220px;
-  min-width: 220px;
+  width: 240px;
+  min-width: 240px;
   text-align: right;
   position: absolute;
-  right: 24px;
+  right: 8px;
 }
 
 .email_unread {
