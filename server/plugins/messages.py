@@ -337,11 +337,11 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
 
 async def query_batch(
     session: plugins.session.SessionObject,
-    query_defuzzed,
-    hide_deleted=True,
-    metadata_only=False,
-    epoch_order="desc",
-    source_fields=None
+    query_defuzzed: dict,
+    hide_deleted: bool = True,
+    metadata_only: bool = False,
+    epoch_order: str = "desc",
+    source_fields: typing.Optional[typing.List[str]] = None
 ):
     """
     Advanced query and grab for stats.py
@@ -406,10 +406,10 @@ async def query(
     session: plugins.session.SessionObject,
     query_defuzzed,
     query_limit=10000,
-    hide_deleted=True,
-    metadata_only=False,
-    epoch_order="desc",
-    source_fields=None
+    hide_deleted: bool = True,
+    metadata_only: bool = False,
+    epoch_order: str = "desc",
+    source_fields: typing.Optional[typing.List[str]] = None
 ):
     """
     Advanced query and grab for stats.py
@@ -573,12 +573,12 @@ class ThreadConstructor:
         return self.threads, self.authors
 
     
-    def find_root_subject(self, root_email, osubject=None):
+    def find_root_subject(self, root_email: typing.Dict[str, str], osubject: str = None) -> typing.Optional[dict]:
         """Finds the discussion origin of an email, if present"""
-        irt = root_email.get("in-reply-to")
-        subject = root_email.get("subject")
+        irt = root_email.get("in-reply-to",'')
+        subject = root_email.get("subject",'')
         subject = subject.replace("\n", "").strip()  # Crop multi-line subjects and surrounding whitespace
-        subject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw")
+        subject = PYPONY_RE_PREFIX.sub("", subject) + "_" + root_email.get("list_raw",'')
 
         # First, the obvious - look for an in-reply-to in our existing dict with a matching subject
         if irt and irt in self.hashed_by_msg_id:
@@ -596,7 +596,7 @@ class ThreadConstructor:
 
 
 
-def gravatar(eml):
+def gravatar(eml: typing.Union[str, dict]) -> str:
     """Generates a gravatar hash from an email address"""
     if isinstance(eml, str):
         header_from = eml
