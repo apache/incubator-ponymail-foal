@@ -470,12 +470,13 @@ async def get_activity_span(session: plugins.session.SessionObject, query_defuzz
     fuzz_private_only = dict(query_defuzzed)
     fuzz_private_only["filter"] = [{"term": {"private": True}}]
     assert session.database, DATABASE_NOT_CONNECTED
+    max_lists = session.database.config.max_lists
     res = await session.database.search(
         index=session.database.dbs.db_mbox,
         size=0,
         body={
             "query": {"bool": fuzz_private_only},
-            "aggs": {"listnames": {"terms": {"field": "list_raw", "size": 10000}}},
+            "aggs": {"listnames": {"terms": {"field": "list_raw", "size": max_lists}}},
         },
     )
     private_lists_found = []
