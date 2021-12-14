@@ -515,6 +515,7 @@ async def get_activity_span(session: plugins.session.SessionObject, query_defuzz
     query_defuzzed = await filter_accessible(session, query_defuzzed)
 
     # Get oldest and youngest doc in single scan, as well as a monthly histogram
+    assert session.database, DATABASE_NOT_CONNECTED
     res = await session.database.search(
         index=session.database.dbs.db_mbox,
         size=0,
