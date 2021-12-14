@@ -441,10 +441,13 @@ async def wordcloud(session, query_defuzzed):
     """
     wc = {}
     try:
+        # Copy the query and ensure we're only looking at public content
+        wc_public_query = dict(query_defuzzed)
+        wc_public_query["filter"] = [{"term": {"private": False}}]
         res = await session.database.search(
             body={
                 "size": 0,
-                "query": {"bool": query_defuzzed},
+                "query": {"bool": wc_public_query},
                 "aggregations": {
                     "cloud": {"significant_terms": {"field": "subject", "size": 10}}
                 },
