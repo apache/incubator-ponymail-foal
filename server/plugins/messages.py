@@ -350,6 +350,7 @@ async def query_batch(
     """
     assert session.database, DATABASE_NOT_CONNECTED
     preserve_order = True if epoch_order == "asc" else False
+    query_defuzzed = await filter_accessible(session, query_defuzzed)
     es_query = {
         "query": {"bool": query_defuzzed},
         "sort": [{"epoch": {"order": epoch_order}}],
@@ -462,11 +463,18 @@ async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict
         pass
     return wc
 
+async def filter_accessible(session: plugins.session.SessionObject, query_defuzzed: dict) -> dict:
+    """
+    Update query to take account of private emails
+    Reduces the need to filter out emails later
+    """
+    query_copy = dict(query_defuzzed)
+    if not session.credentials:
+        # if no credentials, only need to search public mails
+        query_copy["filter"] = [{"term": {"private": False}}]
+        return query_copy
 
-async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple[datetime.datetime, datetime.datetime, dict]:
-    """ Fetches the activity span of a search as well as active months within that span """
-
-    # Fetch any private lists included in search results
+    # which private lists might be involved in the search?
     fuzz_private_only = dict(query_defuzzed)
     fuzz_private_only["filter"] = [{"term": {"private": True}}]
     assert session.database, DATABASE_NOT_CONNECTED
@@ -493,11 +501,18 @@ async def get_activity_span(session: plugins.session.SessionObject, query_defuzz
     
     # If we can't access all private lists found, either only public emails or lists we can access.
     if not private_lists_accessible:  # No private lists accessible, just filter for public
-        query_defuzzed["filter"] = [{"term": {"private": False}}]
+        query_copy["filter"] = [{"term": {"private": False}}]
     elif private_lists_found != private_lists_accessible:  # Some private lists, search for public OR those..
-        query_defuzzed["filter"] = [
+        query_copy["filter"] = [
             {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
         ]
+
+    return query_copy
+
+async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple[datetime.datetime, datetime.datetime, dict]:
+    """ Fetches the activity span of a search as well as active months within that span """
+
+    query_defuzzed = await filter_accessible(session, query_defuzzed)
 
     # Get oldest and youngest doc in single scan, as well as a monthly histogram
     res = await session.database.search(
