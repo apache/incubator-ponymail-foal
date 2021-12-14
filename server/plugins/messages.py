@@ -463,7 +463,7 @@ async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict
     return wc
 
 
-async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple:
+async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple[datetime.datetime, datetime.datetime, dict]:
     """ Fetches the activity span of a search as well as active months within that span """
 
     # Fetch any private lists included in search results
