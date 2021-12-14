@@ -455,16 +455,6 @@ async def wordcloud(session, query_defuzzed):
     return wc
 
 
-def is_public(session: plugins.session.SessionObject, listname):
-    """ Quickly determine if a list if fully public, private or mixed """
-    if "@" not in listname:
-        lname, ldomain = listname.strip("<>").split(".", 1)
-        listname = f"{lname}@{ldomain}"
-    if listname in session.server.data.lists:
-        return not session.server.data.lists[listname]["private"]
-    return False  # Default to not public
-
-
 async def get_activity_span(session, query_defuzzed):
     """ Fetches the activity span of a search as well as active months within that span """
 
