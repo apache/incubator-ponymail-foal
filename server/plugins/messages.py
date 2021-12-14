@@ -454,7 +454,7 @@ async def wordcloud(session, query_defuzzed):
         for hit in res["aggregations"]["cloud"]["buckets"]:
             wc[hit["key"]] = hit["doc_count"]
 
-    except plugins.database.Timeout as e:  # If we time out, just return empty WC.
+    except plugins.database.Timeout:  # If we time out, just return empty WC.
         pass
     return wc
 
