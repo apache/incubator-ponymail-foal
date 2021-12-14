@@ -29,7 +29,7 @@ gravatars = []
 gravatar_cache = {}
 
 
-async def fetch_gravatar(gid):
+async def fetch_gravatar(gid: str) -> None:
     headers = {"User-Agent": "Pony Mail Agent/0.1"}
     fetch_url = GRAVATAR_URL % gid
     # Fetch image and store internally
@@ -42,7 +42,7 @@ async def fetch_gravatar(gid):
         pass
 
 
-async def gravatar_exists_in_db(session, gid):
+async def gravatar_exists_in_db(session: plugins.session.SessionObject, gid: str) -> bool:
     res = await session.database.search(
         index=session.database.dbs.db_mbox,
         size=1,

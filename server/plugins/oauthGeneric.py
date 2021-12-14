@@ -19,11 +19,11 @@
 
 # Generic OAuth plugin
 import re
+import typing
 import aiohttp.client
 
 
-async def process(formdata, _session, _server):
-    js = None
+async def process(formdata: dict, _session, _server) -> typing.Optional[dict]:
     # Extract domain, allowing for :port
     # Does not handle user/password prefix etc
     m = re.match(r"https?://([^/:]+)(?::\d+)?/", formdata["oauth_token"])
@@ -35,4 +35,5 @@ async def process(formdata, _session, _server):
             js = await rv.json()
             js["oauth_domain"] = oauth_domain
             js["authoritative"] = True
-    return js
+        return js
+    return None

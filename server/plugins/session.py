@@ -184,7 +184,7 @@ async def get_session(
     return session
 
 
-async def set_session(server: plugins.server.BaseServer, cid, **credentials):
+async def set_session(server: plugins.server.BaseServer, cid: str, **credentials):
     """Create a new user session in the database"""
     session_id = str(uuid.uuid4())
     cookie: http.cookies.SimpleCookie = http.cookies.SimpleCookie()

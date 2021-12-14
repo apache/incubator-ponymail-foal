@@ -113,13 +113,13 @@ class Database:
         return res
 
     async def scan(self,
-                   query=None,
-                   scroll="5m",
-                   preserve_order=False,
-                   size=1000,
-                   request_timeout=60,
-                   clear_scroll=True,
-                   scroll_kwargs=None,
+                   query: dict = None,
+                   scroll: str = "5m",
+                   preserve_order: bool = False,
+                   size: int = 1000,
+                   request_timeout: int = 60,
+                   clear_scroll: bool = True,
+                   scroll_kwargs: dict = None,
                    **kwargs) -> typing.AsyncIterator[typing.List[dict]]:
         
         scroll_kwargs = scroll_kwargs or {}

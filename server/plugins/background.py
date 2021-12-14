@@ -208,7 +208,7 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
     return activity
 
 
-async def run_tasks(server: plugins.server.BaseServer):
+async def run_tasks(server: plugins.server.BaseServer) -> None:
     """
         Runs long-lived background data gathering tasks such as gathering statistics about email activity and the list
         of archived mailing lists, for populating the pony mail main index.

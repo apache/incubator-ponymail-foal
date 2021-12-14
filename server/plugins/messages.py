@@ -75,7 +75,7 @@ USED_UI_FIELDS = [
 MUST_HAVE = [ 'private', 'deleted', 'list_raw']
 
 
-def trim_email(doc, external=False):
+def trim_email(doc: dict, external: bool = False) -> None:
     """Trims away document fields not used by the UI"""
     for header in list(doc.keys()):
         # Remove meta data fields which start with an underscore
@@ -89,7 +89,7 @@ def trim_email(doc, external=False):
 
 # Format an email address given a name (optional) and an email address.
 # Same as email.utils.formataddr except no Unicode escaping happens.
-def make_address(name, email):
+def make_address(name: str, email: str) -> str:
     if name and email:
         quotes = ''
         if NEEDS_QUOTES.search(name):
@@ -103,7 +103,7 @@ def make_address(name, email):
 
 
 # anonymise a string of email entries
-def anonymize_mail_address(emailstring):
+def anonymize_mail_address(emailstring: str) -> str:
     out = []
     if not emailstring:
         return ""
@@ -116,7 +116,7 @@ def anonymize_mail_address(emailstring):
     # rejoin one per line
     return ",\n ".join(out)
 
-def anonymize(doc):
+def anonymize(doc: dict) -> dict:
     """ Anonymizes an email, hiding author email addresses."""
     # ES direct hit?
     ptr: typing.Dict[str, str] = doc
@@ -161,7 +161,11 @@ async def find_parent(session, doc: typing.Dict[str, str]):
     return doc
 
 
-async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
+async def fetch_children(session: plugins.session.SessionObject,
+        pdoc: dict,
+        counter: int = 0,
+        pdocs: dict = None,
+        short: bool = False) -> typing.Tuple[list,list,dict]:
     """
     Fetches all child messages of a parent email
     """
@@ -169,8 +173,8 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
         pdocs = {}
     counter = counter + 1
     if counter > 250:
-        return []
-    docs = await get_email_irt(session, pdoc["message-id"])
+        return [], [], {}
+    docs: typing.List[dict] = await get_email_irt(session, pdoc["message-id"])
 
     thread = []
     emails = []
@@ -211,8 +215,8 @@ async def fetch_children(session, pdoc, counter=0, pdocs=None, short=False):
 async def get_email(
     session: plugins.session.SessionObject,
     permalink: str = None,
-    messageid=None,
-    source=False,
+    messageid: str = None,
+    source: bool = False,
 ) -> typing.Optional[dict]:
     """
     Returns a matching mbox or source document or None
@@ -268,8 +272,8 @@ async def get_email(
 
 async def get_email_irt(
     session: plugins.session.SessionObject,
-    irt,
-    source=False,
+    irt: str,
+    source: bool = False,
 ) -> typing.List[dict]:
     """
     Returns a list of mbox or source document(s) that are related. May be empty.

@@ -23,15 +23,15 @@ It handles rights management for lists.
 import plugins.session
 
 
-def can_access_email(session: plugins.session.SessionObject, email) -> bool:
+def can_access_email(session: plugins.session.SessionObject, email: dict) -> bool:
     """Determine if an email can be accessed by the current user"""
     # If public email, it can always be accessed
     if not email.get("private", True): # Assume private if the flag is missing
         return True
     # If user can access the list, they can read the email
-    return can_access_list(session, email.get("list_raw"))
+    return can_access_list(session, email.get("list_raw", None))
 
-def can_access_list(session: plugins.session.SessionObject, _listid) -> bool:
+def can_access_list(session: plugins.session.SessionObject, _listid: str) -> bool:
     """Determine if a list can be accessed by the current user"""
     # If logged in via a known oauth, we assume access for now...TO BE CHANGED
     if session.credentials and session.credentials.authoritative:

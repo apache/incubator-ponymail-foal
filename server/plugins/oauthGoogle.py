@@ -29,11 +29,12 @@ import google.auth.transport.urllib3 # type: ignore
 import google.oauth2.id_token # type: ignore
 import plugins.server
 import plugins.session
+import typing
 import urllib3
 
 
-async def process(formdata, _session, server: plugins.server.BaseServer):
-    js = None
+async def process(formdata: dict, _session, server: plugins.server.BaseServer) -> typing.Optional[dict]:
+    js: typing.Optional[dict] = None
     request = google.auth.transport.urllib3.Request(urllib3.PoolManager())
     # This is a synchronous process, so we offload it to an async runner in order to let the main loop continue.
     id_info = await server.runners.run(

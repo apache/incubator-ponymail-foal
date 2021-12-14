@@ -68,7 +68,7 @@ async def view(
             yield AuditLogEntry(doc["_source"])
 
 
-async def add_entry(session: plugins.session.SessionObject, action: str, target: str, lid: str, log: str):
+async def add_entry(session: plugins.session.SessionObject, action: str, target: str, lid: str, log: str) -> None:
     """ Adds an entry to the audit log"""
 
     # Default log entries based on type

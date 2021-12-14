@@ -32,7 +32,7 @@ import plugins.server
 import typing
 
 
-async def process(formdata, _session, server: plugins.server.BaseServer) -> typing.Optional[dict]:
+async def process(formdata: dict, _session, server: plugins.server.BaseServer) -> typing.Optional[dict]:
     formdata["client_id"] = server.config.oauth.github_client_id
     formdata["client_secret"] = server.config.oauth.github_client_secret
     headers = {"Accept": "application/json"}
