@@ -12,3 +12,25 @@ database:
 
 tasks:
   refresh_rate:  150                  # Background indexer run interval, in seconds
+
+ui:
+  wordcloud:       true
+  mailhost:        localhost
+  sender_domains:  "*"
+  traceback:       true
+  mgmtconsole:     true
+  true_gdpr:       true
+
+# Fill in OAuth data as needed
+oauth:
+# If using OAuth, set the authoritative domains here. These are the OAuth domains that 
+# will provide access to private emails.
+  authoritative_domains:
+#   - localhost
+#    - googleapis.com  # OAuth via google is authoritative
+#    - github.com      # GitHub OAuth is authoritative
+  admins:
+#    - localtest@apache.org
+#  google_client_id:     ~
+#  github_client_id:     ~
+#  github_client_secret: ~
