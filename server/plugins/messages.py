@@ -404,13 +404,13 @@ async def query_batch(
 
 async def query(
     session: plugins.session.SessionObject,
-    query_defuzzed,
-    query_limit=10000,
+    query_defuzzed: dict,
+    query_limit: int = 10000,
     hide_deleted: bool = True,
     metadata_only: bool = False,
     epoch_order: str = "desc",
     source_fields: typing.Optional[typing.List[str]] = None
-):
+) -> typing.List[dict]:
     """
     Advanced query and grab for stats.py
     Also called by mbox.py (using metadata_only=True)
@@ -435,7 +435,7 @@ async def query(
     return docs
 
 
-async def wordcloud(session, query_defuzzed):
+async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict) -> dict:
     """
     Wordclouds via significant terms query in ES
     """
@@ -444,6 +444,7 @@ async def wordcloud(session, query_defuzzed):
         # Copy the query and ensure we're only looking at public content
         wc_public_query = dict(query_defuzzed)
         wc_public_query["filter"] = [{"term": {"private": False}}]
+        assert session.database, DATABASE_NOT_CONNECTED
         res = await session.database.search(
             body={
                 "size": 0,
@@ -462,12 +463,13 @@ async def wordcloud(session, query_defuzzed):
     return wc
 
 
-async def get_activity_span(session, query_defuzzed):
+async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple:
     """ Fetches the activity span of a search as well as active months within that span """
 
     # Fetch any private lists included in search results
     fuzz_private_only = dict(query_defuzzed)
     fuzz_private_only["filter"] = [{"term": {"private": True}}]
+    assert session.database, DATABASE_NOT_CONNECTED
     res = await session.database.search(
         index=session.database.dbs.db_mbox,
         size=0,
