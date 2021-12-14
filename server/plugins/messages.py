@@ -406,7 +406,7 @@ async def query_batch(
 async def query(
     session: plugins.session.SessionObject,
     query_defuzzed: dict,
-    query_limit: int = 10000,
+    query_limit: int,
     hide_deleted: bool = True,
     metadata_only: bool = False,
     epoch_order: str = "desc",
