@@ -1,0 +1,18 @@
+# test oauth response data
+# This is read by the corresponding endpoint script
+
+oauth_data:
+  uid: test
+  email: test@apache.org
+  fullname: Test Name
+  isMember: True
+  isChair: True
+  projects:
+    - a
+    - b
+    - c
+  pmcs:
+    - d
+    - e
+    - f
+  state: TBA # will be replaced at runtime
