@@ -132,7 +132,7 @@ notification:
     type:
       type: keyword
 session:
-  dynamic: true # explicit default
+  dynamic: strict
   properties:
     cookie:
       type: keyword
