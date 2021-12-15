@@ -513,7 +513,6 @@ a.dropdown-toggle {
     background: #FFF;
     border: 1px solid #E0E0E0;
     min-height: auto;
-    position: relative;
     overflow-y: hidden;
 }
 
