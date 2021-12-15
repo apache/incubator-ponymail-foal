@@ -19,17 +19,8 @@ account:
         admin:
           type: boolean
         oauth_data:
-          properties:
-            authoritative:
-              type: keyword
-            email:
-              type: keyword
-            name:
-              type: keyword
-            oauth_domain:
-              type: keyword
-            uid:
-              type: keyword
+          dynamic: true  # internal oauth_data depends on provider
+          type: object
         oauth_provider:
           type: keyword
     request_id:
