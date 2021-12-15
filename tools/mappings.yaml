@@ -3,6 +3,12 @@
 # edited prior to installation.
 account:
   dynamic: strict
+  dynamic_templates: # for internal.oauth_data
+    - strings_as_keyword:
+        match_mapping_type: 
+          string
+        mapping:
+          type: keyword
   properties:
     cid:
       type: keyword
