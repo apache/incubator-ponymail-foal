@@ -146,6 +146,7 @@ async def process(
         if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
             # Test if only privacy may have changed
             privacy_only = (
+                    attach_edit is None and
                     email["from"] == new_from and
                     email["subject"] == new_subject and
                     email["list"] == lid and
