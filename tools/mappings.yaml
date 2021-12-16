@@ -155,7 +155,7 @@ source:
       type: boolean
     message-id:
       type: keyword
-    mid:
+    mid: # does not appear to be used
       type: keyword
     permalinks:
       type: keyword
