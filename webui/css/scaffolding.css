@@ -952,7 +952,7 @@ a:first-child > .listview_email_compact {
     font-family: Hack;
     margin-left: 8px;
     font-size: 1.25rem;
-    white-space: pre-line;
+    white-space: pre-wrap;
     float: left;
     width: calc(100% - 10px);
     position: relative;
@@ -1118,6 +1118,7 @@ a.checked {
 pre.diff {
   background: #FFDD;
   border: 1px solid #3336;
+  white-space: pre-wrap;
   
 }
 .chatty_title_inline {
