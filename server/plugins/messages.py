@@ -216,7 +216,6 @@ async def get_email(
     session: plugins.session.SessionObject,
     permalink: str = None,
     messageid: str = None,
-    source: bool = False,
 ) -> typing.Optional[dict]:
     """
     Returns a matching mbox or source document or None
@@ -224,8 +223,6 @@ async def get_email(
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
-    if source:
-        doctype = session.database.dbs.db_source
     # Older indexes may need a match instead of a strict terms agg in order to find
     # emails in DBs that may have been incorrectly analyzed.
     aggtype = "match"
@@ -273,7 +270,6 @@ async def get_email(
 async def get_email_irt(
     session: plugins.session.SessionObject,
     irt: str,
-    source: bool = False,
 ) -> typing.List[dict]:
     """
     Returns a list of mbox or source document(s) that are related. May be empty.
@@ -281,8 +277,6 @@ async def get_email_irt(
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
-    if source:
-        doctype = session.database.dbs.db_source
 
     xirt = '"%s"' % irt.replace('"', '\\"')
     res = await session.database.search(
