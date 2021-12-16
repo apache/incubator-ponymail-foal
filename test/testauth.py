@@ -39,6 +39,7 @@ If there is a problem reading the file, the inbuilt data will be used.
 
 import aiohttp
 import plugins.server
+import typing
 import uuid
 import yaml
 
@@ -54,7 +55,7 @@ DATA = {
   'state': None
 }
 
-async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> dict:
+async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
     print('INDATA', indata)
     redirect_uri = indata.get('redirect_uri')
     code = indata.get('code')
