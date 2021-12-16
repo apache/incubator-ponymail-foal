@@ -55,9 +55,9 @@ async def process(
             assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
-                if server.config.ui.fully_delete and email["id"] and email["dbid"]:  # Full on GDPR blast?
+                if server.config.ui.fully_delete and email["mid"] and email["dbid"]:  # Full on GDPR blast?
                     await session.database.delete(
-                        index=session.database.dbs.db_mbox, id=email["id"],
+                        index=session.database.dbs.db_mbox, id=email["mid"],
                     )
                     await session.database.delete(
                         index=session.database.dbs.db_source, id=email["dbid"],
@@ -65,7 +65,7 @@ async def process(
                 else:  # Standard behavior: hide the email from everyone.
                     email["deleted"] = True
                     await session.database.update(
-                        index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
+                        index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
                     )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="delete", target=doc, lid=lid, log=f"Removed email {doc} from {lid} archives")
@@ -80,7 +80,7 @@ async def process(
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = True
                 await session.database.update(
-                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
+                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
                 )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="hide", target=doc, lid=lid, log=f"Hid email {doc} from {lid} archives")
@@ -95,7 +95,7 @@ async def process(
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
                 email["deleted"] = False
                 await session.database.update(
-                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
+                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
                 )
                 lid = email.get("list_raw", "??")
                 await plugins.auditlog.add_entry(session, action="unhide", target=doc, lid=lid, log=f"Unhid email {doc} from {lid} archives")
@@ -163,8 +163,10 @@ async def process(
                 email["attachments"] = attach_edit
 
             # Save edited email
+            if "id" in email: # id is not a valid property for mbox
+                del email["id"]
             await session.database.update(
-                index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
+                index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
             )
 
             # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
