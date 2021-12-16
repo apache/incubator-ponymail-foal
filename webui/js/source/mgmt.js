@@ -247,8 +247,7 @@ function admin_email_preview(stats, json) {
             class: 'email_key'
         }, "Attachment(s): ");
         let alinks = [];
-        for (let n = 0; n < json.attachments.length; n++) {
-            let attachment = json.attachments[n];
+        for (let attachment of json.attachments) {
             let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
@@ -347,8 +346,8 @@ function admin_audit_view(state, json) {
                 class: "auditlog_entries"
             });
             let trh = new HTML('tr');
-            for (let i = 0; i < headers.length; i++) {
-                let th = new HTML('th', {}, headers[i] + ":");
+            for (let header of headers) {
+                let th = new HTML('th', {}, header + ":");
                 trh.inject(th);
             }
             table.inject(trh)
@@ -358,13 +357,12 @@ function admin_audit_view(state, json) {
             }, "Load more entries");
             div.inject(btn);
         }
-        for (let i = 0; i < json.entries.length; i++) {
-            let entry = json.entries[i];
+        for (let entry of json.entries) {
             let tr = new HTML('tr', {
                 class: "auditlog_entry"
             });
-            for (let i = 0; i < headers.length; i++) {
-                let key = headers[i].toLowerCase();
+            for (let header of headers) {
+                let key = header.toLowerCase();
                 let value = entry[key];
                 if (key == 'target') {
                     value = new HTML('a', {
