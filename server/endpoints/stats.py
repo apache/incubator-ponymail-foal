@@ -49,6 +49,13 @@ async def process(
     except AssertionError as ae:  # If defuzzer encounters internal errors, it will throw an AssertionError
         return aiohttp.web.Response(headers={"content-type": "text/plain",}, status=500, text=str(ae))
     
+    # get a filter for use with get_activity_span (no date)
+    # It can also be used with dated queries
+    query_filter = await plugins.messages.get_accessible_filter(session, query_defuzzed_nodate)
+    if query_filter:
+        query_defuzzed['filter'] = query_filter
+        query_defuzzed_nodate['filter'] = query_filter
+
     # since: check if there have been recent updates to the data
     if 'since' in indata:
         since = indata.get('since', None)

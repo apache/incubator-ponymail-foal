@@ -350,7 +350,6 @@ async def query_batch(
     """
     assert session.database, DATABASE_NOT_CONNECTED
     preserve_order = True if epoch_order == "asc" else False
-    query_defuzzed = await filter_accessible(session, query_defuzzed)
     es_query = {
         "query": {"bool": query_defuzzed},
         "sort": [{"epoch": {"order": epoch_order}}],
@@ -439,17 +438,16 @@ async def query(
 async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict) -> dict:
     """
     Wordclouds via significant terms query in ES
+    The query must include a private mail filter if necessary
     """
     wc = {}
     try:
-        # Copy the query and ensure we're only looking at public content
-        wc_public_query = dict(query_defuzzed)
-        wc_public_query["filter"] = [{"term": {"private": False}}]
+
         assert session.database, DATABASE_NOT_CONNECTED
         res = await session.database.search(
             body={
                 "size": 0,
-                "query": {"bool": wc_public_query},
+                "query": {"bool": query_defuzzed},
                 "aggregations": {
                     "cloud": {"significant_terms": {"field": "subject", "size": 10}}
                 },
@@ -463,17 +461,18 @@ async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict
         pass
     return wc
 
-async def filter_accessible(session: plugins.session.SessionObject, query_defuzzed: dict) -> dict:
+async def get_accessible_filter(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Optional[list]:
     """
-    Update query to take account of private emails
-    Reduces the need to filter out emails later
+    Return a filter to be applied to the query to exclude inaccessible mails.
+    If no filter is needed, return None
+    e.g. 
+    query_filter = get_accessible_filter(session, query)
+    if query_filter:
+        query['filter'] = query_filter
     """
-    query_copy = dict(query_defuzzed)
     if not session.credentials:
         # if no credentials, only need to search public mails
-        query_copy["filter"] = [{"term": {"private": False}}]
-        return query_copy
-
+        return [{"term": {"private": False}}]
     # which private lists might be involved in the search?
     fuzz_private_only = dict(query_defuzzed)
     fuzz_private_only["filter"] = [{"term": {"private": True}}]
@@ -501,18 +500,20 @@ async def filter_accessible(session: plugins.session.SessionObject, query_defuzz
     
     # If we can't access all private lists found, either only public emails or lists we can access.
     if not private_lists_accessible:  # No private lists accessible, just filter for public
-        query_copy["filter"] = [{"term": {"private": False}}]
+        return [{"term": {"private": False}}]
     elif private_lists_found != private_lists_accessible:  # Some private lists, search for public OR those..
-        query_copy["filter"] = [
+        return [
             {"bool": {"should": [{"term": {"private": False}}, {"terms": {"list_raw": private_lists_accessible}}]}}
         ]
 
-    return query_copy
+    return None
+
 
 async def get_activity_span(session: plugins.session.SessionObject, query_defuzzed: dict) -> typing.Tuple[datetime.datetime, datetime.datetime, dict]:
-    """ Fetches the activity span of a search as well as active months within that span """
-
-    query_defuzzed = await filter_accessible(session, query_defuzzed)
+    """
+    Fetches the activity span of a search as well as active months within that span
+    The query must include a private filter if necessary
+    """
 
     # Get oldest and youngest doc in single scan, as well as a monthly histogram
     assert session.database, DATABASE_NOT_CONNECTED
