@@ -84,7 +84,10 @@ def check_mapping(index):
   # actual mappings
   mappings = elastic.indices.get_mapping(index=index_name)[index_name]['mappings']['properties']
 
-  if mappings == mappings_expected:
+  expected = yaml.dump(mappings_expected, sort_keys = True)
+  actual = yaml.dump(mappings, sort_keys = True).replace("'true'","true")
+
+  if actual == expected:
     print("Mappings are as expected, hoorah!")
   else:
     print("Mappings differ:")
