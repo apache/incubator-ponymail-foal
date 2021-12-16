@@ -30,7 +30,7 @@ async function admin_del_attachment(hash) {
         }
     }
     admin_email_meta.attachments = new_attach;
-    formdata = JSON.stringify({
+    let formdata = JSON.stringify({
         action: "delatt",
         document: hash
     });
@@ -53,7 +53,7 @@ async function admin_hide_email() {
     if (!confirm("Are you sure you wish to hide this email from the archives?")) {
         return
     }
-    formdata = JSON.stringify({
+    let formdata = JSON.stringify({
         action: "hide",
         document: admin_current_email
     });
@@ -70,7 +70,7 @@ async function admin_unhide_email() {
     if (!confirm("Are you sure you wish to unhide this email?")) {
         return
     }
-    formdata = JSON.stringify({
+    let formdata = JSON.stringify({
         action: "unhide",
         document: admin_current_email
     });
@@ -89,7 +89,7 @@ async function admin_delete_email() {
     if (!confirm("Are you sure you wish to remove this email from the archives?")) {
         return
     }
-    formdata = JSON.stringify({
+    let formdata = JSON.stringify({
         action: "delete",
         document: admin_current_email
     });
