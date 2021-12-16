@@ -55,7 +55,6 @@ async def process(
             assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
-                email["deleted"] = True
                 if server.config.ui.fully_delete and email["id"] and email["dbid"]:  # Full on GDPR blast?
                     await session.database.delete(
                         index=session.database.dbs.db_mbox, id=email["id"],
@@ -64,6 +63,7 @@ async def process(
                         index=session.database.dbs.db_source, id=email["dbid"],
                     )
                 else:  # Standard behavior: hide the email from everyone.
+                    email["deleted"] = True
                     await session.database.update(
                         index=session.database.dbs.db_mbox, body={"doc": email}, id=email["id"],
                     )
