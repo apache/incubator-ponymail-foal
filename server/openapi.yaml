@@ -92,6 +92,14 @@ components:
       - id
     SingleEmailResponse:
       properties:
+        attachments:
+          description: List of attachments, if any
+          example: [TBA]
+          type: array
+        cc:
+          description: List of Cc email addresses
+          example: "\"announce@tomcat.apache.org\" <announce@tomcat.apache.org>, \"dev@tomcat.apache.org\" <dev@tomcat.apache.org>, announce@apache.org"
+          type: string
         from:
           description: The sender address of the email
           example: "Asterix build server  <jenkins@asterix-jenkins.ics.uci.edu>"
@@ -152,6 +160,10 @@ components:
           description: The message body of the email
           example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
           type: string
+        body_short:
+          description: The message body of the email, truncated to 201 chars
+          example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
+          type: string
         permalinks:
           description: All IDs that this document is filed and accessible under
           type: array
@@ -203,7 +215,7 @@ components:
           example: false
           type: boolean
         body:
-          description: The message body of the email
+          description: The message body of the email, tuncated to 201 chars
           example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
           type: string
         gravatar:
@@ -229,6 +241,14 @@ components:
             $ref: '#/components/schemas/CompactEmailResponse'
     StatsResponse:
       properties:
+        active_months:
+          description: List of months with activity
+          type: array
+          example:
+            - 
+              "2017-01": 1
+            - 
+              "2017-02": 1
         firstYear:
           description: The first year found in the search results
           type: integer
