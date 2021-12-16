@@ -61,6 +61,8 @@ mbox:
       type: date
     dbid: # This is the _id used for the source index
       type: keyword
+    deleted:
+      type: boolean
     epoch: # parsed from Date: header: default if missing: Unix epoch
       type: long
     forum: # list@domain
@@ -149,6 +151,8 @@ session:
 source:
   dynamic: strict
   properties:
+    deleted:
+      type: boolean
     message-id:
       type: keyword
     mid:
