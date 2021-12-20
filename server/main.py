@@ -191,7 +191,7 @@ class Server(plugins.server.BaseServer):
                 headers=headers, status=404, text="API Endpoint not found!"
             )
 
-    async def server_loop(self, _loop: asyncio.AbstractEventLoop):  # Note, loop never used.
+    async def server_loop(self):
         self.server = aiohttp.web.Server(self.handle_request)
         runner = aiohttp.web.ServerRunner(self.server)
         await runner.setup()
@@ -208,7 +208,7 @@ class Server(plugins.server.BaseServer):
     def run(self):
         loop = asyncio.get_event_loop()
         try:
-            loop.run_until_complete(self.server_loop(loop))
+            loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
             pass
         loop.close()
@@ -234,5 +234,4 @@ if __name__ == "__main__":
         help="api log level (e.g. INFO or DEBUG)",
     )
     cliargs = parser.parse_args()
-    pubsub_server = Server(cliargs)
-    pubsub_server.run()
+    Server(cliargs).run()
