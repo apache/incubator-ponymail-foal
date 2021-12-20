@@ -350,6 +350,17 @@ if __name__ == "__main__":
         help="Fail gracefully and continue if a processing error occurs",
         action='store_true'
     )
+    # the default on macOS is spawn, but this fails with:
+    #  ForkingPickler(file, protocol).dump(obj)
+    # TypeError: cannot pickle 'weakref' object
+    # Work-round: allow override of start method
+    parser.add_argument(
+        "--start_method",
+        help="Override start method (e.g. fork on macos)",
+        type=str
+    )
     args = parser.parse_args()
+    if args.start_method:
+        multiprocessing.set_start_method(args.start_method)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args.jobs, args.graceful))
