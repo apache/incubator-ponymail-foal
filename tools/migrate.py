@@ -232,20 +232,22 @@ def process_attachment(old_es, doc, dbname_attachment):
     return ({"index": dbname_attachment, "id": doc["_id"], "body": doc["_source"]},)
 
 
-async def main(no_jobs, graceful):
+async def main(args):
+    no_jobs = args.jobs
+    graceful = args.graceful
     print("Welcome to the Apache Pony Mail -> Foal migrator.")
     print("This will copy your old database, adjust the structure, and insert the emails into your new foal database.")
     print("We will be utilizing %u cores for this operation." % no_jobs)
     print("------------------------------------")
-    old_es_url = input("Enter the full URL (including http/https) of your old ES server: ") or "http://localhost:9200/"
-    new_es_url = input("Enter the full URL (including http/https) of your NEW ES server: ") or "http://localhost:9200/"
+    old_es_url = args.old_url or input("Enter the full URL (including http/https) of your old ES server: ") or "http://localhost:9200/"
+    new_es_url = args.new_url or input("Enter the full URL (including http/https) of your NEW ES server: ") or "http://localhost:9200/"
     if old_es_url == new_es_url:
         print("Old and new DB should not be the same, assuming error in input and exiting!")
         return
     ols_es_async = AsyncElasticsearch([old_es_url])
 
-    old_dbname = input("What is the database name for the old Pony Mail emails? [ponymail]: ") or "ponymail"
-    new_dbprefix = input("What is the database prefix for the new Pony Mail emails? [ponymail]: ") or "ponymail"
+    old_dbname = args.old_name or input("What is the database name for the old Pony Mail emails? [ponymail]: ") or "ponymail"
+    new_dbprefix = args.new_prefix or input("What is the database prefix for the new Pony Mail emails? [ponymail]: ") or "ponymail"
 
     do_dkim = True
     dkim_txt = (
@@ -359,8 +361,28 @@ if __name__ == "__main__":
         help="Override start method (e.g. fork on macos)",
         type=str
     )
+    parser.add_argument(
+        "--old_url",
+        help="Provide input database URL",
+        type=str
+    )
+    parser.add_argument(
+        "--old_name",
+        help="Provide input database name",
+        type=str
+    )
+    parser.add_argument(
+        "--new_url",
+        help="Provide output database URL",
+        type=str
+    )
+    parser.add_argument(
+        "--new_prefix",
+        help="Provide output database prefix",
+        type=str
+    )
     args = parser.parse_args()
     if args.start_method:
         multiprocessing.set_start_method(args.start_method)
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(args.jobs, args.graceful))
+    loop.run_until_complete(main(args))
