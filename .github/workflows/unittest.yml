@@ -38,7 +38,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        python -m pytest test/test_defuzzer.py
+        python -m pytest test/test_*.py
     - name: Test with Ponymail Unit tests
       run: |
         sed -e '/incubator/s/# cropout:/cropout:/' tools/archiver.yaml.example >tools/archiver.yaml
