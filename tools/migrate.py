@@ -384,5 +384,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.start_method:
         multiprocessing.set_start_method(args.start_method)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(args))
+    asyncio.run(main(args))
