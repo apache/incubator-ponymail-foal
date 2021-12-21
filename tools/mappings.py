@@ -60,6 +60,16 @@ parser.add_argument(
 parser.add_argument('names', nargs='*')
 args = parser.parse_args()
 
+def descend(hsh, mapping, parent):
+  for k,v in mapping.items():
+    keys=parent.copy()
+    keys.append(k)
+    if 'properties' in v:
+      descend(hsh, v['properties'], keys)
+    else:
+      key = ".".join(keys)
+      hsh[key] = v
+
 def check_mapping(index):
   # expected mappings
   mappings_expected = mapping_file[index]['properties']
@@ -91,18 +101,22 @@ def check_mapping(index):
     print("Mappings are as expected, hoorah!")
   else:
     print("Mappings differ:")
-    unexpected = set(mappings) - set(mappings_expected)
-    for name in unexpected:
-      data = {name: mappings[name]}
-      print("Unexpected: " + str(data))
-    expected = set(mappings_expected) - set(mappings)
-    for name in expected:
-      data = {name: mappings_expected[name]}
-      if args.create:
-        print("Creating the mapping: " + str(data))
-        elastic.indices.put_mapping(body={'properties': data}, index=index_name)
+
+    exp = dict()
+    descend(exp, mappings_expected,[])
+    act = dict()
+    descend(act, mappings,[])
+
+    for k,v in exp.items():
+      if not k in act:
+        if v == {'dynamic': True, 'type': 'object'}:
+          print(f' Key {k} is dynamic')
+        else:
+          print(f"Expected {k} {v}; not found")
       else:
-        print("Missing: " + str(data))
+        if not v == act[k]:
+          print(f"Expected {k} {v},  found {k} {act[k]}")
+    
 
 for type in args.names if len(args.names) > 0 else mapping_file.keys():
   print("Checking " + type)
