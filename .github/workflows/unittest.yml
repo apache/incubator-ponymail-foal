@@ -38,6 +38,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
+        cp tools/archiver.yaml.example tools/archiver.yaml
         python -m pytest test/test_*.py
     - name: Test with Ponymail Unit tests
       run: |
