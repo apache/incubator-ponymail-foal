@@ -19,8 +19,9 @@
     Simple endpoint that does a local login
 
 To enable:
-- copy the files test/testauth.[py|.yaml] to the server/endpoints directory
-  They can be renamed if necessary, so long as they have the same basename
+- copy the files server/test/testauth.[py|.yaml] to the server/endpoints directory
+  They can be renamed if necessary, so long as they have the same basename;
+  adjust the URLs below to reflect the new name
 
 - then add the following to config.js under pm_config.oauth:
         test: {
