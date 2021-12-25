@@ -139,7 +139,7 @@ def anonymize(doc: dict) -> dict:
 async def find_parent(session, doc: typing.Dict[str, str]):
     """
     Locates the first email in a thread by going back through all the
-    in-reply-to headers and finding their source.
+    in-reply-to headers and finding their ancestor.
     """
     step = 0
     # max 50 steps up in the hierarchy
@@ -218,7 +218,7 @@ async def get_email(
     messageid: str = None,
 ) -> typing.Optional[dict]:
     """
-    Returns a matching mbox or source document or None
+    Returns a matching mbox document or None
     The calling code is responsible for checking if the entry is accessible
     """
     assert session.database, DATABASE_NOT_CONNECTED
@@ -272,7 +272,7 @@ async def get_email_irt(
     irt: str,
 ) -> typing.List[dict]:
     """
-    Returns a list of mbox or source document(s) that are related. May be empty.
+    Returns a list of mbox document(s) that are related. May be empty.
     The calling code is responsible for checking if entries are accessible
     """
     assert session.database, DATABASE_NOT_CONNECTED
@@ -371,7 +371,7 @@ async def query_batch(
             if plugins.aaa.can_access_email(session, doc):
                 if "mid" in doc: # might be missing when using source_fields
                     doc["id"] = doc["mid"]
-                # Calculate gravatars if not present in source
+                # Calculate gravatars if not present in _source
                 if not metadata_only and source_fields is None and "gravatar" not in doc:
                     doc["gravatar"] = gravatar(doc)
                 if not session.credentials:
