@@ -113,6 +113,9 @@ class Server(plugins.server.BaseServer):
             "Server": "Apache Pony Mail (Foal/%s ~%s)" % (PONYMAIL_FOAL_VERSION, PONYMAIL_SERVER_VERSION),
         }
 
+        if self.api_logger:
+            self.api_logger.info(request.raw_path)
+
         # Figure out who is going to handle this request, if any
         # We are backwards compatible with the old Lua interface URLs
         body_type = "form"
