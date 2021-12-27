@@ -156,7 +156,7 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
         for bit in bits:
             force_positive = False
             # Translate -- into a positive '-', so you can find "-1" etc
-            if bit[0:1] == "--":
+            if bit[0:2] == "--":
                 force_positive = True
                 bit = bit[1:]
             # Negatives
