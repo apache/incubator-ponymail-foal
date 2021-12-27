@@ -65,7 +65,7 @@ mbox:
       type: boolean
     epoch: # parsed from Date: header: default if missing: Unix epoch
       type: long
-    forum: # list@domain
+    forum: # list@domain (only present if threadinfo selected)
       type: keyword
     from:
       type: text
@@ -87,7 +87,7 @@ mbox:
       type: keyword
     permalinks:
       type: keyword
-    previous:
+    previous: # (only present if threadinfo selected)
       type: keyword
     private:
       type: boolean
@@ -98,11 +98,11 @@ mbox:
     subject:
       fielddata: true
       type: text
-    thread:
+    thread:  # (only present if threadinfo selected)
       type: keyword
     to:
       type: text
-    top:
+    top:  # (only present if threadinfo selected)
       type: boolean
     _notes:
       type: text
