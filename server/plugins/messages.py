@@ -225,7 +225,6 @@ async def get_email(
     doctype = session.database.dbs.db_mbox
     # Older indexes may need a match instead of a strict terms agg in order to find
     # emails in DBs that may have been incorrectly analyzed.
-    aggtype = "match"
     doc = None
     if permalink:
         try:
@@ -236,6 +235,8 @@ async def get_email(
             if len(permalink) == OLD_SHORTENED_ID_LENGTH and re.match(r"^[a-f0-9]+$", permalink):
                 permalink += ".+"
                 aggtype = "regexp"
+            else:
+                aggtype = "match"
             res = await session.database.search(
                 index=doctype,
                 size=1,
@@ -249,7 +250,7 @@ async def get_email(
         res = await session.database.search(
             index=doctype,
             size=1,
-            body={"query": {"bool": {"must": [{aggtype: {"message-id": messageid}}]}}},
+            body={"query": {"bool": {"must": [{"match": {"message-id": messageid}}]}}},
         )
         if len(res["hits"]["hits"]) == 1:
             doc = res["hits"]["hits"][0]
