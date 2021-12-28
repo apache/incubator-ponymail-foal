@@ -79,6 +79,10 @@ components:
           description: "Optional body-only search parameters"
           type: string
           example: "This was a great idea"
+        header_to:
+          description: "Optional To: header search for narrowing down results"
+          type: string
+          example: janedoe@example.org
       required:
       - list
       - domain
