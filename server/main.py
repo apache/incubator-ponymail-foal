@@ -119,7 +119,8 @@ class Server(plugins.server.BaseServer):
         # Figure out who is going to handle this request, if any
         # We are backwards compatible with the old Lua interface URLs
         body_type = "form"
-        handler = request.path.split("/")[-1]
+        # Support URLs of form /api/handler/extra?query
+        handler = request.path.split("/")[2]
         if handler.endswith(".lua"):
             body_type = "form"
             handler = handler[:-4]
