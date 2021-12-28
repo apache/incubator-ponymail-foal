@@ -273,8 +273,11 @@ async def get_email_irt(
     irt: str,
 ) -> typing.List[dict]:
     """
-    Returns a list of mbox document(s) that are related. May be empty.
-    The calling code is responsible for checking if entries are accessible
+    Returns a list of mbox document(s) that are related,
+    i.e. where the parameter matches 'in-reply-to' or 'references'
+    May be empty.
+    Docs have been checked for accessibility.
+    Caller must check if the doc is "deleted"
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
@@ -300,6 +303,12 @@ async def get_email_irt(
 
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
+    """
+        Get the source document for an email, or None if it does not find exactly one match.
+        If the source cannot be found using the id, it checks for a match by Permalink.
+
+        The caller must check if access is allowed.
+    """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_source
     try:
