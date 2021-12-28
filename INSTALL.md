@@ -24,6 +24,10 @@
 - PipEnv program (typically `apt install pipenv` or `yum install pipenv` etc)
 - A web server of your choice with proxy capabilities
 
+Warning: the ElasticSearch client libraries from 7.14 have strict server version checking
+and will not run with the wrong version.
+You may need to update the requirements.txt files in tools/ and server/ accordingly.
+
 ## Installation steps:
 
 - Clone the Foal git repository to your machine: `git clone https://github.com/apache/incubator-ponymail-foal.git foal`
