@@ -252,7 +252,7 @@ async def main(args):
     do_dkim = True
     dkim_txt = (
         input(
-            "Do you wish to perform DKIM re-indexing of all emails? This will still preserve old permalinks "
+            "Do you wish to perform DKIM re-indexing of all emails? This will NOT preserve all old permalinks currently "
             "(y/n) [y]: "
         )
         or "y"
