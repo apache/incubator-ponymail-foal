@@ -36,6 +36,8 @@ function search(query, date) {
 
     let header_from = document.getElementById('header_from');
     let header_subject = document.getElementById('header_subject');
+    let header_to = document.getElementById('header_to');
+    let header_body = document.getElementById('header_body');
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(G_apiURL, date, list, domain, query);
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
@@ -46,6 +48,16 @@ function search(query, date) {
         sURL += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
         newhref += "&header_subject=%s".format(header_subject.value);
         header_subject.value = "";
+    }
+    if (header_to.value.length > 0) {
+        sURL += "&header_to=%s".format(encodeURIComponent(header_to.value));
+        newhref += "&header_to=%s".format(header_to.value);
+        header_to.value = "";
+    }
+    if (header_body.value.length > 0) {
+        sURL += "&header_body=%s".format(encodeURIComponent(header_body.value));
+        newhref += "&header_body=%s".format(header_body.value);
+        header_body.value = "";
     }
     GET(sURL, renderListView, {
         search: true,
