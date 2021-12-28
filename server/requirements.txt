@@ -1,10 +1,9 @@
 # Items in this file must have a licence compatible with AL 2.0
-aiohttp~=3.6.2                   # AL2.0
 PyYAML~=5.4.1                    # WTFPL
 types-PyYAML                     # AL2.0
 multipart~=0.2.1                 # MIT
 elasticsearch-dsl>=7.0.0,<8.0.0  # AL2.0
-elasticsearch[async]~=7.13.1     # AL2.0
+elasticsearch[async]>=7.13.1,<8.0.0 # AL2.0 (includes aiohttp)
 certifi~=2020.6.20               # MPL2.0
 netaddr~=0.8.0                   # BSD, MIT
 formatflowed~=2.0.0              # Python Software Foundation
