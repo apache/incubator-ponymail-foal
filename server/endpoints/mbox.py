@@ -34,7 +34,7 @@ import datetime
 
 
 async def convert_source(session: plugins.session.SessionObject, email: dict) -> str:
-    source = await plugins.messages.get_source(session, permalink=email.get("dbid", email["mid"]))
+    source = await plugins.messages.get_source(session, permalink=email.get("dbid"))
     if source:
         source_as_text = source["_source"]["source"]
         # Ensure it starts with "From "...or fake it
