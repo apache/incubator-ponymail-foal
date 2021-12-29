@@ -92,6 +92,10 @@ components:
           description: The ID (document id or message-id) of the email to fetch
           example: "5wnbldtbbcog0p259jnhvqbkc7nhjt71"
           type: string
+        list:
+          description: The List ID the email must adhere to (only if searching by Message-ID header)
+          example: "<users.httpd.apache.org>"
+          type: string
       required:
       - id
     SingleEmailResponse:
