@@ -37,7 +37,7 @@ async def process(
 
     # If not found via permalink, it might be message-id instead, so try that
     if email is None:
-        email = await plugins.messages.get_email(session, messageid=indata.get("id"))
+        email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=indata.get("list", ""))
 
     if email is None:
         return aiohttp.web.Response(headers={}, status=404, text="Email not found")
