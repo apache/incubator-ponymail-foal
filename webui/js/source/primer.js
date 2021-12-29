@@ -150,17 +150,30 @@ function parseURL(state) {
 function parse_permalink() {
     // message id is the bit after the last /
     let mid = location.href.split('/').pop();
-    // Cut off any query string there might be
-    if (mid.match(/\?/)) {
-        mid = mid.replace(/\?.*$/, '');
+    mid = mid.replace(/\?.*/, '');  // Chop away any query string
+    // List-ID specified?
+    const query = unescape(location.search.substr(1));
+    let list_id = null;
+    if (query.length) {
+        if (query.match(/^<.+>$/)) {
+            list_id = query;
+        }
     }
+
     mid = unshortenID(mid);  // In case of old school shortened links
     init_preferences(); // blank call to load defaults like social rendering
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
-    GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
-        cached: true
-    });
+    if (list_id) {
+        GET('%sapi/thread.lua?id=%s&list=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
+            cached: true
+        });
+    }
+    else {
+        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
+            cached: true
+        });
+    }
 }
 
 
