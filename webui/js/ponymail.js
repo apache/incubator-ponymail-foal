@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '723b4fd';
+const PONYMAIL_REVISION = 'bd3cdbd';
 
 
 /******************************************
@@ -152,6 +152,9 @@ async function async_snap(error) {
     msg = msg.replace(/<.*?>/g, ""); // strip HTML tags
     if (error.status === 404) {
         msg += "\n\nYou may need to be logged in with additional permissions in order to view this resource.";
+        if (pm_config.perm_error_postface) {
+            msg += pm_config.perm_error_postface;
+        }
     }
     modal("An error occured", "An error code %u occured while trying to fetch %s:\n%s".format(error.status, error.url, msg), "error");
 }
