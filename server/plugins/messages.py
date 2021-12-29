@@ -305,7 +305,6 @@ async def get_email_irt(
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
     """
         Get the source document for an email, or None if it does not find exactly one match.
-        If the source cannot be found using the id, it checks for a match by Permalink.
 
         The caller must check if access is allowed.
     """
@@ -315,15 +314,6 @@ async def get_source(session: plugins.session.SessionObject, permalink: str = No
         doc = await session.database.get(index=doctype, id=permalink)
     except plugins.database.DBError:
         doc = None
-    if not doc:
-        res = await session.database.search(
-            index=doctype,
-            size=1,
-            body={"query": {"bool": {"must": [{"match": {"permalink": permalink}}]}}},
-        )
-        if len(res["hits"]["hits"]) == 1:
-            doc = res["hits"]["hits"][0]
-            doc["id"] = doc["_id"]
     if doc:
         if raw:
             return doc
