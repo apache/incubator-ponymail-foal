@@ -29,7 +29,16 @@ import fnmatch
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict
 ) -> typing.Union[dict, aiohttp.web.Response]:
+
+    versions: dict = {
+        "server": server.server_version,
+        "foal": server.foal_version,
+        "elasticsearch_engine": server.engine_version,
+        "elasticsearch_library": server.library_version
+    }
+
     prefs: dict = {"login": {}}
+    prefs['versions'] = versions
     lists: dict = {}
     for ml, entry in server.data.lists.items():
         if "@" in ml:

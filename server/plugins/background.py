@@ -24,6 +24,7 @@ import sys
 import time
 
 from elasticsearch_dsl import Search
+from elasticsearch import VERSION as ES_VERSION
 
 import plugins.configuration
 import plugins.server
@@ -215,6 +216,12 @@ async def run_tasks(server: plugins.server.BaseServer) -> None:
 
         Generally runs every 2½ minutes, or whatever is set in tasks/refresh_rate in ponymail.yaml
     """
+
+    # Initial setup
+    server.library_version = ".".join([str(v) for v in ES_VERSION])
+    db = plugins.database.Database(server.config.database)
+    server.engine_version = (await db.info())['version']['number']
+
     while True:
         async with ProgTimer("Gathering list of archived mailing lists"):
             try:
