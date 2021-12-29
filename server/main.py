@@ -68,9 +68,6 @@ class Server(plugins.server.BaseServer):
         self.api_logger = None
         self.foal_version = PONYMAIL_FOAL_VERSION
         self.server_version = PONYMAIL_SERVER_VERSION
-        # provided by background.py
-        self.library_version: str
-        self.engine_version: str
 
         # Make a pool of database connections for async queries
         pool_size = self.config.database.pool_size

@@ -52,3 +52,6 @@ class BaseServer:
     dbpool: asyncio.Queue
     runners: plugins.offloader.ExecutorPool
     streamlock: asyncio.Lock
+    # provided by background.py
+    library_version: str
+    engine_version: str
