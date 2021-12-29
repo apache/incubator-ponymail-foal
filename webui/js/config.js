@@ -46,7 +46,8 @@ const pm_config = {
     boring_lists: ['commits', 'cvs', 'site-cvs', 'security', 'notifications'], // we'd rather not default to these, noisy!
     favorite_list: 'dev', // if we have this, default to it
     long_tabs: false, // tab name format (long or short)
-    LOTS_OF_LISTS: 25 // Beyond this number of list domains we start using the old phonebook.
+    LOTS_OF_LISTS: 25, // Beyond this number of list domains we start using the old phonebook.
+    perm_error_postface: "" // Optional text to append to potential permission error messages
 }
 
 // Gravatar support. Defaults to using the gravatar proxy.
