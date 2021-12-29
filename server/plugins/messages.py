@@ -216,6 +216,7 @@ async def get_email(
     session: plugins.session.SessionObject,
     permalink: str = None,
     messageid: str = None,
+    listid: str = None,
 ) -> typing.Optional[dict]:
     """
     Returns a matching mbox document or None
@@ -247,10 +248,13 @@ async def get_email(
             if len(res["hits"]["hits"]) == 1:
                 doc = res["hits"]["hits"][0]
     elif messageid:
+        bquery = {"query": {"bool": {"must": [{"match": {"message-id": messageid}}]}}}
+        if listid:  # Specific List ID required?
+            bquery = {"query": {"bool": {"must": [{"match": {"message-id": messageid}}, {"term": {"list_raw": listid}}]}}}
         res = await session.database.search(
             index=doctype,
             size=1,
-            body={"query": {"bool": {"must": [{"match": {"message-id": messageid}}]}}},
+            body=bquery,
         )
         if len(res["hits"]["hits"]) == 1:
             doc = res["hits"]["hits"][0]
