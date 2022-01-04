@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'bd3cdbd';
+const PONYMAIL_REVISION = '74baa11';
 
 
 /******************************************
@@ -3577,11 +3577,12 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
+// URL is expected to be of the form <msgid>?<list.id>
 // onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
-    let mid = location.href.split('/').pop();
-    mid = mid.replace(/\?.*/, '');  // Chop away any query string
+    // TODO: could look for thread[.html]/ instead
+    let mid = location.pathname.split('/').pop();
     // List-ID specified?
     const query = unescape(location.search.substr(1));
     let list_id = null;
@@ -3596,7 +3597,7 @@ function parse_permalink() {
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
     if (list_id) {
-        GET('%sapi/thread.lua?id=%s&list=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
             cached: true
         });
     }
