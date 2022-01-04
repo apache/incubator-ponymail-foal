@@ -34,9 +34,6 @@ async def process(
     # If not found via permalink, it might be message-id instead, so try that
     if email is None:
         email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=listid)
-    if not email and ' ' in mailid: # only try again if we need to due to space in url
-        mailid = mailid.replace(" ", "+")
-        email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=listid)
 
     if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
