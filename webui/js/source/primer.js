@@ -166,7 +166,7 @@ function parse_permalink() {
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
     if (list_id) {
-        GET('%sapi/thread.lua?id=%s&list=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
             cached: true
         });
     }
