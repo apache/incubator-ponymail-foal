@@ -146,11 +146,12 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
+// URL is expected to be of the form <msgid>?<list.id>
 // onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
-    let mid = location.href.split('/').pop();
-    mid = mid.replace(/\?.*/, '');  // Chop away any query string
+    // TODO: could look for thread[.html]/ instead
+    let mid = location.pathname.split('/').pop();
     // List-ID specified?
     const query = unescape(location.search.substr(1));
     let list_id = null;
