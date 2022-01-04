@@ -29,7 +29,7 @@ async def process(
 ) -> aiohttp.web.Response:
 
     # Has a list id been provided?
-    listid = indata.get("list", "")
+    listid = indata.get("listid", "")
 
     # lookup by message id must always include a list id for disambiguation
     if listid:

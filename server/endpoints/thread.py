@@ -27,7 +27,7 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Optional[dict]:
     mailid = indata.get("id", "")
-    listid = indata.get("list", "")
+    listid = indata.get("listid", "")
 
     # lookup by message id must always include a list id for disambiguation
     if listid:
