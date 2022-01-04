@@ -27,13 +27,15 @@ import plugins.aaa
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> aiohttp.web.Response:
-    listid = indata.get("list", "")
-    # First, assume permalink and look up the email based on that
-    email = await plugins.messages.get_email(session, permalink=indata.get("id"))
 
-    # If not found via permalink, it might be message-id instead, so try that
-    if email is None:
+    # Has a list id been provided?
+    listid = indata.get("list", "")
+
+    # lookup by message id must always include a list id for disambiguation
+    if listid:
         email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=listid)
+    else: # Else assume permalink and look up the email based on that
+        email = await plugins.messages.get_email(session, permalink=indata.get("id"))
 
     if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):

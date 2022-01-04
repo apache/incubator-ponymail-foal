@@ -32,12 +32,14 @@ async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
-    # First, assume permalink and look up the email based on that
-    email = await plugins.messages.get_email(session, permalink=indata.get("id"))
+    # Has a list id been provided?
+    listid = indata.get("list", "")
 
-    # If not found via permalink, it might be message-id instead, so try that
-    if email is None:
-        email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=indata.get("list", ""))
+    # lookup by message id must always include a list id for disambiguation
+    if listid:
+        email = await plugins.messages.get_email(session, messageid=indata.get("id"), listid=listid)
+    else: # Else assume permalink and look up the email based on that
+        email = await plugins.messages.get_email(session, permalink=indata.get("id"))
 
     if email is None:
         return aiohttp.web.Response(headers={}, status=404, text="Email not found")

@@ -28,9 +28,13 @@ async def process(
 ) -> typing.Optional[dict]:
     mailid = indata.get("id", "")
     listid = indata.get("list", "")
-    email = await plugins.messages.get_email(session, permalink=mailid)
-    if not email:
+
+    # lookup by message id must always include a list id for disambiguation
+    if listid:
         email = await plugins.messages.get_email(session, messageid=mailid, listid=listid)
+    else: # Else assume permalink and look up the email based on that
+        email = await plugins.messages.get_email(session, permalink=mailid)
+
     # The id is passed via the path thread/id
     # This means that + is converted into space
     # So we need to try both space and '+', and hope no msg ids contain both
