@@ -54,6 +54,7 @@ import time
 import traceback
 import typing
 import uuid
+import mimetypes
 
 import elasticsearch
 import formatflowed
@@ -136,9 +137,13 @@ def parse_attachment(
         if cdtype in {"attachment", "inline"}:
             fd = part.get_payload(decode=True)
             filename = part.get_filename()
-            # If inline-attached email, fake a name
-            if not filename and part.get_content_type() and part.get_content_type().lower() == "message/rfc822":
-                filename = "attached_email.eml"
+            # If attachment is without a name, invent it.
+            ctype = part.get_content_type()
+            if ctype and not filename:
+                ext = mimetypes.guess_extension(ctype)
+                if not ext:  # dunno this extension, fake .txt
+                    ext = ".txt"
+                filename = f"{cdtype}{ext}"
                 if not fd and cdtype == "inline":  # If inline, convert to source
                     fd = part.as_bytes()
             # Allow for empty string
