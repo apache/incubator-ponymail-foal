@@ -139,6 +139,9 @@ def parse_attachment(
             if fd is None:
                 return None, None
             filename = part.get_filename()
+            # If inline-attached email, fake a name
+            if not filename and part.get_content_type() and part.get_content_type().lower() == "message/rfc822":
+                filename = "attached_email.eml"
             if filename:
                 attachment = {
                     "content_type": part.get_content_type(),
