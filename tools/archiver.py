@@ -135,13 +135,15 @@ def parse_attachment(
         cdtype = dispositions[0].lower()
         if cdtype in {"attachment", "inline"}:
             fd = part.get_payload(decode=True)
-            # Allow for empty string
-            if fd is None:
-                return None, None
             filename = part.get_filename()
             # If inline-attached email, fake a name
             if not filename and part.get_content_type() and part.get_content_type().lower() == "message/rfc822":
                 filename = "attached_email.eml"
+                if not fd and cdtype == "inline":  # If inline, convert to source
+                    fd = part.as_bytes()
+            # Allow for empty string
+            if fd is None:
+                return None, None
             if filename:
                 attachment = {
                     "content_type": part.get_content_type(),
