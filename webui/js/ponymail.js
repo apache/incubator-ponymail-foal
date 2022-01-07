@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '74baa11';
+const PONYMAIL_REVISION = '82cb3a3';
 
 
 /******************************************
@@ -953,7 +953,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(G_apiURL, tid), render_email, {
+        GET("%sapi/email.lua?id=%s".format(G_apiURL, encodeURIComponent(tid)), render_email, {
             cached: true,
             scroll: doScroll,
             id: tid,
@@ -3078,7 +3078,7 @@ function admin_email_preview(stats, json) {
         }, "Attachment(s): ");
         let alinks = [];
         for (let attachment of json.attachments) {
-            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${encodeURIComponent(json.mid)}&file=${encodeURIComponent(attachment.hash)}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -3233,7 +3233,7 @@ function admin_init() {
         mgmt_prefs = json
         init_preferences(state, json);
     }, null);
-    let mid = location.href.split('/').pop();
+    let mid = decodeURIComponent(location.href.split('/').pop());
     // Specific email/list handling?
     if (mid.length > 0) {
         // List handling?
@@ -3242,7 +3242,7 @@ function admin_init() {
         }
         // Email handling?
         else {
-            GET('%sapi/email.json?id=%s'.format(G_apiURL, mid), admin_email_preview, null);
+            GET('%sapi/email.json?id=%s'.format(G_apiURL, encodeURIComponent(mid)), admin_email_preview, null);
         }
     } else { // View audit log
         GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);
@@ -3500,7 +3500,7 @@ function primeListView(state) {
 
 // callback from when prefs have loaded
 function post_prime(state) {
-    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, G_current_list, G_current_domain);
+    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, encodeURIComponent(G_current_list), encodeURIComponent(G_current_domain));
     if (G_current_year && G_current_month) {
         sURL += "&d=%u-%u".format(G_current_year, G_current_month);
     }
@@ -3509,7 +3509,7 @@ function post_prime(state) {
             G_collated_json = {};
             for (let entry of state.array) {
                 let list = entry.split('@');
-                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, list[0], list[1]);
+                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, encodeURIComponent(list[0]), encodeURIComponent(list[1]));
                 GET(sURL, render_virtual_inbox, state);
             }
         } else {
@@ -3577,14 +3577,15 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
-// URL is expected to be of the form <msgid>?<list.id>
+// URL is expected to be of the form /thread[.html]/<msgid>?<list.id>
 // onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
     // TODO: could look for thread[.html]/ instead
-    let mid = location.pathname.split('/').pop();
+    let mid = decodeURIComponent(location.pathname.split('/').pop());
     // List-ID specified?
-    const query = unescape(location.search.substr(1));
+    // query needs decodeURIComponent with '+' conversion
+    const query = decodeURIComponent(location.search.substr(1).replace(/\+/g, ' '));
     let list_id = null;
     if (query.length) {
         if (query.match(/^<.+>$/)) {
@@ -3597,12 +3598,12 @@ function parse_permalink() {
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
     if (list_id) {
-        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, encodeURIComponent(mid), encodeURIComponent(list_id)), construct_single_thread, {
             cached: true
         });
     }
     else {
-        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encodeURIComponent(mid)), construct_single_thread, {
             cached: true
         });
     }
@@ -3879,7 +3880,7 @@ async function render_email(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -4011,7 +4012,7 @@ async function render_email_chatty(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -4023,7 +4024,7 @@ async function render_email_chatty(state, json) {
     // Admin button?
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
-            href: 'admin/%s'.format(json.mid),
+            href: 'admin/%s'.format(encodeURIComponent(json.mid)),
             target: '_self',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'
@@ -4201,7 +4202,9 @@ function search(query, date) {
     let header_subject = document.getElementById('header_subject');
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
-    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(G_apiURL, date, list, domain, query);
+    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
+        G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
+        );
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
         newhref += "&header_from=%s".format(header_from.value);
@@ -4450,7 +4453,13 @@ function calendar_click(year, month) {
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(G_apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(
+            G_apiURL, encodeURIComponent(calendar_current_list),
+            encodeURIComponent(calendar_current_domain),
+            encodeURIComponent(year), encodeURIComponent(month),
+            encodeURIComponent(q)
+        ),
+        renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),
         update_calendar: false,
         search: (q && q.length > 0)
