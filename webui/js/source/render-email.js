@@ -190,7 +190,7 @@ async function render_email(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -322,7 +322,7 @@ async function render_email_chatty(state, json) {
 
     // Source-view button
     let sourcebutton = new HTML('a', {
-        href: '%sapi/source.lua?id=%s'.format(G_apiURL, json.mid),
+        href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
         target: '_self',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
@@ -334,7 +334,7 @@ async function render_email_chatty(state, json) {
     // Admin button?
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
-            href: 'admin/%s'.format(json.mid),
+            href: 'admin/%s'.format(encodeURIComponent(json.mid)),
             target: '_self',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'

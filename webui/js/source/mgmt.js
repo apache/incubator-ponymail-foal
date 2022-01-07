@@ -248,7 +248,7 @@ function admin_email_preview(stats, json) {
         }, "Attachment(s): ");
         let alinks = [];
         for (let attachment of json.attachments) {
-            let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
+            let link = `${G_apiURL}api/email.lua?attachment=true&id=${encodeURIComponent(json.mid)}&file=${encodeURIComponent(attachment.hash)}`;
             let a = new HTML('a', {
                 href: link,
                 target: '_blank'
@@ -403,7 +403,7 @@ function admin_init() {
         mgmt_prefs = json
         init_preferences(state, json);
     }, null);
-    let mid = location.href.split('/').pop();
+    let mid = decodeURIComponent(location.href.split('/').pop());
     // Specific email/list handling?
     if (mid.length > 0) {
         // List handling?
@@ -412,7 +412,7 @@ function admin_init() {
         }
         // Email handling?
         else {
-            GET('%sapi/email.json?id=%s'.format(G_apiURL, mid), admin_email_preview, null);
+            GET('%sapi/email.json?id=%s'.format(G_apiURL, encodeURIComponent(mid)), admin_email_preview, null);
         }
     } else { // View audit log
         GET('%sapi/mgmt.json?action=log&page=%s&size=%u'.format(G_apiURL, audit_page, audit_size), admin_audit_view, null);

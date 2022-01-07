@@ -100,7 +100,7 @@ function construct_thread(thread, cid, nestlevel, included) {
     if (!included.includes(tid)) {
         included.push(tid);
         console.log("Loading email %s".format(tid));
-        GET("%sapi/email.lua?id=%s".format(G_apiURL, tid), render_email, {
+        GET("%sapi/email.lua?id=%s".format(G_apiURL, encodeURIComponent(tid)), render_email, {
             cached: true,
             scroll: doScroll,
             id: tid,

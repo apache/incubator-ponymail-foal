@@ -38,7 +38,9 @@ function search(query, date) {
     let header_subject = document.getElementById('header_subject');
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
-    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(G_apiURL, date, list, domain, query);
+    let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
+        G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
+        );
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
         newhref += "&header_from=%s".format(header_from.value);

@@ -69,7 +69,7 @@ function primeListView(state) {
 
 // callback from when prefs have loaded
 function post_prime(state) {
-    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, G_current_list, G_current_domain);
+    let sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, encodeURIComponent(G_current_list), encodeURIComponent(G_current_domain));
     if (G_current_year && G_current_month) {
         sURL += "&d=%u-%u".format(G_current_year, G_current_month);
     }
@@ -78,7 +78,7 @@ function post_prime(state) {
             G_collated_json = {};
             for (let entry of state.array) {
                 let list = entry.split('@');
-                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, list[0], list[1]);
+                sURL = '%sapi/stats.lua?list=%s&domain=%s'.format(G_apiURL, encodeURIComponent(list[0]), encodeURIComponent(list[1]));
                 GET(sURL, render_virtual_inbox, state);
             }
         } else {
@@ -146,14 +146,15 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
-// URL is expected to be of the form <msgid>?<list.id>
+// URL is expected to be of the form /thread[.html]/<msgid>?<list.id>
 // onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
     // TODO: could look for thread[.html]/ instead
-    let mid = location.pathname.split('/').pop();
+    let mid = decodeURIComponent(location.pathname.split('/').pop());
     // List-ID specified?
-    const query = unescape(location.search.substr(1));
+    // query needs decodeURIComponent with '+' conversion
+    const query = decodeURIComponent(location.search.substr(1).replace(/\+/g, ' '));
     let list_id = null;
     if (query.length) {
         if (query.match(/^<.+>$/)) {
@@ -166,12 +167,12 @@ function parse_permalink() {
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, null);
     // Fetch the thread data and pass to build_single_thread
     if (list_id) {
-        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, mid, list_id), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s&listid=%s'.format(G_apiURL, encodeURIComponent(mid), encodeURIComponent(list_id)), construct_single_thread, {
             cached: true
         });
     }
     else {
-        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, mid), construct_single_thread, {
+        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encodeURIComponent(mid)), construct_single_thread, {
             cached: true
         });
     }

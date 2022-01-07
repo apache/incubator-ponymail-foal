@@ -203,7 +203,13 @@ function calendar_click(year, month) {
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
     }
-    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(G_apiURL, calendar_current_list, calendar_current_domain, year, month, q), renderListView, {
+    GET('%sapi/stats.lua?list=%s&domain=%s&d=%u-%u&q=%s'.format(
+            G_apiURL, encodeURIComponent(calendar_current_list),
+            encodeURIComponent(calendar_current_domain),
+            encodeURIComponent(year), encodeURIComponent(month),
+            encodeURIComponent(q)
+        ),
+        renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),
         update_calendar: false,
         search: (q && q.length > 0)
