@@ -133,8 +133,7 @@ async function render_email(state, json) {
             class: 'email_key'
         }, "Attachment(s): ");
         let alinks = [];
-        for (let n = 0; n < json.attachments.length; n++) {
-            let attachment = json.attachments[n];
+        for (let attachment of json.attachments) {
             let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
@@ -274,8 +273,7 @@ async function render_email_chatty(state, json) {
             class: 'email_key'
         }, "Attachment(s):");
         let alinks = [];
-        for (let n = 0; n < json.attachments.length; n++) {
-            let attachment = json.attachments[n];
+        for (let attachment of json.attachments) {
             let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,

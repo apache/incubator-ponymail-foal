@@ -34,8 +34,8 @@ function list_index(state, json) {
         }
     } else {
         let letters = 'abcdefghijklmnopqrstuvwxyz#';
-        for (let i = 0; i < letters.length; i++) {
-            let xletter = letters[i].toUpperCase(); // declared above
+        for (let char of letters) {
+            let xletter = char.toUpperCase();
             let li = new HTML('li', {
                 onclick: 'list_index({letter: "%s"});'.format(xletter),
                 class: (xletter == 'A') ? 'active' : null
@@ -73,8 +73,7 @@ function list_index_onepage(state, json) {
     let domains = Object.keys(json.lists);
     domains.sort();
     let letter = '';
-    for (let i = 0; i < domains.length; i++) {
-        let domain = domains[i];
+    for (let domain of domains) {
         let l = domain[0];
         if (l != letter) {
             letter = l;

@@ -80,8 +80,8 @@ function compose_email(replyto, list) {
     });
     s.inject(new HTML('option', {}, G_ponymail_preferences.login.credentials.email));
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates) {
-        for (let z = 0; z < G_ponymail_preferences.login.alternates.length; z++) {
-            s.inject(new HTML('option', {}, G_ponymail_preferences.login.alternates[z]));
+        for (let alternate of G_ponymail_preferences.login.alternates) {
+            s.inject(new HTML('option', {}, alternate));
         }
     }
     form.push(new HTML('br'));
