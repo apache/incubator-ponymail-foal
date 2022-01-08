@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '82cb3a3';
+const PONYMAIL_REVISION = '8298a78';
 
 
 /******************************************
@@ -757,8 +757,8 @@ function compose_email(replyto, list) {
     });
     s.inject(new HTML('option', {}, G_ponymail_preferences.login.credentials.email));
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates) {
-        for (let z = 0; z < G_ponymail_preferences.login.alternates.length; z++) {
-            s.inject(new HTML('option', {}, G_ponymail_preferences.login.alternates[z]));
+        for (let alternate of G_ponymail_preferences.login.alternates) {
+            s.inject(new HTML('option', {}, alternate));
         }
     }
     form.push(new HTML('br'));
@@ -1874,10 +1874,10 @@ function hideWindows(force_all) {
 
     // Finally, check for other opened emails, close 'em all
     let placeholders = document.getElementsByClassName('email_placeholder');
-    for (let i = 0; i < placeholders.length; i++) {
-        if (placeholders[i].style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
-            placeholders[i].style.display = 'none';
+    for (let placeholder of placeholders) {
+        if (placeholder.style.display == 'block') {
+            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
+            placeholder.style.display = 'none';
             // Reset scroll cache
             try {
                 window.scrollTo(0, 0);
@@ -1886,10 +1886,10 @@ function hideWindows(force_all) {
     }
 
     placeholders = document.getElementsByClassName('email_placeholder_chatty');
-    for (let i = 0; i < placeholders.length; i++) {
-        if (placeholders[i].style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholders[i].getAttribute('id')));
-            placeholders[i].style.display = 'none';
+    for (let placeholder of placeholders) {
+        if (placeholder.style.display == 'block') {
+            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
+            placeholder.style.display = 'none';
             // Reset scroll cache
             try {
                 window.scrollTo(0, 0);
@@ -2014,8 +2014,8 @@ function list_index(state, json) {
         }
     } else {
         let letters = 'abcdefghijklmnopqrstuvwxyz#';
-        for (let i = 0; i < letters.length; i++) {
-            let xletter = letters[i].toUpperCase(); // declared above
+        for (let char of letters) {
+            let xletter = char.toUpperCase();
             let li = new HTML('li', {
                 onclick: 'list_index({letter: "%s"});'.format(xletter),
                 class: (xletter == 'A') ? 'active' : null
@@ -2053,8 +2053,7 @@ function list_index_onepage(state, json) {
     let domains = Object.keys(json.lists);
     domains.sort();
     let letter = '';
-    for (let i = 0; i < domains.length; i++) {
-        let domain = domains[i];
+    for (let domain of domains) {
         let l = domain[0];
         if (l != letter) {
             letter = l;
@@ -3823,8 +3822,7 @@ async function render_email(state, json) {
             class: 'email_key'
         }, "Attachment(s): ");
         let alinks = [];
-        for (let n = 0; n < json.attachments.length; n++) {
-            let attachment = json.attachments[n];
+        for (let attachment of json.attachments) {
             let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
@@ -3964,8 +3962,7 @@ async function render_email_chatty(state, json) {
             class: 'email_key'
         }, "Attachment(s):");
         let alinks = [];
-        for (let n = 0; n < json.attachments.length; n++) {
-            let attachment = json.attachments[n];
+        for (let attachment of json.attachments) {
             let link = `${G_apiURL}api/email.lua?attachment=true&id=${json.mid}&file=${attachment.hash}`;
             let a = new HTML('a', {
                 href: link,
