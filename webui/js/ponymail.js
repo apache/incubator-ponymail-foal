@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '8298a78';
+const PONYMAIL_REVISION = '6813ee5';
 
 
 /******************************************
@@ -77,8 +77,8 @@ const PONYMAIL_TIME_FORMAT = { timeStyle: 'long'}; // ensure TZ is shown
 
 let G_collated_json = {};
 
-if (pm_config.G_apiURL) {
-    G_apiURL = pm_config.G_apiURL;
+if (pm_config.apiURL) {
+    G_apiURL = pm_config.apiURL;
     console.log("Setting API URL to " + G_apiURL);
 }
 
