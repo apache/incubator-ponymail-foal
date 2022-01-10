@@ -43,6 +43,8 @@ An example Apache HTTPd configuration could be (for plain-text HTTP):
     DocumentRoot /var/www/foal/webui/
     # PathInfo is needed for threads
     AcceptPathInfo On
+    # Also needed for threads to be able to handle message-ids with embedded /:
+    AllowEncodedSlashes On # (or NoDecode)
     ProxyPass /api/ http://localhost:8080/api/
     <Directory /var/www/foal/webui/>
         Require all granted

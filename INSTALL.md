@@ -66,7 +66,10 @@ LoadModule proxy_http_module ...
     ServerName ponymail.example.org
     DocumentRoot /var/www/ponymail-foal/webui/
     ProxyPass /api/ http://localhost:8080/api/
+    # PathInfo is needed for threads
     AcceptPathInfo On
+    # Also needed for threads to be able to handle message-ids with embedded /:
+    AllowEncodedSlashes On # (or NoDecode)
 </VirtualHost>
 ~~~
 
