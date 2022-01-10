@@ -104,6 +104,7 @@ the License. -->
                   <input type="radio" id="display_mode_treeview" name="ui_threading" value="treeview" onchange="set_theme('treeview');"> <label for="display_mode_treeview">Treeview</label><br/>
                   <br/>
                   <input type="checkbox" id="display_mode_compact" name="ui_compact_list" value="compact" onchange="set_theme(G_current_listmode, this.checked);"> <label for="display_mode_compact">Compact layout</label><br/>
+                  <input type="checkbox" id="G_show_stats_sidebar" name="ui_stats_sidebar" value="compact" onchange="set_show_stats(this.checked);"> <label for="G_show_stats_sidebar">Show side-bar stats</label><br/>
                 </div>
                 <div>
                   <b>Email display mode:</b><br/><br/>
@@ -113,7 +114,8 @@ the License. -->
               </div>
               <hr/>
               <div style="display: block; width: 100%; text-align: center;">
-                <input type="checkbox" id="G_show_stats_sidebar" name="ui_stats_sidebar" value="compact" onchange="set_show_stats(this.checked);"> <label for="G_show_stats_sidebar">Show side-bar stats</label><br/>
+                <!-- text will be overwritten by init.js -->
+                <span id="powered_by">Powered by Apache Pony Mail (Foal)</span>
               </div>
             </div>
         </li>
