@@ -45,3 +45,16 @@ Please see the [installation documentation](INSTALL.md) for setup instructions.
 _While compatible with the original Pony Mail, this will not be a drop-in replacement.
 Migration of the old database is required, and most of the older ID generators have 
 been dropped in favor of collision-secure generators._
+
+### Known Limitations:
+* If an email is re-imported or archived, entries are currently replaced.
+ This can result in loss of attributes such as alternate Permalinks and deleted status.
+* The migration tool drops Permalinks if two existing entries point to a sufficiently similar email
+* There is no longer a 1-to-1 relationship between mbox and source entries.
+  This can result in orphan source entries, with implications for privacy redaction.
+* emails are filed according to the Date: header, rather than arrival time.
+ This can cause emails to appear in the wrong month or year, or even be future-dated.
+* Whilst the underlying database can handle any number of emails in a month,
+ the UI and much of the API cannot, and are not scalable.
+* Header parsing is stricter than before; in particular some unusual Message-IDs are not handled correctly.
+  This affects use of Foal as a replacement for Apache mod_mbox mail archives.
