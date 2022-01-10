@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '6813ee5';
+const PONYMAIL_REVISION = '649d454';
 
 
 /******************************************
@@ -1758,6 +1758,11 @@ console.log("Initializing key command logger");
 window.addEventListener('keyup', keyCommands);
 
 window.addEventListener('load', function() {
+    let powered_by = "Powered by Apache Pony Mail (Foal v/%s ~%s)".format(PONYMAIL_VERSION, PONYMAIL_REVISION);
+    let pb = document.getElementById("powered_by");
+    if (pb) {
+        pb.innerHTML = powered_by
+    }
     document.body.appendChild(new HTML('footer', {
         class: 'footer hidden-xs'
     }, [
@@ -1766,7 +1771,7 @@ window.addEventListener('load', function() {
         }, [
             new HTML('p', {
                 class: 'muted'
-            }, "Powered by Apache Pony Mail (Foal v/%s ~%s)".format(PONYMAIL_VERSION, PONYMAIL_REVISION))
+            }, powered_by)
         ])
     ]));
 });
