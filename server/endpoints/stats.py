@@ -28,9 +28,6 @@ import typing
 import aiohttp.web
 import time
 
-PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
-
-
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
