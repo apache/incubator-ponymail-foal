@@ -636,7 +636,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
 
         return output_json, contents, msg_metadata, irt, False
 
-    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None, defaultepoch=None):
+    def archive_message(self, mlist, msg, raw_message=None, dry=False, dump=None, defaultepoch=None, digest=False):
         """Send the message to the archiver.
 
         :param mlist: The IMailingList object.
@@ -674,6 +674,8 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         if skipit:
             print("Skipping archiving of email due to invalid date and default date set to skip")
             return lid, "(skipped)"
+        if digest:
+            return lid, ojson["mid"]
         if dry:
             print("**** Dry run, not saving message to database *****")
             return lid, ojson["mid"]
@@ -873,6 +875,12 @@ def main():
         "--lid", dest="lid", type=str, nargs=1, help="Alternate specific list ID"
     )
     parser.add_argument(
+        "--digest",
+        dest="digest",
+        action="store_true",
+        help="Only digest the email and spit out the generated ID, do not archive",
+    )
+    parser.add_argument(
         "--altheader",
         dest="altheader",
         type=str,
@@ -1048,11 +1056,14 @@ def main():
             )
 
             try:
-                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump, args.defaultepoch)
-                print(
-                    "%s: Done archiving to %s as %s!"
-                    % (email.utils.formatdate(), lid, mid)
-                )
+                lid, mid = archie.archive_message(list_data, msg, raw_message, args.dry, args.dump, args.defaultepoch, args.digest)
+                if args.digest:
+                    print(mid)
+                else:
+                    print(
+                        "%s: Done archiving to %s as %s!"
+                        % (email.utils.formatdate(), lid, mid)
+                    )
             except Exception as err:
                 if args.verbose:
                     traceback.print_exc()
