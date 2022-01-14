@@ -188,6 +188,9 @@ class Elastic:
     def bulk(self, actions, **kwargs):
         return helpers.bulk(self.es, actions, **kwargs)
 
+    def streaming_bulk(self, actions, **kwargs):
+        return helpers.streaming_bulk(self.es, actions, **kwargs)
+
     def clear_scroll(self, *args, **kwargs):
         """
             Call this to release the scroll id and its resources
