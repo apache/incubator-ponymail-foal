@@ -549,7 +549,7 @@ parser.add_argument(
     "--dedup",
     dest="dedup",
     action="store_true",
-    help="Try to dedup messages based on ID before importing",
+    help="Don't import a message if its Message-Id already exists on the list",
 )
 parser.add_argument(
     "--ignorebody",
