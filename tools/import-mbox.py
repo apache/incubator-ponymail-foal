@@ -107,7 +107,7 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
             }
         )
     try:
-        xes.bulk(js_arr, ignore=404)
+        xes.bulk(js_arr)
     #       print("%s: Inserted %u entries into %s" % (name, len(js_arr),dbindex))
     except Exception as err:
         print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dbindex))
