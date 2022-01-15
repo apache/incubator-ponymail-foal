@@ -632,9 +632,6 @@ if args.timeout:
     timeout = args.timeout[0]
 baddies = 0
 
-# elasticsearch logs lots of warnings on retries/connection failure
-logging.getLogger("elasticsearch").setLevel(logging.ERROR)
-
 verbose_logger = None
 if args.verbose:
     verbose_logger = logging.getLogger("verbose")
