@@ -528,6 +528,20 @@ parser.add_argument(
     help="Show details of generated id (for use with --dry)",
 )
 parser.add_argument(
+    "--logger_level",
+    dest="logger_level",
+    type=str,
+    nargs=1,
+    help="Set 'elasticsearch' logging level (e.g. 'INFO')",
+)
+parser.add_argument(
+    "--trace_level",
+    dest="trace_level",
+    type=str,
+    nargs=1,
+    help="Set 'elasticsearch.trace' logging level (e.g. 'INFO')",
+)
+parser.add_argument(
     "--duplicates",
     dest="dups",
     action="store_true",
@@ -648,7 +662,10 @@ if args.dry:
         dumpfile.write("[\n")
 else:
     # Fetch config and set up ES
-    es = Elastic()
+    es = Elastic(
+            logger_level=args.logger_level[0] if args.logger_level else None,
+            trace_level=args.trace_level[0] if args.trace_level else None
+        )
 
     # No point continuing if the index does not exist
     print("Checking that the database index %s exists ... " % es.db_mbox)

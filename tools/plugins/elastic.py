@@ -46,7 +46,7 @@ class Elastic:
     db_auditlog:        str
     dbname:             str
 
-    def __init__(self):
+    def __init__(self, logger_level=None, trace_level=None):
         # Fetch config
         config = ponymailconfig.PonymailConfig()
 
@@ -84,15 +84,18 @@ class Elastic:
         # Always allow this to be set; will be replaced as necessary by wait_for_active_shards
         self.consistency = config.get("elasticsearch", "write", fallback="quorum")
 
-        # elasticsearch logs lots of warnings on retries/connection failure
-        logging.getLogger("elasticsearch").setLevel(logging.ERROR)
+        if logger_level:
+            eslog = logging.getLogger("elasticsearch")
+            eslog.setLevel(logger_level)
+            eslog.addHandler(logging.StreamHandler())
+        else:
+            # elasticsearch logs lots of warnings on retries/connection failure
+            logging.getLogger("elasticsearch").setLevel(logging.ERROR)
 
-        #         # add debug
-        #         trace = logging.getLogger("elasticsearch.trace")
-        #         trace.setLevel(logging.DEBUG)
-        #         # create console handler
-        #         consoleHandler = logging.StreamHandler()
-        #         trace.addHandler(consoleHandler)
+        if trace_level:
+            trace = logging.getLogger("elasticsearch.trace")
+            trace.setLevel(trace_level)
+            trace.addHandler(logging.StreamHandler())
 
         self.es = Elasticsearch(
             [
