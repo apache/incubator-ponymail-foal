@@ -137,7 +137,6 @@ class SlurpThread(Thread):
 
     def run(self):
         global goodies, baddies, dedupped
-        self.name = Thread.getName(self)
         ja = []
         jas = []
         self.printid("Thread started")
