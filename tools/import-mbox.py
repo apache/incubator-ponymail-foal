@@ -51,6 +51,8 @@ else:
 TIMEOUT_DEFAULT = 600
 goodies = 0
 baddies = 0
+dupes = 0 # number of duplicates dropped
+replacements = 0 # number of entries replaced
 duplicates: dict = {}  # detect if mid is re-used this run
 block = Lock()
 lists: list = []  # N.B. the entries in this list depend on the import type:
@@ -90,6 +92,7 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
 
     sys.stderr.flush()
 
+    optype =  "index" if args.overwrite else "create"
     js_arr = []
     for entry in json:
         js = entry
@@ -98,7 +101,7 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
             del js["mid"]
         js_arr.append(
             {
-                "_op_type": "index",
+                "_op_type": optype,
                 "_consistency": wc,
                 "_index": dbindex,
                 "_id": document_id,
@@ -106,11 +109,42 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
                 "_source": js,
             }
         )
+    successes = [] # indices of successful operations
+    findex = 0
+    repl = 0
+
+    # process the bulk responses individually so can determine
+    # which source entries need to be skipped
     try:
-        xes.bulk(js_arr)
-    #       print("%s: Inserted %u entries into %s" % (name, len(js_arr),dbindex))
-    except Exception as err:
+        for status, result in xes.streaming_bulk(js_arr, ignore_status=409):
+            d = result[optype]
+            if status:
+                successes.append(findex) # record successful entries
+                if d['result'] == 'updated':
+                    repl += 1
+            else:
+                msgid = js_arr[findex]['doc'].get('message-id', 'Unknown')
+                print(f"{name}: Warning: Failed to create {d['_index']} with mid: {d['_id']} from msgid: {msgid}")
+            findex += 1
+    except Exception as err: # should not happen
         print("%s: Warning: Could not bulk insert: %s into %s" % (name, err, dbindex))
+    return successes, repl
+
+def bulk_insert_both(name, mbox, source, xes):
+    """Create mbox entries; if any fail, don't create the corresponding source entries"""
+    global replacements, dupes, goodies
+    successes, repl = bulk_insert(name, mbox, xes, xes.db_mbox)
+    failures = len(mbox) - len(successes)
+    # if there are failures, keep only successes
+    if failures:
+        source = [source[i] for i in successes]
+    # anything left?
+    if source:
+        # not interested in replacements here
+        bulk_insert(name, source, xes, xes.db_source)
+    replacements += repl
+    goodies -= failures
+    dupes += failures
 
 class DownloadThread(Thread): # handles Pipermail
     def assign(self, url):
@@ -399,10 +433,8 @@ class SlurpThread(Thread):
                                 body={"source": contents[key]},
                             )
                     if len(ja) >= 40:
-                        bulk_insert(self.name, ja, es, es.db_mbox)
+                        bulk_insert_both(self.name, ja, jas, es)
                         ja = []
-
-                        bulk_insert(self.name, jas, es, es.db_source)
                         jas = []
                 else:
                     self.printid(
@@ -429,11 +461,8 @@ class SlurpThread(Thread):
             goodies += count
             baddies += bad
             if len(ja) > 0 and not args.dry:
-                bulk_insert(self.name, ja, es, es.db_mbox)
+                bulk_insert_both(self.name, ja, jas, es)
             ja = []
-
-            if len(jas) > 0 and not args.dry:
-                bulk_insert(self.name, jas, es, es.db_source)
             jas = []
         self.printid("Done, %u elements left to slurp" % len(lists))
 
@@ -563,6 +592,12 @@ parser.add_argument(
     dest="dedup",
     action="store_true",
     help="Don't import a message if its Message-Id already exists on the list",
+)
+parser.add_argument(
+    "--overwrite",
+    dest="overwrite",
+    action="store_true",
+    help="Allow incoming messages to overwrite existing entries (can result in data loss)",
 )
 parser.add_argument(
     "--ignorebody",
@@ -901,9 +936,15 @@ if dumpfile:
     dumpfile.write("]\n")
     dumpfile.close()
 
-print(
-    "All done! %u records inserted/updated after %u seconds. %u records were bad and ignored"
-    % (goodies, int(time.time() - start), baddies)
-)
+if args.overwrite:
+    print(
+        "All done! %u records processed (including %u replacements) after %u seconds. %u records were bad and ignored."
+        % (goodies, replacements, int(time.time() - start), baddies)
+    )    
+else:
+    print(
+        "All done! %u records inserted after %u seconds. %u records were bad and ignored. %u duplicates were ignored."
+        % (goodies, int(time.time() - start), baddies, dupes)
+    )
 if dedupped > 0:
     print("%u records were not inserted due to deduplication" % dedupped)
