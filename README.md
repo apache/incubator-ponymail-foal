@@ -50,6 +50,7 @@ been dropped in favor of collision-secure generators._
 * If an email is re-imported or archived, entries are currently replaced.
  This can result in loss of attributes such as alternate Permalinks and deleted status.
 * The migration tool drops Permalinks if two existing entries point to a sufficiently similar email
+* The migration tool does not fix up badly-parsed message-ids etc
 * There is no longer a 1-to-1 relationship between mbox and source entries.
   This can result in orphan source entries, with implications for privacy redaction.
 * emails are filed according to the Date: header, rather than arrival time.
