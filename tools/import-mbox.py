@@ -94,8 +94,7 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
 
     optype =  "index" if args.overwrite else "create"
     js_arr = []
-    for entry in json:
-        js = entry
+    for js in json:
         document_id = js["mid"]
         if dbindex == xes.db_source:
             del js["mid"]
