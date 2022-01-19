@@ -219,13 +219,11 @@ async def get_email(
     listid: str = None,
 ) -> typing.Optional[dict]:
     """
-    Returns a matching mbox document or None
+    Returns a single matching mbox document or None
     The calling code is responsible for checking if the entry is accessible
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
-    # Older indexes may need a match instead of a strict terms agg in order to find
-    # emails in DBs that may have been incorrectly analyzed.
     doc = None
     if permalink:
         try:
@@ -237,7 +235,7 @@ async def get_email(
                 permalink += ".+"
                 aggtype = "regexp"
             else:
-                aggtype = "match"
+                aggtype = "term"
             res = await session.database.search(
                 index=doctype,
                 size=1,
@@ -248,9 +246,9 @@ async def get_email(
             if len(res["hits"]["hits"]) == 1:
                 doc = res["hits"]["hits"][0]
     elif messageid:
-        bquery = {"query": {"bool": {"must": [{"match": {"message-id": messageid}}]}}}
+        bquery = {"query": {"bool": {"must": [{"term": {"message-id": messageid}}]}}}
         if listid:  # Specific List ID required?
-            bquery = {"query": {"bool": {"must": [{"match": {"message-id": messageid}}, {"term": {"list_raw": listid}}]}}}
+            bquery = {"query": {"bool": {"must": [{"term": {"message-id": messageid}}, {"term": {"list_raw": listid}}]}}}
         res = await session.database.search(
             index=doctype,
             size=1,
