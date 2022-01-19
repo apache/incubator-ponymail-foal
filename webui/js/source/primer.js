@@ -93,7 +93,7 @@ function post_prime(state) {
 function parseURL(state) {
     console.log("Running ParseURL");
     console.log(state);
-    let bits = window.location.search.substr(1).split(":", 3);
+    let bits = window.location.search.substring(1).split(":", 3);
     let list = bits[0];
     let month = bits[1];
     let query = bits[2];
@@ -154,7 +154,7 @@ function parse_permalink() {
     let mid = decodeURIComponent(location.pathname.split('/').pop());
     // List-ID specified?
     // query needs decodeURIComponent with '+' conversion
-    const query = decodeURIComponent(location.search.substr(1).replace(/\+/g, ' '));
+    const query = decodeURIComponent(location.search.substring(1).replace(/\+/g, ' '));
     let list_id = null;
     if (query.length) {
         if (query.match(/^<.+>$/)) {
