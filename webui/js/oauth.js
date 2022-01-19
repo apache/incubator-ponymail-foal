@@ -52,15 +52,21 @@ function oauthPortal(key) {
     let state = parseInt(Math.random()*1000000000) + '' + parseInt(Math.random()*1000000000)
     // google is different (as usual)
     if (key == 'google') {
-        location.href = ot.oauth_portal + "?state=" + state + "&client_id=" + (ot.client_id ? ot.client_id : "") + "&response_type=id_token&scope=email&redirect_uri=" + escape(window.location)
+        location.href = ot.oauth_portal + 
+            "?state=" + state + 
+            "&client_id=" + encodeURIComponent(ot.client_id ? ot.client_id : "") + 
+            "&response_type=id_token&scope=email&redirect_uri=" + encodeURIComponent(window.location)
     } else {
         let cid = ""
         if (ot.construct) {
             for (let k in ot) {
-                cid += "&" + k + "=" + escape(ot[k])
+                cid += "&" + k + "=" + encodeURIComponent(ot[k])
             }
         }
-        location.href = ot.oauth_portal + "?state=" + state + "&redirect_uri=" + escape(window.location + "?key=" + key + "&state=" + state) + cid
+        location.href = ot.oauth_portal + 
+            "?state=" + state + 
+            "&redirect_uri=" + encodeURIComponent(window.location + "?key=" + key + "&state=" + state) + 
+            cid
     }
 }
 
