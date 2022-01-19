@@ -155,29 +155,11 @@ class Elastic:
     def update(self, **kwargs):
         return self.es.update(**kwargs)
 
+    # TODO: is this used? Does it make sense for ES7 ?
     def scan(self, scroll="3m", size=100, **kwargs):
         return self.es.search(
             search_type="scan", size=size, scroll=scroll, **kwargs
         )
-
-    def scan_and_scroll(self, scroll="3m", size=100, **kwargs):
-        """ Run a backwards compatible scan/scroll, passing an iterator
-            that returns one page of hits per iteration. This
-            incorporates es.scroll for continuous iteration, and thus the
-            scroll() does NOT need to be called at all by the calling
-            process. """
-        results = self.es.search(size=size, scroll=scroll, **kwargs)
-        if results["hits"].get("hits", []):  # Might not be there in 2.x?
-            yield results
-
-        # While we have hits waiting, scroll...
-        scroll_size = results["hits"]["total"]
-        while scroll_size > 0:
-            results = self.scroll(scroll_id=results["_scroll_id"], scroll=scroll)
-            scroll_size = len(
-                results["hits"]["hits"]
-            )  # If >0, try another scroll next.
-            yield results
 
     def get(self, **kwargs):
         return self.es.get(**kwargs)
