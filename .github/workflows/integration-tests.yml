@@ -42,8 +42,12 @@ jobs:
         pip install html2text # optional dependency, but needed for tests
     - name: Basic test
       run: |
-        curl -sq http://localhost:9200/_cluster/health?pretty"
+        curl -sq "http://localhost:9200/_cluster/health?level=indices&pretty"
     - name: Database setup
       run: |
         cd tools
         ./setup.py --defaults --devel
+    - name: Show Database
+      run: |
+        curl -sq "http://localhost:9200/_cat/indices?v"
+        curl -sq "http://localhost:9200/_cat/settings?pretty"
