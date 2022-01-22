@@ -50,4 +50,6 @@ jobs:
     - name: Show Database
       run: |
         curl -sq "http://localhost:9200/_cat/indices?v"
-        curl -sq "http://localhost:9200/_cat/settings?pretty"
+        curl -sq "http://localhost:9200/_settings?pretty"
+        curl -sq "http://localhost:9200/ponymail-mbox/_mapping?pretty"
+        curl -sq "http://localhost:9200/ponymail-source/_mapping?pretty"
