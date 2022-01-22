@@ -1,0 +1,49 @@
+name: Integration Tests
+
+# TODO: add some useful tests
+
+on:
+  # Don't currently want this to run every time
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+        options: >-
+          --health-cmd "curl http://localhost:9200/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+        # <port on host>:<port on container>
+        - 9200:9200
+    steps:
+    - uses: actions/checkout@master
+      with:
+        persist-credentials: false
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+        architecture: x64
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r tools/requirements.txt
+        pip install html2text # optional dependency, but needed for tests
+    - name: Basic test
+      run: |
+        curl -sq http://localhost:9200/_cluster/health?pretty"
+    - name: Database setup
+      run: |
+        cd tools
+        ./setup.py --defaults --devel
