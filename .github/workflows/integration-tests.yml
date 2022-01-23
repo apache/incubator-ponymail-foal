@@ -62,7 +62,7 @@ jobs:
         curl -sq http://localhost:8080/api/preferences.lua
     - name: load Database
       run: |
-        tools/import-mbox.py --source tests/resources/rfc2822-A5.eml --lid a.b.c
+        tools/import-mbox.py --source test/resources/rfc2822-A5.eml --lid a.b.c
     - name: Show Database
       if: always()
       run: |
