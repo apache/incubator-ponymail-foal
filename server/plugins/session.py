@@ -117,10 +117,7 @@ async def get_session(
             # In case the session is used twice within the same loop
             session = copy.copy(x_session)
             session.database = await server.dbpool.get()
-            if "X-Forwarded-Host" in request.headers:
-                session.host = request.headers["X-Forwarded-Host"]
-            else:
-                session.host = request.host
+            session.host = request.headers.get("X-Forwarded-Host", request.host)
             session.remote = request.remote
 
             # Do we need to update the timestamp in ES?
@@ -133,10 +130,7 @@ async def get_session(
     # If not in local memory, start a new session object
     session = SessionObject(server)
     session.database = await server.dbpool.get()
-    if "X-Forwarded-Host" in request.headers:
-        session.host = request.headers["X-Forwarded-Host"]
-    else:
-        session.host = request.host or "??"
+    session.host = request.headers.get("X-Forwarded-Host", request.host or "??")
     session.remote = request.remote or "??"
 
     # If a cookie was supplied, look for a session object in ES
