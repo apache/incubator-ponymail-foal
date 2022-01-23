@@ -55,6 +55,8 @@ async def process(
             assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+                if "id" in email: # id is not a valid property for mbox
+                    del email["id"]
                 if server.config.ui.fully_delete and email["mid"] and email["dbid"]:  # Full on GDPR blast?
                     await session.database.delete(
                         index=session.database.dbs.db_mbox, id=email["mid"],
@@ -78,6 +80,8 @@ async def process(
             assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+                if "id" in email: # id is not a valid property for mbox
+                    del email["id"]
                 email["deleted"] = True
                 await session.database.update(
                     index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
@@ -93,6 +97,8 @@ async def process(
             assert isinstance(doc, str), "Document ID must be a string"
             email = await plugins.messages.get_email(session, permalink=doc)
             if email and isinstance(email, dict) and plugins.aaa.can_access_email(session, email):
+                if "id" in email: # id is not a valid property for mbox
+                    del email["id"]
                 email["deleted"] = False
                 await session.database.update(
                     index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"],
