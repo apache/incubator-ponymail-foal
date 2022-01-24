@@ -23,6 +23,7 @@ jobs:
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
         pip install mypy
+        pip list
     - name: Type testing with mypy
       run: |
           mypy --cache-dir /tmp/ --install-types
