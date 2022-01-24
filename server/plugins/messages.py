@@ -261,6 +261,10 @@ async def get_email(
     if doc and isinstance(doc, dict):
         doc = doc["_source"]
         doc["id"] = doc["mid"]
+        # If deleted by UI, only return if session is admin
+        is_admin = session.credentials and session.credentials.admin
+        if doc.get("deleted", False) and not is_admin:
+            return None
         if doc and plugins.aaa.can_access_email(session, doc):
             trim_email(doc)
             if not session.credentials:
