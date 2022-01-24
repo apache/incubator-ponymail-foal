@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'f6ffdf6';
+const PONYMAIL_REVISION = '335c5f0';
 
 
 /******************************************
@@ -3607,7 +3607,12 @@ function parse_permalink() {
         });
     }
     else {
-        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encodeURIComponent(mid)), construct_single_thread, {
+        let encoded_mid = encodeURIComponent(mid);
+        // If looking for parent, don't encode this bit of the arg string.
+        if (mid.match(/&find_parent=true/)) {
+            encoded_mid = encodeURIComponent(mid.replace(/&find_parent=true/, '')) + '&find_parent=true';
+        }
+        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encoded_mid), construct_single_thread, {
             cached: true
         });
     }
