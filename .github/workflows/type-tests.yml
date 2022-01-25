@@ -23,7 +23,6 @@ jobs:
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
         pip install mypy
-        pip install multidict!=6.0.1 # get() typedef is borked
         pip list
     - name: Type testing with mypy
       run: |
