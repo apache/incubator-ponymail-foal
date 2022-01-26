@@ -1,0 +1,653 @@
+From users-return-19-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Sun Jan  2 11:02:19 2022
+Return-Path: <users-return-19-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-he-de.apache.org (mxout1-he-de.apache.org [95.216.194.37])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 5534B3E6BD
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 12:02:19 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-he-de.apache.org (ASF Mail Server at mxout1-he-de.apache.org) with SMTP id 8E36361098
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 11:02:11 +0000 (UTC)
+Received: (qmail 9635 invoked by uid 500); 2 Jan 2022 11:02:10 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 9621 invoked by uid 99); 2 Jan 2022 11:02:10 -0000
+Received: from spamproc1-he-fi.apache.org (HELO spamproc1-he-fi.apache.org) (95.217.134.168)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Sun, 02 Jan 2022 11:02:10 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-fi.apache.org (ASF Mail Server at spamproc1-he-fi.apache.org) with ESMTP id 814B0C054A
+	for <users@ponymail.apache.org>; Sun,  2 Jan 2022 11:02:09 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-fi.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.002
+X-Spam-Level:
+X-Spam-Status: No, score=-0.002 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.2, RCVD_IN_MSPIKE_H2=-0.001,
+	SPF_PASS=-0.001] autolearn=disabled
+Authentication-Results: spamproc1-he-fi.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=gmail.com
+Received: from mx1-ec2-va.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-fi.apache.org [95.217.134.168]) (amavisd-new, port 10024)
+	with ESMTP id 8JMIYMYHWm0g for <users@ponymail.apache.org>;
+	Sun,  2 Jan 2022 11:02:09 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.167.43; helo=mail-lf1-f43.google.com; envelope-from=daniel.l.sahlberg@gmail.com; receiver=<UNKNOWN> 
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by mx1-ec2-va.apache.org (ASF Mail Server at mx1-ec2-va.apache.org) with ESMTPS id 87C48BDA68
+	for <users@ponymail.apache.org>; Sun,  2 Jan 2022 11:02:08 +0000 (UTC)
+Received: by mail-lf1-f43.google.com with SMTP id x7so69388104lfu.8
+        for <users@ponymail.apache.org>; Sun, 02 Jan 2022 03:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=TxNL/RG0+inQBfsUpkX9oxPDWIHD4HDe1JRHOl8CyZM=;
+        b=lCAFrs0pEV2FfUPdavfab7xoO7PdoR5nL8tFh3AI6ycCJiNOy9fqu++MWooiZsv8jg
+         E+9SRjrWHnE/tImeahZQweTNLVlRoiYnx2SDIpAShB8VTwE7xi3dbmyRYf1/kmpxit/1
+         0VV2G2Fbq6W1PKy1pTU4KZoFCqttibpZN8K+/Nwus/Z6eyT/703GKUM69yMvWqxn+GCE
+         Vs6fmVjBYKYGDYsyZsLWuBNorAmUkKJ+dRxtySF9FiNvWWbmRrbYLoryrlZZS3FJXN0S
+         95f/m4z1Sq2jiZGs0PcHNCAawk5VxwORUEfXvr5CkRQI8wfucZdXYDevnj10oBdA8eEt
+         cPqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=TxNL/RG0+inQBfsUpkX9oxPDWIHD4HDe1JRHOl8CyZM=;
+        b=Ysx9QE+w9shT2Kwe+7jne2mwpooZBp67EqGjSjDjBatNzoHGkJ8QCLWYi5cTyL4dVu
+         bUguNBYbxOnT1tTWnPJx8sI3MoCFKQXoxsiW/e08dr7Ywyu+j4lQlhig9mW7doDdvmW/
+         EPg2gU2Jb3vibbirHFd+a6+sdYR6sGYu2Znze24aVgqErDi9+AAhptCsxwfF5O+4Ay6z
+         UKU4Uf2cgXRBbAgJ2V2Nu03k8mq4IBwEhFz/c5FYzNKI4bl3vqvI9zp0ug8DktBP56Pf
+         tQHxVTKZzvgtRatWyJpLNttlBPsDLS6L3wOEiotljnrT4iMGb9cNm4NeWlZiobsPFwr9
+         CGUw==
+X-Gm-Message-State: AOAM531WWSoVfsFVUnZZNLtje1NLcw+3FvoNT8yGOsK6+wD0TVItHwbA
+	UU+4zfctDeEtS+keiuaOfh6j/1gAW/bf5hUsj7IdErJwqyA=
+X-Google-Smtp-Source: ABdhPJz9miD+f1ahZ05eLQbPghDOF3ktP28S0lckzPovl6tKaYiTyb81OvW13IDSXvruoh60JaeX2O4XJAH6OLglRRQ=
+X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr37160938lfu.402.1641121321365;
+ Sun, 02 Jan 2022 03:02:01 -0800 (PST)
+MIME-Version: 1.0
+From: Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+Date: Sun, 2 Jan 2022 12:01:50 +0100
+Message-ID: <CAMHy98POmosR8B2YgZfGN-Tok64Zn9roTG98Yu3gRPQ_CT=Mpg@mail.gmail.com>
+Subject: External search form
+To: users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="00000000000064b2aa05d49755fe"
+
+--00000000000064b2aa05d49755fe
+Content-Type: text/plain; charset="UTF-8"
+
+Hi,
+
+On behalf of the Subversion community. We have a form on our our site [1]
+that previously used Google Sitesearch on the (now defunct)
+mail-archives.apache.org.
+
+Is it possible to craft a similar form linking to Ponymail (lists.apache.org)
+without resorting to Javascript? It seems to me whatever I do I get the
+name of the input fields as part of the URL.
+
+Thanks in advance!
+
+Kind regards,
+/Daniel Sahlberg
+
+[1] https://subversion.apache.org/mailing-lists.html
+
+--00000000000064b2aa05d49755fe
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr">Hi,<div><br></div><div>O=
+n behalf of the Subversion community. We have a form on our our site [1] th=
+at previously used Google Sitesearch on the (now defunct) <a href=3D"http:/=
+/mail-archives.apache.org">mail-archives.apache.org</a>.</div><div><br></di=
+v><div>Is it possible to craft a similar form linking to Ponymail (<a href=
+=3D"http://lists.apache.org">lists.apache.org</a>) without resorting to Jav=
+ascript? It seems to me whatever I do I get the name of the input fields as=
+ part of the URL.</div><div><br></div><div>Thanks in advance!</div><div><br=
+></div><div>Kind regards,</div><div>/Daniel Sahlberg</div><div><br></div><d=
+iv>[1] <a href=3D"https://subversion.apache.org/mailing-lists.html">https:/=
+/subversion.apache.org/mailing-lists.html</a></div></div></div></div>
+
+--00000000000064b2aa05d49755fe--
+
+From users-return-20-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Sun Jan  2 13:33:38 2022
+Return-Path: <users-return-20-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-ec2-va.apache.org (mxout1-ec2-va.apache.org [3.227.148.255])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 205493E681
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 14:33:38 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-ec2-va.apache.org (ASF Mail Server at mxout1-ec2-va.apache.org) with SMTP id 4F3333ECD6
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 13:33:37 +0000 (UTC)
+Received: (qmail 47105 invoked by uid 500); 2 Jan 2022 13:33:37 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 47096 invoked by uid 99); 2 Jan 2022 13:33:37 -0000
+Received: from ec2-52-204-25-47.compute-1.amazonaws.com (HELO mailrelay1-ec2-va.apache.org) (52.204.25.47)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Sun, 02 Jan 2022 13:33:37 +0000
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	by mailrelay1-ec2-va.apache.org (ASF Mail Server at mailrelay1-ec2-va.apache.org) with ESMTPSA id 0D09B3E9EA
+	for <users@ponymail.apache.org>; Sun,  2 Jan 2022 13:33:37 +0000 (UTC)
+Received: by mail-ed1-f46.google.com with SMTP id u25so4895462edf.1
+        for <users@ponymail.apache.org>; Sun, 02 Jan 2022 05:33:37 -0800 (PST)
+X-Gm-Message-State: AOAM5322FTdtBLPfVNW+/ijT+Tug/0ERnsqYiMhmTMcsMy2+ja3pZyjU
+	qShBvKJh6POH4L8wI8QoUMCtbbNP3J5+5terrN0=
+X-Google-Smtp-Source: ABdhPJyCpr/z13344FPKBpkRj01BvQCpnz+Olrpy6XZG3EM0qsiVlH3q7IwndOXCCPkNkHcGjNGHbU9TRvSEq5tvHRA=
+X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr40367896edc.93.1641130416364;
+ Sun, 02 Jan 2022 05:33:36 -0800 (PST)
+MIME-Version: 1.0
+References: <CAMHy98POmosR8B2YgZfGN-Tok64Zn9roTG98Yu3gRPQ_CT=Mpg@mail.gmail.com>
+In-Reply-To: <CAMHy98POmosR8B2YgZfGN-Tok64Zn9roTG98Yu3gRPQ_CT=Mpg@mail.gmail.com>
+From: "John D. Ament" <johndament@apache.org>
+Date: Sun, 2 Jan 2022 08:33:24 -0500
+X-Gmail-Original-Message-ID: <CAOqetn9H_th-AuTrLQ9R=NS5MxbiCchSiMon2RFMCHqW9qYTHQ@mail.gmail.com>
+Message-ID: <CAOqetn9H_th-AuTrLQ9R=NS5MxbiCchSiMon2RFMCHqW9qYTHQ@mail.gmail.com>
+Subject: Re: External search form
+To: users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="0000000000007f612a05d4997335"
+
+--0000000000007f612a05d4997335
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Daniel
+
+I think a link like this is what you're looking for.  Just change "Wayita"
+with something else the user is searching for.
+
+https://lists.apache.org/list?*@subversion.apache.org:gte=0d:Wayita
+
+John
+
+On Sun, Jan 2, 2022 at 6:02 AM Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+wrote:
+
+> Hi,
+>
+> On behalf of the Subversion community. We have a form on our our site [1]
+> that previously used Google Sitesearch on the (now defunct)
+> mail-archives.apache.org.
+>
+> Is it possible to craft a similar form linking to Ponymail (
+> lists.apache.org) without resorting to Javascript? It seems to me
+> whatever I do I get the name of the input fields as part of the URL.
+>
+> Thanks in advance!
+>
+> Kind regards,
+> /Daniel Sahlberg
+>
+> [1] https://subversion.apache.org/mailing-lists.html
+>
+
+--0000000000007f612a05d4997335
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Daniel<div><br></div><div>I think a link like this is w=
+hat you&#39;re looking for.=C2=A0 Just change &quot;Wayita&quot; with somet=
+hing else the user is searching for.</div><div><br></div><div><a href=3D"ht=
+tps://lists.apache.org/list?*@subversion.apache.org:gte=3D0d:Wayita">https:=
+//lists.apache.org/list?*@subversion.apache.org:gte=3D0d:Wayita</a><br></di=
+v><div><br></div><div>John</div></div><br><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Sun, Jan 2, 2022 at 6:02 AM Daniel Sahlb=
+erg &lt;<a href=3D"mailto:daniel.l.sahlberg@gmail.com">daniel.l.sahlberg@gm=
+ail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr">Hi,<div><br></div=
+><div>On behalf of the Subversion community. We have a form on our our site=
+ [1] that previously used Google Sitesearch on the (now defunct) <a href=3D=
+"http://mail-archives.apache.org" target=3D"_blank">mail-archives.apache.or=
+g</a>.</div><div><br></div><div>Is it possible to craft a similar form link=
+ing to Ponymail (<a href=3D"http://lists.apache.org" target=3D"_blank">list=
+s.apache.org</a>) without resorting to Javascript? It seems to me whatever =
+I do I get the name of the input fields as part of the URL.</div><div><br><=
+/div><div>Thanks in advance!</div><div><br></div><div>Kind regards,</div><d=
+iv>/Daniel Sahlberg</div><div><br></div><div>[1] <a href=3D"https://subvers=
+ion.apache.org/mailing-lists.html" target=3D"_blank">https://subversion.apa=
+che.org/mailing-lists.html</a></div></div></div></div>
+</blockquote></div>
+
+--0000000000007f612a05d4997335--
+
+From users-return-21-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Tue Jan  4 12:53:31 2022
+Return-Path: <users-return-21-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-he-de.apache.org (mxout1-he-de.apache.org [95.216.194.37])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 06E5A3E69A
+	for <archive-asf-public@cust-asf.ponee.io>; Tue,  4 Jan 2022 13:53:31 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-he-de.apache.org (ASF Mail Server at mxout1-he-de.apache.org) with SMTP id B11E7603AC
+	for <archive-asf-public@cust-asf.ponee.io>; Tue,  4 Jan 2022 12:53:30 +0000 (UTC)
+Received: (qmail 50295 invoked by uid 500); 4 Jan 2022 12:53:30 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 50286 invoked by uid 99); 4 Jan 2022 12:53:30 -0000
+Received: from asf.ponee.io (HELO asf.ponee.io) (135.181.41.184)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Tue, 04 Jan 2022 12:53:30 +0000
+In-reply-to:
+ <CAOqetn9H_th-AuTrLQ9R=NS5MxbiCchSiMon2RFMCHqW9qYTHQ@mail.gmail.com>
+References:
+ <CAOqetn9H_th-AuTrLQ9R=NS5MxbiCchSiMon2RFMCHqW9qYTHQ@mail.gmail.com>
+From: Daniel Sahlberg <dsahlberg@apache.org>
+To: users@ponymail.apache.org
+Subject: Re: External search form
+Date: Tue, 04 Jan 2022 12:53:29 -0000
+Message-ID:
+ <pony-79a78de0-1ff7-464a-a6b9-996ecbd34813-users@ponymail.apache.org>
+User-Agent: Apache Pony Mail Foal Composer v/0.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I've already found that, and I can construct the URL via Javascript and redir=
+ect the user.
+
+However I was asking if it is possible to construct an HTML form that send th=
+e user directly to list.a.o /without/ the javascript hack. Ie if there is an =
+endpoint that accepts normal GET parameters (something like https://lists.apa=
+che.org/search?list=3D*@subversion.apache.org&time=3Dgte%3D0d&q=3DWayita).
+
+Kind regards
+Daniel
+
+On 2022/01/02 13:33:24 "John D. Ament" wrote:
+> Hi Daniel
+>=20
+> I think a link like this is what you're looking for.  Just change "Wayita"
+> with something else the user is searching for.
+>=20
+> https://lists.apache.org/list?*@subversion.apache.org:gte=3D0d:Wayita
+>=20
+> John
+>=20
+> On Sun, Jan 2, 2022 at 6:02 AM Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+> wrote:
+>=20
+> > Hi,
+> >
+> > On behalf of the Subversion community. We have a form on our our site [1]
+> > that previously used Google Sitesearch on the (now defunct)
+> > mail-archives.apache.org.
+> >
+> > Is it possible to craft a similar form linking to Ponymail (
+> > lists.apache.org) without resorting to Javascript? It seems to me
+> > whatever I do I get the name of the input fields as part of the URL.
+> >
+> > Thanks in advance!
+> >
+> > Kind regards,
+> > /Daniel Sahlberg
+> >
+> > [1] https://subversion.apache.org/mailing-lists.html
+> >
+>=20
+
+From users-return-22-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Wed Jan  5 10:17:14 2022
+Return-Path: <users-return-22-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-he-de.apache.org (mxout1-he-de.apache.org [95.216.194.37])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id A97D63E69E
+	for <archive-asf-public@cust-asf.ponee.io>; Wed,  5 Jan 2022 11:17:14 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-he-de.apache.org (ASF Mail Server at mxout1-he-de.apache.org) with SMTP id 4EE296076E
+	for <archive-asf-public@cust-asf.ponee.io>; Wed,  5 Jan 2022 10:17:14 +0000 (UTC)
+Received: (qmail 18865 invoked by uid 500); 5 Jan 2022 10:17:13 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 18855 invoked by uid 99); 5 Jan 2022 10:17:13 -0000
+Received: from spamproc1-he-fi.apache.org (HELO spamproc1-he-fi.apache.org) (95.217.134.168)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Wed, 05 Jan 2022 10:17:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-fi.apache.org (ASF Mail Server at spamproc1-he-fi.apache.org) with ESMTP id C4F7FC054A
+	for <users@ponymail.apache.org>; Wed,  5 Jan 2022 10:17:12 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-fi.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: 0.001
+X-Spam-Level:
+X-Spam-Status: No, score=0.001 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.2, RCVD_IN_DNSWL_BLOCKED=0.001,
+	SPF_PASS=-0.001, URIBL_BLOCKED=0.001] autolearn=disabled
+Authentication-Results: spamproc1-he-fi.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=gmail.com
+Received: from mx1-he-de.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-fi.apache.org [95.217.134.168]) (amavisd-new, port 10024)
+	with ESMTP id SNACOVcSsI3c for <users@ponymail.apache.org>;
+	Wed,  5 Jan 2022 10:17:12 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2a00:1450:4864:20::229; helo=mail-lj1-x229.google.com; envelope-from=daniel.l.sahlberg@gmail.com; receiver=<UNKNOWN> 
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by mx1-he-de.apache.org (ASF Mail Server at mx1-he-de.apache.org) with ESMTPS id 2762C7EA83
+	for <users@ponymail.apache.org>; Wed,  5 Jan 2022 10:17:12 +0000 (UTC)
+Received: by mail-lj1-x229.google.com with SMTP id by39so65161398ljb.2
+        for <users@ponymail.apache.org>; Wed, 05 Jan 2022 02:17:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=P9kUDoFCNOFHsdlM01a3WglEtkimFs2h6F+KS5PwXP0=;
+        b=Ka/rTmBeL36RIWLFOwHhWr6mk3Sy2dIXMBNLoJ5QaOXWaXHKJwSn3dYh4U+5uA5rfL
+         e45ZkVSz5oU6oq/WZlPtf0j2fz5fJ2iljL8QVYXlInlPwTFJc/KN3UgaAP6NQBHJOigd
+         h/JXW+p0fqf+dWCO3ho6Fvp61qrSL37H3yV3eK/VprOsLziHqYVjpWD/Qlst+3K8eDeQ
+         lXbWtfm6M3xW+Ck2nPi4Dmj4JLJyH6KEYdx7rQA+emf0j/fXldiPOr8IGd13pOTfNTqo
+         zqjngMxdazbCcKgbxtT7J1hCRL+ZAjbLllCPfKKaiRovJoGowhOjiP+St677qBQDQWnz
+         GGMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=P9kUDoFCNOFHsdlM01a3WglEtkimFs2h6F+KS5PwXP0=;
+        b=KimNUKgVcrMvlxQH4IDh5e/QfTTGYKFPu4xpOUe2NAKCTbbKEMJT9nnJxDXXHxkF5N
+         Tv2O/fXADBq0uoxEBdOYNtLG7dbnjVfhbg+Hhej2wdZ9myJCg5ApArPT40sAo2D4oO2I
+         /2cXrFFKh3jhNVt2sZZdkQLj2ccRQAvsAb2yIdzQbX73bMPUitE5Vd0BPAgRFdobt4Kj
+         e65L+5ny5jurjzx5frtfvaPRLblAb91crHkUuee4yu+F2RYlB3VuNbFZMahw2GTdxyam
+         y6sTCRh3BKJZRF7Pu1argJPohdLYvHyhIYGe+OwwGcoHqBmlYxMRRPB8wlg2zPfnhpJ6
+         b/Sg==
+X-Gm-Message-State: AOAM5316fZg36vPF8gUoAU8+aIni5HMBCTbjW5z2Ggmlb68WmMCpmRF1
+	A/eKV7LGgkhEXeaj7CtE1IEJvuV+LemyHKUpasf1iwFhGIo=
+X-Google-Smtp-Source: ABdhPJy5yUt1DxbiOvAF9flYDXvMgIdO+oGkm6/8GbOpu8Kst4IpFdlk1DKJT7H+4/rBL9l3q/I9tJt4s9sQpvDY7Ms=
+X-Received: by 2002:a05:651c:19a3:: with SMTP id bx35mr38305699ljb.500.1641377831363;
+ Wed, 05 Jan 2022 02:17:11 -0800 (PST)
+MIME-Version: 1.0
+From: Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+Date: Wed, 5 Jan 2022 11:17:02 +0100
+Message-ID: <CAMHy98MMsor+zwiApVbxuj0cgQ4vp-sV_s5eYxyQ6f3WFdRE6g@mail.gmail.com>
+Subject: How can I see attachments?
+To: users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="00000000000094a98905d4d30eae"
+
+--00000000000094a98905d4d30eae
+Content-Type: text/plain; charset="UTF-8"
+
+Hi,
+
+(Please keep me in CC since I'm not subscribed to the list!)
+
+Apache Infra recently helped to backfill lists.apache.org with some old
+mboxes for the Subversion project. When verifying, I found an e-mail [1]
+that contains another e-mail as an attachment. I can't find a way to view
+that second e-mail. It is possible to view it in raw source [2] but there
+is no indication that it exists (except implicit from Karl's text). Compare
+to our old archive [3] where it is presented separately.
+
+I can see in some recent messages (for example [4]) that attached files are
+presented separately.
+
+Is there something that can be done to allow the attached e-mail in [1] to
+be presented in a more intuitive way? Let me know if I should open an issue
+(and if it should be in the original ponymail or in -foal).
+
+Kind regards,
+Daniel
+
+[1] https://lists.apache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy
+[2]
+https://lists.apache.org/api/source.lua?id=km3dkh2b7cqddyp45n6n7x13n2wmxwcy
+[3] https://svn.haxx.se/dev/archive-2005-01/1170.shtml
+[4] https://lists.apache.org/thread/fgfjm9q5sxc15p2p8cn4xmdozffygmq4
+
+--00000000000094a98905d4d30eae
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr">Hi,<div=
+><br></div><div>(Please keep me in CC since I&#39;m not subscribed to the l=
+ist!)</div><div><br></div><div>Apache Infra recently helped to backfill <a =
+href=3D"http://lists.apache.org">lists.apache.org</a> with some old mboxes =
+for the Subversion project. When verifying, I found an e-mail [1] that cont=
+ains another e-mail as an attachment. I can&#39;t find a way to view that s=
+econd e-mail. It is possible to view it in raw source [2] but there is no i=
+ndication that it exists (except implicit from Karl&#39;s text). Compare to=
+ our old archive [3] where it is presented separately.<br></div><div><br></=
+div><div>I can see in some recent messages (for example [4]) that attached =
+files are presented separately.</div><div><br></div><div>Is there something=
+ that can be done to allow the attached e-mail in [1] to be presented in a =
+more intuitive way? Let me know if I should open an issue (and if it should=
+ be in the original ponymail or in -foal).</div><div><br></div><div>Kind re=
+gards,</div><div>Daniel</div><div><br></div><div><div>[1] <a href=3D"https:=
+//lists.apache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy">https://lists.a=
+pache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy</a></div><div>[2] <a href=
+=3D"https://lists.apache.org/api/source.lua?id=3Dkm3dkh2b7cqddyp45n6n7x13n2=
+wmxwcy">https://lists.apache.org/api/source.lua?id=3Dkm3dkh2b7cqddyp45n6n7x=
+13n2wmxwcy</a></div><div>[3] <a href=3D"https://svn.haxx.se/dev/archive-200=
+5-01/1170.shtml">https://svn.haxx.se/dev/archive-2005-01/1170.shtml</a></di=
+v></div><div>[4]=C2=A0<a href=3D"https://lists.apache.org/thread/fgfjm9q5sx=
+c15p2p8cn4xmdozffygmq4">https://lists.apache.org/thread/fgfjm9q5sxc15p2p8cn=
+4xmdozffygmq4</a></div><div><br></div></div></div></div></div>
+
+--00000000000094a98905d4d30eae--
+
+From users-return-23-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Thu Jan  6 00:55:06 2022
+Return-Path: <users-return-23-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-ec2-va.apache.org (mxout1-ec2-va.apache.org [3.227.148.255])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id F03013E69E
+	for <archive-asf-public@cust-asf.ponee.io>; Thu,  6 Jan 2022 01:55:05 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-ec2-va.apache.org (ASF Mail Server at mxout1-ec2-va.apache.org) with SMTP id 0DC9F3F022
+	for <archive-asf-public@cust-asf.ponee.io>; Thu,  6 Jan 2022 00:55:05 +0000 (UTC)
+Received: (qmail 37462 invoked by uid 500); 6 Jan 2022 00:55:04 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 37452 invoked by uid 99); 6 Jan 2022 00:55:04 -0000
+Received: from spamproc1-he-fi.apache.org (HELO spamproc1-he-fi.apache.org) (95.217.134.168)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Thu, 06 Jan 2022 00:55:04 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-fi.apache.org (ASF Mail Server at spamproc1-he-fi.apache.org) with ESMTP id CC4FDC0553
+	for <users@ponymail.apache.org>; Thu,  6 Jan 2022 00:55:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-fi.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.199
+X-Spam-Level:
+X-Spam-Status: No, score=-0.199 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	DKIM_VALID_EF=-0.1, RCVD_IN_DNSWL_BLOCKED=0.001, SPF_PASS=-0.001,
+	URIBL_BLOCKED=0.001] autolearn=disabled
+Authentication-Results: spamproc1-he-fi.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=gmail.com
+Received: from mx1-he-de.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-fi.apache.org [95.217.134.168]) (amavisd-new, port 10024)
+	with ESMTP id tKfmO1otSnYL for <users@ponymail.apache.org>;
+	Thu,  6 Jan 2022 00:55:03 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=2607:f8b0:4864:20::1035; helo=mail-pj1-x1035.google.com; envelope-from=sebbaz@gmail.com; receiver=<UNKNOWN> 
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+	by mx1-he-de.apache.org (ASF Mail Server at mx1-he-de.apache.org) with ESMTPS id 1ECC47EA89
+	for <users@ponymail.apache.org>; Thu,  6 Jan 2022 00:55:03 +0000 (UTC)
+Received: by mail-pj1-x1035.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso1325688pjb.1
+        for <users@ponymail.apache.org>; Wed, 05 Jan 2022 16:55:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CMzIY1NiC6rI8oWcOSGLy7YU8nXSNhIWq+xazi2ADpE=;
+        b=iHQQr0Qwmhb9B92nAfKM7nv5xJGo/4b67BW07fs+8//wFURqe8uBPqNLL9c6J+U331
+         grMc7NfSqM0n4d0gsu4/NOHV2z2VTnNahhgFGjnMe7V0+6nZj0MEoLWeh1/I++7YtMM5
+         JfSoszgIzOlxAJ4EoIEXWd7olU4cFjz7Wi6tEIljwHwZlPmk4LSxF24qvhTLXUxAItFi
+         YXAnLloWaJHFIo266EZJCW2hwBqvPVNOK0WY15dFpaiYO5XfhRGwQcvwvhzOVzSDxV1L
+         D4E5VyXQSxOEQzo+rdIjgIxueTiU1PvYj69dwWEfEMsKXSResdvLLhiHZryTXrpUAhQE
+         J8/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=CMzIY1NiC6rI8oWcOSGLy7YU8nXSNhIWq+xazi2ADpE=;
+        b=sbbbR6nLVoC4vT2gi54FiH4rZY3v4tqTgSnCbbzPNCQjIOun6+5zmiXZhtxp9RW1RB
+         pjgzFE+jrOGU53PFlV4goqth1/H9EMWZWMcxsT7WMy1B42Q02yECzR8kKJTZA9IJKwei
+         Nvdc83J+j0L09uKsYRAnAL/CBnAC72ffeuHV26devLqvZe++O1j/qqa52x5TsETdOsfe
+         GFHh/psbHHgHSiXGfCGULicy0ddQYvvY4cwC2UaamcKKw2LQSzXDVhi820hTXmwFS286
+         aggjfElgS+b75KaKRQfcKizB4dt7u5MPbNFiNyKez3d0L1ZAf88844tqcOjRsB3KqpV0
+         /VHA==
+X-Gm-Message-State: AOAM533JGY0LD+nr8ww8Vz4F6H5LZPA/+I4mMOfhL56z538K0w8REYpW
+	cx3HVZ6AD4Vpfk/MUGYYqKHMD/tZUcGcQcBnn8YsqEJfh2o=
+X-Google-Smtp-Source: ABdhPJw8fMTxZOwjEAsVm7/EUJ9gTjCzM9HYvfK/eFJ13wY9Gk9gWbrcCSQWlZpVtf7nS04R+X0XBGJreuW/avOHuo4=
+X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr7345980pjb.50.1641430501521;
+ Wed, 05 Jan 2022 16:55:01 -0800 (PST)
+MIME-Version: 1.0
+References: <CAMHy98MMsor+zwiApVbxuj0cgQ4vp-sV_s5eYxyQ6f3WFdRE6g@mail.gmail.com>
+In-Reply-To: <CAMHy98MMsor+zwiApVbxuj0cgQ4vp-sV_s5eYxyQ6f3WFdRE6g@mail.gmail.com>
+From: sebb <sebbaz@gmail.com>
+Date: Thu, 6 Jan 2022 00:54:45 +0000
+Message-ID: <CAOGo0VZ1_87YbhSBpVHDk-x0d6ywHQMsoxYW-dvY9Hicq+J_OA@mail.gmail.com>
+Subject: Re: How can I see attachments?
+To: users@ponymail.apache.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Lists.apache.org is run by a 3rd party. Please contact Infra regarding
+this issue.
+
+FTR, it looks like lists.a.o has not extracted the attachment; see:
+https://lists.apache.org/api/email.lua?id=3Dkm3dkh2b7cqddyp45n6n7x13n2wmxwc=
+y
+
+The attachments array (near the bottom) is empty.
+
+Note that mod_mbox does/did provide direct access to such attachments.
+
+On Wed, 5 Jan 2022 at 10:17, Daniel Sahlberg
+<daniel.l.sahlberg@gmail.com> wrote:
+>
+> Hi,
+>
+> (Please keep me in CC since I'm not subscribed to the list!)
+>
+> Apache Infra recently helped to backfill lists.apache.org with some old m=
+boxes for the Subversion project. When verifying, I found an e-mail [1] tha=
+t contains another e-mail as an attachment. I can't find a way to view that=
+ second e-mail. It is possible to view it in raw source [2] but there is no=
+ indication that it exists (except implicit from Karl's text). Compare to o=
+ur old archive [3] where it is presented separately.
+>
+> I can see in some recent messages (for example [4]) that attached files a=
+re presented separately.
+>
+> Is there something that can be done to allow the attached e-mail in [1] t=
+o be presented in a more intuitive way? Let me know if I should open an iss=
+ue (and if it should be in the original ponymail or in -foal).
+>
+> Kind regards,
+> Daniel
+>
+> [1] https://lists.apache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy
+> [2] https://lists.apache.org/api/source.lua?id=3Dkm3dkh2b7cqddyp45n6n7x13=
+n2wmxwcy
+> [3] https://svn.haxx.se/dev/archive-2005-01/1170.shtml
+> [4] https://lists.apache.org/thread/fgfjm9q5sxc15p2p8cn4xmdozffygmq4
+>
+
+From users-return-24-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Thu Jan  6 16:26:35 2022
+Return-Path: <users-return-24-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-ec2-va.apache.org (mxout1-ec2-va.apache.org [3.227.148.255])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 4A5433E681
+	for <archive-asf-public@cust-asf.ponee.io>; Thu,  6 Jan 2022 17:26:35 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-ec2-va.apache.org (ASF Mail Server at mxout1-ec2-va.apache.org) with SMTP id 63FF44385C
+	for <archive-asf-public@cust-asf.ponee.io>; Thu,  6 Jan 2022 16:26:02 +0000 (UTC)
+Received: (qmail 49284 invoked by uid 500); 6 Jan 2022 16:26:02 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 49274 invoked by uid 99); 6 Jan 2022 16:26:02 -0000
+Received: from mailrelay1-he-de.apache.org (HELO mailrelay1-he-de.apache.org) (116.203.21.61)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Thu, 06 Jan 2022 16:26:02 +0000
+Received: from [10.0.0.100] (unknown [185.134.28.164])
+	by mailrelay1-he-de.apache.org (ASF Mail Server at mailrelay1-he-de.apache.org) with ESMTPSA id EB40A3E80B;
+	Thu,  6 Jan 2022 16:26:00 +0000 (UTC)
+Message-ID: <f9799d85-063c-a44c-5f7a-25aa0ed06d93@apache.org>
+Date: Thu, 6 Jan 2022 17:25:58 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
+ Thunderbird/96.0
+Subject: Re: How can I see attachments?
+Content-Language: en-US
+To: users@ponymail.apache.org, Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+References: <CAMHy98MMsor+zwiApVbxuj0cgQ4vp-sV_s5eYxyQ6f3WFdRE6g@mail.gmail.com>
+From: Daniel Gruno <humbedooh@apache.org>
+In-Reply-To: <CAMHy98MMsor+zwiApVbxuj0cgQ4vp-sV_s5eYxyQ6f3WFdRE6g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 05/01/2022 04.17, Daniel Sahlberg wrote:
+> Hi,
+> 
+> (Please keep me in CC since I'm not subscribed to the list!)
+> 
+> Apache Infra recently helped to backfill lists.apache.org 
+> <http://lists.apache.org> with some old mboxes for the Subversion 
+> project. When verifying, I found an e-mail [1] that contains another 
+> e-mail as an attachment. I can't find a way to view that second e-mail. 
+> It is possible to view it in raw source [2] but there is no indication 
+> that it exists (except implicit from Karl's text). Compare to our old 
+> archive [3] where it is presented separately.
+> 
+> I can see in some recent messages (for example [4]) that attached files 
+> are presented separately.
+> 
+> Is there something that can be done to allow the attached e-mail in [1] 
+> to be presented in a more intuitive way? Let me know if I should open an 
+> issue (and if it should be in the original ponymail or in -foal).
+
+The issue at hand is that the attachment is nameless (does not have a 
+filename specified in the content-disposition header), so the importer 
+would not have known this was meant to be an attached file (it thinks 
+it's an alternate body I guess). You can view the source of the email 
+and see the inline-attached email, but you are not able to download it 
+separately due to it having no filename. I'm not sure if/how this should 
+be addressed.
+
+You can view the source in the UI, or at 
+https://lists.apache.org/api/source.lua?id=km3dkh2b7cqddyp45n6n7x13n2wmxwcy
+
+> 
+> Kind regards,
+> Daniel
+> 
+> [1] https://lists.apache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy 
+> <https://lists.apache.org/thread/km3dkh2b7cqddyp45n6n7x13n2wmxwcy>
+> [2] 
+> https://lists.apache.org/api/source.lua?id=km3dkh2b7cqddyp45n6n7x13n2wmxwcy <https://lists.apache.org/api/source.lua?id=km3dkh2b7cqddyp45n6n7x13n2wmxwcy>
+> [3] https://svn.haxx.se/dev/archive-2005-01/1170.shtml 
+> <https://svn.haxx.se/dev/archive-2005-01/1170.shtml>
+> [4] https://lists.apache.org/thread/fgfjm9q5sxc15p2p8cn4xmdozffygmq4 
+> <https://lists.apache.org/thread/fgfjm9q5sxc15p2p8cn4xmdozffygmq4>
+> 
+
+

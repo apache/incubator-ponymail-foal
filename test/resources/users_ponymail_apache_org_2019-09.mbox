@@ -1,0 +1,439 @@
+From users-return-12-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org  Fri Sep 20 12:27:56 2019
+Return-Path: <users-return-12-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mail.apache.org (hermes.apache.org [207.244.88.153])
+	by mx-eu-01.ponee.io (Postfix) with SMTP id 26740180608
+	for <archive-asf-public@cust-asf.ponee.io>; Fri, 20 Sep 2019 14:27:56 +0200 (CEST)
+Received: (qmail 44647 invoked by uid 500); 20 Sep 2019 12:27:55 -0000
+Mailing-List: contact users-help@ponymail.incubator.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.incubator.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.incubator.apache.org>
+List-Post: <mailto:users@ponymail.incubator.apache.org>
+List-Id: <users.ponymail.incubator.apache.org>
+Reply-To: users@ponymail.incubator.apache.org
+Delivered-To: mailing list users@ponymail.incubator.apache.org
+Received: (qmail 44638 invoked by uid 99); 20 Sep 2019 12:27:55 -0000
+Received: from ui-eu-02.ponee.io (HELO localhost) (116.202.110.96)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Fri, 20 Sep 2019 12:27:55 +0000
+Subject: How do I search the Apache-wide announce mailing list?
+References:  
+X-Mailer: LuaSocket 3.0-rc1
+Date: Fri, 20 Sep 2019 12:27:54 -0000
+x-ponymail-sender: 6325d6d623a50cc446377d03c9037d94199f6401
+x-ponymail-agent: PonyMail Composer/0.2
+Message-ID: <pony-6325d6d623a50cc446377d03c9037d94199f6401-34570154c86727e239c2ca4ec0f25c6ead487d71@users.ponymail.apache.org>
+From: Gary D. Gregory <ggregory@apache.org>
+In-Reply-To: 
+Content-Type: text/plain; charset=utf-8
+MIME-Version: 1.0
+To: <users@ponymail.apache.org>
+
+Hi All,
+
+How do I search the Apache-wide announce mailing list?
+
+TY!
+Gary
+
+From users-return-14-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org  Fri Sep 20 12:37:59 2019
+Return-Path: <users-return-14-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mail.apache.org (hermes.apache.org [207.244.88.153])
+	by mx-eu-01.ponee.io (Postfix) with SMTP id D3A94180652
+	for <archive-asf-public@cust-asf.ponee.io>; Fri, 20 Sep 2019 14:37:58 +0200 (CEST)
+Received: (qmail 62634 invoked by uid 500); 20 Sep 2019 12:37:58 -0000
+Mailing-List: contact users-help@ponymail.incubator.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.incubator.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.incubator.apache.org>
+List-Post: <mailto:users@ponymail.incubator.apache.org>
+List-Id: <users.ponymail.incubator.apache.org>
+Reply-To: users@ponymail.incubator.apache.org
+Delivered-To: mailing list users@ponymail.incubator.apache.org
+Received: (qmail 62584 invoked by uid 99); 20 Sep 2019 12:37:58 -0000
+Received: from pnap-us-west-generic-nat.apache.org (HELO spamd1-us-west.apache.org) (209.188.14.142)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Fri, 20 Sep 2019 12:37:58 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamd1-us-west.apache.org (ASF Mail Server at spamd1-us-west.apache.org) with ESMTP id 7409BC0B65
+	for <users@ponymail.apache.org>; Fri, 20 Sep 2019 12:37:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamd1-us-west.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: 0.005
+X-Spam-Level:
+X-Spam-Status: No, score=0.005 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_MSPIKE_H3=0.001, RCVD_IN_MSPIKE_WL=0.001, SPF_HELO_NONE=0.001,
+	SPF_NONE=0.001, URIBL_BLOCKED=0.001] autolearn=disabled
+Authentication-Results: spamd1-us-west.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=rcbowen-com.20150623.gappssmtp.com
+Received: from mx1-ec2-va.apache.org ([10.40.0.8])
+	by localhost (spamd1-us-west.apache.org [10.40.0.7]) (amavisd-new, port 10024)
+	with ESMTP id MQdpTrI0U4vP for <users@ponymail.apache.org>;
+	Fri, 20 Sep 2019 12:37:55 +0000 (UTC)
+Received-SPF: None (mailfrom) identity=mailfrom; client-ip=209.85.160.173; helo=mail-qt1-f173.google.com; envelope-from=rbowen@rcbowen.com; receiver=<UNKNOWN> 
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	by mx1-ec2-va.apache.org (ASF Mail Server at mx1-ec2-va.apache.org) with ESMTPS id 501EBBC509
+	for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 12:37:55 +0000 (UTC)
+Received: by mail-qt1-f173.google.com with SMTP id c3so8399286qtv.10
+        for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 05:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rcbowen-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=6sGma5JOLa+PW6nvo49djVwdDrxAM2Kgpzx0+Tjgvxk=;
+        b=P1wIsuAoRDnGB78uw2Al2bDjCPkTQICaJp2cS/rswhsIWALLPrZVVCITWrzt6PK/7N
+         0cPn3+qzlfMt0MHfFrxqKOlAuYExD/9mJZg39paHWLwbJZiQNEMy7UuVU9LIp7afkWhU
+         6uKl3fLBzLyMQcxN0LDHYS3l0RhdsTWW6bZmqhosN3ftLgMlGHndH3eX15sxANQBppzo
+         GrClqXonCypH43H+4gNuIBEKTMstWy7ET6Upmck/cRuSuF8bVc64Ek1pCRZcusypS9lW
+         hXLFusfpn3ZhNNnJufeJARBDiuqH+9JVY69imT89WakEvVdALrcnJLza6WT942LxmwZo
+         2gOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6sGma5JOLa+PW6nvo49djVwdDrxAM2Kgpzx0+Tjgvxk=;
+        b=gHiJqth1C7rjJ/2SPTD8GDkhJLluZRmVU6Wvu0P/R5skVcNLHIzLXMmjiP5D7KKlDL
+         pTYukTGlp4kBhGDzFaOTkZylPHE033fm0bNUXy5fzWnBCj0CdUThTwtO4LX95D1HKFsg
+         eOhKiBSSbKpH/qnQqn7oye/m3tau/R5tIypbNkGpzwna5cyXnuVJBrZ9kmk+Yjj7qTDu
+         iAP/iiLLmE5jhEYVO1TbUGT4pAVNdZAGgapn52Wtpit4kG+9mJP0qiqtUW6p4JlOUR2C
+         BbYGJOo3MpZz2MGWgzxaO7R98fo2rdM6aNPyhe3WW3GH+wvA9e9MgGOKH0BprkGasqRt
+         /jfw==
+X-Gm-Message-State: APjAAAXkvh32QrHJX00R6YL3rt3vH7XQAl574JZJ4IRN/8VeEIbUlasX
+	qOwAv4C9hFWhaqX93S/B7Wu+7Q==
+X-Google-Smtp-Source: APXvYqzJHPpAgMr+GMEPsK41YWXzU6utYVxZRph6LZbPQLq30MX3pnQXGnMuDHo9LYku5/z16IyUxQ==
+X-Received: by 2002:aed:3091:: with SMTP id 17mr3062970qtf.219.1568983068424;
+        Fri, 20 Sep 2019 05:37:48 -0700 (PDT)
+Received: from [192.168.0.21] (cpe-192-180-213-35.kya.res.rr.com. [192.180.213.35])
+        by smtp.gmail.com with ESMTPSA id m15sm822371qka.104.2019.09.20.05.37.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Sep 2019 05:37:47 -0700 (PDT)
+Subject: Re: How do I search the Apache-wide announce mailing list?
+To: users@ponymail.incubator.apache.org, "Gary D. Gregory"
+ <ggregory@apache.org>, users@ponymail.apache.org
+References: <pony-6325d6d623a50cc446377d03c9037d94199f6401-34570154c86727e239c2ca4ec0f25c6ead487d71@users.ponymail.apache.org>
+From: Rich Bowen <rbowen@rcbowen.com>
+Message-ID: <4376b056-bfdb-7ff3-9ca2-7bc7fbbc96c6@rcbowen.com>
+Date: Fri, 20 Sep 2019 08:37:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <pony-6325d6d623a50cc446377d03c9037d94199f6401-34570154c86727e239c2ca4ec0f25c6ead487d71@users.ponymail.apache.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+
+https://lists.apache.org/list.html?announce@apache.org
+
+On 9/20/19 8:27 AM, Gary D. Gregory wrote:
+> Hi All,
+> 
+> How do I search the Apache-wide announce mailing list?
+> 
+> TY!
+> Gary
+> 
+
+-- 
+Rich Bowen - rbowen@rcbowen.com
+http://rcbowen.com/
+@rbowen
+
+From users-return-15-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org  Fri Sep 20 16:14:28 2019
+Return-Path: <users-return-15-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mail.apache.org (hermes.apache.org [207.244.88.153])
+	by mx-eu-01.ponee.io (Postfix) with SMTP id 3AB9D180608
+	for <archive-asf-public@cust-asf.ponee.io>; Fri, 20 Sep 2019 18:14:28 +0200 (CEST)
+Received: (qmail 49639 invoked by uid 500); 20 Sep 2019 16:14:27 -0000
+Mailing-List: contact users-help@ponymail.incubator.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.incubator.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.incubator.apache.org>
+List-Post: <mailto:users@ponymail.incubator.apache.org>
+List-Id: <users.ponymail.incubator.apache.org>
+Reply-To: users@ponymail.incubator.apache.org
+Delivered-To: mailing list users@ponymail.incubator.apache.org
+Received: (qmail 49619 invoked by uid 99); 20 Sep 2019 16:14:27 -0000
+Received: from pnap-us-west-generic-nat.apache.org (HELO spamd3-us-west.apache.org) (209.188.14.142)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Fri, 20 Sep 2019 16:14:27 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamd3-us-west.apache.org (ASF Mail Server at spamd3-us-west.apache.org) with ESMTP id F2570180C91
+	for <users@ponymail.apache.org>; Fri, 20 Sep 2019 16:14:26 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamd3-us-west.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: 1.8
+X-Spam-Level: *
+X-Spam-Status: No, score=1.8 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	DKIM_VALID_EF=-0.1, HTML_MESSAGE=2, RCVD_IN_DNSWL_NONE=-0.0001,
+	RCVD_IN_MSPIKE_H2=-0.001, SPF_HELO_NONE=0.001, SPF_PASS=-0.001,
+	URIBL_BLOCKED=0.001] autolearn=disabled
+Authentication-Results: spamd3-us-west.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=gmail.com
+Received: from mx1-ec2-va.apache.org ([10.40.0.8])
+	by localhost (spamd3-us-west.apache.org [10.40.0.10]) (amavisd-new, port 10024)
+	with ESMTP id XmGEe2se6hvk for <users@ponymail.apache.org>;
+	Fri, 20 Sep 2019 16:14:23 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.221.52; helo=mail-wr1-f52.google.com; envelope-from=garydgregory@gmail.com; receiver=<UNKNOWN> 
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	by mx1-ec2-va.apache.org (ASF Mail Server at mx1-ec2-va.apache.org) with ESMTPS id C27C2BC509
+	for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 16:14:22 +0000 (UTC)
+Received: by mail-wr1-f52.google.com with SMTP id y19so7360193wrd.3
+        for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 09:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N2F4yEI9SiUiLnjqMklKvVwzU2nOC8yQkfnpUd3+PHk=;
+        b=THeO/vai+jz69n3hHftnpiiHtZcSMJzQaR4lPPrb4OlIE6x/9Y6UaFRoVC3zOciG7c
+         xuXSGceqKUKZCp2pdAQ46pEFKsWyNp2KyPgd+5ZK/dgCPtXtiLAu8qyTAbfKi8peCblC
+         B18lvFqnaB6sz9bHQgsp6nCzz5UtPFS/zDqI+nMFaXIs5kE7BuZ7mWbUVjcza+xK8Z1X
+         U0FecQE6jvQApRVW5/5fHBx9Wnwpq0DcjEvukSSgObewaJyP7hxIULBMCJEu5rfv1Psg
+         vqWY3Igbyx/+hV//HJB4tll045+b0KRxt3rtT2/cH5YskSrnSB7f7LUjzckknhxssxk/
+         ZPew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N2F4yEI9SiUiLnjqMklKvVwzU2nOC8yQkfnpUd3+PHk=;
+        b=HgsZEhq49RrXgeXQAkdLEvZFBSa9f8LMcy58J6cWTGcaSRXdpLnwWiq0bFtGmaNK0P
+         faqTy+TgHRs1YVqpEFehBojE8c248GWS2lctSPU52Nozg3bvRcHdl1oET9cfYsG/jCXW
+         wrjZpeVmNTnlmv4vXYKCn5A8jJv+W+9RmtOCUmLp9isogXGKBK4RbEAHohNkpnq78BmM
+         1pObonv//q2kUoLNua6xyaEo/AhDcXfvu/Wa17VxBcBovFBpfDxOsak4MMrGBnZg2L/5
+         dawKMzbkwP0Qoea2K9sVaKa30sOGYc4u/vQAc5Ie9ZDoeKv4fLd52FmSjl8kfTfcc2n7
+         Tt+g==
+X-Gm-Message-State: APjAAAVUF8pRw+4swspb/65MwejmySRItrJJkY5w1FCi9mb+kWbCmMfi
+	nFNYitNA4N5I1U6GRRiMQzosrjqApNAmpqLR4A==
+X-Google-Smtp-Source: APXvYqxqTk5RUxNphNbMgqic6ZS0pSLAYFbxWiFzYGiJyi83vhnrCaQ0L8zXJzA1OQpoU9KiQuPcBUUzQTdiuk5esNA=
+X-Received: by 2002:a5d:4744:: with SMTP id o4mr12585620wrs.95.1568996061832;
+ Fri, 20 Sep 2019 09:14:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <pony-6325d6d623a50cc446377d03c9037d94199f6401-34570154c86727e239c2ca4ec0f25c6ead487d71@users.ponymail.apache.org>
+ <4376b056-bfdb-7ff3-9ca2-7bc7fbbc96c6@rcbowen.com>
+In-Reply-To: <4376b056-bfdb-7ff3-9ca2-7bc7fbbc96c6@rcbowen.com>
+From: Gary Gregory <garydgregory@gmail.com>
+Date: Fri, 20 Sep 2019 12:14:10 -0400
+Message-ID: <CACZkXPzGoWKnKFEkXoJ6DbWcPvWfELzs9cyESmNFZyDdzKqxpQ@mail.gmail.com>
+Subject: Re: How do I search the Apache-wide announce mailing list?
+To: Rich Bowen <rbowen@rcbowen.com>
+Cc: users@ponymail.incubator.apache.org, users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="000000000000eb6caa0592fe5cfe"
+
+--000000000000eb6caa0592fe5cfe
+Content-Type: text/plain; charset="UTF-8"
+
+Thank you Rich! Can you get to this page from the root page?
+
+Gary
+
+On Fri, Sep 20, 2019 at 8:37 AM Rich Bowen <rbowen@rcbowen.com> wrote:
+
+> https://lists.apache.org/list.html?announce@apache.org
+>
+> On 9/20/19 8:27 AM, Gary D. Gregory wrote:
+> > Hi All,
+> >
+> > How do I search the Apache-wide announce mailing list?
+> >
+> > TY!
+> > Gary
+> >
+>
+> --
+> Rich Bowen - rbowen@rcbowen.com
+> http://rcbowen.com/
+> @rbowen
+>
+
+--000000000000eb6caa0592fe5cfe
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Thank you Rich! Can you get to this page from the root pag=
+e?<div><br></div><div>Gary</div></div><br><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Fri, Sep 20, 2019 at 8:37 AM Rich Bowen =
+&lt;<a href=3D"mailto:rbowen@rcbowen.com">rbowen@rcbowen.com</a>&gt; wrote:=
+<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><a href=3D"http=
+s://lists.apache.org/list.html?announce@apache.org" rel=3D"noreferrer" targ=
+et=3D"_blank">https://lists.apache.org/list.html?announce@apache.org</a><br=
+>
+<br>
+On 9/20/19 8:27 AM, Gary D. Gregory wrote:<br>
+&gt; Hi All,<br>
+&gt; <br>
+&gt; How do I search the Apache-wide announce mailing list?<br>
+&gt; <br>
+&gt; TY!<br>
+&gt; Gary<br>
+&gt; <br>
+<br>
+-- <br>
+Rich Bowen - <a href=3D"mailto:rbowen@rcbowen.com" target=3D"_blank">rbowen=
+@rcbowen.com</a><br>
+<a href=3D"http://rcbowen.com/" rel=3D"noreferrer" target=3D"_blank">http:/=
+/rcbowen.com/</a><br>
+@rbowen<br>
+</blockquote></div>
+
+--000000000000eb6caa0592fe5cfe--
+
+From users-return-17-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org  Fri Sep 20 17:49:41 2019
+Return-Path: <users-return-17-archive-asf-public=cust-asf.ponee.io@ponymail.incubator.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mail.apache.org (hermes.apache.org [207.244.88.153])
+	by mx-eu-01.ponee.io (Postfix) with SMTP id 9DD4E180608
+	for <archive-asf-public@cust-asf.ponee.io>; Fri, 20 Sep 2019 19:49:38 +0200 (CEST)
+Received: (qmail 97166 invoked by uid 500); 20 Sep 2019 17:49:38 -0000
+Mailing-List: contact users-help@ponymail.incubator.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.incubator.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.incubator.apache.org>
+List-Post: <mailto:users@ponymail.incubator.apache.org>
+List-Id: <users.ponymail.incubator.apache.org>
+Reply-To: users@ponymail.incubator.apache.org
+Delivered-To: mailing list users@ponymail.incubator.apache.org
+Received: (qmail 97156 invoked by uid 99); 20 Sep 2019 17:49:37 -0000
+Received: from pnap-us-west-generic-nat.apache.org (HELO spamd3-us-west.apache.org) (209.188.14.142)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Fri, 20 Sep 2019 17:49:37 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamd3-us-west.apache.org (ASF Mail Server at spamd3-us-west.apache.org) with ESMTP id 63373180C91
+	for <users@ponymail.apache.org>; Fri, 20 Sep 2019 17:49:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamd3-us-west.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: 2.003
+X-Spam-Level: **
+X-Spam-Status: No, score=2.003 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, HTML_MESSAGE=2,
+	RCVD_IN_DNSWL_NONE=-0.0001, SPF_HELO_NONE=0.001, SPF_NONE=0.001,
+	URIBL_BLOCKED=0.001] autolearn=disabled
+Authentication-Results: spamd3-us-west.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=rcbowen-com.20150623.gappssmtp.com
+Received: from mx1-he-de.apache.org ([10.40.0.8])
+	by localhost (spamd3-us-west.apache.org [10.40.0.10]) (amavisd-new, port 10024)
+	with ESMTP id HtaHKexOeqiO for <users@ponymail.apache.org>;
+	Fri, 20 Sep 2019 17:49:34 +0000 (UTC)
+Received-SPF: None (mailfrom) identity=mailfrom; client-ip=2a00:1450:4864:20::12f; helo=mail-lf1-x12f.google.com; envelope-from=rbowen@rcbowen.com; receiver=<UNKNOWN> 
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+	by mx1-he-de.apache.org (ASF Mail Server at mx1-he-de.apache.org) with ESMTPS id 9EC307DD71
+	for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 17:49:33 +0000 (UTC)
+Received: by mail-lf1-x12f.google.com with SMTP id c195so5616310lfg.9
+        for <users@ponymail.incubator.apache.org>; Fri, 20 Sep 2019 10:49:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rcbowen-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bpdq3+XBWF7wPTQLVszFEL282hcqrSZVls9G8EfMzsU=;
+        b=I9Y8euPbWn77I32odFwu0HikM2coaFvBNiGhQVnrHzSq92LU5yKctiyDeT+Zc+lpYu
+         fMUecUHSXPaHMQ6iPDnIz/1fAohV478mWXNGsMYRlSElZ1Jr+rpO8beME77zIAeyuZvS
+         w0+irn7H+PNsqfjjeNpAIJvM9zmoA3+ETzQVDEZILwuheCJSb0U6QAh0IJCLri77iBcP
+         ZSd8ZX6zgAA0mmi0opfGeSeQj6ZRFPqSMhxoPILqvq6LBti0oCU+in8OXuq0Ttxy6xol
+         VMDIiGaDBLefVzHQvmJ1znLSTT35FJ+5VLv9bWp0MkuASZL8pRG2JqnYWXRgjdlljyTg
+         oXAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bpdq3+XBWF7wPTQLVszFEL282hcqrSZVls9G8EfMzsU=;
+        b=Cs2qOXDaY/6RPDTgYO0ru2e44bjaNzFW4DsUqqcFzlmyDQUX7mHK3jgqXAeUPWMoVm
+         eaM+1CGh9D5HvWyjO55YVaExKb7GVQgmJH6i5PTwDgiaL1zc1QUr/qmNedAJyYvSERuw
+         C5oBmWNUzA93tvyDvuqS9L+dMY5gEL/Dbe/hF3N6TH8tNRXb+nxophhFiArK1inr+u9o
+         wl9FdBWx9Y90yMr8p/Y6/0gO4K4wepXwL1YzB0tytZIMqfVogXS0dx1DGVZRybTFjQws
+         9uvx6UzbtwQ6LZzN+xWpksuHE9LAa02QG44Nbfr0yE3uJtYi2ZOPuXPa5NMYbjXOCp0g
+         DqMA==
+X-Gm-Message-State: APjAAAXHjxEGhQ71XlS46mL4YtYdwbcv7tQADt7uBIDAeYL3C8IXRIcY
+	htKZb+FYUEn4vc2fLxS1eChdQObsheZxzonpV7J2Jg==
+X-Google-Smtp-Source: APXvYqzIKKnhw6xkl8idVtErJVaMDvYo6qg8Izrjr2sFbjdc9mSv1n3q01I8PEupu0incxardfPErFkqXciQimgPAxA=
+X-Received: by 2002:a19:4f5a:: with SMTP id a26mr9283433lfk.116.1569001772481;
+ Fri, 20 Sep 2019 10:49:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <pony-6325d6d623a50cc446377d03c9037d94199f6401-34570154c86727e239c2ca4ec0f25c6ead487d71@users.ponymail.apache.org>
+ <4376b056-bfdb-7ff3-9ca2-7bc7fbbc96c6@rcbowen.com> <CACZkXPzGoWKnKFEkXoJ6DbWcPvWfELzs9cyESmNFZyDdzKqxpQ@mail.gmail.com>
+In-Reply-To: <CACZkXPzGoWKnKFEkXoJ6DbWcPvWfELzs9cyESmNFZyDdzKqxpQ@mail.gmail.com>
+From: Rich Bowen <rbowen@rcbowen.com>
+Date: Fri, 20 Sep 2019 13:49:21 -0400
+Message-ID: <CAD6Vret1pqADy+Fsr2RAWUY_8GPxUosi5vaL0xe5+j5-k5L_ZA@mail.gmail.com>
+Subject: Re: How do I search the Apache-wide announce mailing list?
+To: Gary Gregory <garydgregory@gmail.com>
+Cc: users@ponymail.incubator.apache.org, users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="0000000000004d14b10592ffb1ad"
+
+--0000000000004d14b10592ffb1ad
+Content-Type: text/plain; charset="UTF-8"
+
+Yes, you select 'apache.org' in the domains list, and then it shows up in
+the list of lists.
+
+On Fri, Sep 20, 2019 at 12:14 PM Gary Gregory <garydgregory@gmail.com>
+wrote:
+
+> Thank you Rich! Can you get to this page from the root page?
+>
+> Gary
+>
+> On Fri, Sep 20, 2019 at 8:37 AM Rich Bowen <rbowen@rcbowen.com> wrote:
+>
+>> https://lists.apache.org/list.html?announce@apache.org
+>>
+>> On 9/20/19 8:27 AM, Gary D. Gregory wrote:
+>> > Hi All,
+>> >
+>> > How do I search the Apache-wide announce mailing list?
+>> >
+>> > TY!
+>> > Gary
+>> >
+>>
+>> --
+>> Rich Bowen - rbowen@rcbowen.com
+>> http://rcbowen.com/
+>> @rbowen
+>>
+>
+
+--0000000000004d14b10592ffb1ad
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Yes, you select &#39;<a href=3D"http://apache.org">apache.=
+org</a>&#39; in the domains list, and then it shows up in the list of lists=
+.</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"=
+>On Fri, Sep 20, 2019 at 12:14 PM Gary Gregory &lt;<a href=3D"mailto:garydg=
+regory@gmail.com">garydgregory@gmail.com</a>&gt; wrote:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Thank you Rich! Ca=
+n you get to this page from the root page?<div><br></div><div>Gary</div></d=
+iv><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On =
+Fri, Sep 20, 2019 at 8:37 AM Rich Bowen &lt;<a href=3D"mailto:rbowen@rcbowe=
+n.com" target=3D"_blank">rbowen@rcbowen.com</a>&gt; wrote:<br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><a href=3D"https://lists.apache.=
+org/list.html?announce@apache.org" rel=3D"noreferrer" target=3D"_blank">htt=
+ps://lists.apache.org/list.html?announce@apache.org</a><br>
+<br>
+On 9/20/19 8:27 AM, Gary D. Gregory wrote:<br>
+&gt; Hi All,<br>
+&gt; <br>
+&gt; How do I search the Apache-wide announce mailing list?<br>
+&gt; <br>
+&gt; TY!<br>
+&gt; Gary<br>
+&gt; <br>
+<br>
+-- <br>
+Rich Bowen - <a href=3D"mailto:rbowen@rcbowen.com" target=3D"_blank">rbowen=
+@rcbowen.com</a><br>
+<a href=3D"http://rcbowen.com/" rel=3D"noreferrer" target=3D"_blank">http:/=
+/rcbowen.com/</a><br>
+@rbowen<br>
+</blockquote></div>
+</blockquote></div>
+
+--0000000000004d14b10592ffb1ad--
+

@@ -57,12 +57,14 @@ jobs:
         curl -sq "http://localhost:9200/ponymail-source/_mapping?pretty"
     - name: load Database
       run: |
-        tools/import-mbox.py --source test/resources/n47hcfdt6z70tqxvnhgn3zrdwqgg36yl.mbox
+        tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2019-09.mbox --private
+        tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2022-01.mbox
     - name: Server
       run: |
         cd server
-        python -u main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log 2>&1 &
+        python -u main.py --apilog INFO --logger INFO --stoppable --refreshable > main.log 2>&1 &
         sleep 5 # allow time to start up properly
+        curl -sq http://localhost:8080/api/refresh # This will fail if the server is not ready
     - name: Show Database
       if: always()
       run: |
@@ -71,18 +73,10 @@ jobs:
       if: always()
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
-    - name: Refresh
-      if: always()
-      run: |
-        curl -sq http://localhost:8080/api/refresh
-    - name: preferences2
-      if: always()
-      run: |
-        curl -sq http://localhost:8080/api/preferences.lua
     - name: stats1
       if: always()
       run: |
-        curl -sq 'http://localhost:8080/api/stats.lua?list=*&domain=*&d=gte=0d'
+        curl -sq 'http://localhost:8080/api/stats.lua?list=*&domain=ponymail.apache.org&d=gte=0d&emailsOnly'
     - name: Shutdown
       if: always()
       run: |
