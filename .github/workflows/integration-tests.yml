@@ -61,7 +61,8 @@ jobs:
     - name: Server
       run: |
         cd server
-        python main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log &
+        python main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log 2>&1 &
+        sleep 5 # allow time to start up properly
     - name: preferences1
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
