@@ -82,7 +82,7 @@ jobs:
     - name: stats1
       if: always()
       run: |
-        curl -sq http://localhost:8080/api/stats.lua?list=*&domain=*&d=gte=0d
+        curl -sq 'http://localhost:8080/api/stats.lua?list=*&domain=*&d=gte=0d'
     - name: Shutdown
       if: always()
       run: |
