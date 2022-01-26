@@ -227,12 +227,10 @@ class Server(plugins.server.BaseServer):
         await plugins.background.run_tasks(self)
 
     def run(self):
-        loop = asyncio.get_event_loop()
         try:
-            loop.run_until_complete(self.server_loop())
+            asyncio.run(self.server_loop())
         except KeyboardInterrupt:
             pass
-        loop.close()
 
 
 if __name__ == "__main__":
