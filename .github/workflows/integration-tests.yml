@@ -61,7 +61,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python main.py --apilog INFO --logger INFO --stoppable --refreshable > main.log &
+        python main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log &
     - name: preferences1
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
