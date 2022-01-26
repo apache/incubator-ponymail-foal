@@ -2,17 +2,13 @@
 # This is read by the corresponding endpoint script
 
 oauth_data:
-  uid: test
-  email: test@apache.org
-  fullname: Test Name
-  isMember: True
-  isChair: True
-  projects:
-    - a
-    - b
-    - c
-  pmcs:
-    - d
-    - e
-    - f
-  state: TBA # will be replaced at runtime
+  admin:
+    uid: admin
+    email: admin@apache.org
+    name: Admin
+    fullname: Admin Name
+  user:
+    uid: user
+    email: user@apache.org
+    name: User
+    fullname: User Name

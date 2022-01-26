@@ -44,18 +44,6 @@ import typing
 import uuid
 import yaml
 
-# default data if file is not readable
-DATA = {
-  'uid': 'test',
-  'email': 'test@apache.org',
-  'fullname': "Test Name",
-  'isMember': True,
-  'isChair': True,
-  'projects': ['a', 'b', 'b'],
-  'pmcs': ['a', 'b', 'b'],
-  'state': None
-}
-
 async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
     print('INDATA', indata)
     redirect_uri = indata.get('redirect_uri')
@@ -71,15 +59,18 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
         try:
             data =  yaml.safe_load(open(datafile))['oauth_data']
             print(f'using data from {datafile}')
+            user = indata.get('user', 'user')
+            if user in data:
+                data = data[user]
+                data['state'] = indata.get('state')
+                print(f"testauth: {data}")
+                return data
+            else:
+                print(f"Could not find record for {user}")
         except:
-            print('Using built-in data')
-            data = DATA
-        if 'state' in data:
-            data['state'] = indata.get('state') # fix up
-        print(data)
-        return data
-    else:
-        return {"okay": False, "message": "Invalid invocation!"}
+            print(f'Could not find data file {datafile}')
+    
+    return {"okay": False, "message": "Invalid invocation!"}
 
 def register(server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)
