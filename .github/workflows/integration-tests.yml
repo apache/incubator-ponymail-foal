@@ -75,6 +75,7 @@ jobs:
         curl -sq http://localhost:8080/api/preferences.lua
     - name: Shutdown
       if: always()
+      continue-on-error: true # curl currently returns non-zero status
       run: |
         curl -sq http://localhost:8080/api/stop
     - name: Show log
