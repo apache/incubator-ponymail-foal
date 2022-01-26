@@ -93,7 +93,7 @@ jobs:
         curl -sq 'http://localhost:8080/api/stats.lua?list=*&domain=ponymail.apache.org&d=gte=0d&emailsOnly'
     - name: Test against database emails
       run: |
-        python -m pytest -s test/test_integration.py
+        python -m pytest -s test/itest_integration.py
     - name: Shutdown
       if: always()
       run: |

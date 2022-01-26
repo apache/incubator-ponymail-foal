@@ -19,7 +19,7 @@ import pytest
 import random
 import requests
 
-# Run as: python3 -m pytest [-s] test/test_integration.py
+# Run as: python3 -m pytest [-s] test/itest_integration.py
 
 API_BASE='http://localhost:8080/api'
 
