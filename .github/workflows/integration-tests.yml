@@ -55,6 +55,9 @@ jobs:
         curl -sq "http://localhost:9200/_settings?pretty"
         curl -sq "http://localhost:9200/ponymail-mbox/_mapping?pretty"
         curl -sq "http://localhost:9200/ponymail-source/_mapping?pretty"
+    - name: load Database
+      run: |
+        tools/import-mbox.py --source test/resources/n47hcfdt6z70tqxvnhgn3zrdwqgg36yl.mbox
     - name: Server
       run: |
         cd server
@@ -62,9 +65,6 @@ jobs:
     - name: preferences1
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
-    - name: load Database
-      run: |
-        tools/import-mbox.py --source test/resources/n47hcfdt6z70tqxvnhgn3zrdwqgg36yl.mbox
     - name: Show Database
       if: always()
       run: |
