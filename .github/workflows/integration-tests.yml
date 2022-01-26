@@ -78,6 +78,7 @@ jobs:
       if: always()
       run: |
         curl -sq http://localhost:8080/api/refresh
+        sleep 2 # can it take this long?
     - name: preferences3
       if: always()
       run: |
