@@ -1,0 +1,115 @@
+From users-return-19-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Sun Jan  2 11:02:19 2022
+Return-Path: <users-return-19-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-he-de.apache.org (mxout1-he-de.apache.org [95.216.194.37])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 5534B3E6BD
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 12:02:19 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-he-de.apache.org (ASF Mail Server at mxout1-he-de.apache.org) with SMTP id 8E36361098
+	for <archive-asf-public@cust-asf.ponee.io>; Sun,  2 Jan 2022 11:02:11 +0000 (UTC)
+Received: (qmail 9635 invoked by uid 500); 2 Jan 2022 11:02:10 -0000
+Mailing-List: contact users-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:users@ponymail.apache.org>
+List-Id: <users.ponymail.apache.org>
+Reply-To: users@ponymail.apache.org
+Delivered-To: mailing list users@ponymail.apache.org
+Received: (qmail 9621 invoked by uid 99); 2 Jan 2022 11:02:10 -0000
+Received: from spamproc1-he-fi.apache.org (HELO spamproc1-he-fi.apache.org) (95.217.134.168)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Sun, 02 Jan 2022 11:02:10 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-fi.apache.org (ASF Mail Server at spamproc1-he-fi.apache.org) with ESMTP id 814B0C054A
+	for <users@ponymail.apache.org>; Sun,  2 Jan 2022 11:02:09 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-fi.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: -0.002
+X-Spam-Level:
+X-Spam-Status: No, score=-0.002 tagged_above=-999 required=6.31
+	tests=[DKIM_SIGNED=0.1, DKIM_VALID=-0.1, DKIM_VALID_AU=-0.1,
+	DKIM_VALID_EF=-0.1, HTML_MESSAGE=0.2, RCVD_IN_MSPIKE_H2=-0.001,
+	SPF_PASS=-0.001] autolearn=disabled
+Authentication-Results: spamproc1-he-fi.apache.org (amavisd-new);
+	dkim=pass (2048-bit key) header.d=gmail.com
+Received: from mx1-ec2-va.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-fi.apache.org [95.217.134.168]) (amavisd-new, port 10024)
+	with ESMTP id 8JMIYMYHWm0g for <users@ponymail.apache.org>;
+	Sun,  2 Jan 2022 11:02:09 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.167.43; helo=mail-lf1-f43.google.com; envelope-from=daniel.l.sahlberg@gmail.com; receiver=<UNKNOWN> 
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by mx1-ec2-va.apache.org (ASF Mail Server at mx1-ec2-va.apache.org) with ESMTPS id 87C48BDA68
+	for <users@ponymail.apache.org>; Sun,  2 Jan 2022 11:02:08 +0000 (UTC)
+Received: by mail-lf1-f43.google.com with SMTP id x7so69388104lfu.8
+        for <users@ponymail.apache.org>; Sun, 02 Jan 2022 03:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=TxNL/RG0+inQBfsUpkX9oxPDWIHD4HDe1JRHOl8CyZM=;
+        b=lCAFrs0pEV2FfUPdavfab7xoO7PdoR5nL8tFh3AI6ycCJiNOy9fqu++MWooiZsv8jg
+         E+9SRjrWHnE/tImeahZQweTNLVlRoiYnx2SDIpAShB8VTwE7xi3dbmyRYf1/kmpxit/1
+         0VV2G2Fbq6W1PKy1pTU4KZoFCqttibpZN8K+/Nwus/Z6eyT/703GKUM69yMvWqxn+GCE
+         Vs6fmVjBYKYGDYsyZsLWuBNorAmUkKJ+dRxtySF9FiNvWWbmRrbYLoryrlZZS3FJXN0S
+         95f/m4z1Sq2jiZGs0PcHNCAawk5VxwORUEfXvr5CkRQI8wfucZdXYDevnj10oBdA8eEt
+         cPqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=TxNL/RG0+inQBfsUpkX9oxPDWIHD4HDe1JRHOl8CyZM=;
+        b=Ysx9QE+w9shT2Kwe+7jne2mwpooZBp67EqGjSjDjBatNzoHGkJ8QCLWYi5cTyL4dVu
+         bUguNBYbxOnT1tTWnPJx8sI3MoCFKQXoxsiW/e08dr7Ywyu+j4lQlhig9mW7doDdvmW/
+         EPg2gU2Jb3vibbirHFd+a6+sdYR6sGYu2Znze24aVgqErDi9+AAhptCsxwfF5O+4Ay6z
+         UKU4Uf2cgXRBbAgJ2V2Nu03k8mq4IBwEhFz/c5FYzNKI4bl3vqvI9zp0ug8DktBP56Pf
+         tQHxVTKZzvgtRatWyJpLNttlBPsDLS6L3wOEiotljnrT4iMGb9cNm4NeWlZiobsPFwr9
+         CGUw==
+X-Gm-Message-State: AOAM531WWSoVfsFVUnZZNLtje1NLcw+3FvoNT8yGOsK6+wD0TVItHwbA
+	UU+4zfctDeEtS+keiuaOfh6j/1gAW/bf5hUsj7IdErJwqyA=
+X-Google-Smtp-Source: ABdhPJz9miD+f1ahZ05eLQbPghDOF3ktP28S0lckzPovl6tKaYiTyb81OvW13IDSXvruoh60JaeX2O4XJAH6OLglRRQ=
+X-Received: by 2002:a05:6512:234b:: with SMTP id p11mr37160938lfu.402.1641121321365;
+ Sun, 02 Jan 2022 03:02:01 -0800 (PST)
+MIME-Version: 1.0
+From: Daniel Sahlberg <daniel.l.sahlberg@gmail.com>
+Date: Sun, 2 Jan 2022 12:01:50 +0100
+Message-ID: <CAMHy98POmosR8B2YgZfGN-Tok64Zn9roTG98Yu3gRPQ_CT=Mpg@mail.gmail.com>
+Subject: External search form
+To: users@ponymail.apache.org
+Content-Type: multipart/alternative; boundary="00000000000064b2aa05d49755fe"
+
+--00000000000064b2aa05d49755fe
+Content-Type: text/plain; charset="UTF-8"
+
+Hi,
+
+On behalf of the Subversion community. We have a form on our our site [1]
+that previously used Google Sitesearch on the (now defunct)
+mail-archives.apache.org.
+
+Is it possible to craft a similar form linking to Ponymail (lists.apache.org)
+without resorting to Javascript? It seems to me whatever I do I get the
+name of the input fields as part of the URL.
+
+Thanks in advance!
+
+Kind regards,
+/Daniel Sahlberg
+
+[1] https://subversion.apache.org/mailing-lists.html
+
+--00000000000064b2aa05d49755fe
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr">Hi,<div><br></div><div>O=
+n behalf of the Subversion community. We have a form on our our site [1] th=
+at previously used Google Sitesearch on the (now defunct) <a href=3D"http:/=
+/mail-archives.apache.org">mail-archives.apache.org</a>.</div><div><br></di=
+v><div>Is it possible to craft a similar form linking to Ponymail (<a href=
+=3D"http://lists.apache.org">lists.apache.org</a>) without resorting to Jav=
+ascript? It seems to me whatever I do I get the name of the input fields as=
+ part of the URL.</div><div><br></div><div>Thanks in advance!</div><div><br=
+></div><div>Kind regards,</div><div>/Daniel Sahlberg</div><div><br></div><d=
+iv>[1] <a href=3D"https://subversion.apache.org/mailing-lists.html">https:/=
+/subversion.apache.org/mailing-lists.html</a></div></div></div></div>
+
+--00000000000064b2aa05d49755fe--

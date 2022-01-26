@@ -64,12 +64,20 @@ jobs:
         curl -sq http://localhost:8080/api/preferences.lua
     - name: load Database
       run: |
-        tools/import-mbox.py --source test/resources/rfc2822-A5.eml --lid a.b.c
+        tools/import-mbox.py --source test/resources/n47hcfdt6z70tqxvnhgn3zrdwqgg36yl.mbox
     - name: Show Database
       if: always()
       run: |
         curl -sq "http://localhost:9200/_cat/indices?v"
     - name: preferences2
+      if: always()
+      run: |
+        curl -sq http://localhost:8080/api/preferences.lua
+    - name: Refresh
+      if: always()
+      run: |
+        curl -sq http://localhost:8080/api/refresh
+    - name: preferences3
       if: always()
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
