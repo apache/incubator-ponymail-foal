@@ -125,7 +125,6 @@ function construct_single_thread(state, json) {
     div.innerHTML = "";
 
     // Fix URLs if they point to an deprecated permalink
-    let looked_for_parent = location.href.match(/find_parent/) ? true : false;
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
@@ -135,10 +134,11 @@ function construct_single_thread(state, json) {
     }
 
     // Not top level thread?
+    let looked_for_parent = location.query == 'find_parent=true';
     if (!looked_for_parent && json.thread['in-reply-to'] && json.thread['in-reply-to'].length > 0) {
         let isign = new HTML('span', {class: 'glyphicon glyphicon-eye-close'}, " ");
         let btitle = new HTML("b", {}, "This may not be the start of the conversation...");
-        let a = new HTML("a", {href: "javascript:void(location.href += '&find_parent=true');"}, "Find parent email");
+        let a = new HTML("a", {href: "javascript:void(location.href += '?find_parent=true');"}, "Find parent email");
         let notice = new HTML("div", {class: "infobox"}, [
             isign,
             btitle,
