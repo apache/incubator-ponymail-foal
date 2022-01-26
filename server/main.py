@@ -222,6 +222,7 @@ class Server(plugins.server.BaseServer):
             % (self.config.server.ip, self.config.server.port)
         )
         await plugins.background.run_tasks(self)
+        await site.stop() # try to clean up
 
     def run(self):
         loop = asyncio.get_event_loop()
