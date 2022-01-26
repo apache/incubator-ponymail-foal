@@ -23,6 +23,7 @@ import importlib
 import json
 import os
 import sys
+from time import sleep
 import traceback
 import typing
 
@@ -69,6 +70,7 @@ class Server(plugins.server.BaseServer):
         self.foal_version = PONYMAIL_FOAL_VERSION
         self.server_version = PONYMAIL_SERVER_VERSION
         self.stoppable = False # allow remote stop for tests
+        self.background_event = asyncio.Event() # for background task to wait on
 
         # Make a pool of database connections for async queries
         pool_size = self.config.database.pool_size
@@ -105,6 +107,8 @@ class Server(plugins.server.BaseServer):
             self.api_logger.setLevel(args.apilog)
             self.api_logger.addHandler(logging.StreamHandler())
         self.stoppable = args.stoppable
+        self.refreshable = args.refreshable
+        self.running = True # for background task
             
 
     async def handle_request(
@@ -125,8 +129,15 @@ class Server(plugins.server.BaseServer):
         body_type = "form"
         # Support URLs of form /api/handler/extra?query
         handler = request.path.split("/")[2]
+        # handle test requests
         if self.stoppable and handler == 'stop':
-            raise KeyboardInterrupt # TODO find tidier solution ...
+            self.background_event.set()
+            self.running = False
+            return aiohttp.web.Response(headers=headers, status=200, text='Stop requested\n')
+        if self.refreshable and handler == 'refresh':
+            self.background_event.set()
+            return aiohttp.web.Response(headers=headers, status=200, text='Refresh requested\n')
+
         if handler.endswith(".lua"):
             body_type = "form"
             handler = handler[:-4]
@@ -247,6 +258,11 @@ if __name__ == "__main__":
         "--stoppable",
         action='store_true',
         help="Allow remote stop for testing",
+    )
+    parser.add_argument(
+        "--refreshable",
+        action='store_true',
+        help="Allow remote refresh for testing",
     )
     cliargs = parser.parse_args()
     Server(cliargs).run()

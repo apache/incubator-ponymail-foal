@@ -222,7 +222,7 @@ async def run_tasks(server: plugins.server.BaseServer) -> None:
     db = plugins.database.Database(server.config.database)
     server.engine_version = (await db.info())['version']['number']
 
-    while True:
+    while server.running:
         async with ProgTimer("Gathering list of archived mailing lists"):
             try:
                 server.data.lists = await get_lists(server.config.database)
@@ -236,4 +236,8 @@ async def run_tasks(server: plugins.server.BaseServer) -> None:
                     "Could not fetch activity data - database down or not connected: %s"
                     % e
                 )
-        await asyncio.sleep(server.config.tasks.refresh_rate)
+        try:
+            await asyncio.wait_for(server.background_event.wait(), timeout=server.config.tasks.refresh_rate)
+            server.background_event.clear() # needed for refresh
+        except asyncio.TimeoutError:
+            pass # This is normal
