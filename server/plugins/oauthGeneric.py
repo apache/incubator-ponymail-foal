@@ -34,6 +34,5 @@ async def process(formdata: dict, _session, _server) -> typing.Optional[dict]:
         async with aiohttp.client.request("POST", formdata["oauth_token"], headers=headers, data=formdata) as rv:
             js = await rv.json()
             js["oauth_domain"] = oauth_domain
-            js["authoritative"] = True
         return js
     return None
