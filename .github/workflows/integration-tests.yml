@@ -5,7 +5,7 @@ name: Integration Tests
 on:
   push:
     paths:
-      - 'integration-tests.yml'
+      - '**/integration-tests.yml'
 
   workflow_dispatch:
 
