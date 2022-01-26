@@ -58,7 +58,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python main.py --apilog INFO --logger INFO --stoppable > main.log &
+        python main.py --apilog INFO --logger INFO --stoppable --refreshable > main.log &
     - name: preferences1
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
@@ -75,7 +75,7 @@ jobs:
         curl -sq http://localhost:8080/api/preferences.lua
     - name: Shutdown
       if: always()
-      continue-on-error: true # curl currently returns non-zero status
+      # continue-on-error: true # curl currently returns non-zero status
       run: |
         curl -sq http://localhost:8080/api/stop
     - name: Show log
