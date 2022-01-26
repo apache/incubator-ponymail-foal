@@ -49,6 +49,9 @@ jobs:
       run: |
         cd tools
         ./setup.py --defaults --devel
+        cat archiver.yaml
+        cd ..
+        cat server/ponymail.yaml
     - name: Show Database
       run: |
         curl -sq "http://localhost:9200/_cat/indices?v"
