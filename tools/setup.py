@@ -434,12 +434,16 @@ database:
   dburl: %s      # The URL of the ElasticSearch database
   db_prefix: %s    # DB prefix, usually 'ponymail'
   max_hits: 15000        # Maximum number of emails to process in a search
+  pool_size: 15          # number of connections for async queries
+  max_lists: 8192        # max number of lists to allow for
 
 ui:
   wordcloud:       %s
   mailhost:        %s
   sender_domains:  "%s"
   traceback:       true
+  mgmtconsole:     true # enable email admin
+  true_gdpr:       true # fully delete emails instead of marking them deleted
 
 tasks:
   refresh_rate:  150     # Background indexer run interval, in seconds
