@@ -61,7 +61,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python main.py --apilog INFO --logger INFO --stoppable --refreshable > main.log 2>&1 &
+        python main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log 2>&1 &
         sleep 5 # allow time to start up properly
     - name: preferences1
       run: |
