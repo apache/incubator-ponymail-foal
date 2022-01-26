@@ -1,2 +1,3 @@
 # These items are needed for running tests
 mypy
+requests

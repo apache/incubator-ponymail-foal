@@ -49,9 +49,20 @@ jobs:
       run: |
         cd tools
         ./setup.py --defaults --devel
+        echo archiver.yaml 
         cat archiver.yaml
         cd ..
+        # add some oauth entries for use by the testauth plugin
+        cat >server/ponymail.yaml <<EOD
+          authoritative_domains:
+            - localhost
+          admins:
+            - admin@apache.org
+        EOD
+        echo server/ponymail.yaml 
         cat server/ponymail.yaml
+        # set up the testauth plugin
+        cp server/test/testauth.* server/endpoints/
     - name: Show Database
       run: |
         curl -sq "http://localhost:9200/_cat/indices?v"
@@ -80,6 +91,9 @@ jobs:
       if: always()
       run: |
         curl -sq 'http://localhost:8080/api/stats.lua?list=*&domain=ponymail.apache.org&d=gte=0d&emailsOnly'
+    - name: Test against database emails
+      run: |
+        python -m pytest -s test/test_integration.py
     - name: Shutdown
       if: always()
       run: |
