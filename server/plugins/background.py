@@ -208,6 +208,25 @@ async def get_public_activity(database: plugins.configuration.DBConfig) -> dict:
 
     return activity
 
+async def get_data(server: plugins.server.BaseServer):
+    """
+    Fetches the data once.
+    This is a separate function so it can be invoked on demand.
+    """
+    async with ProgTimer("Gathering list of archived mailing lists"):
+        try:
+            server.data.lists = await get_lists(server.config.database)
+            print(f"Found {len(server.data.lists)} lists")
+        except plugins.database.DBError as e:
+            print("Could not fetch lists - database down or not connected: %s" % e)
+    async with ProgTimer("Gathering bi-weekly activity stats"):
+        try:
+            server.data.activity = await get_public_activity(server.config.database)
+        except plugins.database.DBError as e:
+            print(
+                "Could not fetch activity data - database down or not connected: %s"
+                % e
+            )
 
 async def run_tasks(server: plugins.server.BaseServer) -> None:
     """
@@ -222,22 +241,10 @@ async def run_tasks(server: plugins.server.BaseServer) -> None:
     db = plugins.database.Database(server.config.database)
     server.engine_version = (await db.info())['version']['number']
 
-    while server.running:
-        async with ProgTimer("Gathering list of archived mailing lists"):
-            try:
-                server.data.lists = await get_lists(server.config.database)
-            except plugins.database.DBError as e:
-                print("Could not fetch lists - database down or not connected: %s" % e)
-        async with ProgTimer("Gathering bi-weekly activity stats"):
-            try:
-                server.data.activity = await get_public_activity(server.config.database)
-            except plugins.database.DBError as e:
-                print(
-                    "Could not fetch activity data - database down or not connected: %s"
-                    % e
-                )
+    while True:
+        await get_data(server)
         try:
             await asyncio.wait_for(server.background_event.wait(), timeout=server.config.tasks.refresh_rate)
-            server.background_event.clear() # needed for refresh
+            break # if the event is set, then we have been asked to stop
         except asyncio.TimeoutError:
             pass # This is normal

@@ -55,5 +55,4 @@ class BaseServer:
     # provided by background.py
     library_version: str
     engine_version: str
-    running: bool
-    background_event: asyncio.Event
+    background_event: asyncio.Event # tell background.py to stop

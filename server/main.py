@@ -107,9 +107,7 @@ class Server(plugins.server.BaseServer):
             self.api_logger.setLevel(args.apilog)
             self.api_logger.addHandler(logging.StreamHandler())
         self.stoppable = args.stoppable
-        self.refreshable = args.refreshable
-        self.running = True # for background task
-            
+        self.refreshable = args.refreshable            
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
@@ -132,11 +130,10 @@ class Server(plugins.server.BaseServer):
         # handle test requests
         if self.stoppable and handler == 'stop':
             self.background_event.set()
-            self.running = False
             return aiohttp.web.Response(headers=headers, status=200, text='Stop requested\n')
         if self.refreshable and handler == 'refresh':
-            self.background_event.set()
-            return aiohttp.web.Response(headers=headers, status=200, text='Refresh requested\n')
+            await plugins.background.get_data(self)
+            return aiohttp.web.Response(headers=headers, status=200, text='Refresh performed\n')
 
         if handler.endswith(".lua"):
             body_type = "form"
