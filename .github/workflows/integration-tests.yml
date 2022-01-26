@@ -56,7 +56,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python main.py --apilog INFO --logger INFO &
+        python main.py --apilog INFO --logger INFO > main.log &
     - name: preferences1
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
@@ -71,4 +71,8 @@ jobs:
       if: always()
       run: |
         curl -sq http://localhost:8080/api/preferences.lua
-# TODO: ideally at the end of this job, stop the background job
+    - name: Shutdown
+      if: always()
+      run: |
+        curl -sq http://localhost:8080/api/stop
+        cat server/main.log
