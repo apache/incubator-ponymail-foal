@@ -3,7 +3,9 @@ name: Integration Tests
 # TODO: add some useful tests
 
 on:
-  # Don't currently want this to run every time
+  push:
+    paths:
+      - 'integration-test.yml'
 
   workflow_dispatch:
 
@@ -75,4 +77,7 @@ jobs:
       if: always()
       run: |
         curl -sq http://localhost:8080/api/stop
+    - name: Show log
+      if: always()
+      run: |
         cat server/main.log
