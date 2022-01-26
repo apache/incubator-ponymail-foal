@@ -68,6 +68,7 @@ class Server(plugins.server.BaseServer):
         self.api_logger = None
         self.foal_version = PONYMAIL_FOAL_VERSION
         self.server_version = PONYMAIL_SERVER_VERSION
+        self.stoppable = False # allow remote stop for tests
 
         # Make a pool of database connections for async queries
         pool_size = self.config.database.pool_size
@@ -103,6 +104,7 @@ class Server(plugins.server.BaseServer):
             self.api_logger = logging.getLogger('ponymail.apilog')
             self.api_logger.setLevel(args.apilog)
             self.api_logger.addHandler(logging.StreamHandler())
+        self.stoppable = args.stoppable
             
 
     async def handle_request(
@@ -123,6 +125,8 @@ class Server(plugins.server.BaseServer):
         body_type = "form"
         # Support URLs of form /api/handler/extra?query
         handler = request.path.split("/")[2]
+        if self.stoppable and handler == 'stop':
+            raise KeyboardInterrupt # TODO find tidier solution ...
         if handler.endswith(".lua"):
             body_type = "form"
             handler = handler[:-4]
@@ -238,6 +242,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--apilog",
         help="api log level (e.g. INFO or DEBUG)",
+    )
+    parser.add_argument(
+        "--stoppable",
+        action='store_true',
+        help="Allow remote stop for testing",
     )
     cliargs = parser.parse_args()
     Server(cliargs).run()
