@@ -1,6 +1,11 @@
 name: Unit Tests
 
-on: [push,workflow_dispatch]
+on:
+  push:
+    paths-ignore:
+      - '**/integration-tests.yml'
+  
+  workflow_dispatch:
 
 jobs:
   build:
