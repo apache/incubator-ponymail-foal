@@ -32,7 +32,6 @@ jobs:
     - uses: actions/checkout@master
       with:
         persist-credentials: false
-        ref: '8ded7bf' # before main change
     - name: Setup python
       uses: actions/setup-python@v2
       with:
