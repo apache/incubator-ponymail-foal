@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '335c5f0';
+const PONYMAIL_REVISION = '030caf1';
 
 
 /******************************************
@@ -978,7 +978,6 @@ function construct_single_thread(state, json) {
     div.innerHTML = "";
 
     // Fix URLs if they point to an deprecated permalink
-    let looked_for_parent = location.href.match(/find_parent/) ? true : false;
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
@@ -988,10 +987,11 @@ function construct_single_thread(state, json) {
     }
 
     // Not top level thread?
+    let looked_for_parent = location.query == 'find_parent=true';
     if (!looked_for_parent && json.thread['in-reply-to'] && json.thread['in-reply-to'].length > 0) {
         let isign = new HTML('span', {class: 'glyphicon glyphicon-eye-close'}, " ");
         let btitle = new HTML("b", {}, "This may not be the start of the conversation...");
-        let a = new HTML("a", {href: "javascript:void(location.href += '&find_parent=true');"}, "Find parent email");
+        let a = new HTML("a", {href: "javascript:void(location.href += '?find_parent=true');"}, "Find parent email");
         let notice = new HTML("div", {class: "infobox"}, [
             isign,
             btitle,
@@ -3581,7 +3581,7 @@ function parseURL(state) {
 
 
 // Parse a permalink and fetch the thread
-// URL is expected to be of the form /thread[.html]/<msgid>?<list.id>
+// URL is expected to be of the form /thread[.html]/<msgid>?<list.id>|find_parent=true
 // onload function for thread.html
 function parse_permalink() {
     // message id is the bit after the last /
@@ -3591,10 +3591,12 @@ function parse_permalink() {
     // query needs decodeURIComponent with '+' conversion
     const query = decodeURIComponent(location.search.substring(1).replace(/\+/g, ' '));
     let list_id = null;
+    let find_parent = false;
     if (query.length) {
         if (query.match(/^<.+>$/)) {
             list_id = query;
         }
+        find_parent = query == 'find_parent=true';
     }
 
     mid = unshortenID(mid);  // In case of old school shortened links
@@ -3608,13 +3610,15 @@ function parse_permalink() {
     }
     else {
         let encoded_mid = encodeURIComponent(mid);
-        // If looking for parent, don't encode this bit of the arg string.
-        if (mid.match(/&find_parent=true/)) {
-            encoded_mid = encodeURIComponent(mid.replace(/&find_parent=true/, '')) + '&find_parent=true';
+        if (find_parent) {
+            GET('%sapi/thread.lua?id=%s&find_parent=true'.format(G_apiURL, encoded_mid), construct_single_thread, {
+                cached: true
+            });
+        } else {
+            GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encoded_mid), construct_single_thread, {
+                cached: true
+            });
         }
-        GET('%sapi/thread.lua?id=%s'.format(G_apiURL, encoded_mid), construct_single_thread, {
-            cached: true
-        });
     }
 }
 
