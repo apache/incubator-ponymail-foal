@@ -26,11 +26,15 @@ import typing
 import aiohttp.web
 import hashlib
 
+def debug(server, text):
+    if server.api_logger:
+        server.api_logger.debug(text)
 
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
+    debug(server, f"oauth/indata: {indata}")
     key = indata.get("key", "")
     state = indata.get("state")
     code = indata.get("code")
@@ -52,6 +56,7 @@ async def process(
         rv = await plugins.oauthGeneric.process(indata, session, server)
 
     if rv:
+        debug(server, f"oauth/rv: {rv}")
         # Get UID, fall back to using email address
         uid = rv.get("uid")
         if not uid:
@@ -63,6 +68,7 @@ async def process(
             ).hexdigest(16)
             authoritative = oauth_provider in server.config.oauth.authoritative_domains
             admin = authoritative and rv.get("email") in server.config.oauth.admins
+            debug(server, f"oauth/aa: {authoritative} {admin}")
             cookie = await plugins.session.set_session(
                 server,
                 cid,
