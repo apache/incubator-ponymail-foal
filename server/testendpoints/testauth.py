@@ -36,7 +36,6 @@ This will add an extra option to the login screen.
 Clicking on the "Logon with Test Auth" link will automatically login (without prompting)
 
 The data returned by the login can be changed without restarting: just edit the testauth.yaml file.
-If there is a problem reading the file, the inbuilt data will be used.
 """
 
 import aiohttp
