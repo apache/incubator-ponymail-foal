@@ -53,6 +53,19 @@ if not sys.stdout.buffer.isatty():
 class Server(plugins.server.BaseServer):
     """Main server class, responsible for handling requests and scheduling offloader threads """
 
+    def _load_endpoint(self, subdir):
+        for endpoint_file in sorted(os.listdir(subdir)):
+            if endpoint_file.endswith(".py"):
+                endpoint = endpoint_file[:-3]
+                m = importlib.import_module(f"{subdir}.{endpoint}")
+                if hasattr(m, "register"):
+                    self.handlers[endpoint] = m.__getattribute__("register")(self)
+                    print(f"Registered endpoint /api/{endpoint}")
+                else:
+                    print(
+                        f"Could not find entry point 'register()' in {endpoint_file}, skipping!"
+                    )
+
     def __init__(self, args: argparse.Namespace):
         print(
             "==== Apache Pony Mail (Foal v/%s ~%s) starting... ====" % (PONYMAIL_FOAL_VERSION, PONYMAIL_SERVER_VERSION)
@@ -80,17 +93,12 @@ class Server(plugins.server.BaseServer):
             self.dbpool.put_nowait(plugins.database.Database(self.config.database))
 
         # Load each URL endpoint
-        for endpoint_file in os.listdir("endpoints"):
-            if endpoint_file.endswith(".py"):
-                endpoint = endpoint_file[:-3]
-                m = importlib.import_module(f"endpoints.{endpoint}")
-                if hasattr(m, "register"):
-                    self.handlers[endpoint] = m.__getattribute__("register")(self)
-                    print(f"Registered endpoint /api/{endpoint}")
-                else:
-                    print(
-                        f"Could not find entry point 'register()' in {endpoint_file}, skipping!"
-                    )
+        if args.testendpoints:
+            print("** Loading additional testing endpoints **")
+            self._load_endpoint("testendpoints")
+            print()
+        self._load_endpoint("endpoints")
+
         if args.logger:
             import logging
             es_logger = logging.getLogger('elasticsearch')
@@ -261,6 +269,11 @@ if __name__ == "__main__":
         "--refreshable",
         action='store_true',
         help="Allow remote refresh for testing",
+    )
+    parser.add_argument(
+        "--testendpoints",
+        action='store_true',
+        help="Enable test endpoints",
     )
     cliargs = parser.parse_args()
     Server(cliargs).run()

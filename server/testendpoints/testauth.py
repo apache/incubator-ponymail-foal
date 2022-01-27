@@ -19,7 +19,8 @@
     Simple endpoint that does a local login
 
 To enable:
-- copy the files server/test/testauth.[py|.yaml] to the server/endpoints directory
+- Add the --testendpoints qualifier to the server startup command
+  Alternatively copy the files server/test/testauth.[py|.yaml] to the server/endpoints directory
   They can be renamed if necessary, so long as they have the same basename;
   adjust the URLs below to reflect the new name
 
