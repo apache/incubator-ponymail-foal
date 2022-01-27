@@ -36,6 +36,7 @@ def get_cookies(user='user'):
     print(res.text)
     jzon = requests.get(f"{API_BASE}/preferences", cookies=cookies).json()
     assert 'credentials' in jzon['login']
+    print(jzon['login']['credentials'])
     return cookies
 
 
