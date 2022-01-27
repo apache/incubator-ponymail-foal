@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '030caf1';
+const PONYMAIL_REVISION = 'f081cf0';
 
 
 /******************************************
@@ -3491,8 +3491,6 @@ function renderListView(state, json) {
 /* Primer function for List View
  * Fetches the following:
  * - user preferences (api/preferences.lua)
- * - pony mail list DB (api/pminfo.lua)
- * - emails from this list (api/stats.lua)
  * When done, we create the scaffolding and list view
  */
 function primeListView(state) {
