@@ -78,7 +78,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python -u main.py --apilog INFO --logger INFO --stoppable --refreshable > main.log 2>&1 &
+        python -u main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log 2>&1 &
         sleep 5 # allow time to start up properly
         curl -sq http://localhost:8080/api/refresh # This will fail if the server is not ready
     - name: Show Database
@@ -99,6 +99,7 @@ jobs:
     - name: Shutdown
       if: always()
       run: |
+        curl -sq "http://localhost:9200/_cat/indices?v"
         curl -sq -H 'Content-Type: application/json' 'localhost:9200/ponymail-account/_search?pretty' -d '{ "size": 1000, "query": { "match_all": {} }}'
         curl -sq -H 'Content-Type: application/json' 'localhost:9200/ponymail-session/_search?pretty' -d '{ "size": 1000, "query": { "match_all": {} }}'
         curl -sq http://localhost:8080/api/stop
