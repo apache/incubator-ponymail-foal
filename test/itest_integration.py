@@ -29,11 +29,13 @@ def get_cookies(user='user'):
         1000000000000000000,
         2000000000000000000) # roughly equivalent to code in oauth.js
     testauth='testauth'
-    res = requests.get(f"{API_BASE}/{testauth}?state={state}&redirect_uri=x&state={state}&key=ignored&user={user}",allow_redirects=False)
+    res = requests.get(f"{API_BASE}/{testauth}?state={state}&redirect_uri=x&state={state}&key=ignored",allow_redirects=False)
     code = res.headers['Location'][1:]
-    res = requests.get(f"{API_BASE}/oauth.lua?key=ignored{code}&oauth_token={API_BASE}/{testauth}&state={state}")
+    res = requests.get(f"{API_BASE}/oauth.lua?key=ignored{code}&oauth_token={API_BASE}/{testauth}&state={state}&user={user}")
     cookies = res.cookies
     print(res.text)
+    jzon = requests.get(f"{API_BASE}/preferences", cookies=cookies).json()
+    assert 'credentials' in jzon['login']
     return cookies
 
 
@@ -65,7 +67,7 @@ def test_public_stats():
     assert jzon['hits'] == 0
 
 def test_private_stats():
-    cookies = get_cookies()
+    cookies = get_cookies('user')
     # only fetch the private mail stats
     jzon = requests.get(
         f"{API_BASE}/stats.lua?list=users&domain=ponymail.apache.org&emailsOnly&d=2019-09",
