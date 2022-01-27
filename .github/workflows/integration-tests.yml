@@ -54,11 +54,12 @@ jobs:
         cat archiver.yaml
         cd ..
         # add some oauth entries for use by the testauth plugin
-        cat >server/ponymail.yaml <<EOD
+        cat >>server/ponymail.yaml <<EOD
           authoritative_domains:
             - localhost
           admins:
             - admin@apache.org
+        
         EOD
         echo server/ponymail.yaml 
         cat server/ponymail.yaml
