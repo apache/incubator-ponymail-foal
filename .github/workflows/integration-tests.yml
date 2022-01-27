@@ -63,8 +63,6 @@ jobs:
         EOD
         echo server/ponymail.yaml 
         cat server/ponymail.yaml
-        # set up the testauth plugin
-        cp server/test/testauth.* server/endpoints/
     - name: Show Database
       run: |
         curl -sq "http://localhost:9200/_cat/indices?v"
@@ -78,7 +76,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python -u main.py --apilog INFO --logger DEBUG --stoppable --refreshable > main.log 2>&1 &
+        python -u main.py --apilog INFO --logger DEBUG --stoppable --refreshable --testendpoints > main.log 2>&1 &
         sleep 5 # allow time to start up properly
         curl -sq http://localhost:8080/api/refresh # This will fail if the server is not ready
     - name: Show Database
