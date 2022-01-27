@@ -99,6 +99,8 @@ jobs:
     - name: Shutdown
       if: always()
       run: |
+        curl -sq -H 'Content-Type: application/json' 'localhost:9200/ponymail-account/_search?pretty' -d '{ "size": 1000, "query": { "match_all": {} }}'
+        curl -sq -H 'Content-Type: application/json' 'localhost:9200/ponymail-session/_search?pretty' -d '{ "size": 1000, "query": { "match_all": {} }}'
         curl -sq http://localhost:8080/api/stop
     - name: Show log
       if: always()
