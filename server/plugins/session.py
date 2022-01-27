@@ -31,6 +31,7 @@ import copy
 FOAL_MAX_SESSION_AGE = 86400 * 7  # Max 1 week between visits before voiding a session
 FOAL_SAVE_SESSION_INTERVAL = 3600  # Update sessions on disk max once per hour
 DATABASE_NOT_CONNECTED = "Database not connected!"
+OAUTH_PROVIDER_DEFAULT = "generic"
 
 class SessionCredentials:
     uid: str
@@ -46,7 +47,7 @@ class SessionCredentials:
             self.uid = doc.get("uid", "")
             self.name = doc.get("name", "")
             self.email = doc.get("email", "")
-            self.oauth_provider = doc.get("oauth_provider", "generic")
+            self.oauth_provider = doc.get("oauth_provider", OAUTH_PROVIDER_DEFAULT)
             self.authoritative = doc.get("authoritative", False)
             self.admin = doc.get("admin", False)
             self.oauth_data = doc.get("oauth_data", {})
@@ -54,7 +55,7 @@ class SessionCredentials:
             self.uid = ""
             self.name = ""
             self.email = ""
-            self.oauth_provider = "generic"
+            self.oauth_provider = OAUTH_PROVIDER_DEFAULT
             self.authoritative = False
             self.admin = False
             self.oauth_data = {}
@@ -164,7 +165,7 @@ async def get_session(
                     internal.get("oauth_provider")
                     in server.config.oauth.authoritative_domains
                 )
-                creds["oauth_provider"] = internal.get("oauth_provider", "generic")
+                creds["oauth_provider"] = internal.get("oauth_provider", OAUTH_PROVIDER_DEFAULT)
                 creds["oauth_data"] = internal.get("oauth_data", {})
                 # We update admin boolean whenever we fetch session doc, as they may have changed in yaml but not in ES.
                 creds["admin"] = creds["authoritative"] and creds.get('email') in server.config.oauth.admins

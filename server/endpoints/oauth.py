@@ -57,7 +57,7 @@ async def process(
         if not uid:
             uid = rv.get("email")
         if uid:
-            oauth_provider = rv.get("oauth_domain", "generic")
+            oauth_provider = rv.get("oauth_domain", plugins.session.OAUTH_PROVIDER_DEFAULT)
             cid = hashlib.shake_128(
                 ("%s-%s" % (oauth_provider, uid)).encode("ascii", "ignore")
             ).hexdigest(16)
