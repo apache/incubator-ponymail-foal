@@ -56,8 +56,6 @@ function renderListView(state, json) {
 /* Primer function for List View
  * Fetches the following:
  * - user preferences (api/preferences.lua)
- * - pony mail list DB (api/pminfo.lua)
- * - emails from this list (api/stats.lua)
  * When done, we create the scaffolding and list view
  */
 function primeListView(state) {
