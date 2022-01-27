@@ -107,7 +107,7 @@ class Server(plugins.server.BaseServer):
             self.api_logger.setLevel(args.apilog)
             self.api_logger.addHandler(logging.StreamHandler())
         self.stoppable = args.stoppable
-        self.refreshable = args.refreshable            
+        self.refreshable = args.refreshable
 
     async def handle_request(
         self, request: aiohttp.web.BaseRequest
