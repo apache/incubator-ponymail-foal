@@ -57,10 +57,11 @@ async def process(
         if not uid:
             uid = rv.get("email")
         if uid:
+            oauth_provider = rv.get("oauth_domain", "generic")
             cid = hashlib.shake_128(
-                ("%s-%s" % (rv.get("oauth_domain", "generic"), uid)).encode("ascii", "ignore")
+                ("%s-%s" % (oauth_provider, uid)).encode("ascii", "ignore")
             ).hexdigest(16)
-            authoritative = rv.get("oauth_domain", "generic") in server.config.oauth.authoritative_domains
+            authoritative = oauth_provider in server.config.oauth.authoritative_domains
             admin = authoritative and rv.get("email") in server.config.oauth.admins
             cookie = await plugins.session.set_session(
                 server,
@@ -71,7 +72,7 @@ async def process(
                 # Authoritative if OAuth domain is in the authoritative oauth section in ponymail.yaml
                 # Required for access to private emails
                 authoritative=authoritative,
-                oauth_provider=rv.get("oauth_domain", "generic"),
+                oauth_provider=oauth_provider,
                 oauth_data=rv,
                 admin=admin,
             )
