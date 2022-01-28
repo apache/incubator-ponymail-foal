@@ -132,6 +132,7 @@ async def process(
     # Editing an email in place
     elif action == "edit":
         new_from = indata.get("from")
+        print(new_from)
         new_subject = indata.get("subject")
         new_list = indata.get("list", "")
         private = indata.get("private", "yes") == "yes" # Assume private unless notified otherwise
@@ -139,11 +140,16 @@ async def process(
         attach_edit = indata.get("attachments", None)
 
         # Check for consistency so we don't pollute the database
-        assert isinstance(doc, str) and doc, "Document ID is missing or invalid"
-        assert isinstance(new_from, str), "Author field must be a text string!"
-        assert isinstance(new_subject, str), "Subject field must be a text string!"
-        assert isinstance(new_list, str), "List ID field must be a text string!"
-        assert isinstance(new_body, str), "Email body must be a text string!"
+        if not isinstance(doc, str):
+            raise ValueError("Document ID is missing or invalid")
+        if not isinstance(new_from, str):
+            raise ValueError("Author field must be a text string!")
+        if not isinstance(new_subject, str):
+            raise ValueError("Subject field must be a text string!")
+        if not isinstance(new_list, str):
+            raise ValueError("List ID field must be a text string!")
+        if not isinstance(new_body, str):
+            raise ValueError("Email body must be a text string!")
 
         # Convert List-ID after verification
         lid = "<" + new_list.strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
