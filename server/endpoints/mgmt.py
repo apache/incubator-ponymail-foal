@@ -175,6 +175,7 @@ async def process(
             email["list"] = lid
             email["list_raw"] = lid
             email["body"] = new_body
+            email["body_short"] = new_body[:plugins.messages.SHORT_BODY_MAX_LEN+1]
             if attach_edit is not None:  # Only set if truly editing attachments...
                 email["attachments"] = attach_edit
 
