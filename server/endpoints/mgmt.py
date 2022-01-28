@@ -132,11 +132,10 @@ async def process(
     # Editing an email in place
     elif action == "edit":
         new_from = indata.get("from")
-        print(new_from)
         new_subject = indata.get("subject")
-        new_list = indata.get("list", "")
+        new_list = indata.get("list")
         private = indata.get("private", "yes") == "yes" # Assume private unless notified otherwise
-        new_body = indata.get("body", "")
+        new_body = indata.get("body")
         attach_edit = indata.get("attachments", None)
 
         # Check for consistency so we don't pollute the database
