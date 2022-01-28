@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - '**/integration-tests.yml'
+      - 'test/itest*'
 
   workflow_dispatch:
 
