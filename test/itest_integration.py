@@ -39,6 +39,64 @@ def get_cookies(user='user'):
     print(jzon['login']['credentials'])
     return cookies
 
+def check_access(email, cookies):
+        # check email accessibility
+        mid = email['mid']
+        res = requests.get(
+            f"{API_BASE}/email.lua",
+            params={"id": mid},
+            cookies=cookies
+        )
+        assert res.status_code == 200
+        jzon = res.json()
+        assert mid == jzon['mid']
+        assert mid in jzon['permalinks']
+        # check email access by message-id
+        msgid = jzon['message-id']
+        listid = jzon['list_raw']
+        res = requests.get(
+            f"{API_BASE}/email.lua",
+            params={"id": msgid, "listid": listid},
+            cookies=cookies
+        )
+        assert res.status_code == 200
+        if email['private']:
+            # should not be visible without cookies
+            res = requests.get(
+                f"{API_BASE}/email.lua",
+                params={"id": mid}
+            )
+            assert res.status_code == 404
+            res = requests.get(
+                f"{API_BASE}/email.lua",
+                params={"id": msgid, "listid": listid}
+            )
+            assert res.status_code == 404
+        # check source accessibility
+        res = requests.get(
+            f"{API_BASE}/source.lua",
+            params={"id": mid},
+            cookies=cookies
+        )
+        assert res.status_code == 200
+        res = requests.get(
+            f"{API_BASE}/source.lua",
+            params={"id": msgid, "listid": listid},
+            cookies=cookies
+        )
+        assert res.status_code == 200
+        if email['private']:
+            # should not be visible without cookies
+            res = requests.get(
+                f"{API_BASE}/source.lua",
+                params={"id": mid}
+            )
+            assert res.status_code == 404
+            res = requests.get(
+                f"{API_BASE}/source.lua",
+                params={"id": msgid, "listid": listid}
+            )
+            assert res.status_code == 404
 
 def test_lists():
     jzon = requests.get(f"{API_BASE}/preferences").json()
@@ -46,10 +104,12 @@ def test_lists():
     lists = jzon['lists']
     assert 'ponymail.apache.org' in lists
     assert 'users' in lists['ponymail.apache.org']
+    assert len(lists) == 1 # only expecting one domain
 
 def test_public_stats():
     jzon = requests.get(
-        f"{API_BASE}/stats.lua?list=users&domain=ponymail.apache.org&emailsOnly&d=gte=0d",
+        f"{API_BASE}/stats.lua",
+        params={"list": 'users', "domain": 'ponymail.apache.org', "emailsOnly": True, "d": 'gte=0d'}
     ).json()
     assert jzon['firstYear'] == 2022
     assert jzon['firstMonth'] == 1
@@ -61,9 +121,11 @@ def test_public_stats():
         assert email['list'] == email['list_raw']
         assert email['id'] == email['mid']
         assert email['private'] == False
+        check_access(email, None)
     # Check we cannot see the private emails
     jzon = requests.get(
-        f"{API_BASE}/stats.lua?list=users&domain=ponymail.apache.org&emailsOnly&d=2019-09"
+        f"{API_BASE}/stats.lua",
+        params={"list": 'users', "domain": 'ponymail.apache.org', "emailsOnly": True, "d": '2019-09'}
         ).json()
     assert jzon['hits'] == 0
 
@@ -71,7 +133,8 @@ def test_private_stats():
     cookies = get_cookies('user')
     # only fetch the private mail stats
     jzon = requests.get(
-        f"{API_BASE}/stats.lua?list=users&domain=ponymail.apache.org&emailsOnly&d=2019-09",
+        f"{API_BASE}/stats.lua",
+        params={"list": 'users', "domain": 'ponymail.apache.org', "emailsOnly": True, "d": '2019-09'},
         cookies=cookies
     ).json()
     # The earlier mails are private
@@ -85,3 +148,4 @@ def test_private_stats():
         assert email['list'] == email['list_raw']
         assert email['id'] == email['mid']
         assert email['private']
+        check_access(email, cookies)
