@@ -71,7 +71,8 @@ jobs:
         curl -sq "http://localhost:9200/ponymail-source/_mapping?pretty"
     - name: load Database
       run: |
-        tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2019-09.mbox --private
+        # The early messages were under incubator ...
+        tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2019-09.mbox --private --lid users.ponymail.apache.org
         tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2022-01.mbox
     - name: Server
       run: |
