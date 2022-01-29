@@ -310,17 +310,20 @@ async def get_email_irt(
 
 async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
     """
-        Get the source document for an email, or None if it does not find exactly one match.
+        Get the source document for an email, or None
 
-        The caller must check if access is allowed.
+        The caller must check if access is allowed by the parent mbox entry
     """
     assert session.database, DATABASE_NOT_CONNECTED
-    doctype = session.database.dbs.db_source
     try:
-        doc = await session.database.get(index=doctype, id=permalink)
+        doc = await session.database.get(index=session.database.dbs.db_source, id=permalink)
     except plugins.database.DBError:
         doc = None
     if doc:
+        # If hidden, only return source if session is admin
+        is_admin = session.credentials and session.credentials.admin
+        if doc["_source"].get("deleted", False) and not is_admin:
+            return None
         if raw:
             return doc
         # Check for base64-encoded source

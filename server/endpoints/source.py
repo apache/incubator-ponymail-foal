@@ -40,7 +40,7 @@ async def process(
     if email and isinstance(email, dict) and not email.get("deleted"):
         if plugins.aaa.can_access_email(session, email):
             source = await plugins.messages.get_source(session, permalink=email["dbid"])
-            if source and not source["_source"].get("deleted"):
+            if source:
                 return aiohttp.web.Response(
                     headers={"Content-Type": "text/plain"}, status=200, text=source["_source"]["source"],
                 )
