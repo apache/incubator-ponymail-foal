@@ -341,7 +341,6 @@ async def get_source(session: plugins.session.SessionObject, permalink: str, raw
 async def query_batch(
     session: plugins.session.SessionObject,
     query_defuzzed: dict,
-    hide_deleted: bool = True,
     metadata_only: bool = False,
     epoch_order: str = "desc",
     source_fields: typing.Optional[typing.List[str]] = None
@@ -375,7 +374,8 @@ async def query_batch(
         for hit in hits:
             doc = hit["_source"]
             # If email was delete/hidden and we're not doing an admin query, ignore it
-            if hide_deleted and doc.get("deleted", False):
+            is_admin = session.credentials and session.credentials.admin
+            if doc.get("deleted", False) and not is_admin:
                 continue
             if plugins.aaa.can_access_email(session, doc):
                 if "mid" in doc: # might be missing when using source_fields
@@ -409,7 +409,6 @@ async def query(
     session: plugins.session.SessionObject,
     query_defuzzed: dict,
     query_limit: int,
-    hide_deleted: bool = True,
     metadata_only: bool = False,
     epoch_order: str = "desc",
     source_fields: typing.Optional[typing.List[str]] = None
@@ -423,7 +422,6 @@ async def query(
     async for batch in query_batch(
         session,
         query_defuzzed,
-        hide_deleted=hide_deleted,
         metadata_only=metadata_only,
         epoch_order=epoch_order,
         source_fields=source_fields
