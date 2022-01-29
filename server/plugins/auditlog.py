@@ -89,4 +89,5 @@ async def add_entry(session: plugins.session.SessionObject, action: str, target:
             "lid": lid,
             "log": log,
         },
+        refresh='wait_for',
     )
