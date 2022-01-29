@@ -308,7 +308,7 @@ async def get_email_irt(
     return docs_returned
 
 
-async def get_source(session: plugins.session.SessionObject, permalink: str = None, raw=False):
+async def get_source(session: plugins.session.SessionObject, permalink: str, raw=False):
     """
         Get the source document for an email, or None
 
