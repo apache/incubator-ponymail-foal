@@ -1,0 +1,120 @@
+From dev-return-1307-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org  Mon Oct  5 04:41:25 2020
+Return-Path: <dev-return-1307-archive-asf-public=cust-asf.ponee.io@ponymail.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-he-de.apache.org (mxout1-he-de.apache.org [95.216.194.37])
+	by mx-eu-01.ponee.io (Postfix) with ESMTPS id E6FDD180654
+	for <archive-asf-public@cust-asf.ponee.io>; Mon,  5 Oct 2020 06:41:25 +0200 (CEST)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-he-de.apache.org (ASF Mail Server at mxout1-he-de.apache.org) with SMTP id 59A9664274
+	for <archive-asf-public@cust-asf.ponee.io>; Mon,  5 Oct 2020 04:41:25 +0000 (UTC)
+Received: (qmail 7680 invoked by uid 500); 5 Oct 2020 04:41:24 -0000
+Mailing-List: contact dev-help@ponymail.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:dev-help@ponymail.apache.org>
+List-Unsubscribe: <mailto:dev-unsubscribe@ponymail.apache.org>
+List-Post: <mailto:dev@ponymail.apache.org>
+List-Id: <dev.ponymail.apache.org>
+Reply-To: dev@ponymail.apache.org
+Delivered-To: mailing list dev@ponymail.apache.org
+Received: (qmail 7503 invoked by uid 99); 5 Oct 2020 04:41:24 -0000
+Received: from spamproc1-he-de.apache.org (HELO spamproc1-he-de.apache.org) (116.203.196.100)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Mon, 05 Oct 2020 04:41:24 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-de.apache.org (ASF Mail Server at spamproc1-he-de.apache.org) with ESMTP id 5676B1FF39B
+	for <dev@ponymail.apache.org>; Mon,  5 Oct 2020 04:41:23 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-de.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: -7.989
+X-Spam-Level:
+X-Spam-Status: No, score=-7.989 tagged_above=-999 required=6.31
+	tests=[ENV_AND_HDR_SPF_MATCH=-0.5, KAM_DMARC_STATUS=0.01,
+	RCVD_IN_MSPIKE_H4=0.001, RCVD_IN_MSPIKE_WL=0.001, SPF_PASS=-0.001,
+	USER_IN_DEF_SPF_WL=-7.5] autolearn=disabled
+Received: from mx1-ec2-va.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-de.apache.org [116.203.196.100]) (amavisd-new, port 10024)
+	with ESMTP id EhMTXjnR7AGw for <dev@ponymail.apache.org>;
+	Mon,  5 Oct 2020 04:41:22 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=3.227.148.255; helo=mxout1-ec2-va.apache.org; envelope-from=jmclean@apache.org; receiver=<UNKNOWN> 
+Received: from mxout1-ec2-va.apache.org (mxout1-ec2-va.apache.org [3.227.148.255])
+	by mx1-ec2-va.apache.org (ASF Mail Server at mx1-ec2-va.apache.org) with ESMTPS id 8FAB4BC2AF
+	for <dev@ponymail.incubator.apache.org>; Mon,  5 Oct 2020 04:41:22 +0000 (UTC)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-ec2-va.apache.org (ASF Mail Server at mxout1-ec2-va.apache.org) with SMTP id 7C8B642544
+	for <dev@ponymail.incubator.apache.org>; Mon,  5 Oct 2020 04:41:22 +0000 (UTC)
+Received: (qmail 7326 invoked by uid 99); 5 Oct 2020 04:41:22 -0000
+Received: from Unknown (HELO mailrelay1-lw-us.apache.org) (10.10.3.159)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Mon, 05 Oct 2020 04:41:22 +0000
+Received: from macbook-pro-3.hub (unknown [101.114.76.121])
+	by mailrelay1-lw-us.apache.org (ASF Mail Server at mailrelay1-lw-us.apache.org) with ESMTPSA id C455E40B90
+	for <dev@ponymail.incubator.apache.org>; Mon,  5 Oct 2020 04:41:21 +0000 (UTC)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Podling Ponymail Report Reminder - October 2020
+From: jmclean@apache.org
+Date: Mon, 05 Oct 2020 04:41:21 -0000
+To: dev@ponymail.incubator.apache.org
+Message-ID: <160187288141.96171.15156313550175406436@macbook-pro-3.hub>
+
+Dear podling,
+
+This email was sent by an automated system on behalf of the Apache
+Incubator PMC. It is an initial reminder to give you plenty of time to
+prepare your quarterly board report.
+
+The board meeting is scheduled for Wed, 21 October 2020.
+The report for your podling will form a part of the Incubator PMC
+report. The Incubator PMC requires your report to be submitted 2 weeks
+before the board meeting, to allow sufficient time for review and
+submission (Wed, October 07).
+
+Please submit your report with sufficient time to allow the Incubator
+PMC, and subsequently board members to review and digest. Again, the
+very latest you should submit your report is 2 weeks prior to the board
+meeting.
+
+Candidate names should not be made public before people are actually
+elected, so please do not include the names of potential committers or
+PPMC members in your report.
+
+Thanks,
+
+The Apache Incubator PMC
+
+Submitting your Report
+
+----------------------
+
+Your report should contain the following:
+
+*   Your project name
+*   A brief description of your project, which assumes no knowledge of
+    the project or necessarily of its field
+*   A list of the three most important issues to address in the move
+    towards graduation.
+*   Any issues that the Incubator PMC or ASF Board might wish/need to be
+    aware of
+*   How has the community developed since the last report
+*   How has the project developed since the last report.
+*   How does the podling rate their own maturity.
+
+This should be appended to the Incubator Wiki page at:
+
+https://cwiki.apache.org/confluence/display/INCUBATOR/October2020
+
+Note: This is manually populated. You may need to wait a little before
+this page is created from a template.
+
+Note: The format of the report has changed to use markdown.
+
+Mentors
+-------
+
+Mentors should review reports for their project(s) and sign them off on
+the Incubator wiki page. Signing off reports shows that you are
+following the project - projects that are not signed may raise alarms
+for the Incubator PMC.
+
+Incubator PMC
+

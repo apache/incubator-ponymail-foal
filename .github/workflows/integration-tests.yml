@@ -75,6 +75,7 @@ jobs:
         # The early messages were under incubator ...
         tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2019-09.mbox --private --lid users.ponymail.apache.org
         tools/import-mbox.py --source test/resources/users_ponymail_apache_org_2022-01.mbox
+        tools/import-mbox.py --source test/resources/dev_ponymail_apache_org_2020-10.mbox
     - name: Server
       run: |
         cd server
