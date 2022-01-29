@@ -33,8 +33,7 @@ import email.utils as eutils
 import datetime
 
 
-async def convert_source(session: plugins.session.SessionObject, email: dict) -> str:
-    source = await plugins.messages.get_source(session, permalink=email.get("dbid"))
+def convert_source(source) -> str:
     if source:
         source_as_text = source["_source"]["source"]
         # Ensure it starts with "From "...or fake it
@@ -110,7 +109,8 @@ async def process(
         epoch_order="asc"
     ):
         for email in emails:
-            mboxrd_source = await convert_source(session, email)
+            source = await plugins.messages.get_source(session, permalink=email.get("dbid"))
+            mboxrd_source = convert_source(source)
             # Ensure each non-empty source ends with a blank line
             if not mboxrd_source.endswith("\n\n"):
                 mboxrd_source += "\n"
