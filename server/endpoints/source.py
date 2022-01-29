@@ -37,13 +37,12 @@ async def process(
     else: # Else assume permalink and look up the email based on that
         email = await plugins.messages.get_email(session, permalink=indata.get("id"))
 
-    if email and isinstance(email, dict) and not email.get("deleted"):
-        if plugins.aaa.can_access_email(session, email):
-            source = await plugins.messages.get_source(session, permalink=email["dbid"])
-            if source:
-                return aiohttp.web.Response(
-                    headers={"Content-Type": "text/plain"}, status=200, text=source["_source"]["source"],
-                )
+    if email:
+        source = await plugins.messages.get_source(session, permalink=email["dbid"])
+        if source:
+            return aiohttp.web.Response(
+                headers={"Content-Type": "text/plain"}, status=200, text=source["_source"]["source"],
+            )
     return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 
 
