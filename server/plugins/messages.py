@@ -154,8 +154,8 @@ async def find_parent(session, doc: typing.Dict[str, str]):
             break
         ref = m.group(1)
         newdoc = await get_email(session, messageid=ref)
-        # Did we find something, and can the user access it?
-        if not newdoc or not plugins.aaa.can_access_email(session, newdoc):
+        # Did we find something accessible?
+        if not newdoc:
             break
         doc = newdoc
     return doc
@@ -167,7 +167,7 @@ async def fetch_children(session: plugins.session.SessionObject,
         pdocs: dict = None,
         short: bool = False) -> typing.Tuple[list,list,dict]:
     """
-    Fetches all child messages of a parent email
+    Fetches all accessible child messages of a parent email
     """
     if pdocs is None:
         pdocs = {}
@@ -179,36 +179,32 @@ async def fetch_children(session: plugins.session.SessionObject,
     thread = []
     emails = []
     for doc in docs:
-        # Make sure email is accessible
-        if doc.get("deleted"):
-            continue
-        if plugins.aaa.can_access_email(session, doc):
-            if doc["mid"] not in pdocs:
-                mykids, _myemails, pdocs = await fetch_children(
-                    session, doc, counter, pdocs, short=short
-                )
-                if short:
-                    xdoc = {
-                        "tid": doc["mid"],
-                        "mid": doc["mid"],
-                        "message-id": doc["message-id"],
-                        "subject": doc["subject"],
-                        "from": doc["from"],
-                        "id": doc["mid"],
-                        "epoch": doc["epoch"],
-                        "children": mykids,
-                        "irt": doc["in-reply-to"],
-                        "list_raw": doc["list_raw"],
-                    }
-                    thread.append(xdoc)
-                    pdocs[doc["mid"]] = xdoc
-                else:
-                    thread.append(doc)
-                    pdocs[doc["mid"]] = doc
-                for kid in mykids:
-                    if kid["mid"] not in pdocs:
-                        pdocs[kid["mid"]] = kid
-                        emails.append(kid)
+        if doc["mid"] not in pdocs:
+            mykids, _myemails, pdocs = await fetch_children(
+                session, doc, counter, pdocs, short=short
+            )
+            if short:
+                xdoc = {
+                    "tid": doc["mid"],
+                    "mid": doc["mid"],
+                    "message-id": doc["message-id"],
+                    "subject": doc["subject"],
+                    "from": doc["from"],
+                    "id": doc["mid"],
+                    "epoch": doc["epoch"],
+                    "children": mykids,
+                    "irt": doc["in-reply-to"],
+                    "list_raw": doc["list_raw"],
+                }
+                thread.append(xdoc)
+                pdocs[doc["mid"]] = xdoc
+            else:
+                thread.append(doc)
+                pdocs[doc["mid"]] = doc
+            for kid in mykids:
+                if kid["mid"] not in pdocs:
+                    pdocs[kid["mid"]] = kid
+                    emails.append(kid)
     return thread, emails, pdocs
 
 
@@ -220,7 +216,6 @@ async def get_email(
 ) -> typing.Optional[dict]:
     """
     Returns a single matching mbox document or None
-    The calling code is responsible for checking if the entry is accessible
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
@@ -283,7 +278,6 @@ async def get_email_irt(
     i.e. where the parameter matches 'in-reply-to' or 'references'
     May be empty.
     Docs have been checked for accessibility.
-    Caller must check if the doc is "deleted"
     """
     assert session.database, DATABASE_NOT_CONNECTED
     doctype = session.database.dbs.db_mbox
@@ -296,10 +290,13 @@ async def get_email_irt(
     )
     docs = res["hits"]["hits"]
 
+    is_admin = session.credentials and session.credentials.admin
     docs_returned = []
     for doc in docs:
         doc = doc["_source"]
         doc["id"] = doc["mid"]
+        if doc.get("deleted", False) and not is_admin:
+            continue
         if doc and plugins.aaa.can_access_email(session, doc):
             trim_email(doc)
             if not session.credentials:
@@ -311,8 +308,6 @@ async def get_email_irt(
 async def get_source(session: plugins.session.SessionObject, permalink: str, raw=False):
     """
         Get the source document for an email, or None
-
-        The caller must check if access is allowed by the parent mbox entry
     """
     assert session.database, DATABASE_NOT_CONNECTED
     try:
@@ -370,11 +365,11 @@ async def query_batch(
         query=es_query,
         preserve_order=preserve_order
     ):
+        is_admin = session.credentials and session.credentials.admin
         docs = []
         for hit in hits:
             doc = hit["_source"]
             # If email was delete/hidden and we're not doing an admin query, ignore it
-            is_admin = session.credentials and session.credentials.admin
             if doc.get("deleted", False) and not is_admin:
                 continue
             if plugins.aaa.can_access_email(session, doc):
