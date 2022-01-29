@@ -44,8 +44,12 @@ import typing
 import uuid
 import yaml
 
+def debug(server, text):
+    if server.api_logger:
+        server.api_logger.debug(text)
+
 async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
-    print('INDATA', indata)
+    debug(server, f'INDATA {indata}')
     redirect_uri = indata.get('redirect_uri')
     code = indata.get('code')
     if redirect_uri:
@@ -55,20 +59,20 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
     elif code:
         # Try to read companion file
         datafile = __file__.replace('.py', '.yaml')
-        print('file', datafile)
+        debug(server, f'file: {datafile}')
         try:
             data =  yaml.safe_load(open(datafile))['oauth_data']
-            print(f'using data from {datafile}')
+            debug(server, f'using data from {datafile}')
             user = indata.get('user', 'user')
             if user in data:
                 data = data[user]
                 data['state'] = indata.get('state')
-                print(f"testauth: {data}")
+                debug(server, f"testauth: {data}")
                 return data
             else:
-                print(f"Could not find record for {user}")
+                debug(server, f"Could not find record for {user}")
         except:
-            print(f'Could not find data file {datafile}')
+           debug(server,  f'Could not find data file {datafile}')
     
     return {"okay": False, "message": "Invalid invocation!"}
 
