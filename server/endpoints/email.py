@@ -44,39 +44,35 @@ async def process(
     if email is None:
         return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 
-    # If email was found, process the request if we are allowed to display it
-    cannot_view = email.get("deleted", False)
-    if session.credentials and session.credentials.admin:
-        cannot_view = False
-    if email and isinstance(email, dict) and not cannot_view:
-        if plugins.aaa.can_access_email(session, email):
-            # Are we fetching an attachment?
-            if not indata.get("attachment"):
-                if not email.get("gravatar"):
-                    email["gravatar"] = plugins.messages.gravatar(email)
-                return email
-            else:
-                fid = indata.get("file")
-                for entry in email.get("attachments", []):
-                    if entry.get("hash") == fid:
-                        ct = entry.get("content_type") or "application/binary"
-                        headers = {
-                            "Content-Type": ct,
-                            "Content-Length": str(entry.get("size")),
-                        }
-                        if "image/" not in ct and "text/" not in ct:
-                            headers["Content-Disposition"] = f"attachment; filename=\"{entry.get('filename')}\""
-                        try:
-                            assert session.database, "Database not connected!"
-                            attachment = await session.database.get(
-                                index=session.database.dbs.db_attachment, id=indata.get("file")
-                            )
-                            if attachment:
-                                blob = base64.decodebytes(attachment["_source"].get("source").encode("utf-8"))
-                                return aiohttp.web.Response(headers=headers, status=200, body=blob)
-                        except plugins.database.DBError:
-                            pass  # attachment not found
-                return aiohttp.web.Response(headers={}, status=404, text="Attachment not found")
+    # If email was found, process the request
+    if email:
+        # Are we fetching an attachment?
+        if not indata.get("attachment"):
+            if not email.get("gravatar"):
+                email["gravatar"] = plugins.messages.gravatar(email)
+            return email
+        else:
+            fid = indata.get("file")
+            for entry in email.get("attachments", []):
+                if entry.get("hash") == fid:
+                    ct = entry.get("content_type") or "application/binary"
+                    headers = {
+                        "Content-Type": ct,
+                        "Content-Length": str(entry.get("size")),
+                    }
+                    if "image/" not in ct and "text/" not in ct:
+                        headers["Content-Disposition"] = f"attachment; filename=\"{entry.get('filename')}\""
+                    try:
+                        assert session.database, "Database not connected!"
+                        attachment = await session.database.get(
+                            index=session.database.dbs.db_attachment, id=indata.get("file")
+                        )
+                        if attachment:
+                            blob = base64.decodebytes(attachment["_source"].get("source").encode("utf-8"))
+                            return aiohttp.web.Response(headers=headers, status=200, body=blob)
+                    except plugins.database.DBError:
+                        pass  # attachment not found
+            return aiohttp.web.Response(headers={}, status=404, text="Attachment not found")
 
     return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 
