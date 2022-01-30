@@ -155,8 +155,6 @@ source:
       type: boolean
     message-id:
       type: keyword
-    permalinks:
-      type: keyword
     source:
       type: binary
 auditlog:

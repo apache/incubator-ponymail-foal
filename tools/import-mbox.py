@@ -393,7 +393,6 @@ class SlurpThread(Thread):
                     try:  # temporary hack to try and find an encoding issue
                         # needs to be replaced by proper exception handling
                         json_source = {
-                            "permalinks": json["permalinks"],
                             "mid": json["dbid"], # this is only needed for bulk_insert to set up the _id
                             "message-id": json["message-id"],
                             "source": archiver.mbox_source(message_raw),
