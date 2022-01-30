@@ -194,7 +194,6 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
     else:
         doc["_source"]["permalinks"] = [doc["_id"]]
 
-    source["_source"]["permalinks"] = doc["_source"]["permalinks"]
     doc["_source"]["dbid"] = hashlib.sha3_256(source_text).hexdigest()
 
     # Add in shortened body for search aggs
