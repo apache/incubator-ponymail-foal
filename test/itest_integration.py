@@ -145,6 +145,8 @@ def test_setup():
         )
     assert res.status_code == 200
 
+    check_auditlog_count(0, admin_cookies) # double-check that the log is empty
+
 def test_lists():
     jzon = requests.get(f"{API_BASE}/preferences").json()
     # print(jzon)
