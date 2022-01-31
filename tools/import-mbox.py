@@ -408,7 +408,7 @@ class SlurpThread(Thread):
                     count += 1
                     if args.verbose and verbose_logger:
                         # TODO optionally show other fields (e.g. From_ line)
-                        verbose_logger.info("MID:%(mid)s MSGID:%(message-id)s", json)
+                        verbose_logger.info("MID:%(mid)s DBID: %(dbid)s MSGID:%(message-id)s", json)
 
                     # Nothing more to do if dry run
                     if args.dry:
