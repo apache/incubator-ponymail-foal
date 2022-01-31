@@ -19,21 +19,35 @@
     Simple endpoint that does a local login
 
 To enable:
+- ensure server/ponymail.yaml contains the following in the oauth section:
+
+oauth:
+  ...
+  authoritative_domains:
+    - localhost
+  admins:
+    - admin@apache.org
+
 - Add the --testendpoints qualifier to the server startup command
   Alternatively copy the files server/test/testauth.[py|.yaml] to the server/endpoints directory
   They can be renamed if necessary, so long as they have the same basename;
   adjust the URLs below to reflect the new name
 
 - then add the following to config.js under pm_config.oauth:
-        test: {
-            name: "Test Auth",
+        user: {
+            name: "Test Auth User",
+            oauth_portal: "http://localhost/api/testauth",
+            oauth_url: "http://localhost/api/testauth"
+        },
+        admin: {
+            name: "Test Auth Admin",
             oauth_portal: "http://localhost/api/testauth",
             oauth_url: "http://localhost/api/testauth"
         },
 (This assumes that the test installation is at http://localhost/. Adjust as necessary.)
 
-This will add an extra option to the login screen.
-Clicking on the "Logon with Test Auth" link will automatically login (without prompting)
+This will add two extra options to the login screen.
+Clicking on either "Test sign in as ..." link will automatically login (without prompting)
 
 The data returned by the login can be changed without restarting: just edit the testauth.yaml file.
 """
@@ -63,7 +77,8 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
         try:
             data =  yaml.safe_load(open(datafile))['oauth_data']
             debug(server, f'using data from {datafile}')
-            user = indata.get('user', 'user')
+            # if the user is not provided, use the key
+            user = indata.get('user', indata.get('key', 'user'))
             if user in data:
                 data = data[user]
                 data['state'] = indata.get('state')
