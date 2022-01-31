@@ -166,13 +166,16 @@ async def process(
         email = await plugins.messages.get_email(session, permalink=doc)
         if email:
 
+            changes = [] # what changes have been seen?
             new_private = indata.get("private", True) # This allows it to be omitted; assume private
              # the property could also be a string, in which case look for explicit public value
             if not isinstance(new_private, bool):
                 new_private = (new_private != 'no') # True unless value is 'no', i.e. public
+            old_private = email.get("private")
             # if property is absent, we want to set it, so don't default it
-            changed_private = (email.get("private") != new_private)
+            changed_private = (old_private != new_private)
             if changed_private:
+                changes.append(f"Privacy: {old_private} => {new_private}")
                 email["private"] = new_private # this does not require the source to be hidden
 
             hide_source = False # we hide the source if any of its derived fields are changed
@@ -181,10 +184,12 @@ async def process(
             if new_from and not email["from"] == new_from:
                 email["from_raw"] = new_from
                 email["from"] = new_from
+                changes.append("Author")
                 hide_source = True
 
             if new_subject and not email["subject"] == new_subject:
                 email["subject"] = new_subject
+                changes.append("Subject")
                 hide_source = True
     
             origin_lid = email["list_raw"]
@@ -196,19 +201,22 @@ async def process(
                     email["list"] = new_lid
                     email["list_raw"] = new_lid
                     email["forum"] = new_lid.strip("<>").replace(".", "@", 1)
+                    changes.append(f"Listid {origin_lid} => {new_lid}")
                     hide_source = True
 
             if new_body and not email["body"] == new_body:
                 email["body"] = new_body
                 email["body_short"] = new_body[:plugins.messages.SHORT_BODY_MAX_LEN+1]
+                changes.append("Body")
                 hide_source = True
 
             if attach_edit is not None:  # Only set if truly editing attachments...
                 email["attachments"] = attach_edit
+                changes.append("Attachments")
                 hide_source = True
 
             # Save edited email
-            if changed_private or hide_source: # something changed
+            if changes: # something changed
                 if "id" in email: # id is not a valid property for mbox
                     del email["id"]
                 await session.database.update(
@@ -229,7 +237,7 @@ async def process(
 
                 # TODO this should perhaps show the actual changes?
                 await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=new_lid,
-                                             log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {new_lid})")
+                                             log= f"Edited email {doc} from {origin_lid} archives. Changes: {', '.join(changes)}")
 
                 return aiohttp.web.Response(headers={}, status=200, text="Email successfully saved")
             else:

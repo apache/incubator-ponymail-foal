@@ -113,8 +113,8 @@ def check_access(email, cookies):
         mid, msgid, listid, private = check_email(email, cookies)
         check_source(mid, msgid, listid, private, cookies)
 
-def check_auditlog_count(count, admin_cookies):
-    jzon = mgmt_get_json({"action": 'log'}, admin_cookies)
+def check_auditlog_count(count, admin_cookies, action_filter=None):
+    jzon = mgmt_get_json({"action": 'log', "filter": action_filter}, admin_cookies)
     assert len(jzon['entries']) == count
     return jzon['entries']
 
@@ -318,14 +318,19 @@ def test_mgmt_edit():
     text = mgmt_get_text(
         {
             "action": 'edit', "document": DOCUMENT_EDIT_TEST,
-            # "from": '', "subject": '', "list": test_list_id, 
-            "body": str(time.time()), "private": False,
+            "body": str(time.time()),
+            "from": str(time.time()),
+            "subject": str(time.time()),
+            "private": False, # default is True
         },
         admin_cookies
         )
     assert text == "Email successfully saved"
 
     check_auditlog_count(3, admin_cookies)
+
+    log = check_auditlog_count(1, admin_cookies, 'edit')[0]['log']
+    assert 'Changes: Author, Subject, Body' in log # This is a fragile test..
 
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
