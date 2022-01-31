@@ -113,8 +113,19 @@ def check_access(email, cookies):
         mid, msgid, listid, private = check_email(email, cookies)
         check_source(mid, msgid, listid, private, cookies)
 
+def check_auditlog_count(count, admin_cookies):
+    jzon = mgmt_get_json({"action": 'log'}, admin_cookies)
+    assert len(jzon['entries']) == count
+    return jzon['entries']
+
 def test_setup():
     # ensure test conditions are correct at the start
+    try:
+        admin_cookies = get_cookies('admin')
+    except Exception as e:
+        pytest.exit(f'Problem accessing server: {e}',1)
+    mgmt_get_text({"action": 'unhide', "document": DOCUMENT_HIDE_TEST}, admin_cookies)
+
     import yaml
     yaml = yaml.safe_load(open("server/ponymail.yaml"))
     dburl = yaml['database']['dburl']
@@ -241,15 +252,10 @@ def test_mgmt_validation():
 
 def test_mgmt_log_before():
     admin_cookies = get_cookies('admin')
-    jzon = mgmt_get_json({"action": 'log'}, admin_cookies)
-    assert len(jzon['entries']) == 0
+    check_auditlog_count(0, admin_cookies)
 
 def test_mgmt_hiding():
     admin_cookies = get_cookies('admin')
-
-    # reset in case of earlier failure
-    text = mgmt_get_text({"action": 'unhide', "document": DOCUMENT_HIDE_TEST}, admin_cookies)
-    assert text == "Unhid 1 emails from archives."
 
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
@@ -263,6 +269,8 @@ def test_mgmt_hiding():
     text = mgmt_get_text({"action": 'hide', "document": DOCUMENT_HIDE_TEST}, admin_cookies)
     assert text == "Hid 1 emails from archives."
 
+    check_auditlog_count(1, admin_cookies)
+
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
         params={"list": TEST_LIST, "domain": TEST_DOMAIN, "emailsOnly": True, "d": 'gte=0d'}
@@ -273,6 +281,8 @@ def test_mgmt_hiding():
 
     text = mgmt_get_text({"action": 'unhide', "document": DOCUMENT_HIDE_TEST}, admin_cookies)
     assert text == "Unhid 1 emails from archives."
+
+    check_auditlog_count(2, admin_cookies)
 
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
@@ -315,6 +325,8 @@ def test_mgmt_edit():
         )
     assert text == "Email successfully saved"
 
+    check_auditlog_count(3, admin_cookies)
+
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
         params={"list": TEST_LIST2, "domain": TEST_DOMAIN, "emailsOnly": True, "d": 'gte=0d'}
@@ -343,5 +355,4 @@ def test_mgmt_edit():
 
 def test_mgmt_log_after():
     admin_cookies = get_cookies('admin')
-    jzon = mgmt_get_json({"action": 'log'}, admin_cookies)
-    assert len(jzon['entries']) == 4
+    check_auditlog_count(3, admin_cookies)
