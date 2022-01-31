@@ -187,12 +187,12 @@ def test_private_stats():
         check_access(email, cookies)
 
 def mgmt_get_text(params, cookies, expected=200):
-    res = requests.post(f"{API_BASE}/mgmt.lua", params=params, cookies=cookies)
+    res = requests.post(f"{API_BASE}/mgmt.json", json=params, cookies=cookies)
     assert res.status_code == expected, res.text
     return res.text
 
 def mgmt_get_json(params, cookies, expected=200):
-    res = requests.post(f"{API_BASE}/mgmt.lua", params=params, cookies=cookies)
+    res = requests.post(f"{API_BASE}/mgmt.json", json=params, cookies=cookies)
     assert res.status_code == expected, res.text
     return res.json()
 
@@ -217,23 +217,26 @@ def test_mgmt_validation():
     text = mgmt_get_text({"action": 'edit'}, admin_cookies, 500)
     assert "ValueError: Document ID is missing or invalid" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": '1234'}, admin_cookies, 500)
+    text = mgmt_get_text({"action": 'edit', "document": None}, admin_cookies, 500)
+    assert "ValueError: Document ID is missing or invalid" in text
+
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "from": 1234}, admin_cookies, 500)
     assert "ValueError: Author field" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": '1234', "from": 'sender'}, admin_cookies, 500)
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "subject": 1234}, admin_cookies, 500)
     assert "ValueError: Subject field" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": '1234', "from": 'sender', "subject": 'Test Email'}, admin_cookies, 500)
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": True}, admin_cookies, 500)
     assert "ValueError: List ID field" in text
 
-    text = mgmt_get_text(
-        {"action": 'edit', "document": '1234', "from": 'sender', "subject": 'Test Email', "list": 'abc'},
-        admin_cookies, 500)
-    assert "ValueError: Email body" in text
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "True"}, admin_cookies, 500)
+    assert "ValueError: List ID field must match" in text
 
     text = mgmt_get_text(
-        {"action": 'edit', "document": '1234', "from": 'sender', "subject": 'Test Email', "list": 'abc', "body": 'body'},
-        admin_cookies, 404)
+        {"action": 'edit', "document": 'abcd', "body": 1234}, admin_cookies, 500)
+    assert "ValueError: Email body" in text
+
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd'}, admin_cookies, 404)
     assert "Email not found!" in text
 
 def test_mgmt_log_before():
@@ -305,7 +308,8 @@ def test_mgmt_edit():
     text = mgmt_get_text(
         {
             "action": 'edit', "document": DOCUMENT_EDIT_TEST,
-            "from": '', "subject": '', "list": test_list_id, "body": time.time(), "private": False,
+            # "from": '', "subject": '', "list": test_list_id, 
+            "body": str(time.time()), "private": False,
         },
         admin_cookies
         )

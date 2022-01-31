@@ -21,6 +21,7 @@ import plugins.server
 import plugins.session
 import plugins.messages
 import plugins.auditlog
+import re
 import typing
 import aiohttp.web
 
@@ -28,6 +29,7 @@ import aiohttp.web
 # This is was done to make testing easier.
 # There are very few such changes so this should not affect performance unduly
 
+LISTID_RE = re.compile(r"\A<?[-_a-z0-9]+[.@][-_a-z0-9.]+>?\Z")
 
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
@@ -138,71 +140,96 @@ async def process(
         new_from = indata.get("from")
         new_subject = indata.get("subject")
         new_list = indata.get("list")
-        private = indata.get("private", "yes") == "yes" # Assume private unless notified otherwise
         new_body = indata.get("body")
         attach_edit = indata.get("attachments", None)
 
         # Check for consistency so we don't pollute the database
         if not isinstance(doc, str):
             raise ValueError("Document ID is missing or invalid")
-        if not isinstance(new_from, str):
+        # Allow for omitted values
+        if new_from and not isinstance(new_from, str):
             raise ValueError("Author field must be a text string!")
-        if not isinstance(new_subject, str):
+        if new_subject and not isinstance(new_subject, str):
             raise ValueError("Subject field must be a text string!")
-        if not isinstance(new_list, str):
+        if new_list and not isinstance(new_list, str):
             raise ValueError("List ID field must be a text string!")
-        if not isinstance(new_body, str):
+        if new_list and not re.match(LISTID_RE, new_list):
+            raise ValueError("List ID field must match listname[@.]domain !")
+        if new_body and not isinstance(new_body, str):
             raise ValueError("Email body must be a text string!")
-
-        # Convert List-ID after verification
-        lid = "<" + new_list.strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
 
         email = await plugins.messages.get_email(session, permalink=doc)
         if email:
-            # Test if only privacy may have changed
-            privacy_only = (
-                    attach_edit is None and
-                    email["from"] == new_from and
-                    email["subject"] == new_subject and
-                    email["list"] == lid and
-                    email["body"] == new_body
-            )
-            email["from_raw"] = new_from
-            email["from"] = new_from
-            email["subject"] = new_subject
-            email["private"] = private
+
+            new_private = indata.get("private", True) # This allows it to be omitted; assume private
+             # the property could also be a string, in which case look for explicit public value
+            if not isinstance(new_private, bool):
+                new_private = (new_private != 'no') # True unless value is 'no', i.e. public
+            # if property is absent, we want to set it, so don't default it
+            changed_private = (email.get("private") != new_private)
+            if changed_private:
+                email["private"] = new_private # this does not require the source to be hidden
+
+            hide_source = False # we hide the source if any of its derived fields are changed
+
+            # have any derived fields changed?
+            if new_from and not email["from"] == new_from:
+                email["from_raw"] = new_from
+                email["from"] = new_from
+                hide_source = True
+
+            if new_subject and not email["subject"] == new_subject:
+                email["subject"] = new_subject
+                hide_source = True
+    
             origin_lid = email["list_raw"]
-            email["list"] = lid
-            email["list_raw"] = lid
-            email["forum"] = lid.strip("<>").replace(".", "@", 1)
-            email["body"] = new_body
-            email["body_short"] = new_body[:plugins.messages.SHORT_BODY_MAX_LEN+1]
+            new_lid = origin_lid # needed for audit log
+            if new_list:
+                # Convert List-ID after verification
+                new_lid = "<" + new_list.strip("<>").replace("@", ".") + ">"  # foo@bar.baz -> <foo.bar.baz>
+                if not new_lid == origin_lid:
+                    email["list"] = new_lid
+                    email["list_raw"] = new_lid
+                    email["forum"] = new_lid.strip("<>").replace(".", "@", 1)
+                    hide_source = True
+
+            if new_body and not email["body"] == new_body:
+                email["body"] = new_body
+                email["body_short"] = new_body[:plugins.messages.SHORT_BODY_MAX_LEN+1]
+                hide_source = True
+
             if attach_edit is not None:  # Only set if truly editing attachments...
                 email["attachments"] = attach_edit
+                hide_source = True
 
             # Save edited email
-            if "id" in email: # id is not a valid property for mbox
-                del email["id"]
-            await session.database.update(
-                index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"], refresh='wait_for',
-            )
+            if changed_private or hide_source: # something changed
+                if "id" in email: # id is not a valid property for mbox
+                    del email["id"]
+                await session.database.update(
+                    index=session.database.dbs.db_mbox, body={"doc": email}, id=email["mid"], refresh='wait_for',
+                )
 
-            # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
-            # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
-            if not privacy_only:
-                source = await plugins.messages.get_source(session, permalink=email["dbid"], raw=True)
-                if source:
-                    docid = source["_id"]
-                    source = source["_source"]
-                    source["deleted"] = True
-                    await session.database.update(
-                        index=session.database.dbs.db_source, body={"doc": source}, id=docid, refresh='wait_for',
-                    )
+                # Fetch source, mark as deleted (modified) and save IF anything but just privacy changed
+                # We do this, as we can't edit the source easily, so we mark it as off-limits instead.
+                if hide_source:
+                    source = await plugins.messages.get_source(session, permalink=email["dbid"], raw=True)
+                    if source:
+                        docid = source["_id"]
+                        source = source["_source"]
+                        source["deleted"] = True
+                        await session.database.update(
+                            index=session.database.dbs.db_source, body={"doc": source}, id=docid, refresh='wait_for',
+                        )
 
-            await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=lid,
-                                             log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {lid})")
+                # TODO this should perhaps show the actual changes?
+                await plugins.auditlog.add_entry(session, action="edit", target=doc, lid=new_lid,
+                                             log= f"Edited email {doc} from {origin_lid} archives ({origin_lid} -> {new_lid})")
 
-            return aiohttp.web.Response(headers={}, status=200, text="Email successfully saved")
+                return aiohttp.web.Response(headers={}, status=200, text="Email successfully saved")
+            else:
+                raise ValueError("No changes made!")
+
         return aiohttp.web.Response(headers={}, status=404, text="Email not found!")
 
     return aiohttp.web.Response(headers={}, status=404, text="Unknown mgmt command requested")
