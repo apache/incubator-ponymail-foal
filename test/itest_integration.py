@@ -130,7 +130,7 @@ def test_setup():
     yaml = yaml.safe_load(open("server/ponymail.yaml"))
     dburl = yaml['database']['dburl']
     from requests.compat import urljoin
-    path = urljoin(dburl, "ponymail-auditlog/_delete_by_query")
+    path = urljoin(dburl, "ponymail-auditlog/_delete_by_query?refresh=true")
     res = requests.post(
         path,
         json={ "query": { "match_all": {} }},
