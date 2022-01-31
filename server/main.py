@@ -134,7 +134,12 @@ class Server(plugins.server.BaseServer):
         # We are backwards compatible with the old Lua interface URLs
         body_type = "form"
         # Support URLs of form /api/handler/extra?query
-        handler = request.path.split("/")[2]
+        parts = request.path.split("/")
+        if len(parts) < 3:
+            return aiohttp.web.Response(
+                headers=headers, status=404, text="API Endpoint not found!"
+            )
+        handler = parts[2]
         # handle test requests
         if self.stoppable and handler == 'stop':
             self.background_event.set()
