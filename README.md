@@ -47,6 +47,7 @@ Migration of the old database is required, and most of the older ID generators h
 been dropped in favor of collision-secure generators._
 
 ### Known Limitations:
+* Not currently suitable as a list archive, as not all emails received for a list are stored.
 * If an email is re-imported or archived, entries are currently replaced.
  This can result in loss of attributes such as alternate Permalinks and deleted status.
 * The migration tool drops Permalinks if two existing entries point to a sufficiently similar email
