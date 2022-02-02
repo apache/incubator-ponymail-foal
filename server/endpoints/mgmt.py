@@ -166,6 +166,12 @@ async def process(
         if new_body and not isinstance(new_body, str):
             return user_error("Email body must be a text string!")
 
+        # extra list validation
+        if new_list:
+            new_forum = new_list.strip("<>").replace(".", "@", 1)
+            if not new_forum in server.data.lists:
+                return user_error(f"New list id: '{new_forum}' is not an existing list")
+
         email = await plugins.messages.get_email(session, permalink=doc)
         if email:
 
@@ -203,7 +209,7 @@ async def process(
                 if not new_lid == origin_lid:
                     email["list"] = new_lid
                     email["list_raw"] = new_lid
-                    email["forum"] = new_lid.strip("<>").replace(".", "@", 1)
+                    email["forum"] = new_forum
                     changes.append(f"Listid {origin_lid} => {new_lid}")
                     hide_source = True
 

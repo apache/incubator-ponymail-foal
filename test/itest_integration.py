@@ -245,6 +245,12 @@ def test_mgmt_validation():
     text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "True"}, admin_cookies, 400)
     assert "List ID field must match" in text
 
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "a.b.c.d"}, admin_cookies, 400)
+    assert "is not an existing list" in text
+
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "dev.ponymail.apache.org"}, admin_cookies, 404)
+    assert "Email not found!" in text
+
     text = mgmt_get_text(
         {"action": 'edit', "document": 'abcd', "body": 1234}, admin_cookies, 400)
     assert "Email body" in text
