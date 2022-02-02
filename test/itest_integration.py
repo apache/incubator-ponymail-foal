@@ -227,27 +227,27 @@ def test_mgmt_validation():
     text = mgmt_get_text({"action": 'delatt'}, admin_cookies)
     assert text == "Removed 0 attachments from archives."
 
-    text = mgmt_get_text({"action": 'edit'}, admin_cookies, 500)
-    assert "ValueError: Document ID is missing or invalid" in text
+    text = mgmt_get_text({"action": 'edit'}, admin_cookies, 400)
+    assert "Document ID is missing or invalid" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": None}, admin_cookies, 500)
-    assert "ValueError: Document ID is missing or invalid" in text
+    text = mgmt_get_text({"action": 'edit', "document": None}, admin_cookies, 400)
+    assert "Document ID is missing or invalid" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "from": 1234}, admin_cookies, 500)
-    assert "ValueError: Author field" in text
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "from": 1234}, admin_cookies, 400)
+    assert "Author field" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "subject": 1234}, admin_cookies, 500)
-    assert "ValueError: Subject field" in text
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "subject": 1234}, admin_cookies, 400)
+    assert "Subject field" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": True}, admin_cookies, 500)
-    assert "ValueError: List ID field" in text
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": True}, admin_cookies, 400)
+    assert "List ID field" in text
 
-    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "True"}, admin_cookies, 500)
-    assert "ValueError: List ID field must match" in text
+    text = mgmt_get_text({"action": 'edit', "document": 'abcd', "list": "True"}, admin_cookies, 400)
+    assert "List ID field must match" in text
 
     text = mgmt_get_text(
-        {"action": 'edit', "document": 'abcd', "body": 1234}, admin_cookies, 500)
-    assert "ValueError: Email body" in text
+        {"action": 'edit', "document": 'abcd', "body": 1234}, admin_cookies, 400)
+    assert "Email body" in text
 
     text = mgmt_get_text({"action": 'edit', "document": 'abcd'}, admin_cookies, 404)
     assert "Email not found!" in text
