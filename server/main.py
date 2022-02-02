@@ -89,7 +89,7 @@ class Server(plugins.server.BaseServer):
         pool_size = self.config.database.pool_size
         if pool_size < 1:
             raise ValueError(f"pool_size {pool_size} must be > 0")
-        for _ in range(1, pool_size):
+        for _ in range(0, pool_size): # stop value is exclusive
             self.dbpool.put_nowait(plugins.database.Database(self.config.database))
 
         # Load each URL endpoint
