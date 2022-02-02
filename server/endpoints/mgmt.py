@@ -31,6 +31,9 @@ import aiohttp.web
 
 LISTID_RE = re.compile(r"\A<?[-_a-z0-9]+[.@][-_a-z0-9.]+>?\Z")
 
+def user_error(msg):
+    return aiohttp.web.Response(headers={}, status=400, text=msg)
+
 async def process(
     server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Union[dict, aiohttp.web.Response]:
@@ -150,18 +153,18 @@ async def process(
 
         # Check for consistency so we don't pollute the database
         if not isinstance(doc, str):
-            raise ValueError("Document ID is missing or invalid")
+            return user_error("Document ID is missing or invalid")
         # Allow for omitted values
         if new_from and not isinstance(new_from, str):
-            raise ValueError("Author field must be a text string!")
+            return user_error("Author field must be a text string!")
         if new_subject and not isinstance(new_subject, str):
-            raise ValueError("Subject field must be a text string!")
+            return user_error("Subject field must be a text string!")
         if new_list and not isinstance(new_list, str):
-            raise ValueError("List ID field must be a text string!")
+            return user_error("List ID field must be a text string!")
         if new_list and not re.match(LISTID_RE, new_list):
-            raise ValueError("List ID field must match listname[@.]domain !")
+            return user_error("List ID field must match listname[@.]domain !")
         if new_body and not isinstance(new_body, str):
-            raise ValueError("Email body must be a text string!")
+            return user_error("Email body must be a text string!")
 
         email = await plugins.messages.get_email(session, permalink=doc)
         if email:
@@ -241,7 +244,7 @@ async def process(
 
                 return aiohttp.web.Response(headers={}, status=200, text="Email successfully saved")
             else:
-                raise ValueError("No changes made!")
+                return user_error("No changes made!")
 
         return aiohttp.web.Response(headers={}, status=404, text="Email not found!")
 
