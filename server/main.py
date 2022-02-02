@@ -235,16 +235,19 @@ class Server(plugins.server.BaseServer):
             % (self.config.server.ip, self.config.server.port)
         )
         await plugins.background.run_tasks(self)
+        await self.cleanup()
+        await site.stop() # try to clean up
+
+    async def cleanup(self):
         while not self.dbpool.empty():
             await self.dbpool.get_nowait().client.close()
-        await site.stop() # try to clean up
 
     def run(self):
         loop = asyncio.get_event_loop()
         try:
             loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
-            pass
+            loop.run_until_complete(self.cleanup())
         loop.close()
 
 
