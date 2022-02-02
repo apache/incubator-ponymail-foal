@@ -247,6 +247,7 @@ class Server(plugins.server.BaseServer):
         try:
             loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
+            self.background_event.set()
             loop.run_until_complete(self.cleanup())
         loop.close()
 
