@@ -240,6 +240,7 @@ async def run_tasks(server: plugins.server.BaseServer) -> None:
     server.library_version = ".".join([str(v) for v in ES_VERSION])
     db = plugins.database.Database(server.config.database)
     server.engine_version = (await db.info())['version']['number']
+    await db.client.close()
 
     while True:
         await get_data(server)

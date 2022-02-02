@@ -235,6 +235,8 @@ class Server(plugins.server.BaseServer):
             % (self.config.server.ip, self.config.server.port)
         )
         await plugins.background.run_tasks(self)
+        while not self.dbpool.empty():
+            await self.dbpool.get_nowait().client.close()
         await site.stop() # try to clean up
 
     def run(self):
