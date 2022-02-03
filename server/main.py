@@ -244,6 +244,7 @@ class Server(plugins.server.BaseServer):
 
     def run(self):
         loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         try:
             loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
