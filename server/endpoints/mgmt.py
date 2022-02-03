@@ -211,7 +211,6 @@ async def process(
                     email["list_raw"] = new_lid
                     email["forum"] = new_forum
                     changes.append(f"Listid {origin_lid} => {new_lid}")
-                    hide_source = True
 
             if new_body and not email["body"] == new_body:
                 email["body"] = new_body

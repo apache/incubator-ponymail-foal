@@ -126,6 +126,18 @@ def test_setup():
         pytest.exit(f'Problem accessing server: {e}',1)
     mgmt_get_text({"action": 'unhide', "document": DOCUMENT_HIDE_TEST}, admin_cookies)
 
+    try:
+        mgmt_get_text(
+        {
+            "action": 'edit', "document": DOCUMENT_EDIT_TEST,
+            "list": 'dev.ponymail.apache.org',
+            "private": False, # default is True
+        },
+        admin_cookies
+        )
+    except:
+        pass
+
     import yaml
     yaml = yaml.safe_load(open("server/ponymail.yaml"))
     dburl = yaml['database']['dburl']
@@ -322,6 +334,32 @@ def test_mgmt_edit():
     assert res.status_code == 200
     assert res.text.startswith('From dev-return-')
 
+    text = mgmt_get_text(
+        {
+            "action": 'edit', "document": DOCUMENT_EDIT_TEST,
+            "list": 'users.ponymail.apache.org',
+            "private": False, # default is True
+        },
+        admin_cookies
+        )
+    assert text == "Email successfully saved"
+
+    check_auditlog_count(3, admin_cookies)
+    check_access(email, None) # should not change access rights
+
+    text = mgmt_get_text(
+        {
+            "action": 'edit', "document": DOCUMENT_EDIT_TEST,
+            "list": 'dev.ponymail.apache.org',
+            "private": False, # default is True
+        },
+        admin_cookies
+        )
+    assert text == "Email successfully saved"
+
+    check_auditlog_count(4, admin_cookies)
+    check_access(email, None) # should not change access rights
+
     # N.B. use variable body so it is always changed, even after a reset
     text = mgmt_get_text(
         {
@@ -335,9 +373,9 @@ def test_mgmt_edit():
         )
     assert text == "Email successfully saved"
 
-    check_auditlog_count(3, admin_cookies)
+    check_auditlog_count(5, admin_cookies)
 
-    log = check_auditlog_count(1, admin_cookies, 'edit')[0]['log']
+    log = check_auditlog_count(3, admin_cookies, 'edit')[0]['log']
     assert 'Changes: Author, Subject, Body' in log # This is a fragile test..
 
     jzon = requests.get(
@@ -368,4 +406,4 @@ def test_mgmt_edit():
 
 def test_mgmt_log_after():
     admin_cookies = get_cookies('admin')
-    check_auditlog_count(3, admin_cookies)
+    check_auditlog_count(5, admin_cookies)
