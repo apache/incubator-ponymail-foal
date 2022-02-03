@@ -243,8 +243,11 @@ class Server(plugins.server.BaseServer):
             await self.dbpool.get_nowait().client.close()
 
     def run(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        # Does not work; GH test fails with: RuntimeError: Task .. got Future <Future pending> attached to a different loop
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
+        # revert to original (deprecated) code
+        loop = asyncio.get_event_loop() # This needs to be replaced, as it will fail in Python 3.11
         try:
             loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
