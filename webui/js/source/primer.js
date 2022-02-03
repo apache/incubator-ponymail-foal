@@ -130,7 +130,7 @@ function parseURL(state) {
     // Are we initiating a search?
     if (query) {
         state.search = true;
-        state.query = query;
+        state.query = decodeURIComponent(query);
         state.date = month;
     }
     // If hitting the refresh button, don't refresh preferences, just do the search.
