@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'f081cf0';
+const PONYMAIL_REVISION = 'a4ed0ec';
 
 
 /******************************************
@@ -3565,7 +3565,7 @@ function parseURL(state) {
     // Are we initiating a search?
     if (query) {
         state.search = true;
-        state.query = query;
+        state.query = decodeURIComponent(query);
         state.date = month;
     }
     // If hitting the refresh button, don't refresh preferences, just do the search.
