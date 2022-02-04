@@ -70,6 +70,7 @@ class Server(plugins.server.BaseServer):
         print(
             "==== Apache Pony Mail (Foal v/%s ~%s) starting... ====" % (PONYMAIL_FOAL_VERSION, PONYMAIL_SERVER_VERSION)
         )
+        self.args = args
         # Load configuration
         yml = yaml.safe_load(open(args.config))
         self.config = plugins.configuration.Configuration(yml)
@@ -243,11 +244,13 @@ class Server(plugins.server.BaseServer):
             await self.dbpool.get_nowait().client.close()
 
     def run(self):
+        if self.args.new_loop:
         # Does not work; GH test fails with: RuntimeError: Task .. got Future <Future pending> attached to a different loop
-        # loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(loop)
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
         # revert to original (deprecated) code
-        loop = asyncio.get_event_loop() # This needs to be replaced, as it will fail in Python 3.11
+        else:
+            loop = asyncio.get_event_loop() # This needs to be replaced, as it will fail in Python 3.11
         try:
             loop.run_until_complete(self.server_loop())
         except KeyboardInterrupt:
@@ -289,6 +292,12 @@ if __name__ == "__main__":
         "--testendpoints",
         action='store_true',
         help="Enable test endpoints",
+    )
+    # temporary hack to allow testing alternate loop code on GH python versions
+    parser.add_argument(
+        "--new_loop",
+        action='store_true',
+        help="test new loop impl",
     )
     cliargs = parser.parse_args()
     Server(cliargs).run()
