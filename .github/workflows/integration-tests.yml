@@ -52,7 +52,7 @@ jobs:
     - name: Setup python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.7'
+        python-version: '3.10'
         architecture: x64
     - name: Install dependencies
       run: |
@@ -95,7 +95,7 @@ jobs:
     - name: Server
       run: |
         cd server
-        python -u main.py --apilog DEBUG --logger DEBUG --stoppable --refreshable --testendpoints > main.log 2>&1 &
+        python -u main.py --apilog DEBUG --logger DEBUG --stoppable --refreshable --testendpoints --new_loop > main.log 2>&1 &
         sleep 5 # allow time to start up properly
         curl -sq http://localhost:8080/api/refresh # This will fail if the server is not ready
     - name: Show Database
