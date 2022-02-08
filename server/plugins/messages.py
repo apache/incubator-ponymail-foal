@@ -228,14 +228,14 @@ async def get_email(
             # If using old shortened hex IDs, regexp for them instead of a direct match
             if len(permalink) == OLD_SHORTENED_ID_LENGTH and re.match(r"^[a-f0-9]+$", permalink):
                 permalink += ".+"
-                aggtype = "regexp"
+                matchtype = "regexp"
             else:
-                aggtype = "term"
+                matchtype = "term"
             res = await session.database.search(
                 index=doctype,
                 size=1,
                 body={
-                    "query": {"bool": {"must": [{aggtype: {"permalinks": permalink}}]}}
+                    "query": {"bool": {"must": [{matchtype: {"permalinks": permalink}}]}}
                 },
             )
             if len(res["hits"]["hits"]) == 1:
