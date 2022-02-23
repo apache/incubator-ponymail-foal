@@ -17,9 +17,6 @@
 # limitations under the License.
 
 import argparse
-import email.errors
-import email.header
-import email.utils
 import glob
 import gzip
 import hashlib
@@ -276,7 +273,7 @@ class SlurpThread(Thread):
                     file = MboxoReader(file)
                 message_raw = file.read()
                 file.close()
-                message = archiver.parse_message(message_raw)
+                message = archiver.parse_message(message_raw, policy=archiver.policy)
                 if not message:
                     self.printid("Message %u could not be extracted from %s, ignoring it" % (key, tmpname))
                     continue
