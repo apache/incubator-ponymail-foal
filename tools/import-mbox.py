@@ -273,7 +273,7 @@ class SlurpThread(Thread):
                     file = MboxoReader(file)
                 message_raw = file.read()
                 file.close()
-                message = archiver.parse_message(message_raw, policy=archiver.policy)
+                message = archiver.parse_message(message_raw)
                 if not message:
                     self.printid("Message %u could not be extracted from %s, ignoring it" % (key, tmpname))
                     continue
