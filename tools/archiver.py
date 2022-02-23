@@ -118,6 +118,9 @@ def mbox_source(b: bytes) -> str:
         # No, so must use base64 to avoid corruption on re-encoding
         return encode_base64(b)
 
+# Common method shared with import-mbox to ensure consistency
+def parse_message(raw_message):
+    return email.message_from_bytes(raw_message, policy=policy)
 
 def parse_attachment(
     part: email.message.Message,
@@ -973,7 +976,7 @@ def main():
         raw_message = input_stream.read()
         
         try:
-            msg = email.message_from_bytes(raw_message, policy=policy)
+            msg = parse_message(raw_message)
         except Exception as err:
             print("STDIN parser exception: %s" % err)
             sys.exit(-1)
