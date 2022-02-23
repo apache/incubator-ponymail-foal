@@ -1,0 +1,90 @@
+Return-Path: 
+ <dev-return-51149-apmail-activemq-dev-archive=activemq.apache.org@activemq.apache.org>
+X-Original-To: apmail-activemq-dev-archive@www.apache.org
+Delivered-To: apmail-activemq-dev-archive@www.apache.org
+Received: from mail.apache.org (hermes.apache.org [140.211.11.3])
+	by minotaur.apache.org (Postfix) with SMTP id CA751182C9
+	for <apmail-activemq-dev-archive@www.apache.org>;
+ Thu, 14 May 2015 22:51:52 +0000 (UTC)
+Received: (qmail 34191 invoked by uid 500); 14 May 2015 22:51:52 -0000
+Delivered-To: apmail-activemq-dev-archive@activemq.apache.org
+Received: (qmail 34075 invoked by uid 500); 14 May 2015 22:51:52 -0000
+Mailing-List: contact dev-help@activemq.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:dev-help@activemq.apache.org>
+List-Unsubscribe: <mailto:dev-unsubscribe@activemq.apache.org>
+List-Post: <mailto:dev@activemq.apache.org>
+List-Id: <dev.activemq.apache.org>
+Reply-To: dev@activemq.apache.org
+Delivered-To: mailing list dev@activemq.apache.org
+Received: (qmail 33850 invoked by uid 99); 14 May 2015 22:51:52 -0000
+Received: from git1-us-west.apache.org (HELO git1-us-west.apache.org)
+ (140.211.11.23)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Thu, 14 May 2015 22:51:52 +0000
+Received: by git1-us-west.apache.org (ASF Mail Server at
+ git1-us-west.apache.org, from userid 33)
+	id 27AE7E442C; Thu, 14 May 2015 21:35:33 +0000 (UTC)
+From: thiagokronig <git@git.apache.org>
+To: dev@activemq.apache.org
+Reply-To: dev@activemq.apache.org
+Message-ID: <git-pr-262-activemq-artemis@git.apache.org>
+Subject: [GitHub] activemq-artemis pull request: Make Topology
+ non-serializable and ...
+Content-Type: text/plain
+Date: Thu, 14 May 2015 21:35:33 +0000 (UTC)
+
+GitHub user thiagokronig opened a pull request:
+
+    https://github.com/apache/activemq-artemis/pull/262
+
+    Make Topology non-serializable and also improve constructor
+
+    Topology serialization is already broken at this point, as its `topologyListeners` are not Serializable themselves.
+    
+    Also, all the `executor` logic was simplified by making it `final`, defined at the constructor.
+
+You can merge this pull request into a Git repository by running:
+
+    $ git pull https://github.com/thiagokronig/activemq-artemis topology
+
+Alternatively you can review and apply these changes as the patch at:
+
+    https://github.com/apache/activemq-artemis/pull/262.patch
+
+To close this pull request, make a commit to your master/trunk branch
+with (at least) the following in the commit message:
+
+    This closes #262
+    
+----
+commit 59e4f3441571fcc55458628fc21b20c72c816f67
+Author: Thiago Kronig <caa_tkronig@uolinc.com>
+Date:   2015-05-13T23:59:54Z
+
+    Topology should not be Serializable
+    
+    Topology serialization is already broken at this point, as its topologyListeners
+    are not Serializable themselves.
+
+commit 3c6e213f66e661760aebb6902e298e56a84b2b75
+Author: Thiago Kronig <caa_tkronig@uolinc.com>
+Date:   2015-05-14T00:07:23Z
+
+    Topology executor should be final
+
+commit 545e67fc9675ebb24d559e88386408c15f0adc16
+Author: Thiago Kronig <caa_tkronig@uolinc.com>
+Date:   2015-05-13T23:50:30Z
+
+    Fix typos and string concat in Topology
+
+----
+
+
+---
+If your project is set up for it, you can reply to this email and have your
+reply appear on GitHub as well. If your project does not have this feature
+enabled and wishes so, or if the feature is enabled but not working, please
+contact infrastructure at infrastructure@apache.org or file a JIRA ticket
+with INFRA.
+---

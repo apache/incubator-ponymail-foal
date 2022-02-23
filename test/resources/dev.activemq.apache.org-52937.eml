@@ -1,0 +1,89 @@
+Return-Path: 
+ <dev-return-52937-apmail-activemq-dev-archive=activemq.apache.org@activemq.apache.org>
+X-Original-To: apmail-activemq-dev-archive@www.apache.org
+Delivered-To: apmail-activemq-dev-archive@www.apache.org
+Received: from mail.apache.org (hermes.apache.org [140.211.11.3])
+	by minotaur.apache.org (Postfix) with SMTP id 9FE4118F8D
+	for <apmail-activemq-dev-archive@www.apache.org>;
+ Thu, 10 Dec 2015 21:45:01 +0000 (UTC)
+Received: (qmail 57604 invoked by uid 500); 10 Dec 2015 21:45:01 -0000
+Delivered-To: apmail-activemq-dev-archive@activemq.apache.org
+Received: (qmail 57540 invoked by uid 500); 10 Dec 2015 21:45:01 -0000
+Mailing-List: contact dev-help@activemq.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:dev-help@activemq.apache.org>
+List-Unsubscribe: <mailto:dev-unsubscribe@activemq.apache.org>
+List-Post: <mailto:dev@activemq.apache.org>
+List-Id: <dev.activemq.apache.org>
+Reply-To: dev@activemq.apache.org
+Delivered-To: mailing list dev@activemq.apache.org
+Received: (qmail 57528 invoked by uid 99); 10 Dec 2015 21:45:01 -0000
+Received: from git1-us-west.apache.org (HELO git1-us-west.apache.org)
+ (140.211.11.23)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Thu, 10 Dec 2015 21:45:01 +0000
+Received: by git1-us-west.apache.org (ASF Mail Server at
+ git1-us-west.apache.org, from userid 33)
+	id 0C9B8E17E0; Thu, 10 Dec 2015 21:45:01 +0000 (UTC)
+From: clebertsuconic <git@git.apache.org>
+To: dev@activemq.apache.org
+Reply-To: dev@activemq.apache.org
+Message-ID: <git-pr-262-activemq-artemis@git.apache.org>
+Subject: [GitHub] activemq-artemis pull request: chages made after a few
+ performance...
+Content-Type: text/plain
+Date: Thu, 10 Dec 2015 21:45:01 +0000 (UTC)
+
+GitHub user clebertsuconic opened a pull request:
+
+    https://github.com/apache/activemq-artemis/pull/262
+
+    chages made after a few performance tests
+
+    
+
+You can merge this pull request into a Git repository by running:
+
+    $ git pull https://github.com/clebertsuconic/activemq-artemis native
+
+Alternatively you can review and apply these changes as the patch at:
+
+    https://github.com/apache/activemq-artemis/pull/262.patch
+
+To close this pull request, make a commit to your master/trunk branch
+with (at least) the following in the commit message:
+
+    This closes #262
+    
+----
+commit 584218b5ea65873b667fa6af8e2c93909350f977
+Author: Clebert Suconic <clebertsuconic@apache.org>
+Date:   2015-12-09T01:07:08Z
+
+    one-test script to help running tests
+
+commit a1feb1925fa1188711bb5e72b7d27215cd162f61
+Author: Clebert Suconic <clebertsuconic@apache.org>
+Date:   2015-11-25T00:02:42Z
+
+    ARTEMIS-319 Improving Native prealloc and adding test
+    
+    https://issues.apache.org/jira/browse/ARTEMIS-319
+
+commit d4e0e7692a453d7a5a83757f8402432f9c535002
+Author: Clebert Suconic <clebertsuconic@apache.org>
+Date:   2015-12-09T00:09:05Z
+
+    ARTEMIS-320 Refactoring TCP flow control and proper implementation of flow control on consumers
+    
+    https://issues.apache.org/jira/browse/ARTEMIS-320
+
+----
+
+
+---
+If your project is set up for it, you can reply to this email and have your
+reply appear on GitHub as well. If your project does not have this feature
+enabled and wishes so, or if the feature is enabled but not working, please
+contact infrastructure at infrastructure@apache.org or file a JIRA ticket
+with INFRA.
+---

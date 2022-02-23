@@ -21,6 +21,7 @@ import random
 import requests
 
 # Run as: python3 -m pytest [-s] test/itest_integration.py
+# also need to run: python3 main.py --testendpoints
 
 API_BASE='http://localhost:8080/api'
 TEST_DOMAIN = 'ponymail.apache.org'
@@ -29,6 +30,8 @@ TEST_LIST2 = 'dev'
 DOCUMENT_HIDE_TEST = "c396ps3p5pb05srb4269dzcg9j7sof42"
 DOCUMENT_EDIT_TEST = "ffc3s2wzpn4n4pfonk9rffs4mnbk3l65" # dev list
 DOCUMENT_EDIT_SOURCE = "a05f5a472b5e7e6d0ea10162fa9d2b499861258c142dbb7f402454ad23b4af46"
+
+DOMAIN_COUNT = 4 # ponymail, kafka, portals, activemq
 
 # Emulate how test auth is used by GUI
 def get_cookies(user='user'):
@@ -43,6 +46,24 @@ def get_cookies(user='user'):
     jzon = requests.get(f"{API_BASE}/preferences", cookies=cookies).json()
     assert 'credentials' in jzon['login']
     return cookies
+
+def get_email_by_mid(mid, cookies=None, status_code=200):
+    res = requests.get(
+        f"{API_BASE}/email.lua",
+        params={"id": mid},
+        cookies=cookies
+    )
+    assert res.status_code == status_code, mid
+    return res
+
+def get_email_by_msgid(msgid, listid, cookies=None, status_code=200):
+    res = requests.get(
+        f"{API_BASE}/email.lua",
+        params={"id": msgid, "listid": listid},
+        cookies=cookies
+    )
+    assert res.status_code == status_code, msgid
+    return res
 
 def check_email(email, cookies):
     # check email accessibility
@@ -118,6 +139,35 @@ def check_auditlog_count(count, admin_cookies, action_filter=None):
     assert len(jzon['entries']) == count
     return jzon['entries']
 
+ARCHIVE_TESTS = [
+    # Mid, listid, msgid
+    pytest.param(
+        'dx5349o3p57hj6zgs8jhd3z8zwr5j89x', '<jetspeed-user.portals.apache.org>', 
+        '<AB767F0FA88E184295B9FA55AA4617C102BAC3972F@BLR-HCLT-EVS06.HCLT.	CORP.HCL.IN-1AAF5DAB-5B0B-7BC1-7E16-7904B17DF4C8>',
+        id="line-wrap"
+    ),
+    pytest.param(
+        'jovkcx55v2xz31rsvq56mflwdfr0fgdm', '<users.kafka.apache.org>', '<2021111716102807678710@emrubik.com>+942C722077850D4E',
+        id="trailing chars",
+    ),
+    pytest.param(
+        'klc68q4cgcx2jfd8k05tf5l8byzmosyd', '<dev.activemq.apache.org>', '<git-pr-262-activemq-artemis@git.apache.org>',
+        id="dupe msgid 51149"
+    ),
+    pytest.param(
+        'xt4lgkhv63pb8r9nf4g12wc1fbksp98p', '<dev.activemq.apache.org>', '<git-pr-262-activemq-artemis@git.apache.org>',
+        id="dupe msgid 52937",
+        marks=pytest.mark.xfail # fails because does not distiguish duplicates in different months
+    ),
+]
+
+@pytest.mark.parametrize("mid,listid,msgid", ARCHIVE_TESTS, ids=range(1,len(ARCHIVE_TESTS) + 1))
+def test_msgid(mid, listid, msgid):
+        res = get_email_by_mid(mid)
+        assert res.json()['message-id'] == msgid, f"wrong msgid in {mid}" 
+        res = get_email_by_msgid(msgid, listid)
+        assert res.json()['mid'] == mid, f"wrong mid when searching for: {msgid}" 
+
 def test_setup():
     # ensure test conditions are correct at the start
     try:
@@ -165,7 +215,7 @@ def test_lists():
     lists = jzon['lists']
     assert TEST_DOMAIN in lists
     assert TEST_LIST in lists[TEST_DOMAIN]
-    assert len(lists) == 1 # only expecting one domain
+    assert len(lists) == DOMAIN_COUNT
 
 def test_public_stats():
     jzon = requests.get(

@@ -1,0 +1,169 @@
+From users-return-43276-archive-asf-public=cust-asf.ponee.io@kafka.apache.org  Wed Nov 17 08:11:30 2021
+Return-Path: <users-return-43276-archive-asf-public=cust-asf.ponee.io@kafka.apache.org>
+X-Original-To: archive-asf-public@cust-asf.ponee.io
+Delivered-To: archive-asf-public@cust-asf.ponee.io
+Received: from mxout1-ec2-va.apache.org (mxout1-ec2-va.apache.org [3.227.148.255])
+	by mx-eu-03.ponee.io (Postfix) with ESMTPS id 2D1F93E681
+	for <archive-asf-public@cust-asf.ponee.io>; Wed, 17 Nov 2021 09:11:30 +0100 (CET)
+Received: from mail.apache.org (mailroute1-lw-us.apache.org [207.244.88.153])
+	by mxout1-ec2-va.apache.org (ASF Mail Server at mxout1-ec2-va.apache.org) with SMTP id A5FEC4420C
+	for <archive-asf-public@cust-asf.ponee.io>; Wed, 17 Nov 2021 08:10:52 +0000 (UTC)
+Received: (qmail 82986 invoked by uid 500); 17 Nov 2021 08:10:50 -0000
+Mailing-List: contact users-help@kafka.apache.org; run by ezmlm
+Precedence: bulk
+List-Help: <mailto:users-help@kafka.apache.org>
+List-Unsubscribe: <mailto:users-unsubscribe@kafka.apache.org>
+List-Post: <mailto:users@kafka.apache.org>
+List-Id: <users.kafka.apache.org>
+Reply-To: users@kafka.apache.org
+Delivered-To: mailing list users@kafka.apache.org
+Received: (qmail 82966 invoked by uid 99); 17 Nov 2021 08:10:47 -0000
+Received: from spamproc1-he-de.apache.org (HELO spamproc1-he-de.apache.org) (116.203.196.100)
+    by apache.org (qpsmtpd/0.29) with ESMTP; Wed, 17 Nov 2021 08:10:47 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by spamproc1-he-de.apache.org (ASF Mail Server at spamproc1-he-de.apache.org) with ESMTP id 96C991FF4F2
+	for <users@kafka.apache.org>; Wed, 17 Nov 2021 08:10:46 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at spamproc1-he-de.apache.org
+X-Spam-Flag: NO
+X-Spam-Score: 1.368
+X-Spam-Level: *
+X-Spam-Status: No, score=1.368 tagged_above=-999 required=6.31
+	tests=[HTML_MESSAGE=0.2, INVALID_MSGID=1.167, RCVD_IN_MSPIKE_H3=0.001,
+	RCVD_IN_MSPIKE_WL=0.001, SPF_HELO_PASS=-0.001] autolearn=disabled
+Received: from mx1-he-de.apache.org ([116.203.227.195])
+	by localhost (spamproc1-he-de.apache.org [116.203.196.100]) (amavisd-new, port 10024)
+	with ESMTP id 35VlZIsjFIYA for <users@kafka.apache.org>;
+	Wed, 17 Nov 2021 08:10:46 +0000 (UTC)
+Received-SPF: Pass (helo) identity=helo; client-ip=18.132.163.193; helo=smtpbg150.qq.com; envelope-from=wangjh@emrubik.com; receiver=<UNKNOWN> 
+Received: from smtpbg150.qq.com (smtpbg150.qq.com [18.132.163.193])
+	by mx1-he-de.apache.org (ASF Mail Server at mx1-he-de.apache.org) with ESMTPS id 9B4EE7E9AB
+	for <users@kafka.apache.org>; Wed, 17 Nov 2021 08:10:42 +0000 (UTC)
+X-QQ-mid: bizesmtp51t1637136631tqdjwa06
+Received: from wangjh-srkj (unknown [175.160.196.151])
+	by esmtp6.qq.com (ESMTP) with SMTP id 0
+	for <users@kafka.apache.org>; Wed, 17 Nov 2021 16:10:30 +0800 (CST)
+X-QQ-SSF: 00100000002000E0Z000000A0000000
+X-QQ-FEAT: Wot1uufR1NOEca8ypTg9nNPa3mdFupPB/3to+Fa1vwLWcsa6HIcdgGwxa9vy1
+	qxwFBDeZB2xC9iMAThrpKr0t59FfiWtRI3qpjiozd8JYng2rZB0u/w9trNm0d2ITXotSnNa
+	a9z2+fouXdduS1+ivR6Ae3VH3DN7hfuG/LjxBuA5Ox4DKzDsHBrbcNLH2YhB7G5O57j03Ic
+	5y5VNl+MBzKcTDEkVmDt+MCDJxCrErIK8TmkBq+wi+OW0laavKrmiCpVB9ej5ZelEe83D4y
+	xl2dKAJfd8mHyhoyBSCLZN8EvqXuuJtCAgodM7zzN/dWP4wuJe0BVJO6XdJ+nSRKx9uH+/b
+	lntgwxrELuDUZz/kIxSgPSMUAuDnk1qL8K9/YsXNl33JgkG0pERDBOfslm99/wSX+HWpdRo
+	nxutjnINU0uvB4hwBUhbqw==
+X-QQ-GoodBg: 0
+Date: Wed, 17 Nov 2021 16:10:30 +0800
+From: "wangjh@emrubik.com" <wangjh@emrubik.com>
+To: users <users@kafka.apache.org>
+Subject: Hi Team,
+References: <CAH8KkAo9W-PPsu8qBZeA5=O0JddvhhjN7JxGX+woPXRD8yvagQ@mail.gmail.com>
+X-Priority: 3
+X-GUID: DFEFBBAF-56A9-46AF-8867-FE4EEF71532F
+X-Has-Attach: no
+X-Mailer: Foxmail 7, 2, 7, 164[cn]
+Mime-Version: 1.0
+Message-ID: <2021111716102807678710@emrubik.com>+942C722077850D4E
+Content-Type: multipart/related;
+	boundary="----=_001_NextPart257516618777_=----"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:emrubik.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
+
+------=_001_NextPart257516618777_=----
+Content-Type: multipart/alternative;
+	boundary="----=_002_NextPart712133134053_=----"
+
+
+------=_002_NextPart712133134053_=----
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+SGkgVGVhbSwNCg0KSSAgd2FudCBvYnRhaW4gY29uc3VtZXIgZ3JvdXAgaW5mb3JtYXRpb24gdGhy
+b3VnaCB0aGUgS2Fma2EgSkFWQSBBUEkg77yMQXMgc2hvd24gaW4gZmlndXJlDQoNCg0KDQogICAg
+ICAgIFByb3BlcnRpZXMgcHJvcGVydGllcyA9IG5ldyBQcm9wZXJ0aWVzKCk7DQogICAgICAgIHBy
+b3BlcnRpZXMucHV0KENvbW1vbkNsaWVudENvbmZpZ3MuQk9PVFNUUkFQX1NFUlZFUlNfQ09ORklH
+LCAiMTAuMTI3LjE2LjI6OTA5MiIpOw0KDQogICAgICAgIHRyeSB7DQogICAgICAgICAgICBTdHJp
+bmcgZ3JvdXBJZCA9ICJnd2RwLWhkYi1jcS10MSI7DQogICAgICAgICAgICBhZG1pbkNsaWVudCA9
+IEFkbWluQ2xpZW50LmNyZWF0ZShwcm9wZXJ0aWVzKTsNCiAgICAgICAgICAgIERlc2NyaWJlQ29u
+c3VtZXJHcm91cHNSZXN1bHQgZGVzY3JpYmVDb25zdW1lckdyb3Vwc1Jlc3VsdCA9IGFkbWluQ2xp
+ZW50LmRlc2NyaWJlQ29uc3VtZXJHcm91cHMoQXJyYXlzLmFzTGlzdChncm91cElkKSk7DQogICAg
+ICAgICAgICBNYXA8U3RyaW5nLCBLYWZrYUZ1dHVyZTxDb25zdW1lckdyb3VwRGVzY3JpcHRpb24+
+PiBtYXAgPSBkZXNjcmliZUNvbnN1bWVyR3JvdXBzUmVzdWx0LmRlc2NyaWJlZEdyb3VwcygpOw0K
+DQpUaGUgQ29uc3VtZXJHcm91cERlc2NyaXB0aW9uIG9iamVjdCBkb2VzIG5vdCBnZXQgdGhlIGlu
+Zm9ybWF0aW9uLiBob3cgdG8gZ2V0IGl0ID9tYW55IHRoYW5rcyBpbiBhZHZhbmNlDQoNCg==
+
+------=_002_NextPart712133134053_=----
+Content-Type: text/html;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><meta http-equiv=3D"content-type" content=3D"text/html; charse=
+t=3DUTF-8"><style>body { line-height: 1.5; }blockquote { margin-top: 0px; =
+margin-bottom: 0px; margin-left: 0.5em; }body { font-size: 10.5pt; font-fa=
+mily: =E5=BE=AE=E8=BD=AF=E9=9B=85=E9=BB=91; color: rgb(0, 0, 0); line-heig=
+ht: 1.5; }</style></head><body>=0A<div><span></span>Hi Team,</div>=0A<div>=
+<br></div><div><span style=3D"color: rgb(51, 51, 51); font-family: Arial, =
+'Microsoft YaHei', '\\5FAE=E8=BD=AF=E9=9B=85=E9=BB=91', '\\5B8B=E4=BD=93',=
+ 'Malgun Gothic', Meiryo, sans-serif; line-height: 26px; background-color:=
+ rgb(247, 248, 250);">I &nbsp;want obtain consumer group information throu=
+gh the Kafka JAVA API =EF=BC=8C</span><span style=3D"background-color: rgb=
+(247, 248, 250); color: rgb(51, 51, 51); font-family: Arial, 'Microsoft Ya=
+Hei', '\\5FAE=E8=BD=AF=E9=9B=85=E9=BB=91', '\\5B8B=E4=BD=93', 'Malgun Goth=
+ic', Meiryo, sans-serif; line-height: 26px; text-align: justify; font-size=
+: 10.5pt;">As shown in figure</span></div><div><span style=3D"background-c=
+olor: rgb(247, 248, 250); color: rgb(51, 51, 51); font-family: Arial, 'Mic=
+rosoft YaHei', '\\5FAE=E8=BD=AF=E9=9B=85=E9=BB=91', '\\5B8B=E4=BD=93', 'Ma=
+lgun Gothic', Meiryo, sans-serif; line-height: 26px; text-align: justify; =
+font-size: 10.5pt;"><br></span></div><div><img src=3D"cid:_Foxmail.1@1db85=
+da7-df0c-c9f2-3d63-bf3178e5788f" border=3D"0"></div><div><br></div><div><b=
+r></div><div><pre style=3D"color: rgb(8, 8, 8); font-family: 'JetBrains Mo=
+no'; font-size: 9.8pt;">        <span style=3D"color:#000000;">Properties =
+properties </span>=3D <span style=3D"color:#0033b3;">new </span>Properties=
+();<br>        <span style=3D"color:#000000;">properties</span>.put(<span =
+style=3D"color:#000000;">CommonClientConfigs</span>.<span style=3D"color:#=
+871094;font-style:italic;">BOOTSTRAP_SERVERS_CONFIG</span>, <span style=3D=
+"color:#067d17;">"10.127.16.2:9092"</span>);<span style=3D"color:#8c8c8c;f=
+ont-style:italic;"><br></span><span style=3D"color:#8c8c8c;font-style:ital=
+ic;"><br></span><span style=3D"color:#8c8c8c;font-style:italic;">        <=
+/span><span style=3D"color:#0033b3;">try </span>{<span style=3D"color:#8c8=
+c8c;font-style:italic;"><br></span><span style=3D"color:#8c8c8c;font-style=
+:italic;">            </span><span style=3D"color:#000000;">String groupId=
+ </span>=3D <span style=3D"color:#067d17;">"gwdp-hdb-cq-t1"</span>;<br>   =
+         <span style=3D"color:#871094;font-style:italic;">adminClient </sp=
+an>=3D <span style=3D"color:#000000;">AdminClient</span>.<span style=3D"fo=
+nt-style:italic;">create</span>(<span style=3D"color:#000000;">properties<=
+/span>);<br>            <span style=3D"color:#000000;">DescribeConsumerGro=
+upsResult describeConsumerGroupsResult </span>=3D <span style=3D"color:#87=
+1094;font-style:italic;">adminClient</span>.describeConsumerGroups(<span s=
+tyle=3D"color:#000000;">Arrays</span>.<span style=3D"font-style:italic;">a=
+sList</span>(<span style=3D"color:#000000;">groupId</span>));<br>         =
+   <span style=3D"color:#000000;">Map</span>&lt;<span style=3D"color:#0000=
+00;">String</span>, <span style=3D"color:#000000;">KafkaFuture</span>&lt;<=
+span style=3D"color:#000000;">ConsumerGroupDescription</span>&gt;&gt; <spa=
+n style=3D"color:#000000;">map </span>=3D <span style=3D"color:#000000;">d=
+escribeConsumerGroupsResult</span>.describedGroups();</pre></div><div><spa=
+n style=3D"color: rgb(51, 51, 51); font-family: Arial, 'Microsoft YaHei', =
+'\\5FAE=E8=BD=AF=E9=9B=85=E9=BB=91', '\\5B8B=E4=BD=93', 'Malgun Gothic', M=
+eiryo, sans-serif; line-height: 26px; background-color: rgb(247, 248, 250)=
+;"><br></span></div><div><pre style=3D"color: rgb(8, 8, 8); font-family: '=
+JetBrains Mono'; font-size: 9.8pt;"><span style=3D"color: rgb(51, 51, 51);=
+ font-family: Arial, 'Microsoft YaHei', '\\5FAE=E8=BD=AF=E9=9B=85=E9=BB=91=
+', '\\5B8B=E4=BD=93', 'Malgun Gothic', Meiryo, sans-serif; font-size: 14px=
+; line-height: 26px; text-align: justify; white-space: normal; background-=
+color: rgb(247, 248, 250);">The ConsumerGroupDescription object does not g=
+et the information. how to get it ?</span></pre><pre style=3D"color: rgb(8=
+, 8, 8); font-family: 'JetBrains Mono'; font-size: 9.8pt;"><span style=3D"=
+color: rgb(0, 0, 0); font-family: 'Microsoft YaHei UI', Tahoma; font-size:=
+ 14px; line-height: normal; white-space: normal;">many thanks in advance</=
+span></pre></div>=0A<blockquote style=3D"margin-top: 0px; margin-bottom: 0=
+px; margin-left: 0.5em;"><div><br></div><div>=0A</div></blockquote>=0A</bo=
+dy></html>
+------=_002_NextPart712133134053_=------
+
+------=_001_NextPart257516618777_=------
+
+
+
+
+
+

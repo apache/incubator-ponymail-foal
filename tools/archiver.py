@@ -43,6 +43,7 @@ import collections
 import email.header
 import email.utils
 import email.policy
+import email.headerregistry
 import fnmatch
 import hashlib
 import json
@@ -99,10 +100,15 @@ policy_choice = config.get("archiver", "policy", fallback="default")
 policy: typing.Any
 if policy_choice == "compat32":
     policy = email.policy.compat32   # 7bit lines
-elif policy_choice == "smtputf8":
-    policy = email.policy.SMTPUTF8   # 8bit/unicode lines
 else:
-    policy = email.policy.default    # Default (8bit) lines in Python >=3.3
+    if policy_choice == "smtputf8":
+        policy = email.policy.SMTPUTF8.clone()   # 8bit/unicode lines
+    else:
+        policy = email.policy.default.clone()    # Default (8bit) lines in Python >=3.3
+    # email parsing is currently too strict; override the classes
+    policy.header_factory.map_to_type('references', email.headerregistry.UnstructuredHeader)
+    policy.header_factory.map_to_type('message-id', email.headerregistry.UnstructuredHeader)
+
 
 def encode_base64(buff: bytes) -> str:
     """ Convert bytes to base64 as text string (no newlines) """
