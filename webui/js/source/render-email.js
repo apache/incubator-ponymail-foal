@@ -179,7 +179,7 @@ async function render_email(state, json) {
     // permalink button
     let linkbutton = new HTML('a', {
         href: 'thread/%s'.format(json.mid),
-        target: '_self',
+        target: '_blank',
         title: "Permanent link to this email",
         class: 'btn toolbar_btn toolbar_button_link'
     }, new HTML('span', {
@@ -190,7 +190,7 @@ async function render_email(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', {
         href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
-        target: '_self',
+        target: '_blank',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
     }, new HTML('span', {
@@ -202,7 +202,7 @@ async function render_email(state, json) {
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
-            target: '_self',
+            target: '_blank',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'
         }, new HTML('span', {
@@ -311,7 +311,7 @@ async function render_email_chatty(state, json) {
     let linkbutton = new HTML('a', {
         href: 'thread/%s'.format(json.mid),
         title: "Permanent link to this email",
-        target: '_self',
+        target: '_blank',
         class: 'btn toolbar_btn toolbar_button_link'
     }, new HTML('span', {
         class: 'glyphicon glyphicon-link'
@@ -321,7 +321,7 @@ async function render_email_chatty(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', {
         href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
-        target: '_self',
+        target: '_blank',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
     }, new HTML('span', {
@@ -333,7 +333,7 @@ async function render_email_chatty(state, json) {
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(encodeURIComponent(json.mid)),
-            target: '_self',
+            target: '_blank',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'
         }, new HTML('span', {
