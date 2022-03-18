@@ -47,14 +47,15 @@ Migration of the old database is required, and most of the older ID generators h
 been dropped in favor of collision-secure generators._
 
 ### Known Limitations:
-* If an email is re-imported or archived, entries are currently replaced.
- This can result in loss of attributes such as alternate Permalinks and deleted status.
 * emails are filed according to the Date: header, rather than arrival time.
  This can cause emails to appear in the wrong month or year, or even be future-dated.
 * Whilst the underlying database can handle any number of emails in a month,
  the UI and much of the API does not scale well beyond around 10,000 emails per month per list.
+* Re-archiving/importing an email that was previously hidden will unhide it in the archive.
 
 #### Known limitations when migrating from older Pony Mail instances:
+* If an email is re-imported or re-archived after a migration, the database entry is currently fully replaced.
+  This can result in loss of attributes such as alternate Permalinks.
 * The migration tool can drop Permalinks if two existing entries point to a sufficiently similar email
 * The migration tool does not fix up badly-parsed message-ids etc
 * There is no longer a 1-to-1 relationship between mbox and source entries.
