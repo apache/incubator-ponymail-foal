@@ -128,7 +128,7 @@ function parseURL(state) {
         }
     }
     // Are we initiating a search?
-    if (query) {
+    if (query || (month && !month.match(/^\d\d\d\d-\d+$/))) { // single-month isn't a search, but any other date marker is
         state.search = true;
         state.query = decodeURIComponent(query);
         state.date = month;
