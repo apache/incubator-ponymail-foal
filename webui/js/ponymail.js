@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'a4ed0ec';
+const PONYMAIL_REVISION = '7deccb3';
 
 
 /******************************************
@@ -3563,7 +3563,7 @@ function parseURL(state) {
         }
     }
     // Are we initiating a search?
-    if (query) {
+    if (query || (month && !month.match(/^\d\d\d\d-\d+$/))) { // single-month isn't a search, but any other date marker is
         state.search = true;
         state.query = decodeURIComponent(query);
         state.date = month;
@@ -3880,7 +3880,7 @@ async function render_email(state, json) {
     // permalink button
     let linkbutton = new HTML('a', {
         href: 'thread/%s'.format(json.mid),
-        target: '_self',
+        target: '_blank',
         title: "Permanent link to this email",
         class: 'btn toolbar_btn toolbar_button_link'
     }, new HTML('span', {
@@ -3891,7 +3891,7 @@ async function render_email(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', {
         href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
-        target: '_self',
+        target: '_blank',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
     }, new HTML('span', {
@@ -3903,7 +3903,7 @@ async function render_email(state, json) {
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(json.mid),
-            target: '_self',
+            target: '_blank',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'
         }, new HTML('span', {
@@ -4012,7 +4012,7 @@ async function render_email_chatty(state, json) {
     let linkbutton = new HTML('a', {
         href: 'thread/%s'.format(json.mid),
         title: "Permanent link to this email",
-        target: '_self',
+        target: '_blank',
         class: 'btn toolbar_btn toolbar_button_link'
     }, new HTML('span', {
         class: 'glyphicon glyphicon-link'
@@ -4022,7 +4022,7 @@ async function render_email_chatty(state, json) {
     // Source-view button
     let sourcebutton = new HTML('a', {
         href: '%sapi/source.lua?id=%s'.format(G_apiURL, encodeURIComponent(json.mid)),
-        target: '_self',
+        target: '_blank',
         title: "View raw source",
         class: 'btn toolbar_btn toolbar_button_source'
     }, new HTML('span', {
@@ -4034,7 +4034,7 @@ async function render_email_chatty(state, json) {
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.credentials && G_ponymail_preferences.login.credentials.admin) {
         let adminbutton = new HTML('a', {
             href: 'admin/%s'.format(encodeURIComponent(json.mid)),
-            target: '_self',
+            target: '_blank',
             title: "Modify email",
             class: 'btn toolbar_btn toolbar_button_admin'
         }, new HTML('span', {
@@ -4045,6 +4045,7 @@ async function render_email_chatty(state, json) {
 
     text.inject(toolbar);
 }
+
 
 /******************************************
  Fetched from source/scaffolding-html.js
