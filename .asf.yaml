@@ -6,3 +6,4 @@ github:
 
 notifications:
     issues:       issues@ponymail.apache.org
+    jobs:         dev@ponymail.apache.org
