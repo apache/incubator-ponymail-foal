@@ -302,6 +302,7 @@ def rfc6376_reformed_canon(
     head_canon: bool = False,
     body_canon: bool = False,
     lid: Optional[bytes] = None,
+    automatic: bool = False,
 ) -> Tuple[bytes, bytes]:
     r"""
     Splits and then combines an RFC 5322 message.
@@ -324,7 +325,14 @@ def rfc6376_reformed_canon(
     # If any List-Id header is set to the LID, lid is empty
     for (k, v) in headers:
         if k == b"list-id":
-            if v == lid:
+            if automatic is True:
+                sv: bytes = v
+                if b"<" in sv:
+                    sv = sv.split(b"<", 1)[1]
+                sv = sv.lstrip(b" \t").rstrip(b"> \t\r\n")
+                lid = b"<" + sv + b">"
+                break
+            elif v == lid:
                 lid = None
                 break
     # Construct hashable bytes from the parsed message
@@ -332,7 +340,9 @@ def rfc6376_reformed_canon(
 
 
 def rfc6376_rascal(
-    data: bytes, lid: Optional[bytes] = None
+    data: bytes,
+    lid: Optional[bytes] = None,
+    automatic: bool = False,
 ) -> Tuple[bytes, bytes]:
     r"""
     Performs RFC 5322 normalisation.
@@ -348,6 +358,7 @@ def rfc6376_rascal(
         head_canon=True,
         body_canon=True,
         lid=lid,
+        automatic=automatic,
     )
 
 
@@ -381,7 +392,9 @@ def unpibble32(text: str) -> bytes:
     return base64.b32decode(encoded.translate(table))
 
 
-def dkim_id(data: bytes, lid: Optional[bytes] = None) -> str:
+def dkim_id(
+    data: bytes, lid: Optional[bytes] = None, automatic: bool = False
+) -> str:
     """
     The DKIM-ID is the custom base32 encoded truncated SHA-256 HMAC
     As this is fixed length, padding is removed from the output
@@ -390,7 +403,9 @@ def dkim_id(data: bytes, lid: Optional[bytes] = None) -> str:
     '8fgp2do75oqo6qd08vs4p7dpp1gj4vjn'
     """
     hashable: bytes
-    lid, hashable = rfc6376_rascal(data, lid)
+    if (automatic is True) and (lid is not None):
+        raise ValueError("Cannot use lid in automatic mode")
+    lid, hashable = rfc6376_rascal(data, lid, automatic=automatic)
     digest_256: bytes = hmac.digest(lid, hashable, "sha256")
     truncated_bits: int = 160
     return pibble32(digest_256[: truncated_bits // 8])
@@ -400,14 +415,18 @@ def main() -> None:
     from sys import argv
     from typing import BinaryIO
 
+    f: BinaryIO
     if len(argv) == 2:
-        f: BinaryIO
         with open(argv[1], "rb") as f:
             print(dkim_id(f.read()))
-    elif len(argv) == 3: # add lid
-        f: BinaryIO
+    elif len(argv) == 3:  # add lid
+        lid: Optional[bytes] = argv[2].encode("utf-8")
+        automatic: bool = False
+        if lid == b"-":
+            lid = None
+            automatic = True
         with open(argv[1], "rb") as f:
-            print(dkim_id(f.read(), argv[2].encode('utf-8')))
+            print(dkim_id(f.read(), lid, automatic=automatic))
     else:
         from sys import stdin
 
