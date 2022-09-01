@@ -168,7 +168,7 @@ async def process(
 
         # extra list validation
         if new_list:
-            new_forum = new_list.strip("<>").replace(".", "@", 1)
+            new_forum = new_list.strip("<>").replace("@", ".").replace(".", "@", 1)
             if not new_forum in server.data.lists:
                 return user_error(f"New list id: '{new_forum}' is not an existing list")
 
