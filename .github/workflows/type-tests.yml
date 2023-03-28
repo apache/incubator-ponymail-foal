@@ -34,8 +34,7 @@ jobs:
     - name: Type testing with mypy
       run: |
           mypy --cache-dir /tmp/ --install-types
-          mypy --cache-dir /tmp/ --ignore-missing-imports tools/archiver.py
-          mypy --cache-dir /tmp/ --ignore-missing-imports tools/import-mbox.py
-          mypy --cache-dir /tmp/ --ignore-missing-imports server/main.py
+          mypy --cache-dir /tmp/ --ignore-missing-imports tools/*.py
+          mypy --cache-dir /tmp/ --ignore-missing-imports server/*.py
           mypy --cache-dir /tmp/ --ignore-missing-imports server/plugins/*.py
           mypy --cache-dir /tmp/ --ignore-missing-imports server/endpoints/*.py
