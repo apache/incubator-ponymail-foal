@@ -49,6 +49,7 @@ async def process(
     email["children"] = thread
     emails.append(email)
     for email in emails:
+        assert isinstance(email, dict) # ensure mypy is happy with next line; TODO improve?
         plugins.messages.trim_email(email, external=True)
     return {
         "thread": email,

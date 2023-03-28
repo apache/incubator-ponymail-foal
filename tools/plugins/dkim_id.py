@@ -401,11 +401,9 @@ def main() -> None:
     from typing import BinaryIO
 
     if len(argv) == 2:
-        f: BinaryIO
         with open(argv[1], "rb") as f:
             print(dkim_id(f.read()))
     elif len(argv) == 3: # add lid
-        f: BinaryIO
         with open(argv[1], "rb") as f:
             print(dkim_id(f.read(), argv[2].encode('utf-8')))
     else:

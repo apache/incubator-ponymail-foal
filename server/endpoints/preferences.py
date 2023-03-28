@@ -31,12 +31,12 @@ async def process(
 ) -> typing.Union[dict, aiohttp.web.Response]:
 
     versions: dict = {
-        "foal": server.foal_version,
+        "foal": server.foal_version, # type: ignore [attr-defined]
     }
 
     # Require login for this info
     if session.credentials and session.credentials.authoritative:
-        versions["server"] = server.server_version
+        versions["server"] = server.server_version  # type: ignore [attr-defined]
         if session.credentials.admin:
             versions["elasticsearch_engine"] = server.engine_version
             versions["elasticsearch_library"] = server.library_version

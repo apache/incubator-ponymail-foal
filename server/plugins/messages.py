@@ -164,7 +164,7 @@ async def find_parent(session, doc: typing.Dict[str, str]):
 async def fetch_children(session: plugins.session.SessionObject,
         pdoc: dict,
         counter: int = 0,
-        pdocs: dict = None,
+        pdocs: typing.Optional[dict] = None,
         short: bool = False) -> typing.Tuple[list,list,dict]:
     """
     Fetches all accessible child messages of a parent email
@@ -210,9 +210,9 @@ async def fetch_children(session: plugins.session.SessionObject,
 
 async def get_email(
     session: plugins.session.SessionObject,
-    permalink: str = None,
-    messageid: str = None,
-    listid: str = None,
+    permalink: typing.Optional[str] = None,
+    messageid: typing.Optional[str] = None,
+    listid: typing.Optional[str] = None,
 ) -> typing.Optional[dict]:
     """
     Returns a single matching mbox document or None
@@ -589,7 +589,7 @@ class ThreadConstructor:
         return self.threads, self.authors
 
     
-    def find_root_subject(self, root_email: typing.Dict[str, str], osubject: str = None) -> typing.Optional[dict]:
+    def find_root_subject(self, root_email: typing.Dict[str, str], osubject: typing.Optional[str] = None) -> typing.Optional[dict]:
         """Finds the discussion origin of an email, if present"""
         irt = root_email.get("in-reply-to",'')
         subject = root_email.get("subject",'')

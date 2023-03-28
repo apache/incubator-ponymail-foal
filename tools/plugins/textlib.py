@@ -20,7 +20,7 @@
 import re
 import typing
 
-def normalize_lid(lid: str, strict: bool = False) -> str:
+def normalize_lid(lid: str, strict: bool = False) -> typing.Optional[str]:
     """ Ensures that a List ID is in standard form, i.e. <a.b.c.d> """
     # If of format "list name" <foo.bar.baz>
     # we crop away the description (#511)

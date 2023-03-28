@@ -191,7 +191,7 @@ class Body:
     def __init__(self, part: email.message.Message):
         self.content_type = part.get_content_type()
         self.charsets = [part.get_content_charset()]  # Part's charset
-        parent_charset = part.get_charsets()[0]
+        parent_charset = part.get_charsets()[0] # type: ignore [index] # (awaiting typedef fix)
         if parent_charset and parent_charset != self.charsets[0]:
             self.charsets.append(
                 parent_charset

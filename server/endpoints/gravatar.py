@@ -71,6 +71,7 @@ async def fetch_gravatar(gid: str) -> None:
 
 
 async def gravatar_exists_in_db(session: plugins.session.SessionObject, gid: str) -> bool:
+    assert session.database is not None # make mypy happy
     res = await session.database.search(
         index=session.database.dbs.db_mbox,
         size=1,
@@ -81,7 +82,7 @@ async def gravatar_exists_in_db(session: plugins.session.SessionObject, gid: str
     return False
 
 
-async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> aiohttp.web.Response:
+async def process(server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict) -> aiohttp.web.Response:
     gid = indata.get("md5", "null")
     # Ensure md5 hash is valid
     is_valid_md5 = len(gid) == 32 and all(letter in string.hexdigits for letter in gid)
@@ -110,5 +111,5 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
     return aiohttp.web.Response(headers=headers, content_type="image/png", body=gravatar_default)
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

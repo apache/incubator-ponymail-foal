@@ -34,6 +34,7 @@ import hashlib
 import multiprocessing
 import time
 import sys
+import typing
 import archiver
 
 # Increment this number whenever breaking changes happen in the migration workflow:
@@ -47,7 +48,7 @@ MAX_PARALLEL_OPS = max(min(int((cores + 1) * 0.75), cores - 1), 1)
 class MultiDocProcessor:
     """MultiProcess document processor"""
 
-    def __init__(self, old_es_url: str, new_es_url: str, target: callable, num_processes: int = 8, graceful: bool = False):
+    def __init__(self, old_es_url: str, new_es_url: str, target: typing.Callable, num_processes: int = 8, graceful: bool = False):
         self.processes = []
         self.queues = []
         self.target = target
@@ -60,7 +61,7 @@ class MultiDocProcessor:
         self.queue_pointer = 0
         self.num_processes = num_processes
         for _ in range(0, num_processes):
-            q = multiprocessing.Queue()
+            q: multiprocessing.Queue = multiprocessing.Queue()
             p = multiprocessing.Process(
                 target=self.start,
                 args=(

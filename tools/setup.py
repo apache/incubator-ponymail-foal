@@ -275,10 +275,11 @@ while genname == "":
         "2  FULL: Full message digest with MTA trail. Not recommended for clustered setups."
     )
     try:
-        gno = input("Please select a generator (1 or 2) [1]: ")
-        if not gno:
+        ans = input("Please select a generator (1 or 2) [1]: ")
+        if ans:
+            gno = int(ans)
+        else:
             gno = 1
-        gno = int(gno)
         if gno <= len(supported_generators) and supported_generators[gno - 1]:
             genname = supported_generators[gno - 1]
     except ValueError:
@@ -298,19 +299,21 @@ if genname == "dkim" and (nonce is None and not args.defaults and not args.devel
 
 while shards < 1:
     try:
-        shards = input("How many shards for the ElasticSearch index? [3]: ")
-        if not shards:
+        ans = input("How many shards for the ElasticSearch index? [3]: ")
+        if ans:
+            shards = int(ans)
+        else:
             shards = 3
-        shards = int(shards)
     except ValueError:
         pass
 
 while replicas < 0:
     try:
-        replicas = input("How many replicas for each shard? [1]: ")
-        if not replicas:
+        ans = input("How many replicas for each shard? [1]: ")
+        if ans:
+            replicas = int(ans)
+        else:
             replicas = 1
-        replicas = int(replicas)
     except ValueError:
         pass
 
