@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-
 # To be run as: python3 -m pytest test/test_archiver.py
 # This ensures sys.path is set up correctly
 
@@ -37,8 +35,8 @@ def test_archiver_1():
     )
     list_override = 'a.b.c.d'
     private = False
-    file = open("test/resources/rfc2822-A5.eml","rb")
-    message_raw = file.read()
+    mlfile = open("test/resources/rfc2822-A5.eml","rb")
+    message_raw = mlfile.read()
     message = email.message_from_bytes(message_raw, policy=email.policy.SMTPUTF8)
     json, contents, _msgdata, _irt, skipit = archie.compute_updates(
         list_override, private, message, message_raw
@@ -53,6 +51,3 @@ def test_archiver_1():
     print(_irt)
     print("--skipit--")
     print(skipit)
-    # assert False, json
-
-test_archiver_1()

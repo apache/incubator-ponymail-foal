@@ -4,7 +4,6 @@ import sys
 import email
 import gzip
 from email.policy import default
-from email.policy import compat32
 
 class MyHeaderClass(email.headerregistry.UnstructuredHeader):
     @classmethod
