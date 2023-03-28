@@ -178,9 +178,6 @@ class Elastic:
     def scroll(self, **kwargs):
         return self.es.scroll(**kwargs)
 
-    def info(self, **kwargs):
-        return self.es.info(**kwargs)
-
     def bulk(self, actions, **kwargs):
         return helpers.bulk(self.es, actions, **kwargs)
 
