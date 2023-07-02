@@ -408,6 +408,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         """
         body = None
         first_html = None
+        last_random = None
         for part in msg.walk():
             # can be called from importer
             if self.verbose:
@@ -427,8 +428,18 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                     and part.get_content_type() == "text/html"
                 ):
                     first_html = Body(part)
+                elif (
+                    body is None
+                ):
+                    last_random = Body(part)
             except Exception as err:
                 print(err)
+
+
+        if last_random and not first_html and body is None:
+            if bool(config.get("debug","allow_nontext_body", False)):
+                print("No text or html body found, using what we have")
+                body = last_random
 
         # this requires a GPL lib, user will have to install it themselves
         if first_html and (
