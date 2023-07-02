@@ -211,6 +211,11 @@ class Body:
                         break
                     except UnicodeDecodeError:
                         pass
+                    except:
+                        if not bool(config.get("debug","ignore_bad_contenttype", False)):
+                            raise
+                        print(f"Ignoring bad Content-Type: {cs}")
+                        pass
             # If no character set was defined, the email MUST be US-ASCII by RFC822 defaults
             # This isn't always the case, as we're about to discover.
             if not self.string:

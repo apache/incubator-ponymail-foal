@@ -44,3 +44,4 @@ debug:
     #cropout:               string to crop from list-id
     # e.g. Strip out incubator except at top level
     # cropout:                (\w+\.\w+)\.incubator\.apache\.org \1.apache.org
+    #ignore_bad_contenttype:  true # try default content types if email has an invalid one rather than failing
