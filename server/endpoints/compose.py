@@ -59,12 +59,15 @@ async def process(
     # If logged in and everything, prep for dispatch
     if session.credentials and session.credentials.authoritative:
         subject = indata.get("subject")
+        cc = indata.get("cc")
         body = indata.get("body")
         irt = indata.get("in-reply-to")
         references = indata.get("references")
 
         if to and subject and body:
             msg = email.message.EmailMessage()
+            if cc:
+                msg["Cc"] = cc
             if irt:
                 msg["In-reply-to"] = irt
             if references:
