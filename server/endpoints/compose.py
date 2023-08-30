@@ -60,6 +60,7 @@ async def process(
     if session.credentials and session.credentials.authoritative:
         subject = indata.get("subject")
         cc = indata.get("cc")
+        bcc = indata.get("bcc")
         body = indata.get("body")
         irt = indata.get("in-reply-to")
         references = indata.get("references")
@@ -68,6 +69,8 @@ async def process(
             msg = email.message.EmailMessage()
             if cc:
                 msg["Cc"] = cc
+            if bcc:
+                msg["Bcc"] = bcc
             if irt:
                 msg["In-reply-to"] = irt
             if references:
