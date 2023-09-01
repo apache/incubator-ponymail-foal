@@ -86,7 +86,7 @@ function parseOauthResponse(json) {
         console.log("No origin found, defaulting to ./");
         location.href = "./" // TODO: Return to whence we came...
     } else {
-        popup("Oauth failed", "Authentication failed: " + json.msg)
+        alert("Oauth failed: Authentication failed: " + json.message)
     }
 }
 
