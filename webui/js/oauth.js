@@ -30,18 +30,21 @@ function GetAsync(theUrl, xstate, callback) {
     xmlHttp.open("GET", theUrl, true);
     xmlHttp.send(null);
     xmlHttp.onreadystatechange = function(state) {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            if (callback) {
-                try {
-                    callback(JSON.parse(xmlHttp.responseText), xstate);
-                } catch (e) {
-                    callback(JSON.parse(xmlHttp.responseText), xstate)
+        if (xmlHttp.readyState == 4) {
+            if (xmlHttp.status == 200) {
+                if (callback) {
+                    try {
+                        callback(JSON.parse(xmlHttp.responseText), xstate);
+                    } catch (e) {
+                        callback(JSON.parse(xmlHttp.responseText), xstate)
+                    }
                 }
-            }
 
-        }
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 404) {
-            alert("404'ed: " + theUrl)
+            } else if (xmlHttp.status == 404) {
+                alert("404'ed: " + theUrl)
+            } else if (xmlHttp.status >= 500) {
+                alert("Internal error fetching " + theUrl + ": " + xmlHttp.responseText)
+            }
         }
     }
 }
