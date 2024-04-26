@@ -211,6 +211,9 @@ class Body:
                         break
                     except UnicodeDecodeError:
                         pass
+                    except LookupError:
+                        print("Body detected invalid encoding: %s" % cs)
+                        pass
             # If no character set was defined, the email MUST be US-ASCII by RFC822 defaults
             # This isn't always the case, as we're about to discover.
             if not self.string:
@@ -428,7 +431,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 ):
                     first_html = Body(part)
             except Exception as err:
-                print(err)
+                print("Failed to extract Body: %s" % err)
 
         # this requires a GPL lib, user will have to install it themselves
         if first_html and (
