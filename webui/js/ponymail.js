@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'f3a4716';
+const PONYMAIL_REVISION = '5a0f102';
 
 
 /******************************************
@@ -627,7 +627,7 @@ function fixup_quotes(splicer) {
             quote = m[0];
             i = quote.length;
             t = splicer.substr(0, i);
-            quote = quote.replace(/(>*\s*\r?\n)+$/g, "");
+            quote = quote.replace(/\n>[>\s]*$/g, "\n");
             qdiv = new HTML('div', {
                 "class": "email_quote_parent"
             }, [
