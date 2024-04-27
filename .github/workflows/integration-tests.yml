@@ -52,7 +52,8 @@ jobs:
     - name: Setup python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        # 3.12 current as of 2024
+        python-version: '3.12'
         architecture: x64
     - name: Install dependencies
       run: |
