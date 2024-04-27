@@ -1,5 +1,5 @@
 # Items in this file must have a licence compatible with AL 2.0
-PyYAML~=5.4.1                     # WTFPL
+PyYAML~=6.0.1                     # MIT
 # elasticsearch-dsl>=7.0.0,<8.0.0   # AL2.0 - not used by tools currently
 # N.B. ES 7.14 introduces strict server version compatibility checks
 elasticsearch[async]>=7.13.1,<7.14.0  # AL2.0
