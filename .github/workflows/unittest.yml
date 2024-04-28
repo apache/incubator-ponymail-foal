@@ -16,7 +16,7 @@ jobs:
       max-parallel: 1
       matrix:
         # 3.8 EOL 2024-10 approx
-        python-version: [3.8, "3.10", 3.12]
+        python-version: [3.7, 3.8, "3.10", 3.12]
 
     steps:
     - uses: actions/checkout@master
