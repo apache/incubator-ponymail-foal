@@ -61,6 +61,7 @@ jobs:
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
         pip install -r test/requirements.txt
+        pip list
     - name: Basic test
       run: |
         curl -sq "http://localhost:9200/_cluster/health?level=indices&pretty"
