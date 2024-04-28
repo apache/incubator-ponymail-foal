@@ -16,7 +16,7 @@ jobs:
       max-parallel: 1
       matrix:
         # 3.8 EOL 2024-10 approx
-        python-version: [3.7, 3.8, "3.10", 3.12]
+        python-version: [3.8, "3.10", 3.12]
 
     steps:
     - uses: actions/checkout@master
@@ -37,8 +37,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tools/requirements.txt
         pip install -r test/requirements.txt
-        # WARNING: Later versions of html2text cause some tests to fail
-        # It is not yet clear if this is a testing issue or a genuine problem
+        # Later versions of html2text cause html-based tests to fail, because of a changed conversion
+        # This only affects the appearance of the message body, so does not matter for compatibility
         pip install html2text==2020.1.16 # optional dependency, but needed for tests
         pip list
     - name: Check versions
