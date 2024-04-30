@@ -158,6 +158,7 @@ def parse_attachment(
             # Allow for empty string
             if fd is None:
                 return None, None
+            assert(isinstance(fd, bytes)) # decode=True generates bytes
             if filename:
                 attachment = {
                     "content_type": part.get_content_type(),
@@ -202,6 +203,7 @@ class Body:
         self.bytes = part.get_payload(decode=True)
         self.html_as_source = False
         if self.bytes is not None:
+            assert(isinstance(self.bytes, bytes)) # decode=True generates bytes
             valid_encodings = [x for x in self.charsets if x]
             if valid_encodings:
                 for cs in valid_encodings:

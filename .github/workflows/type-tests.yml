@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - '**/integration-tests.yml'
+      - '**/unittest.yml'
       - 'test/itest*'
   
   workflow_dispatch:
@@ -15,7 +16,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        python-version: [3.7, 3.9, "3.10"]
+        # 3.8 EOL 2024-10 approx
+        python-version: [3.8, "3.10", 3.12]
     steps:
     - uses: actions/checkout@master
       with:

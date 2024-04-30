@@ -52,7 +52,8 @@ jobs:
     - name: Setup python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        # 3.12 current as of 2024
+        python-version: '3.12'
         architecture: x64
     - name: Install dependencies
       run: |
@@ -60,6 +61,7 @@ jobs:
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
         pip install -r test/requirements.txt
+        pip list
     - name: Basic test
       run: |
         curl -sq "http://localhost:9200/_cluster/health?level=indices&pretty"

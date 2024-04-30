@@ -13,11 +13,10 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
-      # Ensure 3.7 runs first
       max-parallel: 1
       matrix:
-#         python-version: [2.7, 3.5, 3.6, 3.7]
-        python-version: [3.7, "3.10"]
+        # 3.8 EOL 2024-10 approx
+        python-version: [3.8, "3.10", 3.12]
 
     steps:
     - uses: actions/checkout@master
@@ -38,7 +37,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tools/requirements.txt
         pip install -r test/requirements.txt
-        pip install html2text # optional dependency, but needed for tests
+        # Later versions of html2text cause html-based tests to fail, because of a changed conversion
+        # This only affects the appearance of the message body, so does not matter for compatibility
+        pip install html2text==2020.1.16 # optional dependency, but needed for tests
+        pip list
     - name: Check versions
       run: |
         webui/js/source/build.sh
