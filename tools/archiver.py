@@ -433,7 +433,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 ):
                     first_html = Body(part)
             except Exception as err:
-                print("Failed to extract Body: %s" % err)
+                print('Error on line {}:'.format(sys.exc_info()[-1].tb_lineno), type(err).__name__, err)
 
         # this requires a GPL lib, user will have to install it themselves
         if first_html and (
@@ -764,7 +764,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         # If we have a dump dir and ES failed, push to dump dir instead as a JSON object
         # We'll leave it to another process to pick up the slack.
         except Exception as err:
-            print(err)
+            print('Error on line {}:'.format(sys.exc_info()[-1].tb_lineno), type(err).__name__, err)
             if dump:
                 print(
                     "Pushing to ES failed, but dumponfail specified, dumping JSON docs"
