@@ -17,8 +17,18 @@ function compose_send() {
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
-    document.getElementById('composer_modal').style.display = 'none';
-    modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+    request.onreadystatechange = function(state) {
+        if (request.readyState == 4) {
+            document.getElementById('composer_modal').style.display = 'none';
+            let response = JSON.parse(request.responseText)
+            if (response.error) {
+                modal("Message dispatch failed!", response.error, "error");
+            } else {
+                modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+            }
+        }
+    }
+
 }
 
 function compose_email(replyto, list) {
