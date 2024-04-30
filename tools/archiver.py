@@ -433,7 +433,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
                 ):
                     first_html = Body(part)
             except Exception as err:
-                print('Error on line {}:'.format(sys.exc_info()[-1].tb_lineno), type(err).__name__, err)
+                entry = sys.exc_info()[-1]
+                if entry: # avoid mypy complaint
+                    print('Error on line {}:'.format(entry.tb_lineno), type(err).__name__, err)
+                else: # Should not happen, but just in case
+                    print('Failed to create Body(part):',type(err).__name__, err)
 
         # this requires a GPL lib, user will have to install it themselves
         if first_html and (
