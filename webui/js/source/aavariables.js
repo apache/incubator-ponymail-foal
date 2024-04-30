@@ -29,7 +29,6 @@ let G_current_list = '';
 let G_current_domain = '';
 let G_current_year = 0;
 let G_current_month = 0;
-let G_current_query = '';
 let G_current_open_email = null;
 let G_select_primed = false;
 let G_ponymail_preferences = {};
