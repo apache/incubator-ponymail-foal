@@ -27,7 +27,7 @@ import typing
 import aiohttp.web
 import uuid
 
-COMPOSER_VERSION = "0.4"  # Bump when changing logic
+COMPOSER_VERSION = "0.5"  # Bump when changing logic
 
 async def process(
     server: plugins.server.BaseServer,
@@ -45,16 +45,7 @@ async def process(
         mailhost, _mailport = mailhost.split(":", 1)
         mailport = int(_mailport)
 
-    # Figure out if recipient list is on allowed list
     to = indata.get("to", "")
-    mldomain = to.strip("<>").split("@")[-1]
-    allowed_to_send = False
-    for allowed_domain in server.config.ui.sender_domains.split(" "):
-        if fnmatch.fnmatch(mldomain, allowed_domain):
-            allowed_to_send = True
-            break
-    if not allowed_to_send:
-        return {"error": "Recipient mailing list is not an allowed recipient for emails via the web."}
 
     # If logged in and everything, prep for dispatch
     if session.credentials and session.credentials.authoritative:
@@ -85,6 +76,18 @@ async def process(
             msg["User-Agent"] = "Apache Pony Mail Foal Composer v/%s" % COMPOSER_VERSION
             msg.set_charset("utf-8")
             msg.set_content(body)
+
+            # Figure out if all recipients are on allowed list
+            for recipient in aiosmtplib.email.extract_recipients(msg):
+                mldomain = recipient.split("@")[-1]
+                allowed_to_send = False
+                for allowed_domain in server.config.ui.sender_domains.split(" "):
+                    if fnmatch.fnmatch(mldomain, allowed_domain):
+                        allowed_to_send = True
+                        break
+                if not allowed_to_send:
+                    return {"error": "One of the recipients is not an allowed recipient for emails via the web."}
+
             await aiosmtplib.send(msg, hostname=mailhost, port=mailport)
             return {"okay": True, "message": "Message dispatched!"}
         else:
