@@ -27,7 +27,7 @@ import typing
 import aiohttp.web
 import uuid
 
-COMPOSER_VERSION = "0.4"  # Bump when changing logic
+COMPOSER_VERSION = "0.5"  # Bump when changing logic
 
 async def process(
     server: plugins.server.BaseServer,
