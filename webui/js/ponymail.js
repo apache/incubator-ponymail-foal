@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '86af91a';
+const PONYMAIL_REVISION = '74bc1dc';
 
 
 /******************************************
@@ -4472,12 +4472,13 @@ function calendar_scroll(me, direction) {
 function calendar_click(year, month) {
     G_current_year = year;
     G_current_month = month;
-    let searching = false;
-    let q = "";
+    let q = ""; // components are not encoded
+    let qapi = ""; // components need to be encoded for the api call
     let calendar_current_list = G_current_list;
     let calendar_current_domain = G_current_domain;
     if (G_current_json && G_current_json.searchParams) {
         q = G_current_json.searchParams.q || "";
+        qapi = encodeURIComponent(q);
         calendar_current_list = G_current_json.searchParams.list;
         calendar_current_domain = G_current_json.searchParams.domain;
         // Weave in header parameters
@@ -4485,6 +4486,7 @@ function calendar_click(year, month) {
             if (key.match(/^header_/)) {
                 let value = G_current_json.searchParams[key];
                 q += `&${key}=${value}`;
+                qapi += `&${key}=${encodeURIComponent(value)}`; // only encode the values
             }
         }
     }
@@ -4498,7 +4500,7 @@ function calendar_click(year, month) {
             G_apiURL, encodeURIComponent(calendar_current_list),
             encodeURIComponent(calendar_current_domain),
             encodeURIComponent(year), encodeURIComponent(month),
-            encodeURIComponent(q)
+            qapi
         ),
         renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),
