@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'a50ae4e';
+const PONYMAIL_REVISION = '86af91a';
 
 
 /******************************************
@@ -681,8 +681,10 @@ function compose_send() {
     for (let k in mua_headers) {
         content.push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
-    // Push the subject and email body into the form data
+    // Push the subject, (b)cc and email body into the form data
     content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
+    content.push("cc=" + encodeURIComponent(document.getElementById('composer_cc').value));
+    content.push("bcc=" + encodeURIComponent(document.getElementById('composer_bcc').value));
     content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
         content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
@@ -784,6 +786,26 @@ function compose_email(replyto, list) {
         value: eml_subject
     }));
     form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Cc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_cc',
+        type: 'text',
+    }));
+    form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Bcc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_bcc',
+        type: 'text',
+    }));
+    form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Reply:"));
     form.push(new HTML('br'));
     let body = new HTML('textarea', {
@@ -872,6 +894,7 @@ function mua_link(email, xlist) {
     let xlink = 'mailto:' + listname + "?subject=" + encodeURIComponent(subject) + "&amp;In-Reply-To=" + encodeURIComponent(email['message-id']) + "&body=" + encodeURIComponent(eml_raw_short);
     return xlink;
 }
+
 
 /******************************************
  Fetched from source/construct-thread.js
