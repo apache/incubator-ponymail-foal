@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '5a0f102';
+const PONYMAIL_REVISION = 'a36fb3e';
 
 
 /******************************************
@@ -37,7 +37,6 @@ let G_current_list = '';
 let G_current_domain = '';
 let G_current_year = 0;
 let G_current_month = 0;
-let G_current_query = '';
 let G_current_open_email = null;
 let G_select_primed = false;
 let G_ponymail_preferences = {};
@@ -682,8 +681,10 @@ function compose_send() {
     for (let k in mua_headers) {
         content.push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
-    // Push the subject and email body into the form data
+    // Push the subject, (b)cc and email body into the form data
     content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
+    content.push("cc=" + encodeURIComponent(document.getElementById('composer_cc').value));
+    content.push("bcc=" + encodeURIComponent(document.getElementById('composer_bcc').value));
     content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
         content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
@@ -694,8 +695,18 @@ function compose_send() {
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
-    document.getElementById('composer_modal').style.display = 'none';
-    modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+    request.onreadystatechange = function(state) {
+        if (request.readyState == 4) {
+            document.getElementById('composer_modal').style.display = 'none';
+            let response = JSON.parse(request.responseText)
+            if (response.error) {
+                modal("Message dispatch failed!", response.error, "error");
+            } else {
+                modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+            }
+        }
+    }
+
 }
 
 function compose_email(replyto, list) {
@@ -773,6 +784,26 @@ function compose_email(replyto, list) {
         id: 'composer_subject',
         type: 'text',
         value: eml_subject
+    }));
+    form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Cc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_cc',
+        type: 'text',
+    }));
+    form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Bcc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_bcc',
+        type: 'text',
     }));
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Reply:"));
@@ -863,6 +894,7 @@ function mua_link(email, xlist) {
     let xlink = 'mailto:' + listname + "?subject=" + encodeURIComponent(subject) + "&amp;In-Reply-To=" + encodeURIComponent(email['message-id']) + "&body=" + encodeURIComponent(eml_raw_short);
     return xlink;
 }
+
 
 /******************************************
  Fetched from source/construct-thread.js
@@ -3531,7 +3563,6 @@ function parseURL(state) {
     let month = bits[1];
     let query = bits[2];
     state = state || {};
-    G_current_query = query || "";
     G_current_month = 0;
     G_current_year = 0;
 
@@ -4206,12 +4237,33 @@ function search(query, date) {
     let listid = '%s@%s'.format(list, domain);
     G_current_list = list;
     G_current_domain = domain;
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
 
     let header_from = document.getElementById('header_from');
     let header_subject = document.getElementById('header_subject');
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
+    let qparts = query.split('&'); // look for additional query options
+    if (qparts.length > 0) { // i.e. query + header bits
+        query = qparts.shift(); // Keep only the query
+        // store the values to be picked up below
+        for (let part of qparts) {
+            let hv = part.split('=',2);
+            if (hv[0] == 'header_from') {
+                header_from.value = hv[1];
+            }
+            if (hv[0] == 'header_subject') {
+                header_subject.value = hv[1];
+            }
+            if (hv[0] == 'header_to') {
+                header_to.value = hv[1];
+            }
+            if (hv[0] == 'header_body') {
+                header_body.value = hv[1];
+            }
+            // N.B. other options are currently ignored
+        }
+    }
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
         G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
         );
@@ -4270,6 +4322,7 @@ function search_set_list(what) {
     }
     document.getElementById('q').setAttribute("placeholder", "Search %s...".format(whatxt));
 }
+
 
 /******************************************
  Fetched from source/sidebar-calendar.js
@@ -4441,12 +4494,13 @@ function calendar_scroll(me, direction) {
 function calendar_click(year, month) {
     G_current_year = year;
     G_current_month = month;
-    let searching = false;
-    let q = "";
+    let q = ""; // components are not encoded
+    let qapi = ""; // components need to be encoded for the api call
     let calendar_current_list = G_current_list;
     let calendar_current_domain = G_current_domain;
     if (G_current_json && G_current_json.searchParams) {
         q = G_current_json.searchParams.q || "";
+        qapi = encodeURIComponent(q);
         calendar_current_list = G_current_json.searchParams.list;
         calendar_current_domain = G_current_json.searchParams.domain;
         // Weave in header parameters
@@ -4454,6 +4508,7 @@ function calendar_click(year, month) {
             if (key.match(/^header_/)) {
                 let value = G_current_json.searchParams[key];
                 q += `&${key}=${value}`;
+                qapi += `&${key}=${encodeURIComponent(value)}`; // only encode the values
             }
         }
     }
@@ -4467,7 +4522,7 @@ function calendar_click(year, month) {
             G_apiURL, encodeURIComponent(calendar_current_list),
             encodeURIComponent(calendar_current_domain),
             encodeURIComponent(year), encodeURIComponent(month),
-            encodeURIComponent(q)
+            qapi
         ),
         renderListView, {
         to: (q && q.length > 0) ? 'search' : '%s@%s'.format(calendar_current_list, calendar_current_domain),

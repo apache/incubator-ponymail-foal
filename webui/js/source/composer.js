@@ -5,8 +5,10 @@ function compose_send() {
     for (let k in mua_headers) {
         content.push(k + "=" + encodeURIComponent(mua_headers[k]));
     }
-    // Push the subject and email body into the form data
+    // Push the subject, (b)cc and email body into the form data
     content.push("subject=" + encodeURIComponent(document.getElementById('composer_subject').value));
+    content.push("cc=" + encodeURIComponent(document.getElementById('composer_cc').value));
+    content.push("bcc=" + encodeURIComponent(document.getElementById('composer_bcc').value));
     content.push("body=" + encodeURIComponent(document.getElementById('composer_body').value));
     if (G_ponymail_preferences.login && G_ponymail_preferences.login.alternates && document.getElementById('composer_alt')) {
         content.push("alt=" + encodeURIComponent(document.getElementById('composer_alt').options[document.getElementById('composer_alt').selectedIndex].value));
@@ -17,8 +19,18 @@ function compose_send() {
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(content.join("&")); // send email as a POST string
 
-    document.getElementById('composer_modal').style.display = 'none';
-    modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+    request.onreadystatechange = function(state) {
+        if (request.readyState == 4) {
+            document.getElementById('composer_modal').style.display = 'none';
+            let response = JSON.parse(request.responseText)
+            if (response.error) {
+                modal("Message dispatch failed!", response.error, "error");
+            } else {
+                modal("Message dispatched!", "Your email has been sent. Depending on moderation rules, it may take a while before it shows up in the archives.", "help");
+            }
+        }
+    }
+
 }
 
 function compose_email(replyto, list) {
@@ -96,6 +108,26 @@ function compose_email(replyto, list) {
         id: 'composer_subject',
         type: 'text',
         value: eml_subject
+    }));
+    form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Cc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_cc',
+        type: 'text',
+    }));
+    form.push(new HTML('br'));
+    form.push(new HTML('b', {}, "Bcc:"));
+    form.push(new HTML('br'));
+    form.push(new HTML('input', {
+        style: {
+            width: '90%'
+        },
+        id: 'composer_bcc',
+        type: 'text',
     }));
     form.push(new HTML('br'));
     form.push(new HTML('b', {}, "Reply:"));

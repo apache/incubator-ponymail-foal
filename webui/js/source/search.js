@@ -32,12 +32,33 @@ function search(query, date) {
     let listid = '%s@%s'.format(list, domain);
     G_current_list = list;
     G_current_domain = domain;
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
 
     let header_from = document.getElementById('header_from');
     let header_subject = document.getElementById('header_subject');
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
+    let qparts = query.split('&'); // look for additional query options
+    if (qparts.length > 0) { // i.e. query + header bits
+        query = qparts.shift(); // Keep only the query
+        // store the values to be picked up below
+        for (let part of qparts) {
+            let hv = part.split('=',2);
+            if (hv[0] == 'header_from') {
+                header_from.value = hv[1];
+            }
+            if (hv[0] == 'header_subject') {
+                header_subject.value = hv[1];
+            }
+            if (hv[0] == 'header_to') {
+                header_to.value = hv[1];
+            }
+            if (hv[0] == 'header_body') {
+                header_body.value = hv[1];
+            }
+            // N.B. other options are currently ignored
+        }
+    }
+    let newhref = "list?%s:%s:%s".format(listid, date, query);
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
         G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
         );

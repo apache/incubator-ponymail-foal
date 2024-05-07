@@ -96,7 +96,6 @@ function parseURL(state) {
     let month = bits[1];
     let query = bits[2];
     state = state || {};
-    G_current_query = query || "";
     G_current_month = 0;
     G_current_year = 0;
 
