@@ -33,18 +33,18 @@ function fastIntersect(x,y,nx,ny) {
         || b.bottom+spacing < (a.top+ny));
 }
 
-function makeWord(word, size) {
+function makeWord(word, size, daterange) {
     let textBox = document.createElementNS(SVG_NAMESPACE, "text");
     textBox.setAttribute("font-size", size + "px")
     textBox.setAttribute("x", "0")
     textBox.setAttribute("y", "40")
     textBox.setAttribute("class", "cloudword")
-    textBox.setAttribute("onclick", "search(\"" + word + "\", 'lte=1M')")
+    textBox.setAttribute("onclick", "search(\"" + word + "\", '" + daterange + "')")
     textBox.textContent = word
     return textBox
 }
 
-async function wordCloud(hash, width, height, obj) {
+async function wordCloud(hash, width, height, obj, daterange) {
     let total = 0
     let boxes = []
     let space = width * height
@@ -85,7 +85,7 @@ async function wordCloud(hash, width, height, obj) {
 
         // Try with random placement
 
-        textBox = makeWord(word, size)
+        textBox = makeWord(word, size, daterange)
         textBox.setAttribute("id", "svg_wc_" + word)
         svg.appendChild(textBox)
         if (!popped) {
