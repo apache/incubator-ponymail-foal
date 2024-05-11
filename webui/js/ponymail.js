@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = 'a36fb3e';
+const PONYMAIL_REVISION = '78ad7bf';
 
 
 /******************************************
@@ -4600,7 +4600,12 @@ async function sidebar_stats(json) {
         // word cloud is delayed by 50ms to let the rest render first
         // this is a chrome-specific slowdown we're addressing.
         window.setTimeout(function() {
-            wordCloud(json.cloud, 220, 100, wc);
+            if (G_current_month) {
+                daterange = G_current_year + '-' + G_current_month
+            } else {
+                daterange = G_current_year
+            }
+            wordCloud(json.cloud, 220, 100, wc, daterange);
         }, 50);
     }
     if (G_show_stats_sidebar === false) {
