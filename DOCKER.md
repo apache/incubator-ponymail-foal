@@ -76,6 +76,11 @@ Or you can combine them:
 
 ```$ docker exec -it pmfoal-pmfoal-1 bash -c 'cd server; python3 main.py --testendpoints'```
 
+Update config.js to allow local login
+=====================================
+
+If you wish to test functions that require login, update config.js to enable the two logins.
+
 Connect to the server
 =====================
 
