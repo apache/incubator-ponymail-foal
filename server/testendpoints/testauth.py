@@ -45,6 +45,8 @@ oauth:
             oauth_url: "http://localhost/api/testauth"
         },
 (This assumes that the test installation is at http://localhost/. Adjust as necessary.)
+Note: if using a Docker container with a different host port, adjust the oauth_portal entries only
+(the oauth_url entries relate to the port used by the container webserver)
 
 This will add two extra options to the login screen.
 Clicking on either "Test sign in as ..." link will automatically login (without prompting)
