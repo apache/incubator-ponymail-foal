@@ -1,0 +1,6 @@
+# Ignore everything initially
+**
+
+# Allow what we want
+!docker-config/**
+!**/requirements.txt

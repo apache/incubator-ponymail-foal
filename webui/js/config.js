@@ -39,7 +39,18 @@ const pm_config = {
             client_id: "your-client-id-here",
             scope: "user:email",
             construct: true
-        }
+        },
+        // Enable the following lines for Docker testing
+        // user: {
+        //     name: "Test Auth User",
+        //     oauth_portal: "http://localhost:1080/api/testauth",
+        //     oauth_url: "http://localhost/api/testauth"
+        // },
+        // admin: {
+        //     name: "Test Auth Admin",
+        //     oauth_portal: "http://localhost:1080/api/testauth",
+        //     oauth_url: "http://localhost/api/testauth"
+        // },
     },
     URLBase: '',
     apiURL: '/',
