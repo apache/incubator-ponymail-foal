@@ -73,9 +73,10 @@ $ docker exec -it pmfoal-pmfoal-1 bash
 ```
 
 Or you can combine them:
+
 ```$ docker exec -it pmfoal-pmfoal-1 bash -c 'cd server; python3 main.py --testendpoints'```
 
 Connect to the server
 =====================
 
-Browse to http://localhost/
+Browse to http://localhost:1080/
