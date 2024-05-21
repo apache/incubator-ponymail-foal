@@ -213,6 +213,9 @@ class Body:
                         break
                     except UnicodeDecodeError:
                         pass
+                    except LookupError:
+                        print("Body detected invalid encoding: %s" % cs)
+                        pass
             # If no character set was defined, the email MUST be US-ASCII by RFC822 defaults
             # This isn't always the case, as we're about to discover.
             if not self.string:
