@@ -144,7 +144,7 @@ async def get_session(
             session.cookie = session_id
             # Check that this cookie ain't too old. If it is, delete it and return bare-bones session object
             if (now - last_update) > FOAL_MAX_SESSION_AGE:
-                session.database.delete(
+                await session.database.delete(
                     index=session.database.dbs.db_session, id=session_id
                 )
                 return session
