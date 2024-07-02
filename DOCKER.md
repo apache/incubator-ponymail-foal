@@ -15,7 +15,7 @@ $ cd ponymail-foal
 start Docker (e.g. open ~/Applications/Docker.app)
 Build the image:
 
-```$ docker compose build pmfoal```
+```$ docker compose build```
 
 Resolve any issues (e.g. ensure Docker has access to the required directories), and rebuild
 
@@ -26,7 +26,7 @@ Open a new terminal session
 
 ```
 $ cd ponymail-foal
-$ docker compose up
+$ [MAIL_DATA=/path/to/mailboxes] docker compose up
 ```
 
 To stop the server, either use ^C, or issue the following in another terminal session:

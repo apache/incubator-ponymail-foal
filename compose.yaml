@@ -7,7 +7,9 @@ services:
     ports:
       - "1080:80"
       - "9200:9200"
+# MAIL_DATA can be used to map external mailboxes into the container
     volumes:
       - .:/var/www/ponymail
       - ./elastic/lib:/var/lib/elasticsearch
       - ./elastic/log:/var/log/elasticsearch
+      - ${MAIL_DATA:-.}:/var/maildata
