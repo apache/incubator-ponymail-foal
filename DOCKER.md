@@ -1,7 +1,7 @@
 Docker execution instructions
 =============================
 
-These are initial instructions; so far only tested on macOS (M1)
+These are initial instructions; so far, they have only tested on macOS (M1)
 
 Build Docker image
 ==================
@@ -12,34 +12,34 @@ $ git clone https://github.com/apache/incubator-ponymail-foal.git ponymail-foal
 $ cd ponymail-foal
 ```
 
-start Docker (e.g. open ~/Applications/Docker.app)
-Build the image:
+Start Docker (e.g., open ~/Applications/Docker.app). Build the image:
 
 ```$ docker compose build```
 
-Resolve any issues (e.g. ensure Docker has access to the required directories), and rebuild
+Resolve any issues (e.g., ensure Docker has access to the required directories) and rebuild.
 
 Start ElasticSearch and the main server
 =======================================
 
-Open a new terminal session
+Open a new terminal session:
 
 ```
 $ cd ponymail-foal
 $ [MAIL_DATA=/path/to/mailboxes] docker compose up
 ```
 
-To stop the server, either use ^C, or issue the following in another terminal session:
+To stop the server, either use `^C`, or issue the following in another terminal session:
 
 ```$ docker stop pmfoal-pmfoal-1```
 
 Setup the ElasticSearch database
 ================================
 
-This only needs to be done once.
-[The container must already be running.]
+The following step only needs to be done once.
+The container must already be running.
 
-Open a new terminal session, start a shell in the container:
+Open a new terminal session start a shell in the container:
+
 ```
 $ docker exec -it pmfoal-pmfoal-1 bash
 # cd tools
@@ -51,7 +51,7 @@ Or you can do it all in one command:
 ```$ docker exec -it pmfoal-pmfoal-1 bash -c 'cd tools; python3 setup.py --devel'```
 
 Or you can set up the database from the host.
-The container must already be running, and the Python packages (as per tools/requirements.txt)
+The container must be running, and the Python packages (as per tools/requirements.txt)
 must have been installed.
 
 ```
@@ -85,7 +85,7 @@ This will import the mbox file into the database.
 Start the Ponymail api server
 =============================
 
-Open a new terminal session, start a shell in the container:
+Open a new terminal session start a shell in the container:
 
 ```
 $ docker exec -it pmfoal-pmfoal-1 bash
@@ -100,7 +100,7 @@ Or you can combine them:
 Update config.js to allow local login
 =====================================
 
-If you wish to test functions that require login, update config.js to enable the two logins.
+If you wish to test functions that require log in, update config.js to enable the two logins.
 
 Connect to the server
 =====================
