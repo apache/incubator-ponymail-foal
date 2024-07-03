@@ -61,6 +61,27 @@ $ python3 setup.py --devel
 
 You can then use archiver.py or import-mbox.py to populate the database.
 
+Importing mbox files for testing
+================================
+
+To test existing mbox files, you can use the import-mbox.py script.
+You can download a publicly available file using this link:
+
+```
+mkdir mbox-testdata
+cd mbox-testdata
+wget https://lists.apache.org/api/mbox.lua?list=dev&domain=community.apache.org
+cd ..
+```
+
+Then import it:
+
+```
+$ tools/import-mbox.py --source mbox-testdata/dev_community_apache_org.mbox
+```
+
+This will import the mbox file into the database.
+
 Start the Ponymail api server
 =============================
 
