@@ -142,3 +142,4 @@ dmypy.json
 # Pipenv files
 Pipfile
 Pipfile.lock
+/elastic
