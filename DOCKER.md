@@ -8,7 +8,7 @@ Build Docker image
 Checkout Ponymail Foal from Git:
 
 ```
-$ get clone https://github.com/apache/incubator-ponymail-foal.git ponymail-foal
+$ git clone https://github.com/apache/incubator-ponymail-foal.git ponymail-foal
 $ cd ponymail-foal
 ```
 
