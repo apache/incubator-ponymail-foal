@@ -1,7 +1,7 @@
 Docker execution instructions
 =============================
 
-These are initial instructions; so far, they have only tested on macOS (M1)
+These are initial instructions; so far, they have only been tested on macOS (M1).
 
 Build Docker image
 ==================
@@ -38,7 +38,7 @@ Setup the ElasticSearch database
 The following step only needs to be done once.
 The container must already be running.
 
-Open a new terminal session start a shell in the container:
+Open a new terminal session and start a shell in the container:
 
 ```
 $ docker exec -it pmfoal-pmfoal-1 bash
