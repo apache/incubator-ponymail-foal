@@ -15,18 +15,18 @@ tasks:
 
 ui:
   wordcloud:       true
-  mailhost:        localhost
-  sender_domains:  "*"
+  mailhost:        localhost # domain[:port] - default port is 25
+  sender_domains:  "*" # space separated
   traceback:       true
-  mgmtconsole:     true
-  true_gdpr:       true
+  mgmtconsole:     true # enable email admin
+  true_gdpr:       true # fully delete emails instead of marking them deleted
 
 # Fill in OAuth data as needed
 oauth:
 # If using OAuth, set the authoritative domains here. These are the OAuth domains that 
 # will provide access to private emails.
   authoritative_domains:
-#   - localhost
+#   - localhost        # for local testing of sending email
 #    - googleapis.com  # OAuth via google is authoritative
 #    - github.com      # GitHub OAuth is authoritative
   admins:

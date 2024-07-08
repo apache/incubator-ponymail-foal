@@ -102,6 +102,8 @@ Update config.js to allow local login
 
 If you wish to test functions that require log in, update config.js to enable the two logins.
 
+For testing email and admin functions, you may need to update server/ponymail.yaml
+
 Connect to the server
 =====================
 
