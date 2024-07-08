@@ -266,7 +266,11 @@ class SlurpThread(Thread):
             bad = 0
 
             for key in messages.iterkeys():
-                file = messages.get_file(key, True)
+                # mbox get_file takes a kv parameter not supported by other mailbox implementations.
+                if isinstance(messages, mailbox.mbox):
+                    file = messages.get_file(key, from_=True)
+                else:
+                    file = messages.get_file(key)
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
                 if useMboxo:
