@@ -65,7 +65,7 @@ appender = "apache.org"
 
 
 source = "./"
-maildir = False
+maildir = False # Default to mbox
 imap = False
 list_override = None
 project = ""
@@ -266,7 +266,10 @@ class SlurpThread(Thread):
             bad = 0
 
             for key in messages.iterkeys():
-                file = messages.get_file(key, True)
+                if maildir:
+                    file = messages.get_file(key)
+                else: # must be mbox, which has an extra from_ parameter
+                    file = messages.get_file(key, True)
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
                 if useMboxo:
