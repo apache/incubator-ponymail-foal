@@ -90,6 +90,7 @@ disable=raw-checker-failed,
         logging-fstring-interpolation, # Not essential
         broad-exception-caught, # Not essential
         C,R,
+        import-error,
         R0903,R0913,R0912,R0914,R0915,
         R1706, # ternary
         W1406, # redundant u-string prefix
