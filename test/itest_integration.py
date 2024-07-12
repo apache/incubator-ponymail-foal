@@ -185,7 +185,7 @@ def test_setup():
         },
         admin_cookies
         )
-    except:
+    except Exception: # TODO: narrow exception
         pass
 
     import yaml

@@ -134,7 +134,7 @@ async def process(
                     )
     else:  # Just list all lists?
         canonical_link = "/"
-        output = f"""<link rel="canonical" href="/" />\n"""
+        output = """<link rel="canonical" href="/" />\n"""
         # Sort by domain, then by list name
         for ml in sorted(server.data.lists.keys(), key=lambda x: x.split("@", 1)[-1] + "-" + x.split("@", 1)[0]):
             entry = server.data.lists[ml]

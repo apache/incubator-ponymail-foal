@@ -136,7 +136,7 @@ class MultiDocProcessor:
                 as_list.insert(0, old_es)
                 try:
                     ret_val = self.target(*as_list)
-                except:
+                except Exception: # TODO: narrow exception
                     if self.graceful:
                         print("Unexpected error:", sys.exc_info()[0])
                     else:
@@ -177,7 +177,7 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
     try:
         source = old_es.get(index=old_dbname, doc_type="mbox_source", id=doc["_id"])
         # If we hit a 404 on a source, we have to fake an empty document, as we don't know the source.
-    except:
+    except Exception: # TODO: narrow exception
         print("Source for %s was not found, faking it..." % doc["_id"])
         source = {"_source": {"source": ""}}
     source_text: str = source["_source"]["source"]
@@ -228,7 +228,7 @@ def process_document(old_es, doc, old_dbname, dbname_source, dbname_mbox, do_dki
     )
 
 
-def process_attachment(old_es, doc, dbname_attachment):
+def process_attachment(_old_es, doc, dbname_attachment):
     return ({"index": dbname_attachment, "id": doc["_id"], "body": doc["_source"]},)
 
 
@@ -381,7 +381,7 @@ if __name__ == "__main__":
         help="Provide output database prefix",
         type=str
     )
-    args = parser.parse_args()
-    if args.start_method:
-        multiprocessing.set_start_method(args.start_method)
-    asyncio.run(main(args))
+    mainargs = parser.parse_args()
+    if mainargs.start_method:
+        multiprocessing.set_start_method(mainargs.start_method)
+    asyncio.run(main(mainargs))

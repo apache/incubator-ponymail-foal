@@ -269,7 +269,7 @@ class SlurpThread(Thread):
                 if maildir:
                     file = messages.get_file(key)
                 else: # must be mbox, which has an extra from_ parameter
-                    file = messages.get_file(key, True)
+                    file = messages.get_file(key, True) # pylint: disable=too-many-function-args
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
                 if useMboxo:
@@ -299,7 +299,7 @@ class SlurpThread(Thread):
                         if list_override:
                             message.replace_header("List-ID", list_override)
                         message.replace_header("To", resendTo)
-                    except:
+                    except Exception: # TODO: narrow exception
                         if list_override:
                             message["List-ID"] = list_override
                     message["cc"] = None
@@ -381,7 +381,7 @@ class SlurpThread(Thread):
                             duplicates[json["mid"]].append(
                                 json["message-id"] + " in " + filename
                             )
-                        except:
+                        except Exception: # TODO: narrow exception
                             duplicates[json["mid"]] = [
                                 json["message-id"] + " in " + filename
                             ]

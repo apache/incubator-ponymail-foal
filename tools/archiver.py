@@ -215,7 +215,6 @@ class Body:
                         pass
                     except LookupError:
                         print("Body detected invalid encoding: %s" % cs)
-                        pass
             # If no character set was defined, the email MUST be US-ASCII by RFC822 defaults
             # This isn't always the case, as we're about to discover.
             if not self.string:
@@ -719,11 +718,11 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             except Exception as err:
                 print("Could not add thread info", err)
                 if logger:
-                    logger.info("Could not add thread info %s" % (err,))
+                    logger.info("Could not add thread info %s", err)
             else:
                 print("Added thread info successfully", ojson["mid"])
                 if logger:
-                    logger.info("Added thread info successfully %s" % (ojson["mid"],))
+                    logger.info("Added thread info successfully %s", ojson["mid"])
 
         try:
             if contents:

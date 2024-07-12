@@ -118,6 +118,6 @@ def check_mapping(index):
                     print(f"Expected {k} {v},  found {k} {act[k]}")
 
 
-for type in args.names if len(args.names) > 0 else mapping_file.keys():
-    print("Checking " + type)
-    check_mapping(type)
+for maptype in args.names if len(args.names) > 0 else mapping_file.keys():
+    print("Checking " + maptype)
+    check_mapping(maptype)

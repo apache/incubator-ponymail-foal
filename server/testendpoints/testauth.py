@@ -88,8 +88,8 @@ async def process(server: plugins.server.BaseServer, _session: dict, indata: dic
                 return data
             else:
                 debug(server, f"Could not find record for {user}")
-        except:
-           debug(server,  f'Could not find data file {datafile}')
+        except Exception: # TODO: narrow exception
+            debug(server,  f'Could not find data file {datafile}')
     
     return {"okay": False, "message": "Invalid invocation!"}
 

@@ -44,7 +44,8 @@ class AuditLogEntry:
 
 
 async def view(
-    session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False, filter: typing.Tuple = ()
+    session: plugins.session.SessionObject, page: int = 0, num_entries: int = 50, raw: bool = False,
+    filter: typing.Tuple = () # TODO fix pylint: disable=redefined-builtin
 ) -> typing.AsyncGenerator:
     """ Returns N entries from the audit log, paginated """
     assert session.database, "No database connection could be found!"

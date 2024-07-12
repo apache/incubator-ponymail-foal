@@ -55,7 +55,7 @@ def gen_args() -> argparse.Namespace:
         nargs=1,
         help="""Search parameters (Lucene query string) to narrow down what to edit (for instance: 'list_raw:"<dev.maven.apache.org>"')""",
         default="*",
-    ),
+    )
     parser.add_argument(
         "--action",
         dest="action",
@@ -70,7 +70,7 @@ def gen_args() -> argparse.Namespace:
         type=str,
         help="If action is 'move', this sets the destination list-id to move the matching documents to",
         default="",
-    ),
+    )
     parser.add_argument(
         "--test",
         dest="test",
@@ -91,7 +91,7 @@ def gen_args() -> argparse.Namespace:
 async def main():
     start_time = time.time()
     args = gen_args()
-    config = ponymailconfig.PonymailConfig()
+    _config = ponymailconfig.PonymailConfig()
     es = Elastic(is_async=True)
     if not args.warn:
         warnings.filterwarnings("ignore", category=elasticsearch.exceptions.ElasticsearchWarning)

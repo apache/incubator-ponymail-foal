@@ -46,7 +46,7 @@ from server_version import PONYMAIL_SERVER_VERSION
 # In such cases, we need to force a flush of each print, or nothing will show.
 if not sys.stdout.buffer.isatty():
     import functools
-    print = functools.partial(print, flush=True)
+    print = functools.partial(print, flush=True) # pylint: disable=redefined-builtin
 
 
 class Server(plugins.server.BaseServer):
@@ -190,7 +190,7 @@ class Server(plugins.server.BaseServer):
                 )
             # If a handler hit an exception, we need to print that exception somewhere,
             # either to the web client or stderr:
-            except:
+            except Exception: # TODO: narrow exception
                 if session.database:
                     self.dbpool.put_nowait(session.database)
                     self.dbpool.task_done()
