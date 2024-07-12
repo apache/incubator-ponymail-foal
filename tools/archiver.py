@@ -62,13 +62,13 @@ import formatflowed
 import netaddr
 
 if not __package__:
-    from plugins import ponymailconfig
-    from plugins import generators, textlib
-    from plugins.elastic import Elastic
+    from plugins import ponymailconfig # pylint: disable=no-name-in-module
+    from plugins import generators, textlib # pylint: disable=no-name-in-module
+    from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 else:
-    from .plugins import ponymailconfig
-    from .plugins import generators, textlib
-    from .plugins.elastic import Elastic
+    from .plugins import ponymailconfig # pylint: disable=no-name-in-module
+    from .plugins import generators, textlib # pylint: disable=no-name-in-module
+    from .plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
 # This is what we will default to if we are presented with emails without character sets and US-ASCII doesn't work.
 DEFAULT_CHARACTER_SET = 'utf-8'
