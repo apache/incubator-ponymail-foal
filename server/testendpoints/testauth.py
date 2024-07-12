@@ -64,7 +64,7 @@ def debug(server, text):
     if server.api_logger:
         server.api_logger.debug(text)
 
-async def process(server: plugins.server.BaseServer, session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
+async def process(server: plugins.server.BaseServer, _session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
     debug(server, f'INDATA {indata}')
     redirect_uri = indata.get('redirect_uri')
     code = indata.get('code')
@@ -93,5 +93,5 @@ async def process(server: plugins.server.BaseServer, session: dict, indata: dict
     
     return {"okay": False, "message": "Invalid invocation!"}
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

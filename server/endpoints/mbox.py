@@ -122,6 +122,6 @@ async def process(
     return response
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     # Note that this is a StreamingEndpoint!
     return plugins.server.StreamingEndpoint(process)

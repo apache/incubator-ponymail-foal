@@ -256,5 +256,5 @@ async def process(
     return aiohttp.web.Response(headers={}, status=404, text="Unknown mgmt command requested")
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

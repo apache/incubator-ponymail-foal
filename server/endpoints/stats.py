@@ -22,7 +22,6 @@ import plugins.session
 import plugins.messages
 import plugins.defuzzer
 import plugins.offloader
-import re
 import email.utils
 import typing
 import aiohttp.web
@@ -140,5 +139,5 @@ async def process(
     return output
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

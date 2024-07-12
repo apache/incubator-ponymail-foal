@@ -90,5 +90,5 @@ async def process(
     return {"okay": False, "message": "Could not process OAuth login!"}
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

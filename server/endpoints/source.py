@@ -25,7 +25,7 @@ import plugins.aaa
 
 
 async def process(
-    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
+    _server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> aiohttp.web.Response:
 
     # Has a list id been provided?
@@ -46,5 +46,5 @@ async def process(
     return aiohttp.web.Response(headers={}, status=404, text="Email not found")
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

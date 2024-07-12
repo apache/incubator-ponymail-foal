@@ -64,11 +64,11 @@ async def process(
             output += f"""Posted to <a href="/list.html?{listname}">{listname}</a> by {author} on {date} UTC<br/>"""
             title = html.escape(email.get("subject", ""))
             body = html.escape(email.get("body", ""))
-            thread, emails, _pdocs = await plugins.messages.fetch_children(
+            thread, _emails, _pdocs = await plugins.messages.fetch_children(
                 session, email
             )
             output += f"""<h1>{email["subject"]}</h1><pre>{body}</pre><hr/>\n"""
-            for tid, email in _pdocs.items():
+            for _tid, email in _pdocs.items():
                 body = html.escape(email.get("body", ""))
                 author = html.escape(email.get("from", ""))
                 output += f"""<h2>{email["subject"]}</h2>\n<b>Posted by {author}.</b><hr/><pre>{body}</pre><hr/>\n"""
@@ -99,7 +99,7 @@ async def process(
                     query_limit=server.config.database.max_hits,
                 )
                 threads = plugins.messages.ThreadConstructor(results)
-                thread_struct, authors = await server.runners.run(threads.construct)
+                thread_struct, _authors = await server.runners.run(threads.construct)
                 for (
                     thread
                 ) in (
@@ -122,13 +122,13 @@ async def process(
                 output = f"""<link rel="canonical" href="/list.html?{list_id}" />\n"""
                 query_defuzzed_nodate = plugins.defuzzer.defuzz(mydata, nodate=True)
                 (
-                    oldest,
-                    youngest,
+                    _oldest,
+                    _youngest,
                     active_months,
                 ) = await plugins.messages.get_activity_span(
                     session, query_defuzzed_nodate
                 )
-                for month, activity in active_months.items():
+                for month, _activity in active_months.items():
                     output += (
                         f"""<a href="?list={list_id}&date={month}">{month}</a><br/>"""
                     )
@@ -168,5 +168,5 @@ async def process(
         )
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

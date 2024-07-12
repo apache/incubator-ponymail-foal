@@ -96,5 +96,5 @@ async def process(
         return {"error": "You need to be logged in via an authoritative source to send emails."}
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

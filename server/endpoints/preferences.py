@@ -95,5 +95,5 @@ async def process(
     return prefs
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)

@@ -24,7 +24,7 @@ import typing
 
 
 async def process(
-    server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
+    _server: plugins.server.BaseServer, session: plugins.session.SessionObject, indata: dict,
 ) -> typing.Optional[dict]:
     mailid = indata.get("id", "")
     listid = indata.get("listid", "")
@@ -57,5 +57,5 @@ async def process(
     }
 
 
-def register(server: plugins.server.BaseServer):
+def register(_server: plugins.server.BaseServer):
     return plugins.server.Endpoint(process)
