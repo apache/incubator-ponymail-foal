@@ -32,11 +32,13 @@ jobs:
         pip install -r test/requirements.txt
         pip install mypy
         pip install types-requests
+        pip install types-docutils
         pip install pylint
     - name: Type testing with mypy
       run: |
           mypy --cache-dir /tmp/ --install-types
           mypy --cache-dir /tmp/ --ignore-missing-imports server tools
     - name: Testing with pylint
+      if: always()
       run: |
           pylint server tools
