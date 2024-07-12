@@ -2,6 +2,10 @@ name: Linting
 on:
   push:
     branch: master
+    paths:
+      - '**/*.py'
+      - '**/linting.yml'
+      - '**/pylintrc'
 
   workflow_dispatch:
 
