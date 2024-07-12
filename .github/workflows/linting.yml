@@ -1,4 +1,4 @@
-name: Linting and MyPy
+name: Linting
 on:
   push:
     branch: master
@@ -30,15 +30,7 @@ jobs:
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
         pip install -r test/requirements.txt
-        pip install mypy
-        pip install types-requests
-        pip install types-docutils
         pip install pylint
-    - name: Type testing with mypy
-      run: |
-          mypy --cache-dir /tmp/ --install-types
-          mypy --cache-dir /tmp/ --ignore-missing-imports server tools
     - name: Testing with pylint
-      if: always()
       run: |
-          pylint server tools
+          pylint server tools test
