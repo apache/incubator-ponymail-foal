@@ -61,63 +61,63 @@ parser.add_argument('names', nargs='*')
 args = parser.parse_args()
 
 def descend(hsh, mapping, parent):
-  for k,v in mapping.items():
-    keys=parent.copy()
-    keys.append(k)
-    if 'properties' in v:
-      descend(hsh, v['properties'], keys)
-    else:
-      key = ".".join(keys)
-      hsh[key] = v
+    for k,v in mapping.items():
+        keys=parent.copy()
+        keys.append(k)
+        if 'properties' in v:
+            descend(hsh, v['properties'], keys)
+        else:
+            key = ".".join(keys)
+            hsh[key] = v
 
 def check_mapping(index):
-  # expected mappings
-  mappings_expected = mapping_file[index]['properties']
+    # expected mappings
+    mappings_expected = mapping_file[index]['properties']
 
-  index_name = elastic.index_name(index)
+    index_name = elastic.index_name(index)
 
-  # Check that index exists
-  if not elastic.indices.exists(index_name):
-    if args.shards and args.replicas is not None:
-      print("Creating index")
-      settings = {"number_of_shards": args.shards, "number_of_replicas": args.replicas}
-      elastic.indices.create(
-        index=index_name, body={"mappings": mapping_file[index], "settings": settings}
-      )
-      print("Created index!")
-      return
-    else:
-      print("Index not found!")
-      print("Specify --shards and --replicas to create the index")
-      return
-
-  # actual mappings
-  mappings = elastic.indices.get_mapping(index=index_name)[index_name]['mappings']['properties']
-
-  expected = yaml.dump(mappings_expected, sort_keys = True)
-  actual = yaml.dump(mappings, sort_keys = True).replace("'true'","true")
-
-  if actual == expected:
-    print("Mappings are as expected, hoorah!")
-  else:
-    print("Mappings differ:")
-
-    exp = dict()
-    descend(exp, mappings_expected,[])
-    act = dict()
-    descend(act, mappings,[])
-
-    for k,v in exp.items():
-      if not k in act:
-        if v == {'dynamic': True, 'type': 'object'}:
-          print(f' Key {k} is dynamic')
+    # Check that index exists
+    if not elastic.indices.exists(index_name):
+        if args.shards and args.replicas is not None:
+            print("Creating index")
+            settings = {"number_of_shards": args.shards, "number_of_replicas": args.replicas}
+            elastic.indices.create(
+              index=index_name, body={"mappings": mapping_file[index], "settings": settings}
+            )
+            print("Created index!")
+            return
         else:
-          print(f"Expected {k} {v}; not found")
-      else:
-        if not v == act[k]:
-          print(f"Expected {k} {v},  found {k} {act[k]}")
-    
+            print("Index not found!")
+            print("Specify --shards and --replicas to create the index")
+            return
+
+    # actual mappings
+    mappings = elastic.indices.get_mapping(index=index_name)[index_name]['mappings']['properties']
+
+    expected = yaml.dump(mappings_expected, sort_keys = True)
+    actual = yaml.dump(mappings, sort_keys = True).replace("'true'","true")
+
+    if actual == expected:
+        print("Mappings are as expected, hoorah!")
+    else:
+        print("Mappings differ:")
+
+        exp = dict()
+        descend(exp, mappings_expected,[])
+        act = dict()
+        descend(act, mappings,[])
+
+        for k,v in exp.items():
+            if not k in act:
+                if v == {'dynamic': True, 'type': 'object'}:
+                    print(f' Key {k} is dynamic')
+                else:
+                    print(f"Expected {k} {v}; not found")
+            else:
+                if not v == act[k]:
+                    print(f"Expected {k} {v},  found {k} {act[k]}")
+
 
 for type in args.names if len(args.names) > 0 else mapping_file.keys():
-  print("Checking " + type)
-  check_mapping(type)
+    print("Checking " + type)
+    check_mapping(type)
