@@ -23,9 +23,9 @@ from elasticsearch import AsyncElasticsearch, Elasticsearch, helpers
 from elasticsearch.helpers import async_scan
 
 if not __package__:
-    from plugins import generators, textlib
+    from plugins import generators, textlib # pylint: disable=no-name-in-module
 else:
-    from .plugins import generators, textlib
+    from .plugins import generators, textlib # pylint: disable=no-name-in-module
 
 import argparse
 import base64

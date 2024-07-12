@@ -23,9 +23,9 @@ import json
 import os
 
 if not __package__:
-    from plugins.elastic import Elastic
+    from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 else:
-    from .plugins.elastic import Elastic
+    from .plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
 elastic = Elastic()
 

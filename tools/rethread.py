@@ -3,7 +3,7 @@
 from elasticsearch.helpers import scan
 
 import archiver
-from plugins.elastic import Elastic
+from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
 
 def first_pass(elastic: Elastic) -> None:

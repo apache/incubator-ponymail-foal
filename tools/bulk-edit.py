@@ -39,11 +39,11 @@ from elasticsearch.helpers import async_scan
 
 
 if not __package__:
-    from plugins import ponymailconfig
-    from plugins.elastic import Elastic
+    from plugins import ponymailconfig # pylint: disable=no-name-in-module
+    from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 else:
-    from .plugins import ponymailconfig
-    from .plugins.elastic import Elastic
+    from .plugins import ponymailconfig # pylint: disable=no-name-in-module
+    from .plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
 
 def gen_args() -> argparse.Namespace:

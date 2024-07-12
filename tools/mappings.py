@@ -22,7 +22,7 @@
 import argparse
 import sys
 import yaml
-from plugins.elastic import Elastic
+from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
 # Needs 3.4 or higher to work
 if sys.version_info <= (3, 3):
