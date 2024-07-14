@@ -25,11 +25,14 @@ ui:
 oauth:
 # If using OAuth, set the authoritative domains here. These are the OAuth domains that 
 # will provide access to private emails.
-  authoritative_domains:
+# N.B. This must be defined as an array (or omitted)
+# authoritative_domains:
 #   - localhost        # for local testing of sending email
 #    - googleapis.com  # OAuth via google is authoritative
 #    - github.com      # GitHub OAuth is authoritative
-  admins:
+# Set up users with administrative permission
+# N.B. This must be defined as an array (or omitted)
+# admins:
 #    - localtest@apache.org
 #  google_client_id:     ~
 #  github_client_id:     ~
