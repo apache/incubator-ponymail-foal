@@ -146,4 +146,5 @@ class Database:
         # Shut down and clear scroll once done
         finally:
             if scroll_id and clear_scroll:
-                await self.client.clear_scroll(body={"scroll_id": [scroll_id]}, ignore=(404,))
+                # ignore is a valid keyword!
+                await self.client.clear_scroll(body={"scroll_id": [scroll_id]}, ignore=(404,)) # pylint: disable=unexpected-keyword-arg
