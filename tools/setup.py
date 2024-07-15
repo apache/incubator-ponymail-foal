@@ -22,21 +22,9 @@ import shutil
 import sys
 import yaml
 
-# Needs 3.4 or higher to work
-if sys.version_info <= (3, 3):
-    print("This script requires Python 3.4 or higher in order to work!")
+if sys.version_info < (3, 8):
+    print("This script requires Python 3.8 or higher in order to work!")
     sys.exit(-1)
-
-# Backend needs 3.8 or higher, warn if not found.
-if sys.version_info < (3, 7, 3):
-    print(
-        "Warning: Pony Mail Foal requires Python 3.7.3 or higher for backend operations."
-    )
-    print(
-        "You will be able to run the setup using this version (%u.%u), but will need >=3.7.3"
-        % (sys.version_info.major, sys.version_info.minor)
-    )
-    print("for operating the UI backend server.")
 
 DEFAULT_DB_URL = "http://localhost:9200/"
 dburl = ""

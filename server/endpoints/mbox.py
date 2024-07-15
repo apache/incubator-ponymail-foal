@@ -24,11 +24,7 @@ import plugins.defuzzer
 import re
 import typing
 import aiohttp.web
-import sys
-if sys.version_info >= (3,8):
-    from asyncio.exceptions import CancelledError
-elif sys.version_info >= (3,7):
-    from asyncio import CancelledError
+from asyncio.exceptions import CancelledError
 import email.utils as eutils
 import datetime
 

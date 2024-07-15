@@ -36,7 +36,7 @@ Please see the [installation documentation](INSTALL.md) for setup instructions.
   * FreeBSD
   * Windows
   * Mac OS
-* Python 3.7.3 or higher with dependencies from `requirements.txt` in tools/ and server/ as needed.
+* Python 3.8 or higher with dependencies from `requirements.txt` in tools/ and server/ as needed.
 * Web server with proxy capabilities for the UI.
 * ElasticSearch 7.x or higher.
 

@@ -24,9 +24,8 @@ import sys
 import yaml
 from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 
-# Needs 3.4 or higher to work
-if sys.version_info <= (3, 3):
-    print("This script requires Python 3.4 or higher in order to work!")
+if sys.version_info < (3, 8):
+    print("This script requires Python 3.8 or higher in order to work!")
     sys.exit(-1)
 
 # the desired mappings
