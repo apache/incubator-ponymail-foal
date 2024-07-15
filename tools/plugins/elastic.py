@@ -118,7 +118,7 @@ class Elastic:
             if es_engine_major in [7, 8]:
                 self.wait_for_active_shards = config.get("elasticsearch", "wait", fallback=1)
             else:
-                raise Exception("Unexpected elasticsearch version ", es_engine_major)
+                raise ValueError("Unexpected elasticsearch version ", es_engine_major)
 
 
 

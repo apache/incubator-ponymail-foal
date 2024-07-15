@@ -825,7 +825,7 @@ elif re.match(r"imaps?://", source):
         elif url.scheme == "imaps":
             imap4 = imaplib.IMAP4_SSL(url.hostname, port)
     else:
-        raise Exception("Hostname not found in IMAP source URL")
+        raise ValueError("Hostname not found in IMAP source URL")
     imap4.login(user, password)
     imap4.select(folder, readonly=True)
     results = imap4.uid("search", "ALL")

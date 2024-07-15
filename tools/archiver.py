@@ -253,6 +253,7 @@ class Body:
                 # Use provider character set or fall back to our sane default.
                 character_set = self.character_set or DEFAULT_CHARACTER_SET
                 # Convert lone LF to CRLF if found
+                conversion_was_needed = None # avoid pylint warning
                 if convert_lf:
                     fixed_string = "\r\n".join(
                         [x.rstrip("\r") for x in self.string.split("\n")]
@@ -687,7 +688,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
         )
         if not ojson:
             _id = msg.get("message-id") or msg.get("Subject") or msg.get("Date")
-            raise Exception("Could not parse message %s for %s" % (_id, lid))
+            raise ValueError("Could not parse message %s for %s" % (_id, lid))
         if skipit:
             print("Skipping archiving of email due to invalid date and default date set to skip")
             return lid, "(skipped)"
@@ -1084,7 +1085,7 @@ def main():
                 if args.verbose:
                     traceback.print_exc()
                 print("Archiving failed!: %s" % err)
-                raise Exception("Archiving to ES failed") from err
+                raise OSError("Archiving to ES failed") from err
         else:
             print("Nothing to import (no list-id found!)")
     except Exception as err:
