@@ -89,15 +89,15 @@ def trim_email(doc: dict, external: bool = False) -> None:
 
 # Format an email address given a name (optional) and an email address.
 # Same as email.utils.formataddr except no Unicode escaping happens.
-def make_address(name: str, email: str) -> str:
-    if name and email:
+def make_address(name: str, mailaddress: str) -> str:
+    if name and mailaddress:
         quotes = ''
         if NEEDS_QUOTES.search(name):
             quotes = '"'
         name = ESCAPES_RE.sub(r'\\\g<0>', name)
-        return f'{quotes}{name}{quotes} <{email}>'
-    elif email:
-        return email
+        return f'{quotes}{name}{quotes} <{mailaddress}>'
+    elif mailaddress:
+        return mailaddress
     else:
         return ""
 
