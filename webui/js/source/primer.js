@@ -245,8 +245,8 @@ function unshortenID(mid) {
     // They should also consist of base 36 chars or '-'
     if ((mid[0] == 'Z' || mid[0] == 'B') && mid.length == 15){
         // remove padding
-        let id1 = parseInt(mid.substr(1, 7).replace(/-/g, ""), 36)
-        let id2 = parseInt(mid.substr(8, 7).replace(/-/g, ""), 36)
+        let id1 = parseInt(mid.substring(1, 8).replace(/-/g, ""), 36)
+        let id2 = parseInt(mid.substring(8, 15).replace(/-/g, ""), 36)
         id1 = id1.toString(16)
         id2 = id2.toString(16)
 

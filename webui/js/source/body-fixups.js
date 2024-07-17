@@ -93,9 +93,9 @@ function fixup_urls(splicer) {
 
         /* Text preceding the link? add it to textbits frst */
         if (i > 0) {
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             textbits.push(t);
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the URL and cut it out as a link */
@@ -103,11 +103,11 @@ function fixup_urls(splicer) {
         if (m) {
             url = m[1];
             i = url.length;
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             textbits.push(new HTML('a', {
                 href: url
             }, url));
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the next link */
@@ -202,9 +202,9 @@ function fixup_diffs(splicer) {
         console.log(i);
         /* Text preceding the diff? add it to textbits frst */
         if (i > 0) {
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             textbits.push(t);
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the URL and cut it out as a link */
@@ -212,11 +212,11 @@ function fixup_diffs(splicer) {
         if (m) {
             diff = m[1];
             i = diff.length;
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             textbits.push(new HTML('pre', {
                 class: 'diff'
             }, color_diff_lines(diff)));
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the next link */
@@ -256,12 +256,12 @@ function fixup_quotes(splicer) {
 
         /* Text preceding the quote? add it to textbits first */
         if (i > 0) {
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             let diffed = fixup_diffs(cut_trailer(t));
             if (isArray(diffed)) {
                 for (let z = 0; z < diffed.length; z++) textbits.push(fixup_urls(diffed[z]));
             } else textbits.push(fixup_urls(diffed));
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the quote and cut it out as a div */
@@ -269,7 +269,7 @@ function fixup_quotes(splicer) {
         if (m) {
             quote = m[0];
             i = quote.length;
-            t = splicer.substr(0, i);
+            t = splicer.substring(0, i);
             quote = quote.replace(/\n>[>\s]*$/g, "\n");
             qdiv = new HTML('div', {
                 "class": "email_quote_parent"
@@ -287,7 +287,7 @@ function fixup_quotes(splicer) {
                 }, fixup_urls(quote))
             ]);
             textbits.push(qdiv);
-            splicer = splicer.substr(i);
+            splicer = splicer.substring(i);
         }
 
         /* Find the next quotes */

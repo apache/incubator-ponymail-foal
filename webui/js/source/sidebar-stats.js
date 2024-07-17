@@ -54,7 +54,7 @@ async function sidebar_stats(json) {
         }
         let par = json.participants[i];
         if (par.name.length > 24) {
-            par.name = par.name.substr(0, 23) + "...";
+            par.name = par.name.substring(0, 23) + "...";
         }
         if (par.name.length == 0) {
             par.name = par.email;
