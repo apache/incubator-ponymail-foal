@@ -677,7 +677,7 @@ class Archiver(object):  # N.B. Also used by import-mbox.py
             private = True
         elif (
             hasattr(mlist, "archive_policy")
-            and mlist.archive_policy is not ArchivePolicy.public
+            and mlist.archive_policy is not ArchivePolicy.public # pylint: disable=possibly-used-before-assignment
         ):
             private = True
 
