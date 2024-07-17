@@ -146,7 +146,6 @@ function save_preferences() {
         };
         let lstring = JSON.stringify(ljson);
         window.localStorage.setItem('G_ponymail_preferences', lstring);
-        console.log("Saved local preferences");
     }
 }
 

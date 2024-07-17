@@ -62,7 +62,6 @@ function modal(title, msg, type, isHTML) {
 // Helper for determining if an email is open or not...
 function anyOpen() {
     let open = (G_current_email_idx !== undefined) ? true : false;
-    console.log("Emails open? " + open);
     return open;
 }
 
@@ -93,7 +92,6 @@ function hideWindows(force_all) {
 
     // Check for individually opened email
     if (G_current_email_idx !== undefined) {
-        console.log("Hiding placeholder at index %u".format(G_current_email_idx));
         let placeholder = document.getElementById('email_%u'.format(G_current_email_idx));
         if (placeholder) {
             placeholder.style.display = 'none';
@@ -109,7 +107,6 @@ function hideWindows(force_all) {
     let placeholders = document.getElementsByClassName('email_placeholder');
     for (let placeholder of placeholders) {
         if (placeholder.style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
             placeholder.style.display = 'none';
             // Reset scroll cache
             try {
@@ -121,7 +118,6 @@ function hideWindows(force_all) {
     placeholders = document.getElementsByClassName('email_placeholder_chatty');
     for (let placeholder of placeholders) {
         if (placeholder.style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
             placeholder.style.display = 'none';
             // Reset scroll cache
             try {
@@ -159,7 +155,6 @@ function keyCommands(e) {
                 compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
-                console.log(G_current_open_email);
                 if (G_current_open_email && G_full_emails[G_current_open_email]) {
                     compose_email(G_current_open_email);
                 }
@@ -198,7 +193,6 @@ function ponymail_swipe(event) {
     // Only accept "big" swipes
     let len = Math.abs(event.detail.swipestart.coords[0] - event.detail.swipestop.coords[0]);
     let direction = event.detail.swipestart.coords[0] > event.detail.swipestop.coords[0] ? 'left' : 'right';
-    console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
         if (G_current_json) { // IF list view...

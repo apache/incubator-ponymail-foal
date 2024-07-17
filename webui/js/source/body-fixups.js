@@ -199,7 +199,6 @@ function fixup_diffs(splicer) {
         if (diffs > 25) {
             break;
         }
-        console.log(i);
         /* Text preceding the diff? add it to textbits frst */
         if (i > 0) {
             t = splicer.substring(0, i);

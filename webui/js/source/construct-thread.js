@@ -20,19 +20,15 @@ function expand_email_threaded(idx, flat) {
     if (placeholder) {
         // Check if email is already visible - if so, hide it!
         if (placeholder.style.display == 'block') {
-            console.log("Collapsing thread at index %u".format(idx));
             placeholder.style.display = 'none';
             G_current_email_idx = undefined;
             return false;
         }
         G_current_email_idx = idx;
-        console.log("Expanding thread at index %u".format(idx));
         placeholder.style.display = 'block';
 
-        // Check if we've already filled out the structure here
-        if (placeholder.getAttribute('data-filled') == 'yes') {
-            console.log("Already constructed this thread, bailing!");
-        } else {
+        // Check if we've not already filled out the structure here
+        if (placeholder.getAttribute('data-filled') != 'yes') {
             // Construct the base scaffolding for all emails
             let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
@@ -99,7 +95,6 @@ function construct_thread(thread, cid, nestlevel, included) {
     let tid = thread.tid || thread.id;
     if (!included.includes(tid)) {
         included.push(tid);
-        console.log("Loading email %s".format(tid));
         GET("%sapi/email.lua?id=%s".format(G_apiURL, encodeURIComponent(tid)), render_email, {
             cached: true,
             scroll: doScroll,
@@ -128,7 +123,6 @@ function construct_single_thread(state, json) {
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
-            console.log("URL differs from default permalink, pushing correct ID to history.");
             window.history.pushState({}, json.thread.subject, url_to_push)
         }
     }

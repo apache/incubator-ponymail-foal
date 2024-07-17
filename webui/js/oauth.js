@@ -77,16 +77,13 @@ function oauthPortal(key) {
 // page.
 function parseOauthResponse(json) {
     if (json.okay) {
-        console.log('Checking for origin URL');
         if (window.sessionStorage) {
             let url = window.sessionStorage.getItem('ponymail_oauth_origin');
-            console.log('Origin is ', url);
             if (url && url.length > 0) {
                 location.href = url;
                 return
             }
         }
-        console.log("No origin found, defaulting to ./");
         location.href = "./" // TODO: Return to whence we came...
     } else {
         alert("Oauth failed: Authentication failed: " + json.message)

@@ -50,7 +50,6 @@ function list_index(state, json) {
     domains.sort();
     for (let domain_name of domains) {
         if (is_letter(domain_name, letter)) {
-            console.log(domain_name);
             let li = new HTML('li', {});
             let a = new HTML('a', {
                 href: 'list.html?%s'.format(domain_name)
@@ -93,7 +92,6 @@ function list_index_onepage(state, json) {
         let new_obj = obj.cloneNode(true);
         new_obj.setAttribute("id", "list_index_child_wide");
         wide_obj.replaceWith(new_obj);
-        console.log(new_obj);
     }
 }
 

@@ -24,10 +24,8 @@ for (let title of document.getElementsByClassName("title")) {
     title.innerText = prefs.title;
 }
 
-console.log("Initializing escrow checks");
 window.setInterval(escrow_check, 250);
 
-console.log("Initializing key command logger");
 window.addEventListener('keyup', keyCommands);
 
 window.addEventListener('load', function() {
@@ -48,9 +46,7 @@ window.addEventListener('load', function() {
         ])
     ]));
 });
-console.log("initializing pop state checker");
 window.onpopstate = function(event) {
-    console.log("Popping state");
     return parseURL({
         cached: true
     });

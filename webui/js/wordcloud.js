@@ -62,7 +62,6 @@ async function wordCloud(hash, width, height, obj, daterange) {
     for (let word of hashSorted) {
         let size = 0;
         let expected_area = ( Math.sqrt(hash[word]) / total ) * (space*0.9)
-        //console.log(expected_area)
         
         let textBox = document.createElementNS(SVG_NAMESPACE, "text");
         textBox.textContent = word
@@ -155,6 +154,5 @@ async function wordCloud(hash, width, height, obj, daterange) {
         }
     }
     document.body.removeChild(svg)
-    console.log("Word Cloud generated");
     obj.inject(svg);
 }

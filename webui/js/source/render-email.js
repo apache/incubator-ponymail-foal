@@ -9,7 +9,6 @@ function get_rcpts(addresses) {
         }
         if (a && a.length > 5) { // more than a@b.c
             list_of_emails.push(a);
-            console.log(a);
         }
     }
     return list_of_emails;
@@ -24,7 +23,6 @@ async function render_email(state, json) {
             window.setTimeout(function() {
                 window.scrollTo(0, rect.top - 48);
             }, 200);
-            console.log("Scrolled to %u".format(rect.top - 48));
         } catch (e) {}
     }
     if (G_chatty_layout) {

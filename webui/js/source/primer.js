@@ -59,7 +59,6 @@ function renderListView(state, json) {
  * When done, we create the scaffolding and list view
  */
 function primeListView(state) {
-    console.log("Priming user interface for List View..");
     state = state || {};
     state.prime = true;
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, state);
@@ -89,8 +88,6 @@ function post_prime(state) {
 
 // onload function for list.html
 function parseURL(state) {
-    console.log("Running ParseURL");
-    console.log(state);
     let bits = window.location.search.substring(1).split(":", 3);
     let list = bits[0];
     let month = bits[1];
@@ -203,7 +200,6 @@ function render_virtual_inbox(state, json) {
     }
 
     if (true) {
-        console.log("Rendering multi-list")
         G_current_json = G_collated_json;
         G_current_json.participants = [];
 

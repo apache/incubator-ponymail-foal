@@ -70,18 +70,14 @@ let G_collated_json = {};
 
 if (pm_config.apiURL) {
     G_apiURL = pm_config.apiURL;
-    console.log("Setting API URL to " + G_apiURL);
 }
 
 // check local storage for settings
-console.log("Checking localStorage availability");
 let G_can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
         G_can_store = true;
-        console.log("localStorage available!");
     } catch (e) {
-        console.log("no localStorage available!");
     }
 }

@@ -50,13 +50,11 @@ async function escrow_check() {
     if (show_spinner) {
         spinner.style.display = 'block';
         if (async_status === 'clear') {
-            console.log("Waiting for JSON resource, deploying spinner");
             async_status = 'waiting';
         }
     } else {
         spinner.style.display = 'none';
         if (async_status === 'waiting') {
-            console.log("All URLs out of escrow, dropping spinner");
             async_status = 'clear';
         }
     }
@@ -77,18 +75,15 @@ async function async_snap(error) {
 
 // Asynchronous GET call
 async function GET(url, callback, state) {
-    console.log("Fetching JSON resource at %s".format(url));
     let pkey = "GET-%s-%s".format(callback, url);
     let res;
     let res_json;
     state = state || {};
     state.url = url;
     if (state && state.cached === true && async_cache[url]) {
-        console.log("Fetching %s from cache".format(url));
         res_json = async_cache[url];
     } else {
         try {
-            console.log("putting %s in escrow...".format(url));
             async_escrow[pkey] = new Date(); // Log start of request in escrow dict
             const rv = await fetch(url, {
                 credentials: 'same-origin'
@@ -101,14 +96,12 @@ async function GET(url, callback, state) {
             }
         } catch (e) {
             delete async_escrow[pkey]; // move out of escrow if failed
-            console.log("The URL %s could not be fetched: %s".format(url, e));
             modal("An error occured", "An error occured while trying to fetch %s:\n%s".format(url, e), "error");
         }
     }
     if (res !== undefined || res_json !== undefined) {
         // We expect a 2xx return code (usually 200 or 201), snap otherwise
         if ((res_json) || (res.status >= 200 && res.status < 300)) {
-            console.log("Successfully fetched %s".format(url))
             let js;
             if (res_json) {
                 js = res_json;
@@ -119,11 +112,8 @@ async function GET(url, callback, state) {
             }
             if (callback) {
                 callback(state, js);
-            } else {
-                console.log("No callback function was registered for %s, ignoring result.".format(url));
             }
         } else {
-            console.log("URL %s returned HTTP code %u, snapping!".format(url, res.status));
             delete async_escrow[pkey]; // move out of escrow when fetched
             async_snap(res);
         }

@@ -9,7 +9,6 @@ class SwipeDetector {
         this.threshold = threshold;
         this.target = target;
 
-        console.log("Attaching swipe detector to element ", target);
         target.addEventListener("touchstart", this.touchStart, false);
         target.addEventListener("touchend", this.touchEnd, false);
     }

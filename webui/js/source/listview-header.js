@@ -105,7 +105,6 @@ function listview_header(state, json) {
         class: 'glyphicon glyphicon-refresh'
     }, " "));
     chevrons.inject(crefresh);
-    console.log(G_current_listmode)
     if (state && state.pos != undefined) {
         if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
@@ -331,7 +330,6 @@ function switch_list(list, from) {
         window.history.pushState({}, null, newhref);
     }
 
-    console.log("Switching list to %s...".format(listid));
     listview_list_lists({
         to: from ? listid : undefined
     });
