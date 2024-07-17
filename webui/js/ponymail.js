@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '813d16c';
+const PONYMAIL_REVISION = '1762148';
 
 
 /******************************************
@@ -78,19 +78,15 @@ let G_collated_json = {};
 
 if (pm_config.apiURL) {
     G_apiURL = pm_config.apiURL;
-    console.log("Setting API URL to " + G_apiURL);
 }
 
 // check local storage for settings
-console.log("Checking localStorage availability");
 let G_can_store = false;
 if (window.localStorage && window.localStorage.setItem) {
     try {
         window.localStorage.setItem("ponymail_test", "foo");
         G_can_store = true;
-        console.log("localStorage available!");
     } catch (e) {
-        console.log("no localStorage available!");
     }
 }
 
@@ -134,13 +130,11 @@ async function escrow_check() {
     if (show_spinner) {
         spinner.style.display = 'block';
         if (async_status === 'clear') {
-            console.log("Waiting for JSON resource, deploying spinner");
             async_status = 'waiting';
         }
     } else {
         spinner.style.display = 'none';
         if (async_status === 'waiting') {
-            console.log("All URLs out of escrow, dropping spinner");
             async_status = 'clear';
         }
     }
@@ -161,18 +155,15 @@ async function async_snap(error) {
 
 // Asynchronous GET call
 async function GET(url, callback, state) {
-    console.log("Fetching JSON resource at %s".format(url));
     let pkey = "GET-%s-%s".format(callback, url);
     let res;
     let res_json;
     state = state || {};
     state.url = url;
     if (state && state.cached === true && async_cache[url]) {
-        console.log("Fetching %s from cache".format(url));
         res_json = async_cache[url];
     } else {
         try {
-            console.log("putting %s in escrow...".format(url));
             async_escrow[pkey] = new Date(); // Log start of request in escrow dict
             const rv = await fetch(url, {
                 credentials: 'same-origin'
@@ -185,14 +176,12 @@ async function GET(url, callback, state) {
             }
         } catch (e) {
             delete async_escrow[pkey]; // move out of escrow if failed
-            console.log("The URL %s could not be fetched: %s".format(url, e));
             modal("An error occured", "An error occured while trying to fetch %s:\n%s".format(url, e), "error");
         }
     }
     if (res !== undefined || res_json !== undefined) {
         // We expect a 2xx return code (usually 200 or 201), snap otherwise
         if ((res_json) || (res.status >= 200 && res.status < 300)) {
-            console.log("Successfully fetched %s".format(url))
             let js;
             if (res_json) {
                 js = res_json;
@@ -203,11 +192,8 @@ async function GET(url, callback, state) {
             }
             if (callback) {
                 callback(state, js);
-            } else {
-                console.log("No callback function was registered for %s, ignoring result.".format(url));
             }
         } else {
-            console.log("URL %s returned HTTP code %u, snapping!".format(url, res.status));
             delete async_escrow[pkey]; // move out of escrow when fetched
             async_snap(res);
         }
@@ -555,7 +541,6 @@ function fixup_diffs(splicer) {
         if (diffs > 25) {
             break;
         }
-        console.log(i);
         /* Text preceding the diff? add it to textbits frst */
         if (i > 0) {
             t = splicer.substring(0, i);
@@ -905,19 +890,15 @@ function expand_email_threaded(idx, flat) {
     if (placeholder) {
         // Check if email is already visible - if so, hide it!
         if (placeholder.style.display == 'block') {
-            console.log("Collapsing thread at index %u".format(idx));
             placeholder.style.display = 'none';
             G_current_email_idx = undefined;
             return false;
         }
         G_current_email_idx = idx;
-        console.log("Expanding thread at index %u".format(idx));
         placeholder.style.display = 'block';
 
-        // Check if we've already filled out the structure here
-        if (placeholder.getAttribute('data-filled') == 'yes') {
-            console.log("Already constructed this thread, bailing!");
-        } else {
+        // Check if we've not already filled out the structure here
+        if (placeholder.getAttribute('data-filled') != 'yes') {
             // Construct the base scaffolding for all emails
             let eml = flat ? G_current_json.emails[idx] : G_current_json.thread_struct[idx];
             if (eml) {
@@ -984,7 +965,6 @@ function construct_thread(thread, cid, nestlevel, included) {
     let tid = thread.tid || thread.id;
     if (!included.includes(tid)) {
         included.push(tid);
-        console.log("Loading email %s".format(tid));
         GET("%sapi/email.lua?id=%s".format(G_apiURL, encodeURIComponent(tid)), render_email, {
             cached: true,
             scroll: doScroll,
@@ -1013,7 +993,6 @@ function construct_single_thread(state, json) {
     if (json.thread) {
         let url_to_push = location.href.replace(/[^/]+$/, "") + json.thread.id;
         if (location.href != url_to_push) {
-            console.log("URL differs from default permalink, pushing correct ID to history.");
             window.history.pushState({}, json.thread.subject, url_to_push)
         }
     }
@@ -1783,10 +1762,8 @@ for (let title of document.getElementsByClassName("title")) {
     title.innerText = prefs.title;
 }
 
-console.log("Initializing escrow checks");
 window.setInterval(escrow_check, 250);
 
-console.log("Initializing key command logger");
 window.addEventListener('keyup', keyCommands);
 
 window.addEventListener('load', function() {
@@ -1807,9 +1784,7 @@ window.addEventListener('load', function() {
         ])
     ]));
 });
-console.log("initializing pop state checker");
 window.onpopstate = function(event) {
-    console.log("Popping state");
     return parseURL({
         cached: true
     });
@@ -1866,7 +1841,6 @@ function modal(title, msg, type, isHTML) {
 // Helper for determining if an email is open or not...
 function anyOpen() {
     let open = (G_current_email_idx !== undefined) ? true : false;
-    console.log("Emails open? " + open);
     return open;
 }
 
@@ -1897,7 +1871,6 @@ function hideWindows(force_all) {
 
     // Check for individually opened email
     if (G_current_email_idx !== undefined) {
-        console.log("Hiding placeholder at index %u".format(G_current_email_idx));
         let placeholder = document.getElementById('email_%u'.format(G_current_email_idx));
         if (placeholder) {
             placeholder.style.display = 'none';
@@ -1913,7 +1886,6 @@ function hideWindows(force_all) {
     let placeholders = document.getElementsByClassName('email_placeholder');
     for (let placeholder of placeholders) {
         if (placeholder.style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
             placeholder.style.display = 'none';
             // Reset scroll cache
             try {
@@ -1925,7 +1897,6 @@ function hideWindows(force_all) {
     placeholders = document.getElementsByClassName('email_placeholder_chatty');
     for (let placeholder of placeholders) {
         if (placeholder.style.display == 'block') {
-            console.log("Hiding placeholder %s".format(placeholder.getAttribute('id')));
             placeholder.style.display = 'none';
             // Reset scroll cache
             try {
@@ -1963,7 +1934,6 @@ function keyCommands(e) {
                 compose_email(null, `${G_current_list}@${G_current_domain}`);
                 return;
             case 'r':
-                console.log(G_current_open_email);
                 if (G_current_open_email && G_full_emails[G_current_open_email]) {
                     compose_email(G_current_open_email);
                 }
@@ -2002,7 +1972,6 @@ function ponymail_swipe(event) {
     // Only accept "big" swipes
     let len = Math.abs(event.detail.swipestart.coords[0] - event.detail.swipestop.coords[0]);
     let direction = event.detail.swipestart.coords[0] > event.detail.swipestop.coords[0] ? 'left' : 'right';
-    console.log("swipe %s of %u pixels detected".format(direction, len));
     if (len < 20) return false;
     if (direction == 'right') {
         if (G_current_json) { // IF list view...
@@ -2067,7 +2036,6 @@ function list_index(state, json) {
     domains.sort();
     for (let domain_name of domains) {
         if (is_letter(domain_name, letter)) {
-            console.log(domain_name);
             let li = new HTML('li', {});
             let a = new HTML('a', {
                 href: 'list.html?%s'.format(domain_name)
@@ -2110,7 +2078,6 @@ function list_index_onepage(state, json) {
         let new_obj = obj.cloneNode(true);
         new_obj.setAttribute("id", "list_index_child_wide");
         wide_obj.replaceWith(new_obj);
-        console.log(new_obj);
     }
 }
 
@@ -2118,6 +2085,7 @@ function list_index_onepage(state, json) {
 function prime_list_index() {
     GET('%sapi/preferences.lua'.format(G_apiURL), list_index_onepage, {});
 }
+
 
 /******************************************
  Fetched from source/listview-flat.js
@@ -2138,14 +2106,12 @@ function calc_per_page() {
         html.clientWidth, html.scrollWidth);
     let email_h = G_current_listmode_compact ? compact_email_height : preview_email_height;
     if (width < narrow_width) {
-        console.log("Using narrow view, reducing emails per page...");
         email_h = G_current_listmode_compact ? compact_email_height * 1.5 : preview_email_height * 2;
     }
     height -= document.getElementById("emails").getBoundingClientRect().y + 16; // top area height plus footer
     email_h += 2;
     let per_page = Math.max(5, Math.floor(height / email_h));
     per_page -= per_page % 5;
-    console.log("Viewport is %ux%u. We can show %u emails per page".format(width, height, per_page));
     return per_page;
 }
 
@@ -2263,6 +2229,7 @@ function listview_flat_element(eml, idx) {
     return link_wrapper;
 }
 
+
 /******************************************
  Fetched from source/listview-header.js
 ******************************************/
@@ -2358,7 +2325,6 @@ function listview_header(state, json) {
         class: 'glyphicon glyphicon-refresh'
     }, " "));
     chevrons.inject(crefresh);
-    console.log(G_current_listmode)
     if (state && state.pos != undefined) {
         if (G_current_listmode == 'threaded') {
             listview_threaded(json, state.pos);
@@ -2584,7 +2550,6 @@ function switch_list(list, from) {
         window.history.pushState({}, null, newhref);
     }
 
-    console.log("Switching list to %s...".format(listid));
     listview_list_lists({
         to: from ? listid : undefined
     });
@@ -3421,7 +3386,6 @@ function save_preferences() {
         };
         let lstring = JSON.stringify(ljson);
         window.localStorage.setItem('G_ponymail_preferences', lstring);
-        console.log("Saved local preferences");
     }
 }
 
@@ -3479,6 +3443,7 @@ function set_show_stats(display) {
     renderCalendar();
 }
 
+
 /******************************************
  Fetched from source/primer.js
 ******************************************/
@@ -3526,7 +3491,6 @@ function renderListView(state, json) {
  * When done, we create the scaffolding and list view
  */
 function primeListView(state) {
-    console.log("Priming user interface for List View..");
     state = state || {};
     state.prime = true;
     GET('%sapi/preferences.lua'.format(G_apiURL), init_preferences, state);
@@ -3556,8 +3520,6 @@ function post_prime(state) {
 
 // onload function for list.html
 function parseURL(state) {
-    console.log("Running ParseURL");
-    console.log(state);
     let bits = window.location.search.substring(1).split(":", 3);
     let list = bits[0];
     let month = bits[1];
@@ -3670,7 +3632,6 @@ function render_virtual_inbox(state, json) {
     }
 
     if (true) {
-        console.log("Rendering multi-list")
         G_current_json = G_collated_json;
         G_current_json.participants = [];
 
@@ -3741,7 +3702,6 @@ function get_rcpts(addresses) {
         }
         if (a && a.length > 5) { // more than a@b.c
             list_of_emails.push(a);
-            console.log(a);
         }
     }
     return list_of_emails;
@@ -3756,7 +3716,6 @@ async function render_email(state, json) {
             window.setTimeout(function() {
                 window.scrollTo(0, rect.top - 48);
             }, 200);
-            console.log("Scrolled to %u".format(rect.top - 48));
         } catch (e) {}
     }
     if (G_chatty_layout) {
@@ -4630,7 +4589,6 @@ class SwipeDetector {
         this.threshold = threshold;
         this.target = target;
 
-        console.log("Attaching swipe detector to element ", target);
         target.addEventListener("touchstart", this.touchStart, false);
         target.addEventListener("touchend", this.touchEnd, false);
     }
