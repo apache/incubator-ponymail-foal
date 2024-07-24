@@ -16,42 +16,6 @@
 */
 
 const pm_config = {
-    oauth: {
-        // OAuth settings
-         apache: {
-            name: "Apache OAuth",
-            oauth_portal: "https://oauth.apache.org/",
-            oauth_url: "https://oauth.apache.org/token",
-            fullname_key: 'fullname',
-            email_key: 'email'
-        },
-        google: {
-            name: "Google OAuth",
-            oauth_portal: "https://accounts.google.com/o/oauth2/auth",
-            oauth_url: "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=",
-            fullname_key: 'name',
-            email_key: 'email',
-            client_id: '41983040784-s1gl269f0p537r22h8eai2pdr1a94pfg.apps.googleusercontent.com'
-        },
-        github: {
-            name: "GitHub OAuth",
-            oauth_portal: "https://github.com/login/oauth/authorize",
-            client_id: "your-client-id-here",
-            scope: "user:email",
-            construct: true
-        },
-        // Enable the following lines for Docker testing
-        // user: {
-        //     name: "Test Auth User",
-        //     oauth_portal: "http://localhost:1080/api/testauth",
-        //     oauth_url: "http://localhost/api/testauth"
-        // },
-        // admin: {
-        //     name: "Test Auth Admin",
-        //     oauth_portal: "http://localhost:1080/api/testauth",
-        //     oauth_url: "http://localhost/api/testauth"
-        // },
-    },
     URLBase: '',
     apiURL: '/',
     boring_lists: ['commits', 'cvs', 'site-cvs', 'security', 'notifications'], // we'd rather not default to these, noisy!

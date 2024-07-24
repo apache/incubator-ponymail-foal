@@ -22,31 +22,29 @@ To enable:
 - ensure server/ponymail.yaml contains the following in the oauth section:
 
 oauth:
+  providers:
+  ...
+    user:
+      name:           Test Auth User
+      oauth_portal:   http://localhost:1080/api/testauth
+      .oauth_url:     http://localhost/api/testauth
+    admin:
+      name:           Test Auth Admin
+      oauth_portal:   http://localhost:1080/api/testauth
+      .oauth_url:     http://localhost/api/testauth
   ...
   authoritative_domains:
     - localhost
   admins:
     - admin@apache.org
 
+(This assumes that the test installation is at http://localhost/. Adjust as necessary.)
+Note: if using a Docker container with a different host port, adjust the oauth_portal entries only
+
 - Add the --testendpoints qualifier to the server startup command
   Alternatively copy the files server/test/testauth.[py|.yaml] to the server/endpoints directory
   They can be renamed if necessary, so long as they have the same basename;
   adjust the URLs below to reflect the new name
-
-- then add the following to config.js under pm_config.oauth:
-        user: {
-            name: "Test Auth User",
-            oauth_portal: "http://localhost/api/testauth",
-            oauth_url: "http://localhost/api/testauth"
-        },
-        admin: {
-            name: "Test Auth Admin",
-            oauth_portal: "http://localhost/api/testauth",
-            oauth_url: "http://localhost/api/testauth"
-        },
-(This assumes that the test installation is at http://localhost/. Adjust as necessary.)
-Note: if using a Docker container with a different host port, adjust the oauth_portal entries only
-(the oauth_url entries relate to the port used by the container webserver)
 
 This will add two extra options to the login screen.
 Clicking on either "Test sign in as ..." link will automatically login (without prompting)
@@ -62,7 +60,7 @@ import yaml
 
 def debug(server, text):
     if server.api_logger:
-        server.api_logger.debug(text)
+        server.api_logger.debug(f"testauth/{text}")
 
 async def process(server: plugins.server.BaseServer, _session: dict, indata: dict) -> typing.Union[aiohttp.web.Response, dict]:
     debug(server, f'INDATA {indata}')

@@ -23,15 +23,17 @@ import typing
 import aiohttp.client
 
 
-async def process(formdata: dict, _session, _server) -> typing.Optional[dict]:
+async def process(formdata: dict, _session, server) -> typing.Optional[dict]:
+    provider = formdata["key"]
+    oauth_url = server.config.oauth.providers.get(provider).get('.oauth_url')
     # Extract domain, allowing for :port
     # Does not handle user/password prefix etc
-    m = re.match(r"https?://([^/:]+)(?::\d+)?/", formdata["oauth_token"])
+    m = re.match(r"https?://([^/:]+)(?::\d+)?/", oauth_url)
     if m:
         oauth_domain = m.group(1)
         headers = {"User-Agent": "Pony Mail OAuth Agent/0.1"}
         # This is a synchronous process, so we offload it to an async runner in order to let the main loop continue.
-        async with aiohttp.client.request("POST", formdata["oauth_token"], headers=headers, data=formdata) as rv:
+        async with aiohttp.client.request("POST", oauth_url, headers=headers, data=formdata) as rv:
             js = await rv.json()
             js["oauth_domain"] = oauth_domain
         return js

@@ -15,6 +15,10 @@
  limitations under the License.
 */
 
+'use strict';
+
+let G_oauth = {};
+
 // Sometimes we don't need ponymail.js, so let's redefine GetAsync here
 function GetAsync(theUrl, xstate, callback) {
     let xmlHttp = null;
@@ -51,7 +55,7 @@ function GetAsync(theUrl, xstate, callback) {
 
 // redirect to the oauth provider
 function oauthPortal(key) {
-    let ot = pm_config.oauth[key]
+    let ot = G_oauth[key]
     let state = parseInt(Math.random()*1000000000) + '' + parseInt(Math.random()*1000000000)
     // google is different (as usual)
     if (key == 'google') {
@@ -77,13 +81,16 @@ function oauthPortal(key) {
 // page.
 function parseOauthResponse(json) {
     if (json.okay) {
+        console.log('Checking for origin URL');
         if (window.sessionStorage) {
             let url = window.sessionStorage.getItem('ponymail_oauth_origin');
+            console.log('Origin is ', url);
             if (url && url.length > 0) {
                 location.href = url;
                 return
             }
         }
+        console.log("No origin found, defaulting to ./");
         location.href = "./" // TODO: Return to whence we came...
     } else {
         alert("Oauth failed: Authentication failed: " + json.message)
@@ -97,8 +104,8 @@ function oauthOptions() {
     let oobj = document.getElementById('oauthtypes') 
     oobj.innerHTML = ""
     // For each enabled oauth plugin, list it.
-    for (let key in pm_config.oauth) {
-        let ot = pm_config.oauth[key]
+    for (let key in G_oauth) {
+        let ot = G_oauth[key]
         if (true) { // dunno why this is here, but whatever.
             let img = document.createElement('img')
             img.setAttribute("src", "images/oauth_" + key + ".png")
@@ -118,6 +125,13 @@ function oauthOptions() {
 // onLoad function for oauth. If args (query string or bookmark) are supplied,
 // we pass that on to the backend, otherwise show which oauth options are
 // enabled.
+function oauthInit(args) {
+    GetAsync(G_apiURL + "api/preferences.lua?oauth=true", {}, (json) => {
+        G_oauth = json['oauth'];
+        oauthWelcome(args, json);
+    } );
+}
+
 function oauthWelcome(args) {
     // google auth sometimes uses bookmarks instead of passing the code as a
     // query string arg.
@@ -138,9 +152,9 @@ function oauthWelcome(args) {
             key = 'google'
             args += "&key=google";
         }
-        if (key && key.length > 0 && pm_config.oauth[key]) {
+        if (key && key.length > 0 && G_oauth[key]) {
             document.getElementById('oauthtypes').innerHTML = "Logging you in, hang on..!"
-            GetAsync(G_apiURL + "api/oauth.lua?" + args + "&oauth_token=" + pm_config.oauth[key].oauth_url, {}, parseOauthResponse)
+            GetAsync(G_apiURL + "api/oauth.lua?" + args, {}, parseOauthResponse)
         } else {
             alert("Key missing or invalid! " + key)
         }
