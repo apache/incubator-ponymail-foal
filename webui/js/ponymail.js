@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '1184382';
+const PONYMAIL_REVISION = '1762148';
 
 
 /******************************************
