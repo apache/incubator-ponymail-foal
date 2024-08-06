@@ -25,7 +25,7 @@ import aiohttp.client
 
 async def process(formdata: dict, _session, server) -> typing.Optional[dict]:
     provider = formdata["key"]
-    oauth_url = server.config.oauth.providers.get(provider).get('.oauth_url')
+    oauth_url = server.config.oauth.providers.get(provider).get('.oauth_url', '')
     # Extract domain, allowing for :port
     # Does not handle user/password prefix etc
     m = re.match(r"https?://([^/:]+)(?::\d+)?/", oauth_url)
