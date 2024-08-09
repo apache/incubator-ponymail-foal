@@ -166,7 +166,7 @@ class SlurpThread(Thread):
         print("%s: %s" % (self.name, message))
 
     def run(self):
-        global goodies, baddies, dedupped
+        global goodies, baddies, dedupped, es
         ja = []
         jas = []
         self.printid("Thread started")
@@ -342,6 +342,8 @@ class SlurpThread(Thread):
 
                 # If --dedup is active, try to filter out any messages that already exist on the list
                 if json and dedup and message.get("message-id", None):
+                    if args.dry:
+                        es = create_es(args)
                     res = es.search(
                         index=es.db_mbox,
                         doc_type="_doc",
@@ -364,6 +366,8 @@ class SlurpThread(Thread):
                             }
                         },
                     )
+                    if args.dry:
+                        es = None
                     if res and res["hits"]["total"]["value"] > 0:
                         self.printid(
                             "Dedupping %s - matched in %s"
@@ -686,13 +690,8 @@ if args.verbose:
     verbose_logger.addHandler(logging.StreamHandler(sys.stdout))
     archiver.logger = verbose_logger
 
-if args.dry:
-    print("Dry-run; continuing to check input data")
-    if args.dump:
-        print("Writing mbox output to %s" % args.dump[0])
-        dumpfile = open(args.dump[0], 'w')
-        dumpfile.write("[\n")
-else:
+
+def create_es(args):
     # Fetch config and set up ES
     es = Elastic(
             logger_level=args.logger_level[0] if args.logger_level else None,
@@ -711,6 +710,16 @@ else:
     except Exception as err:
         print("Error: unable to check if the index %s exists!: %s" % (es.db_mbox, err))
         sys.exit(1)
+    return es
+
+if args.dry:
+    print("Dry-run; continuing to check input data")
+    if args.dump:
+        print("Writing mbox output to %s" % args.dump[0])
+        dumpfile = open(args.dump[0], 'w')
+        dumpfile.write("[\n")
+else:
+    es = create_es(args)
 
 def glob_dir(d):
     dirs = [f for f in listdir(d) if isdir(join(d, f))]
