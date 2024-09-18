@@ -350,6 +350,15 @@ def rfc6376_rascal(
         lid=lid,
     )
 
+# This is the alphabet currently returned by base64.b32encode
+BASE32_ALPHABET = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+# The output is converted the following alphabet, which
+# excludes most vowels and some other letters that may accidentally spell rude words.
+PIBBLE_ALPHABET = b"0123456789bcdfghjklmnopqrstvwxyz"
+
+# Note that the conversion is only reversible provided that the output from
+# base64.b32encode never includes anything but characters from the alphabet above.
+# In particular, if base64.b32encode can return lower-case, the conversions are no longer reversible
 
 def pibble32(data: bytes) -> str:
     r"""
@@ -359,8 +368,8 @@ def pibble32(data: bytes) -> str:
     'sczd1zzg'
     """
     table: bytes = bytes.maketrans(
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
-        b"0123456789bcdfghjklmnopqrstvwxyz",
+        BASE32_ALPHABET,
+        PIBBLE_ALPHABET,
     )
     encoded: bytes = base64.b32encode(data)
     return str(encoded.translate(table), "ascii")
@@ -375,8 +384,8 @@ def unpibble32(text: str) -> bytes:
     """
     encoded: bytes = bytes(text, "ascii")
     table: bytes = bytes.maketrans(
-        b"0123456789bcdfghjklmnopqrstvwxyz",
-        b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",
+        PIBBLE_ALPHABET,
+        BASE32_ALPHABET,
     )
     return base64.b32decode(encoded.translate(table))
 
