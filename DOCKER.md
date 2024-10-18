@@ -20,6 +20,9 @@ Docker execution instructions
 
 These are initial instructions; so far, they have only been tested on macOS (M1).
 
+Note that the ```docker compose``` commands must be issued from the top-level directory
+of the source checkout, i.e. where DockerFile and compose.yaml are located.
+
 Build Docker image
 ==================
 Checkout Ponymail Foal from Git:
@@ -29,7 +32,7 @@ $ git clone https://github.com/apache/incubator-ponymail-foal.git ponymail-foal
 $ cd ponymail-foal
 ```
 
-Start Docker (e.g., open ~/Applications/Docker.app). Build the image:
+Start Docker (e.g. [on macOS] open ~/Applications/Docker.app). Build the image:
 
 ```$ docker compose build```
 
@@ -45,9 +48,13 @@ $ cd ponymail-foal
 $ [MAIL_DATA=/path/to/mailboxes] docker compose up
 ```
 
+If provided, the directory at MAIL_DATA is mapped onto /var/maildata
+This is to allow easy access to mailboxes on the host system, e.g. for importing.
+[If not provided, then the source code directory is mapped]
+
 To stop the server, either use `^C`, or issue the following in another terminal session:
 
-```$ docker stop pmfoal-pmfoal-1```
+```$ docker compose stop```
 
 Setup the ElasticSearch database
 ================================
@@ -58,14 +65,14 @@ The container must already be running.
 Open a new terminal session and start a shell in the container:
 
 ```
-$ docker exec -it pmfoal-pmfoal-1 bash
+$ docker compose exec pmfoal bash
 # cd tools
 # python3 setup.py --devel
 ```
 
 Or you can do it all in one command:
 
-```$ docker exec -it pmfoal-pmfoal-1 bash -c 'cd tools; python3 setup.py --devel'```
+```$ docker compose exec pmfoal bash -c 'cd tools; python3 setup.py --devel'```
 
 Or you can set up the database from the host.
 The container must be running, and the Python packages (as per tools/requirements.txt)
@@ -105,14 +112,14 @@ Start the Ponymail api server
 Open a new terminal session start a shell in the container:
 
 ```
-$ docker exec -it pmfoal-pmfoal-1 bash
+$ docker compose exec pmfoal bash
 # cd server
 # python3 main.py --testendpoints
 ```
 
 Or you can combine them:
 
-```$ docker exec -it pmfoal-pmfoal-1 bash -c 'cd server; python3 main.py --testendpoints'```
+```$ docker compose exec pmfoal bash -c 'cd server; python3 main.py --testendpoints'```
 
 Update config.js to allow local login
 =====================================
