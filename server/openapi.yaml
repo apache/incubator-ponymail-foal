@@ -83,6 +83,10 @@ components:
           description: "Optional To: header search for narrowing down results"
           type: string
           example: janedoe@example.org
+        header_messageid:
+          description: "Optional Message-Id: header search for narrowing down results"
+          type: string
+          example: "<521062724.28.1506761839312.JavaMail.jenkins@unhygienix.ics.uci.edu>"
       required:
       - list
       - domain

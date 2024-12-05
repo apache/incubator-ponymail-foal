@@ -37,6 +37,7 @@ function search(query, date) {
     let header_subject = document.getElementById('header_subject');
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
+    let header_messageid = document.getElementById('header_messageid');
     let qparts = query.split('&'); // look for additional query options
     if (qparts.length > 0) { // i.e. query + header bits
         query = qparts.shift(); // Keep only the query
@@ -54,6 +55,9 @@ function search(query, date) {
             }
             if (hv[0] == 'header_body') {
                 header_body.value = hv[1];
+            }
+            if (hv[0] == 'header_messageid') {
+                header_messageid.value = hv[1];
             }
             // N.B. other options are currently ignored
         }
@@ -81,6 +85,11 @@ function search(query, date) {
         sURL += "&header_body=%s".format(encodeURIComponent(header_body.value));
         newhref += "&header_body=%s".format(header_body.value);
         header_body.value = "";
+    }
+    if (header_messageid.value.length > 0) {
+        sURL += "&header_messageid=%s".format(encodeURIComponent(header_messageid.value));
+        newhref += "&header_messageid=%s".format(header_messageid.value);
+        header_messageid.value = "";
     }
     GET(sURL, renderListView, {
         search: true,
