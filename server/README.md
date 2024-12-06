@@ -52,5 +52,12 @@ An example Apache HTTPd configuration could be (for plain-text HTTP):
         Options +MultiViews
     </Directory>
 </VirtualHost>
-``` 
+```
+
+## Updating Javascript and server versions
+The code contains versions for the Javascript and server code which are derived from the commit ids.
+These have to be determined after the source has been committed. When changing source files for `ponymail.js`, these
+need to be committed before running `webui/js/source/build.sh` and committing the updated files.
+Similarly for changes to `endpoints/`, `plugins/` or `main.py`: these should be committed before
+running `server/update_version.sh` and committing the version file (if it was changed).
 
