@@ -35,6 +35,8 @@ from os.path import isdir, isfile, join
 from threading import Lock, Thread
 from urllib.request import urlopen
 
+# TODO: Fix this by creating a main() method
+# pylint: disable=redefined-outer-name
 
 if not __package__:
     import archiver
@@ -128,7 +130,7 @@ def bulk_insert(name, json, xes, dbindex, wc="quorum"):
 
 def bulk_insert_both(name, mbox, source, xes):
     """Create mbox entries; if any fail, don't create the corresponding source entries"""
-    global replacements, dupes, goodies
+    global replacements, dupes, goodies # pylint: disable=global-statement # TODO:FIX
     successes, repl = bulk_insert(name, mbox, xes, xes.db_mbox)
     failures = len(mbox) - len(successes)
     # if there are failures, keep only successes
@@ -146,7 +148,6 @@ class DownloadThread(Thread): # handles Pipermail
     def assign(self, url):
         self.url = url
     def run(self):
-        global lists
         mldata = urlopen(self.url).read()
         tmpfile = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
         try:
@@ -166,7 +167,7 @@ class SlurpThread(Thread):
         print("%s: %s" % (self.name, message))
 
     def run(self):
-        global goodies, baddies, dedupped
+        global goodies, baddies, dedupped  # pylint: disable=global-statement # TODO:FIX
         ja = []
         jas = []
         self.printid("Thread started")
@@ -837,7 +838,7 @@ elif re.match(r"imaps?://", source):
     mid_re = re.compile(b"^Message-ID:\\s*(.*?)\\s*$", re.I)
     uid = None
     for result in results[1]:
-        for line in result:
+        for line in result: # pylint: disable=not-an-iterable
             if isinstance(line, bytes):
                 match = uid_re.match(line)
                 if match:
