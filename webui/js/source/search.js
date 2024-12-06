@@ -38,26 +38,37 @@ function search(query, date) {
     let header_to = document.getElementById('header_to');
     let header_body = document.getElementById('header_body');
     let header_messageid = document.getElementById('header_messageid');
-    let qparts = query.split('&'); // look for additional query options
+    /*
+     * See https://github.com/apache/incubator-ponymail-foal/issues/266
+     *
+     * The newhref URL parameter values should have been encoded.
+     * However changing this now might invalidate existing URLs.
+     * A work-round is to avoid splitting on '&' alone.
+     * We know what parameter names to expect, so can look for them.
+     * Also, the split() function discards excess parts, so use indexOf instead.
+     */
+    let qparts = query.split('&header_'); // look for additional query options (all start with header_)
     if (qparts.length > 0) { // i.e. query + header bits
         query = qparts.shift(); // Keep only the query
         // store the values to be picked up below
         for (let part of qparts) {
-            let hv = part.split('=',2);
-            if (hv[0] == 'header_from') {
-                header_from.value = hv[1];
+            let sep = part.indexOf('='); // find separator
+            let key = part.substring(0, sep);
+            let value = part.substring(sep+1)
+            if (key == 'from') {
+                header_from.value = value;
             }
-            if (hv[0] == 'header_subject') {
-                header_subject.value = hv[1];
+            if (key == 'subject') {
+                header_subject.value = value;
             }
-            if (hv[0] == 'header_to') {
-                header_to.value = hv[1];
+            if (key == 'to') {
+                header_to.value = value;
             }
-            if (hv[0] == 'header_body') {
-                header_body.value = hv[1];
+            if (key == 'body') {
+                header_body.value = value;
             }
-            if (hv[0] == 'header_messageid') {
-                header_messageid.value = hv[1];
+            if (key == 'messageid') {
+                header_messageid.value = value;
             }
             // N.B. other options are currently ignored
         }
@@ -66,6 +77,7 @@ function search(query, date) {
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
         G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
         );
+    // See above: newhref values should have been encoded, but doing so now might invalidate existing URLs
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
         newhref += "&header_from=%s".format(header_from.value);
