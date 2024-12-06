@@ -225,5 +225,4 @@ def defuzz(formdata: dict, nodate: bool = False, list_override: typing.Optional[
     if must_not:
         query_as_bool["must_not"] = must_not
 
-    print(query_as_bool)
     return query_as_bool
