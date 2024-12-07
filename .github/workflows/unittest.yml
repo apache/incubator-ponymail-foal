@@ -4,6 +4,8 @@ on:
   push:
     paths-ignore:
       - '**/integration-tests.yml'
+      - '**/type-tests.yml'
+      - '**/linting.yml'
       - 'test/itest*'
   
   workflow_dispatch:
