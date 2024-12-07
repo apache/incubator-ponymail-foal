@@ -40,8 +40,8 @@ from urllib.request import urlopen
 
 if not __package__:
     import archiver
-    from plugins import textlib
-    from plugins.elastic import Elastic
+    from plugins import textlib # pylint: disable=no-name-in-module
+    from plugins.elastic import Elastic # pylint: disable=no-name-in-module
 else:
     from . import archiver
     from .plugins.elastic import Elastic
@@ -236,6 +236,7 @@ class SlurpThread(Thread):
                 else:
                     useMboxo = (not noMboxo)
                     messages = mailbox.mbox(
+                        # pylint: disable-next=possibly-used-before-assignment
                         tmpname, None if noMboxo else MboxoFactory, create=False
                     )
 
@@ -274,7 +275,7 @@ class SlurpThread(Thread):
                 # If the parsed data is filtered, also need to filter the raw input
                 # so the source agrees with the summary info
                 if useMboxo:
-                    file = MboxoReader(file)
+                    file = MboxoReader(file) # pylint: disable=possibly-used-before-assignment
                 message_raw = file.read()
                 file.close()
                 message = archiver.parse_message(message_raw)
@@ -295,7 +296,7 @@ class SlurpThread(Thread):
                         if "message-id" in message
                         else "??"
                     )
-                    s = SMTP("localhost")
+                    s = SMTP("localhost") # pylint: disable=possibly-used-before-assignment
                     try:
                         if list_override:
                             message.replace_header("List-ID", list_override)
@@ -343,7 +344,7 @@ class SlurpThread(Thread):
 
                 # If --dedup is active, try to filter out any messages that already exist on the list
                 if json and dedup and message.get("message-id", None):
-                    res = es.search(
+                    res = es.search( # pylint: disable=possibly-used-before-assignment
                         index=es.db_mbox,
                         doc_type="_doc",
                         size=1,
@@ -668,7 +669,7 @@ else:
     # Temporary patch to fix Python email package limitation
     # It must be removed when the Python package is fixed
     if not __package__:
-        from plugins.mboxo_patch import MboxoFactory, MboxoReader
+        from plugins.mboxo_patch import MboxoFactory, MboxoReader  # pylint: disable=no-name-in-module
     else:
         from .plugins.mboxo_patch import MboxoFactory, MboxoReader
 
