@@ -42,8 +42,8 @@ print("Looking for *.json files in %s" % dumpDir)
 
 files = [f for f in os.listdir(dumpDir) if os.path.isfile(os.path.join(dumpDir, f)) and f.endswith(".json")]
 
-for f in files:
-    fpath = os.path.join(dumpDir, f)
+for file in files:
+    fpath = os.path.join(dumpDir, file)
     print("Processing %s" % fpath)
     with open(fpath, "r") as f:
         ojson = json.load(f)
