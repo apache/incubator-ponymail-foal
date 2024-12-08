@@ -3,9 +3,10 @@
 
 _Next-generation suite of services and tools for Apache Pony Mail (incubating)_
 
-| [![Foal Type Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml) |
-|-------|
-| [![Unit Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml) |
+[![Linting](https://github.com/apache/incubator-ponymail-foal/actions/workflows/linting.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/linting.yml)
+[![Foal Type Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml)
+[![Unit Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml)
+[![Integration Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/integration-tests.yml)
 
 
 This repository aims to contain the next generation of Apache Pony Mail,
