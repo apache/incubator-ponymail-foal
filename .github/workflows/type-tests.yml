@@ -34,7 +34,14 @@ jobs:
         pip install mypy
         pip install types-docutils
         pip list
-    - name: Type testing with mypy
+    - name: Type testing with mypy: tools
       run: |
           mypy --cache-dir /tmp/ --ignore-missing-imports tools
+    - name: Type testing with mypy: server
+      if: always()
+      run: |
           mypy --cache-dir /tmp/ --ignore-missing-imports server
+    - name: Type testing with mypy: test
+      if: always()
+      run: |
+          mypy --cache-dir /tmp/ --ignore-missing-imports test

@@ -14,8 +14,8 @@ class MyHeaderClass(email.headerregistry.UnstructuredHeader):
 
 # print(default.header_factory)
 policy = default.clone()
-policy.header_factory.map_to_type('references', MyHeaderClass)
-policy.header_factory.map_to_type('message-id', MyHeaderClass)
+policy.header_factory.map_to_type('references', MyHeaderClass) # type: ignore [attr-defined]
+policy.header_factory.map_to_type('message-id', MyHeaderClass) # type: ignore [attr-defined]
 
 def process(f):
     msg = email.message_from_binary_file(f, policy=policy)
