@@ -64,14 +64,14 @@ async def process(
             output += f"""Posted to <a href="/list.html?{listname}">{listname}</a> by {author} on {date} UTC<br/>"""
             title = html.escape(email.get("subject", ""))
             body = html.escape(email.get("body", ""))
-            thread, _emails, _pdocs = await plugins.messages.fetch_children(
+            _thread, _emails, pdocs = await plugins.messages.fetch_children(
                 session, email
             )
             output += f"""<h1>{email["subject"]}</h1><pre>{body}</pre><hr/>\n"""
-            for _tid, email in _pdocs.items():
-                body = html.escape(email.get("body", ""))
-                author = html.escape(email.get("from", ""))
-                output += f"""<h2>{email["subject"]}</h2>\n<b>Posted by {author}.</b><hr/><pre>{body}</pre><hr/>\n"""
+            for _tid, childemail in pdocs.items():
+                body = html.escape(childemail.get("body", ""))
+                author = html.escape(childemail.get("from", ""))
+                output += f"""<h2>{childemail["subject"]}</h2>\n<b>Posted by {author}.</b><hr/><pre>{body}</pre><hr/>\n"""
     # Show a list
     elif list_id:
         # Make sure we can actually index this list
