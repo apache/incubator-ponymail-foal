@@ -1387,7 +1387,8 @@ def main() -> None:
             pid_: str = dkim_id.dkim_id(msg)
             rascal_: bytes = dkim_id.rfc6376_rascal(msg)[1]
             assert pid == pid_, f"{pid} != {pid_}"
-            assert rascal == rascal_, f"{rascal} != {rascal_}"
+            # TODO: not sure how to fix the mypy error
+            assert rascal == rascal_, f"{rascal} != {rascal_}" # type: ignore[str-bytes-safe]
 
     doctests()
     print("ok")
