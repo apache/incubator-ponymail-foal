@@ -33,6 +33,7 @@ jobs:
         pip install -r server/requirements.txt
         pip install mypy
         pip install types-docutils
+        pip install types-requests
         pip list
     - name: Type testing with mypy - tools
       run: |
