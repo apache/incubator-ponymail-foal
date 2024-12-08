@@ -3,9 +3,9 @@
 
 _Next-generation suite of services and tools for Apache Pony Mail (incubating)_
 
-| Type tests: | ![CI Status, Type Tests](https://img.shields.io/github/workflow/status/apache/incubator-ponymail-foal/Foal%20Type%20Tests?style=plastic) |
-|-----|-------|
-| **Unit tests:** | ![CI Status, Unit Tests](https://img.shields.io/github/workflow/status/apache/incubator-ponymail-foal/Unit%20Tests?style=plastic) |
+| [![Foal Type Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/type-tests.yml) |
+|-------|
+| [![Unit Tests](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml/badge.svg)](https://github.com/apache/incubator-ponymail-foal/actions/workflows/unittest.yml) |
 
 
 This repository aims to contain the next generation of Apache Pony Mail,
