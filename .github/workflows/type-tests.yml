@@ -31,9 +31,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tools/requirements.txt
         pip install -r server/requirements.txt
-        # mypy crashes: resolver.py:19: error: INTERNAL ERROR -- Please try using mypy master on GitHub
-        git clone https://github.com/python/mypy.git /tmp/mypy
-        python3 -m pip install --upgrade /tmp/mypy
+        pip install mypy
         pip list
     - name: Type testing with mypy
       run: |
