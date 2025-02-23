@@ -44,10 +44,6 @@ jobs:
         # This only affects the appearance of the message body, so does not matter for compatibility
         pip install html2text==2020.1.16 # optional dependency, but needed for tests
         pip list
-    - name: Check versions
-      run: |
-        webui/js/source/build.sh
-        server/update_version.sh
     - name: Test with pytest
       run: |
         cp tools/archiver.yaml.example tools/archiver.yaml
@@ -57,3 +53,7 @@ jobs:
         sed -e '/incubator/s/# cropout:/cropout:/' tools/archiver.yaml.example >tools/archiver.yaml
         cd pmtests
         python runall.py --root ..
+    - name: Check versions
+      run: |
+        webui/js/source/build.sh
+        server/update_version.sh
