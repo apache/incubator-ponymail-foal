@@ -26,12 +26,11 @@
 
 import os
 import json
+import atexit
 
-# Dummy to satisf code
+# Dummy to satisfy code
 VERSION = (7, 0, 1)
 VERSION_STR = "7.0.1"
-
-import atexit
 
 def exit_handler():
     print("Closing %s" % outfile)
