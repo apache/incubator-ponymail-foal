@@ -15,8 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Simple endpoint that returns an email or an attachment from one"""
-""" THIS ONLY DEALS WITH PUBLIC EMAILS FOR NOW - AAA IS BEING WORKED ON"""
+"""
+Simple endpoint that returns an email or an attachment from one
+
+THIS ONLY DEALS WITH PUBLIC EMAILS FOR NOW - AAA IS BEING WORKED ON
+"""
 
 import plugins.server
 import plugins.session

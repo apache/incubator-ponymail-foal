@@ -22,8 +22,11 @@ import aiohttp.web
 import typing
 import fnmatch
 
-""" Generic preferences endpoint for Pony Mail codename Foal"""
-""" This is incomplete, but will work for anonymous tests. """
+"""
+Generic preferences endpoint for Pony Mail codename Foal
+
+This is incomplete, but will work for anonymous tests.
+"""
 
 
 async def process(

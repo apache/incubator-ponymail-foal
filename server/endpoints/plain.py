@@ -15,11 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Plain text endpoint for enabling some search engines to index mail archives"""
-"""This feature shows all publicly available lists and threads as plain HTML, 
+"""
+Plain text endpoint for enabling some search engines to index mail archives
+
+This feature shows all publicly available lists and threads as plain HTML, 
    which may be needed for some search engines to index the lists. It has a
    canonical link to the standard corresponding URLs, which should make 
-   the indexed data available under the right URLs when searching."""
+   the indexed data available under the right URLs when searching.
+"""
 
 import plugins.server
 import plugins.session
