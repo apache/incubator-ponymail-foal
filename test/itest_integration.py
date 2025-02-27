@@ -231,7 +231,7 @@ def test_public_stats():
         assert email['list_raw'] == '<users.ponymail.apache.org>'
         assert email['list'] == email['list_raw']
         assert email['id'] == email['mid']
-        assert email['private'] == False
+        assert not email['private']
         check_access(email, None)
     # Check we cannot see the private emails
     jzon = requests.get(
@@ -366,7 +366,6 @@ def test_mgmt_edit():
     """This test causes the source for an entry to be hidden"""
     admin_cookies = get_cookies('admin')
 
-    test_list_id = f"<{TEST_LIST2}.{TEST_DOMAIN}>"
     jzon = requests.get(
         f"{API_BASE}/stats.lua",
         params={"list": TEST_LIST2, "domain": TEST_DOMAIN, "emailsOnly": True, "d": 'gte=0d'}
