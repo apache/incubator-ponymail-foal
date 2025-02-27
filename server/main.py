@@ -38,8 +38,8 @@ import plugins.offloader
 import plugins.server
 import plugins.session
 
-PONYMAIL_FOAL_VERSION = "0.1.0"
 from server_version import PONYMAIL_SERVER_VERSION
+PONYMAIL_FOAL_VERSION = "0.1.0"
 
 
 # Certain environments such as MinGW-w64 will not register as a TTY and uses buffered output.
