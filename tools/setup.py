@@ -93,9 +93,9 @@ if missing_pkgs:
 
 
 # at this point we can assume elasticsearch is present
-from elasticsearch import VERSION as ES_VERSION
-from elasticsearch import ConnectionError as ES_ConnectionError
-from elasticsearch import Elasticsearch, ElasticsearchException
+from elasticsearch import VERSION as ES_VERSION  # noqa: E402
+from elasticsearch import ConnectionError as ES_ConnectionError  # noqa: E402
+from elasticsearch import Elasticsearch, ElasticsearchException  # noqa: E402
 
 ES_MAJOR = ES_VERSION[0]
 
