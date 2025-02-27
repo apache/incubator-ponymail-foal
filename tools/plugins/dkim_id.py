@@ -407,7 +407,6 @@ def dkim_id(data: bytes, lid: Optional[bytes] = None) -> str:
 
 def main() -> None:
     from sys import argv
-    from typing import BinaryIO
 
     if len(argv) == 2:
         with open(argv[1], "rb") as f:
