@@ -107,7 +107,7 @@ def check_mapping(index):
         descend(act, mappings,[])
 
         for k,v in exp.items():
-            if not k in act:
+            if k not in act:
                 if v == {'dynamic': True, 'type': 'object'}:
                     print(f' Key {k} is dynamic')
                 else:

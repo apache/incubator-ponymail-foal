@@ -353,10 +353,10 @@ async def query_batch(
     }
     if metadata_only:  # Only doc IDs and AAA fields.
         es_query["_source"] = ["deleted", "private", "mid", "dbid", "list_raw"]
-    elif not source_fields is None:
+    elif source_fields is not None:
         temp = source_fields.copy()
         for hdr in MUST_HAVE:
-            if not hdr in source_fields:
+            if hdr not in source_fields:
                 temp.append(hdr)
         es_query["_source"] = temp
     else:
@@ -391,9 +391,9 @@ async def query_batch(
                     del doc["body_short"]
                 trim_email(doc)
                 # drop any added fields
-                if not source_fields is None:
+                if source_fields is not None:
                     for hdr in MUST_HAVE:
-                        if not hdr in source_fields and hdr in doc:
+                        if hdr not in source_fields and hdr in doc:
                             del doc[hdr]
                 docs.append(doc)
         if len(docs) > 0:
