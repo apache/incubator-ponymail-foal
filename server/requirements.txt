@@ -4,7 +4,7 @@ types-PyYAML                     # AL2.0
 multipart~=0.2.1                 # MIT
 elasticsearch-dsl>=7.0.0,<8.0.0  # AL2.0
 # N.B. ES 7.14 introduces strict server version compatibility checks
-elasticsearch[async]>=7.13.1,<7.14.0 # AL2.0 (includes aiohttp)
+elasticsearch[async]>=7.13.1,<8.18.0 # AL2.0 (includes aiohttp)
 certifi~=2025.1.31                # MPL2.0
 netaddr~=0.8.0                   # BSD, MIT
 formatflowed~=2.0.0              # Python Software Foundation
