@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Unit Tests to expose the change in output for as_bytes() with Python 3.12+
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       max-parallel: 1
       fail-fast: false # test all Python versions
       matrix:
-        python-version: ["3.10", 3.11, 3.12, 3.13]
+        python-version: [3.11, 3.12, 3.13]
 
     steps:
     - uses: actions/checkout@master
@@ -43,16 +43,9 @@ jobs:
         # This only affects the appearance of the message body, so does not matter for compatibility
         pip install html2text==2020.1.16 # optional dependency, but needed for tests
         pip list
-    - name: Test with pytest
+    - name: Test with original Ponymail Unit tests
       run: |
         cp tools/archiver.yaml.example tools/archiver.yaml
-        python -m pytest test/test_*.py
-    - name: Test with Ponymail Unit tests (fixed to allow for Python 3.12+ change)
-      run: |
         sed -e '/incubator/s/# cropout:/cropout:/' tools/archiver.yaml.example >tools/archiver.yaml
         cd pmtests
-        python runall.py --root ..
-    - name: Check versions
-      run: |
-        webui/js/source/build.sh
-        server/update_version.sh
+        python runall.py --root .. --yamldir yamlorig
