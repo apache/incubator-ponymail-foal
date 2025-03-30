@@ -62,6 +62,9 @@ def full(msg, _body, lid, _attachments, _raw_msg):
     but different copies of the message are likely to have different headers, thus ids
     WARNING: the archiver by default adds an archived-at header with the current time.
     This is included in the hash, so messages will get different Permalinks if reloaded from source
+    
+    Note also that the policy (compat32, default, smtputf8) affects the contents returned by as_bytes()
+    and thus the generated id.
 
     Parameters:
     msg - the parsed message
