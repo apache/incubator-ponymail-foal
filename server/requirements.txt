@@ -12,3 +12,4 @@ google-auth~=2.38.0              # AL2.0
 aiosmtplib~=4.0.0                # MIT
 python-dateutil                  # BSD, AL2.0
 types-python-dateutil            # BSD, AL2.0
+packaging~=24.2                  # BSD, AL2.0
