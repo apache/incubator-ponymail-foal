@@ -50,9 +50,9 @@ async def process(
     if action == "log":
         numentries = int(indata.get("size", 50))
         page = int(indata.get("page", 0))
-        actionFilter = indata.get("filter")
-        if actionFilter:
-            actionFilter = (actionFilter)
+        filter = indata.get("filter")
+        if filter:
+            actionFilter = (filter)
         else:
             actionFilter = ("edit","delete","hide","unhide")
         out = []
