@@ -1,5 +1,5 @@
 # Items in this file must have a licence compatible with AL 2.0
-PyYAML~=6.0.1                    # MIT
+PyYAML~=6.0.2                    # MIT
 types-PyYAML                     # AL2.0
 multipart~=1.2.1                 # MIT
 elasticsearch-dsl>=7.0.0,<8.0.0  # AL2.0
