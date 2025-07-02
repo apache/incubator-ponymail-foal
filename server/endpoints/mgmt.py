@@ -52,9 +52,9 @@ async def process(
         page = int(indata.get("page", 0))
         actionFilter = indata.get("filter")
         if actionFilter:
-            actionFilter = [actionFilter]
+            actionFilter = (actionFilter)
         else:
-            actionFilter = ["edit","delete","hide","unhide"]
+            actionFilter = ("edit","delete","hide","unhide")
         out = []
         async for entry in plugins.auditlog.view(session, page=page, num_entries=numentries, raw=True, filter=actionFilter):
             out.append(entry)

@@ -20,6 +20,7 @@ This is the AAA library for Pony Mail codename Foal
 It handles rights management for lists.
 """
 
+from typing import Optional
 import plugins.session
 
 
@@ -31,7 +32,7 @@ def can_access_email(session: plugins.session.SessionObject, email: dict) -> boo
     # If user can access the list, they can read the email
     return can_access_list(session, email.get("list_raw", None))
 
-def can_access_list(session: plugins.session.SessionObject, _listid: str) -> bool:
+def can_access_list(session: plugins.session.SessionObject, _listid: Optional[str]) -> bool:
     """Determine if a list can be accessed by the current user"""
     # If logged in via a known oauth, we assume access for now...TO BE CHANGED
     if session.credentials and session.credentials.authoritative:
