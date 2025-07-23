@@ -136,7 +136,7 @@ def check_access(email, cookies):
 
 def check_auditlog_count(count, admin_cookies, action_filter=None):
     if isinstance(action_filter, str):
-        action_filter = tuple(action_filter)  # the query expects a tuple/list of terms, not a single string.
+        action_filter = (action_filter,)  # the query expects a tuple/list of terms, not a single string.
     jzon = mgmt_get_json({"action": 'log', "filter": action_filter}, admin_cookies)
     assert len(jzon['entries']) == count
     return jzon['entries']
