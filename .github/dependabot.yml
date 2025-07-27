@@ -5,3 +5,5 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    ignore:
+      - dependency-name: "elasticsearch[async]" # see PR 283
