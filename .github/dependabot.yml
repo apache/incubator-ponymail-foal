@@ -7,3 +7,4 @@ updates:
       interval: "monthly"
     ignore:
       - dependency-name: "elasticsearch[async]" # see PR 283
+      - dependency-name: "elasticsearch-dsl" # see PR 283
