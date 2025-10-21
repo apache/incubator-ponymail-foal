@@ -24,8 +24,11 @@ import aiohttp.client
 
 
 async def process(formdata: dict, _session, server) -> typing.Optional[dict]:
-    provider = formdata["key"]
-    oauth_url = server.config.oauth.providers.get(provider).get('.oauth_url', '')
+    provider = server.config.oauth.providers.get(formdata["key"])
+    if not provider:
+        # should not happen, but just in case of client error
+        return aiohttp.web.Response(headers={}, status=404, text="OAuth provider not found")
+    oauth_url = provider.get('.oauth_url', '')
     # Extract domain, allowing for :port
     # Does not handle user/password prefix etc
     m = re.match(r"https?://([^/:]+)(?::\d+)?/", oauth_url)
