@@ -46,6 +46,12 @@ async def process(
 
     prefs: dict = {"login": {}}
     prefs['versions'] = versions
+    if indata.get('oauth'):
+        # filter subkeys starting with .
+        # the providers is a dict of dicts; we want to filter out keys in the inner dict that start with '.'
+        prefs['oauth'] = { provider:{ k:v for k,v in entry.items() if not k.startswith('.')} 
+                  for provider,entry in server.config.oauth.providers.items()}
+        return prefs
     lists: dict = {}
     for ml, entry in server.data.lists.items():
         if "@" in ml:

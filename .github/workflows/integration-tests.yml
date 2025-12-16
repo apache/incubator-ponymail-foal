@@ -78,6 +78,12 @@ jobs:
             - localhost
           admins:
             - admin@apache.org
+          providers:
+            testprovider:
+              name:           Test Auth User
+              oauth_portal:   http://localhost:8080/api/testauth
+              .oauth_url:     http://localhost:8080/api/testauth
+
         
         EOD
         echo server/ponymail.yaml 

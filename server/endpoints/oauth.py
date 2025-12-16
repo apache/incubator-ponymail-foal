@@ -39,7 +39,6 @@ async def process(
     state = indata.get("state")
     code = indata.get("code")
     id_token = indata.get("id_token")
-    oauth_token = indata.get("oauth_token")
 
     rv: typing.Optional[dict] = None
 
@@ -52,7 +51,7 @@ async def process(
         rv = await plugins.oauthGithub.process(indata, session, server)
 
     # Generic OAuth handler, only one we support for now. Works with ASF OAuth.
-    elif state and code and oauth_token:
+    elif state and code:
         rv = await plugins.oauthGeneric.process(indata, session, server)
 
     if rv:

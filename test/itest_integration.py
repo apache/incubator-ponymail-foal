@@ -38,10 +38,17 @@ def get_cookies(user='user'):
     state=random.randint(
         1000000000000000000,
         2000000000000000000) # roughly equivalent to code in oauth.js
-    testauth='testauth'
-    res = requests.get(f"{API_BASE}/{testauth}?state={state}&redirect_uri=x&state={state}&key=ignored",allow_redirects=False)
+    # Get the oauth settings (returned under 'oauth' key)
+    jzon_oauth = requests.get(f"{API_BASE}/preferences?oauth=1").json()
+    assert 'oauth' in jzon_oauth
+    testprovider='testprovider'
+    # get the url for the provider
+    oauth_portal = jzon_oauth['oauth'][testprovider]['oauth_portal']
+    assert oauth_portal
+    res = requests.get(f"{oauth_portal}?state={state}&redirect_uri=x&state={state}&key={testprovider}",allow_redirects=False)
     code = res.headers['Location'][1:]
-    res = requests.get(f"{API_BASE}/oauth.lua?key=ignored{code}&oauth_token={API_BASE}/{testauth}&state={state}&user={user}")
+    assert code.startswith('&code=')
+    res = requests.get(f"{API_BASE}/oauth.lua?key=testprovider&state={state}&user={user}{code}")
     cookies = res.cookies
     jzon = requests.get(f"{API_BASE}/preferences", cookies=cookies).json()
     assert 'credentials' in jzon['login']
