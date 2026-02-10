@@ -2,6 +2,7 @@
 
 import sys
 import email
+import email.headerregistry
 import gzip
 from email.policy import default
 

@@ -18,6 +18,7 @@
 """Caching proxy for Gravatars"""
 
 import plugins.server
+import plugins.session
 import aiohttp
 import aiohttp.web
 import base64
