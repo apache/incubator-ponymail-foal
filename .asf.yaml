@@ -20,6 +20,19 @@ github:
     # Enable issue management
     issues: true
 
+  rulesets:
+    - name: "Default Branch Protection"
+      type: branch
+      branches:
+        includes:
+          - "~DEFAULT_BRANCH"
+          - "release/*"
+          - "rel/*"
+        excludes: []
+      bypass_teams:
+        - root
+      restrict_deletion: true
+      restrict_force_push: true
 notifications:
-    issues:       issues@ponymail.apache.org
-    jobs:         dev@ponymail.apache.org
+  issues: issues@ponymail.apache.org
+  jobs: dev@ponymail.apache.org
