@@ -33,12 +33,6 @@ no search filter).
 | `list?dev@*` | All `dev@` lists across all domains |
 | `list?*@*` | Everything (global search) |
 
-You can also view multiple specific lists by comma-separating them:
-
-```
-https://lists.apache.org/list?dev@tomcat.apache.org,users@tomcat.apache.org
-```
-
 ---
 
 ## Date Ranges
@@ -89,49 +83,30 @@ https://lists.apache.org/list?user@spark.apache.org:dfr=2024-01-15|dto=2024-02-2
 
 The query appears after the second colon.
 
-### Basic terms
+### Single-word search
 
 ```
 https://lists.apache.org/list?dev@httpd.apache.org:lte=1M:VOTE
 ```
 → Emails from the last month containing "VOTE" in from, subject, or body.
 
-### Multiple terms (AND)
+### Multi-word queries and exclusions
 
-All terms must match (but not necessarily as a contiguous phrase):
+The search syntax supports multiple terms (ANDed), exclusions (`-word`),
+exact phrases (`"..."`), and escaping literal dashes (`--word`). However,
+**queries containing spaces do not currently work reliably in URLs** — the
+space appears to break parsing of the query segment.
 
-```
-https://lists.apache.org/list?dev@lucene.apache.org:lte=3M:release candidate
-```
-→ Emails containing both "release" and "candidate" (anywhere in from/subject/body).
+These features may work when typed directly into the search box (where the
+browser does not URL-encode the input), but cannot be reliably linked.
 
-### Exact phrase
+| Syntax | Intended meaning |
+|--------|-----------------|
+| `word1 word2` | Both must match (AND) |
+| `-word` | Exclude emails containing this word |
+| `"exact phrase"` | Match as a contiguous phrase |
+| `--word` | Search for a literal leading dash |
 
-Wrap in quotes **in the search box**:
-
-    "release candidate"
-
-This finds emails containing the exact contiguous phrase. Note that quoted
-phrases work reliably when typed into the search box, but may not work when
-pasted directly into a URL (browsers may mangle the quote characters).
-
-### Excluding terms
-
-Prefix with `-`:
-
-```
-https://lists.apache.org/list?dev@flink.apache.org:lte=6M:release -test
-```
-→ Emails containing "release" but NOT "test".
-
-### Searching for a literal dash
-
-Double the dash (`--`) to escape it:
-
-```
-https://lists.apache.org/list?dev@flink.apache.org:lte=1y:---1
-```
-→ Finds emails containing the literal string "-1".
 
 ---
 
@@ -175,7 +150,7 @@ https://lists.apache.org/list?dev@tomcat.apache.org::&header_messageid=abc123@ex
 | VOTE threads this month | `list?dev@httpd.apache.org:lte=1M:VOTE` |
 | All Kafka lists, last 6 months, about "rebalance" | `list?*@kafka.apache.org:lte=6M:rebalance` |
 | Emails from Jane on Flink user list | `list?user@flink.apache.org::&header_from=Jane Smith` |
-| Release announcements on Lucene, last 6 months | `list?dev@lucene.apache.org:lte=6M:release announcement` |
+| Emails about releases on Lucene, last 6 months | `list?dev@lucene.apache.org:lte=6M:release` |
 
 ---
 
