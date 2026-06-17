@@ -1,148 +1,193 @@
 # Search Syntax Guide
 
-PonyMail Foal's search has two layers:
+This documents the user-facing search URLs used on lists.apache.org (and any
+other PonyMail Foal instance). For the backend API, see `API.md`.
 
-1. **The search box** — where you type free-text queries.
-2. **URL parameters** — which encode header filters, date ranges, and list
-   scope. The UI sets these for you, but you can also construct URLs directly.
+## URL Format
+
+All search and list-browsing URLs follow this pattern:
+
+```
+https://<host>/list?<list>@<domain>:<date>:<query>
+```
+
+The three parts after `?` are separated by colons:
+
+| Part | Required | Description |
+|------|----------|-------------|
+| `<list>@<domain>` | Yes | Which mailing list(s) to search |
+| `<date>` | Optional | Time range to search within |
+| `<query>` | Optional | Free-text search terms |
+
+If you omit `<date>` and `<query>`, you get the default view (last 30 days,
+no search filter).
 
 ---
 
-## The Search Box (free-text query)
+## List Selection
 
-Type in the main search box. Terms are matched against the **from**,
-**subject**, and **body** fields of each email.
+| URL | Meaning |
+|-----|---------|
+| `list?dev@httpd.apache.org` | Only `dev@httpd.apache.org` |
+| `list?*@httpd.apache.org` | All lists under `httpd.apache.org` |
+| `list?dev@*` | All `dev@` lists across all domains |
+| `list?*@*` | Everything (global search) |
 
-| Syntax | Meaning | Example |
-|--------|---------|---------|
-| `word` | Email must contain this word | `release` |
-| `"exact phrase"` | Email must contain this exact phrase | `"next release"` |
-| `word1 word2` | Email must contain **both** words (AND) | `release candidate` |
-| `-word` | Exclude emails containing this word | `-spam` |
-| `--word` | Search for a literal leading dash | `---1` finds `-1` |
-
-**Notes:**
-
-- All positive terms are ANDed — every term must appear somewhere in from,
-  subject, or body.
-- Negation (`-word`) excludes the email if the word appears in *any* of the
-  three fields.
-- Colons are stripped, so Lucene-style `field:value` syntax does not work in
-  the search box.
-
-The free-text query appears in the URL as the `q=` parameter:
+You can also view multiple specific lists by comma-separating them:
 
 ```
-/api/stats.json?q=release+candidate&list=dev&domain=kafka.apache.org
-```
-
----
-
-## Header Filters (advanced search form → URL parameters)
-
-The advanced search form provides separate input fields that map to URL
-parameters:
-
-| Form field | URL parameter | Searches | Match type |
-|------------|---------------|----------|------------|
-| From | `header_from=` | `From:` header | phrase |
-| Subject | `header_subject=` | `Subject:` header | phrase |
-| To | `header_to=` | `To:` header | phrase |
-| Body | `header_body=` | message body | phrase |
-| Message-ID | `header_messageid=` | `Message-ID:` header | phrase |
-
-These combine with the free-text query. Example — find emails from "Jane
-Smith" containing "release":
-
-```
-/api/stats.json?q=release&header_from=Jane+Smith&list=dev&domain=spark.apache.org
+https://lists.apache.org/list?dev@tomcat.apache.org,users@tomcat.apache.org
 ```
 
 ---
 
-## Date Ranges (URL parameters)
+## Date Ranges
 
-By default, results cover the **last 30 days**. The date range is controlled
-by URL parameters — the UI date picker sets them for you.
+The date segment (between the first and second colon) controls the time
+window.
 
-### Single month (`d=YYYY-MM`)
-
-Show only emails from one calendar month.
+### Single month
 
 ```
-/api/stats.json?d=2024-3&list=dev&domain=tomcat.apache.org
+https://lists.apache.org/list?dev@kafka.apache.org:2024-3
 ```
+→ March 2024 only.
 
-### Month range (`s=` and `e=`)
+### Relative: "within the last…"
 
-Start and end months (inclusive).
-
-```
-/api/stats.json?s=2024-1&e=2024-6&list=dev&domain=tomcat.apache.org
-```
-→ January through June 2024.
-
-### Relative: "within the last…" (`d=lte=`)
+Use `lte=` followed by a number and time unit:
 
 ```
-/api/stats.json?d=lte%3D30d&list=dev&domain=lucene.apache.org   → last 30 days
-/api/stats.json?d=lte%3D2w&list=dev&domain=lucene.apache.org    → last 2 weeks
-/api/stats.json?d=lte%3D6M&list=dev&domain=lucene.apache.org    → last 6 months
-```
-
-### Relative: "older than…" (`d=gte=`)
-
-```
-/api/stats.json?d=gte%3D1y&list=dev&domain=lucene.apache.org    → older than 1 year
+https://lists.apache.org/list?dev@kafka.apache.org:lte=30d
+https://lists.apache.org/list?dev@kafka.apache.org:lte=2w
+https://lists.apache.org/list?dev@kafka.apache.org:lte=6M
 ```
 
 Time units: `d` (days), `w` (weeks), `M` (months), `y` (years).
 
-### Specific day range (`d=dfr=...|dto=...`)
+### Relative: "older than…"
+
+Use `gte=`:
 
 ```
-/api/stats.json?d=dfr%3D2024-01-15%7Cdto%3D2024-02-28&list=user&domain=flink.apache.org
+https://lists.apache.org/list?user@spark.apache.org:gte=1y
+```
+→ Only emails older than 1 year.
+
+### Specific day range
+
+Use `dfr=` and `dto=` separated by a pipe:
+
+```
+https://lists.apache.org/list?user@spark.apache.org:dfr=2024-01-15|dto=2024-02-28
 ```
 → January 15 through February 28, 2024.
 
-### Days-ago span (`dfrom=` and `dto=`)
+---
 
-`dfrom` = how many days ago to start; `dto` = how many days to span forward
-from that point.
+## Free-Text Search (the query segment)
+
+The query appears after the second colon.
+
+### Basic terms
 
 ```
-/api/stats.json?dfrom=90&dto=30&list=user&domain=flink.apache.org
+https://lists.apache.org/list?dev@httpd.apache.org:lte=1M:VOTE
 ```
-→ From 90 days ago to 60 days ago (a 30-day window).
+→ Emails from the last month containing "VOTE" in from, subject, or body.
+
+### Multiple terms (AND)
+
+All terms must match (but not necessarily as a contiguous phrase):
+
+```
+https://lists.apache.org/list?dev@lucene.apache.org:lte=3M:release candidate
+```
+→ Emails containing both "release" and "candidate" (anywhere in from/subject/body).
+
+### Exact phrase
+
+Wrap in quotes **in the search box**:
+
+    "release candidate"
+
+This finds emails containing the exact contiguous phrase. Note that quoted
+phrases work reliably when typed into the search box, but may not work when
+pasted directly into a URL (browsers may mangle the quote characters).
+
+### Excluding terms
+
+Prefix with `-`:
+
+```
+https://lists.apache.org/list?dev@flink.apache.org:lte=6M:release -test
+```
+→ Emails containing "release" but NOT "test".
+
+### Searching for a literal dash
+
+Double the dash (`--`) to escape it:
+
+```
+https://lists.apache.org/list?dev@flink.apache.org:lte=1y:---1
+```
+→ Finds emails containing the literal string "-1".
 
 ---
 
-## Search Scope (URL parameters)
+## Header Filters
 
-Controls which mailing lists are searched.
+You can filter by specific email headers by appending `&header_<field>=<value>`
+after the colon-separated portion:
 
-| Scope | URL | Meaning |
-|-------|-----|---------|
-| Single list | `list=dev&domain=httpd.apache.org` | Only `dev@httpd.apache.org` |
-| Whole domain | `list=*&domain=httpd.apache.org` | All lists under `httpd.apache.org` |
-| Single list name, all domains | `list=dev&domain=*` | `dev@` everywhere |
-| Global | `list=*&domain=*` | All lists, all domains |
+| Parameter | Searches |
+|-----------|----------|
+| `&header_from=` | The `From:` header |
+| `&header_subject=` | The `Subject:` header |
+| `&header_to=` | The `To:` header |
+| `&header_body=` | The message body |
+| `&header_messageid=` | The `Message-ID:` header |
 
-The scope selector next to the search box sets `list` and `domain` for you.
+These use phrase matching — the value must appear as a contiguous phrase.
+
+Example — find emails from "Jim Jagielski" on `dev@community.apache.org` in
+March 2024:
+
+```
+https://lists.apache.org/list?dev@community.apache.org:2024-3:&header_from=Jim Jagielski
+```
+
+Example — search for a specific Message-ID:
+
+```
+https://lists.apache.org/list?dev@tomcat.apache.org::&header_messageid=abc123@example.com
+```
+
+(Note the empty date and query segments — just two colons before `&header_*`.)
 
 ---
 
-## Putting It All Together
+## Complete Examples
 
-Find emails about "TLS" on all httpd lists, from the last 6 months, excluding
-test noise:
+| Goal | URL |
+|------|-----|
+| Browse dev@httpd last 30 days | `list?dev@httpd.apache.org` |
+| VOTE threads this month | `list?dev@httpd.apache.org:lte=1M:VOTE` |
+| All Kafka lists, last 6 months, about "rebalance" | `list?*@kafka.apache.org:lte=6M:rebalance` |
+| Emails from Jane on Flink user list | `list?user@flink.apache.org::&header_from=Jane Smith` |
+| Release announcements on Lucene, last 6 months | `list?dev@lucene.apache.org:lte=6M:release announcement` |
 
-```
-/api/stats.json?q=TLS+-test&d=lte%3D6M&list=*&domain=httpd.apache.org
-```
+---
 
-Find emails from "Jim Jagielski" on `dev@community.apache.org` in March 2024:
+## Notes
 
-```
-/api/stats.json?q=&header_from=Jim+Jagielski&d=2024-3&list=dev&domain=community.apache.org
-```
+- All positive search terms are ANDed — every term must appear somewhere in
+  the from, subject, or body fields.
+- Negation (`-word`) excludes the email if the word appears in *any* of
+  from, subject, or body.
+- Colons in search terms are stripped (they conflict with the URL format
+  delimiter).
+- Multi-word queries (including quoted phrases) may not work reliably when
+  combined with the `dfr=|dto=` day-range format. Use `lte=` or single-month
+  dates if your query contains spaces.
+- If no date is specified, the default is the last 30 days.
