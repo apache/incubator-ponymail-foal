@@ -90,23 +90,47 @@ https://lists.apache.org/list?dev@httpd.apache.org:lte=1M:VOTE
 ```
 → Emails from the last month containing "VOTE" in from, subject, or body.
 
-### Multi-word queries and exclusions
+### Multiple terms (AND)
 
-The search syntax supports multiple terms (ANDed), exclusions (`-word`),
-exact phrases (`"..."`), and escaping literal dashes (`--word`). However,
-**queries containing spaces do not currently work reliably in URLs** — the
-space appears to break parsing of the query segment.
+Multiple terms are ANDed — all must appear (in any of from, subject, or body):
 
-These features may work when typed directly into the search box (where the
-browser does not URL-encode the input), but cannot be reliably linked.
+```
+https://lists.apache.org/list?dev@lucene.apache.org:lte=3M:release%20candidate
+```
+→ Emails containing both "release" and "candidate" (each may appear in any
+field — from, subject, or body).
 
-| Syntax | Intended meaning |
-|--------|-----------------|
-| `word1 word2` | Both must match (AND) |
-| `-word` | Exclude emails containing this word |
-| `"exact phrase"` | Match as a contiguous phrase |
-| `--word` | Search for a literal leading dash |
+**Important:** Spaces in the query must be encoded as `%20` in URLs. A
+literal space will break the URL.
 
+### Excluding terms
+
+Prefix a term with `-` to exclude emails containing it:
+
+```
+https://lists.apache.org/list?dev@flink.apache.org:lte=6M:release%20-test
+```
+→ Emails containing "release" but NOT "test".
+
+### Searching for a literal dash
+
+Double the dash (`--`) to escape it:
+
+```
+https://lists.apache.org/list?dev@flink.apache.org:lte=1y:---1
+```
+→ Finds emails containing the literal string "-1".
+
+### Exact phrases
+
+Wrap in quotes (URL-encode the quotes as `%22`):
+
+```
+https://lists.apache.org/list?dev@lucene.apache.org:lte=6M:%22release%20candidate%22
+```
+
+Note: phrase matching may not behave differently from a multi-word AND search
+in all cases.
 
 ---
 
@@ -150,19 +174,18 @@ https://lists.apache.org/list?dev@tomcat.apache.org::&header_messageid=abc123@ex
 | VOTE threads this month | `list?dev@httpd.apache.org:lte=1M:VOTE` |
 | All Kafka lists, last 6 months, about "rebalance" | `list?*@kafka.apache.org:lte=6M:rebalance` |
 | Emails from Jane on Flink user list | `list?user@flink.apache.org::&header_from=Jane Smith` |
-| Emails about releases on Lucene, last 6 months | `list?dev@lucene.apache.org:lte=6M:release` |
+| Emails about releases (not tests) on Flink | `list?dev@flink.apache.org:lte=6M:release%20-test` |
 
 ---
 
 ## Notes
 
-- All positive search terms are ANDed — every term must appear somewhere in
-  the from, subject, or body fields.
-- Negation (`-word`) excludes the email if the word appears in *any* of
-  from, subject, or body.
+- Search matches against **from**, **subject**, and **body** — not just subject.
+- All positive terms are ANDed — every term must appear somewhere across those
+  three fields.
+- Negation (`-word`) excludes the email if the word appears in any of the
+  three fields.
 - Colons in search terms are stripped (they conflict with the URL format
   delimiter).
-- Multi-word queries (including quoted phrases) may not work reliably when
-  combined with the `dfr=|dto=` day-range format. Use `lte=` or single-month
-  dates if your query contains spaces.
+- Spaces in the query segment must be encoded as `%20` in URLs.
 - If no date is specified, the default is the last 30 days.
