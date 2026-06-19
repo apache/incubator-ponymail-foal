@@ -7,6 +7,7 @@ on:
       - '**/type-tests.yml'
       - '**/linting.yml'
       - 'test/itest*'
+      - '**.md'
   
   workflow_dispatch:
 
