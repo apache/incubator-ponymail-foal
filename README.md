@@ -30,6 +30,13 @@ Among other things, Foal sports the following new features:
 ## Installation Guide
 Please see the [installation documentation](INSTALL.md) for setup instructions.
 
+## Documentation
+Full documentation is available in the [docs/](docs/index.md) directory, including:
+- [Operator Guide](docs/operator_guide.md) — Install and deploy
+- [User Guide](docs/user_guide.md) — Browse, search, reply
+- [API Reference](docs/API.md) — HTTP endpoint specs
+- [Configuration Reference](docs/configuration.md) — All config options
+
 ### Current setup requirements:
 
 * An operating system, such as:
