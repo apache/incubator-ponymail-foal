@@ -23,12 +23,13 @@ import aiohttp
 import aiohttp.web
 import base64
 import string
+import typing
 
 CACHE_LIMIT = 25000  # Store a maximum of 25,000 gravatars in memory at any given time (25k x 5kb ≃125mb)
 GRAVATAR_URL = "https://secure.gravatar.com/avatar/%s.png?s=96&r=g&d=mm"
 
-gravatars = []
-gravatar_cache = {}
+gravatars: list[str] = []
+gravatar_cache: dict[str, typing.Any] = {}
 gravatar_default = base64.b64decode("""\
 /9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlB
 FRyB2NjIpLCBxdWFsaXR5ID0gOTAK/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCg

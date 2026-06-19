@@ -34,6 +34,7 @@ from os import listdir
 from os.path import isdir, isfile, join
 from threading import Lock, Thread
 from urllib.request import urlopen
+import typing
 
 # TODO: Fix this by creating a main() method
 # pylint: disable=redefined-outer-name
@@ -72,7 +73,7 @@ imap = False
 list_override = None
 project = ""
 filebased = False
-fileToLID = {}
+fileToLID: dict[typing.Any, str] = {}
 interactive = False
 extension = ".mbox"
 piperWeirdness = False
