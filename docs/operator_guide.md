@@ -64,7 +64,7 @@ For Docker details (env vars, volume mounts, test auth), see [DOCKER.md](../DOCK
 
 - Linux (or FreeBSD/macOS)
 - Python 3.8+
-- ElasticSearch 7.x (client pinned to `<7.14` due to strict version checks)
+- OpenSearch 2.x (client pinned to `<7.14` due to strict version checks)
 - A reverse proxy (Apache httpd or nginx)
 - PipEnv or pip for dependency management
 
@@ -74,7 +74,7 @@ For Docker details (env vars, volume mounts, test auth), see [DOCKER.md](../DOCK
 git clone https://github.com/apache/incubator-ponymail-foal.git /opt/ponymail-foal
 cd /opt/ponymail-foal/tools
 pip install -r requirements.txt
-python3 setup.py          # Interactive — creates ES indices + ponymail.yaml
+python3 setup.py          # Interactive — creates OpenSearch indices + ponymail.yaml
 
 cd /opt/ponymail-foal/server
 pip install -r requirements.txt
@@ -104,7 +104,7 @@ Create `/etc/systemd/system/ponymail.service`:
 ```ini
 [Unit]
 Description=Apache Pony Mail Foal API Server
-After=network.target elasticsearch.service
+After=network.target opensearch.service
 
 [Service]
 Type=simple
@@ -192,7 +192,7 @@ This returns activity data (list counts, processing stats).
 
 - **API server**: stdout/stderr (captured by systemd journal)
 - **Archiver**: stderr (captured by MTA's pipe logging)
-- **ES queries**: Enable with `--logger INFO` or `--trace DEBUG` flags on `main.py`
+- **OpenSearch queries**: Enable with `--logger INFO` or `--trace DEBUG` flags on `main.py`
 - **API request log**: Enable with `--apilog INFO` flag
 
 View server logs:

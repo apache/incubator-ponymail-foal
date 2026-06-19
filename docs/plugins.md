@@ -65,7 +65,7 @@ Your endpoint is now available at:
 | Return JSON | Return a `dict` — the server serializes it automatically |
 | Return custom response | Return an `aiohttp.web.Response` (e.g. for binary data, redirects) |
 | Access config | `server.config.ui.mailhost`, `server.config.database.max_hits`, etc. |
-| Query ES | Use `session.database` (an async ES client from the pool) |
+| Query OpenSearch | Use `session.database` (an async OpenSearch client from the pool) |
 | Check auth | `session.credentials` is `None` (anonymous) or has `.authoritative`, `.admin`, `.email` |
 | Error response | Return `aiohttp.web.Response(status=400, text="message")` |
 
@@ -102,7 +102,7 @@ user-installable — to extend behavior, add endpoints instead.
 | `plugins.messages` | `get_email()`, `fetch_children()`, `find_parent()`, `query()` |
 | `plugins.aaa` | `can_access_list()` — checks private list permissions |
 | `plugins.session` | `SessionObject` with `.credentials`, `.database` |
-| `plugins.defuzzer` | `defuzz(indata)` — normalizes date/search parameters into ES queries |
+| `plugins.defuzzer` | `defuzz(indata)` — normalizes date/search parameters into OpenSearch queries |
 | `plugins.server` | `BaseServer`, `Endpoint`, `StreamingEndpoint` base classes |
 
 ### Adding to an Existing Plugin
@@ -111,8 +111,8 @@ If you need shared logic used by multiple endpoints, add it to the
 appropriate plugin module. Follow the existing patterns:
 
 - Type annotations on all functions
-- Async where ES queries are involved
-- Use `session.database` for queries (never create your own ES client)
+- Async where OpenSearch queries are involved
+- Use `session.database` for queries (never create your own OpenSearch client)
 
 ---
 
@@ -122,7 +122,7 @@ These support the CLI tools (archiver, importer, migrator):
 
 | Module | Purpose |
 |--------|---------|
-| `elastic.py` | Synchronous ES client wrapper (tools don't use async) |
+| `elastic.py` | Synchronous OpenSearch client wrapper (tools don't use async) |
 | `generators.py` | ID generation strategies for emails |
 | `dkim_id.py` | DKIM-based permalink generation |
 | `textlib.py` | Text normalization, List-ID parsing, character encoding |
@@ -176,7 +176,7 @@ pytest test_archiver.py test_defuzzer.py test_msgid.py -v
 
 ### Integration Tests
 
-Require a running ES instance and server with `--testendpoints`:
+Require a running OpenSearch instance and server with `--testendpoints`:
 
 ```bash
 pytest itest_integration.py -v

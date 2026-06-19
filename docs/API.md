@@ -315,7 +315,7 @@ POST /api/preferences.json
 
 **Notes:**
 - `versions.server`, `elasticsearch_engine`, and `elasticsearch_library`
-  are only returned for authenticated users (admin-only for ES versions).
+  are only returned for authenticated users (admin-only for OpenSearch versions).
 - When `oauth=true`, returns the configured OAuth providers for the login UI.
 
 ---
@@ -459,7 +459,7 @@ with the following notable differences:
 | `atom.lua` | **Not available** in Foal |
 | Additional email fields | `dbid`, `permalinks`, `body_short`, `from_raw`, `list_raw` are new in Foal |
 | `find_parent` | New parameter on `thread.json` to navigate to thread root |
-| `versions` in preferences | New — shows Foal, server, and ES version info |
+| `versions` in preferences | New — shows Foal, server, and OpenSearch version info |
 | `mgmt.json` | New — admin/GDPR management endpoint (not in legacy PM) |
 | `gravatar.json` | New — caching proxy (legacy embedded gravatar handling differently) |
 | `plain.json` | New — search engine indexing support |

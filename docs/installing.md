@@ -19,7 +19,7 @@
 
 A step-by-step guide to getting PonyMail Foal running from scratch.
 This guide uses **OpenSearch** (the Apache 2.0-licensed fork of
-ElasticSearch). ElasticSearch 7.x works identically — just substitute
+OpenSearch). OpenSearch 2.x works identically — just substitute
 the package names.
 
 ---
@@ -111,11 +111,11 @@ cd /opt/ponymail/server
 pip install -r requirements.txt
 ```
 
-> **Note on ElasticSearch client version**: The `requirements.txt` pins
+> **Note on OpenSearch client version**: The `requirements.txt` pins
 > `elasticsearch[async]>=7.13.1,<7.14.0` because 7.14+ introduces
 > strict server version checking. This version works with both
-> ElasticSearch 7.x and OpenSearch 2.x (which presents itself as ES 7.x
-> compatible).
+> OpenSearch 2.x (the `elasticsearch` Python client is compatible
+> with both without code changes).
 
 ---
 
@@ -130,7 +130,7 @@ python3 setup.py
 ```
 
 It will ask you:
-- **ElasticSearch/OpenSearch URL**: `http://localhost:9200/` (default)
+- **OpenSearch/OpenSearch URL**: `http://localhost:9200/` (default)
 - **Index prefix**: `ponymail` (default)
 - **Outgoing mail server**: your SMTP host (or `localhost` if local)
 - **Accepted domains**: domains you'll allow web replies to (or `*`)

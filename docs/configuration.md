@@ -46,19 +46,19 @@ server:
 
 ## `database`
 
-ElasticSearch connection settings. You can connect either by full URL
+OpenSearch connection settings. You can connect either by full URL
 (`dburl`) or by individual host/port/prefix components.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `dburl` | string | `""` | Full ElasticSearch URL (e.g. `http://localhost:9200/`). When set, takes precedence over `server`/`port`/`secure` |
-| `server` | string | `localhost` | ES hostname (used when `dburl` is not set) |
-| `port` | integer | `9200` | ES port (used when `dburl` is not set) |
-| `secure` | boolean | `false` | Use SSL/TLS for the ES connection (used when `dburl` is not set) |
-| `url_prefix` | string | `""` | URL path prefix for ES (used when `dburl` is not set, e.g. for reverse-proxied ES) |
+| `dburl` | string | `""` | Full OpenSearch URL (e.g. `http://localhost:9200/`). When set, takes precedence over `server`/`port`/`secure` |
+| `server` | string | `localhost` | OpenSearch hostname (used when `dburl` is not set) |
+| `port` | integer | `9200` | OpenSearch port (used when `dburl` is not set) |
+| `secure` | boolean | `false` | Use SSL/TLS for the OpenSearch connection (used when `dburl` is not set) |
+| `url_prefix` | string | `""` | URL path prefix for OpenSearch (used when `dburl` is not set, e.g. for reverse-proxied OpenSearch) |
 | `db_prefix` | string | `ponymail` | Index name prefix. Indices will be named `{db_prefix}-mbox`, `{db_prefix}-source`, etc. |
 | `max_hits` | integer | `5000` | Maximum number of emails returned in a single search query |
-| `pool_size` | integer | `15` | Number of async ES connections in the pool. Must be ≥ 1 |
+| `pool_size` | integer | `15` | Number of async OpenSearch connections in the pool. Must be ≥ 1 |
 | `max_lists` | integer | `8192` | Maximum number of mailing lists to track |
 
 Example:
@@ -100,7 +100,7 @@ Controls UI behavior, email composition, and administration features.
 | `sender_domains` | string | `""` (disabled) | Space-separated list of allowed recipient domains for web replies. Use `*` to allow all. Supports glob patterns (e.g. `*.apache.org`) |
 | `traceback` | boolean | `true` | When `true`, API errors show full Python tracebacks to the client. Set to `false` in production to log tracebacks to stderr instead (an error ID is shown to the client for correlation) |
 | `mgmtconsole` | boolean | `false` | Enable the administrative management console (hide/unhide/delete/edit emails via the web UI). Requires admin OAuth credentials |
-| `allow_delete` | boolean | `false` | When `true`, deleted emails are fully expunged from ElasticSearch (GDPR compliance). When `false`, deleted emails are merely hidden and can be recovered |
+| `allow_delete` | boolean | `false` | When `true`, deleted emails are fully expunged from OpenSearch (GDPR compliance). When `false`, deleted emails are merely hidden and can be recovered |
 | `focus_domain` | string | `*` | Restrict the list overview to a specific domain. Use `*` for all domains. Supports glob patterns (e.g. `*.apache.org`). Useful for single-project deployments |
 
 Example:
@@ -183,9 +183,9 @@ affect `tools/archiver.py` and are read from `ponymail.yaml`.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `threadinfo` | boolean | `false` | Enable storage of threading metadata (`top`, `thread`, `previous` properties) in ElasticSearch |
+| `threadinfo` | boolean | `false` | Enable storage of threading metadata (`top`, `thread`, `previous` properties) in OpenSearch |
 | `threadparents` | integer | `10` | Maximum number of existing messages to query for thread information when a new message arrives |
-| `threadtimeout` | integer | `5` | Timeout in seconds for each thread-parent query to ElasticSearch |
+| `threadtimeout` | integer | `5` | Timeout in seconds for each thread-parent query to OpenSearch |
 
 Example:
 ```yaml

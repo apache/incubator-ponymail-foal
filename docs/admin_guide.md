@@ -52,7 +52,7 @@ Clicking it opens the management interface for that message.
 
 | Action | Effect |
 |--------|--------|
-| **Hide** | Marks the email as hidden. It remains in ES but is not shown to users. Recoverable. |
+| **Hide** | Marks the email as hidden. It remains in OpenSearch but is not shown to users. Recoverable. |
 | **Unhide** | Restores a previously hidden email. |
 | **Delete** | Permanently removes the email from both `mbox` and `source` indices. Only available when `allow_delete: true`. Irreversible. |
 | **Edit** | Change metadata (e.g. move to different list-ID). |
@@ -68,7 +68,7 @@ ui:
 ```
 
 When `allow_delete` is `true`:
-- "Delete" fully expunges the email from ElasticSearch (both `mbox` and `source` indices)
+- "Delete" fully expunges the email from OpenSearch (both `mbox` and `source` indices)
 - The deletion is logged in the audit trail
 - The email cannot be recovered
 
@@ -122,7 +122,7 @@ python3 rethread.py
 
 ### Re-indexing
 
-If you need to rebuild the ES indices from scratch:
+If you need to rebuild the OpenSearch indices from scratch:
 
 1. Back up your data
 2. Delete the indices: `curl -X DELETE http://localhost:9200/ponymail-*`
@@ -139,7 +139,7 @@ If you need to rebuild the ES indices from scratch:
 curl -s http://localhost:8080/api/pminfo.json | python3 -m json.tool
 ```
 
-### Check ElasticSearch Index Sizes
+### Check OpenSearch Index Sizes
 
 ```bash
 curl -s http://localhost:9200/_cat/indices/ponymail-*?v

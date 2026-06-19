@@ -33,7 +33,7 @@
                                      │ index
                                      ▼
 ┌──────────────┐         ┌─────────────────────┐         ┌──────────────┐
-│   Browser    │◄───────►│   ElasticSearch 7+   │◄───────►│ tools/*.py   │
+│   Browser    │◄───────►│   OpenSearch   │◄───────►│ tools/*.py   │
 │              │         │   (Data store)        │         │ (import,     │
 └──────┬───────┘         └──────────▲──────────┘         │  migrate,    │
        │                            │                     │  rethread)   │
@@ -61,15 +61,15 @@
   incoming email. Parses the message, generates a DKIM-based permalink
   ID, stores the parsed email in the `mbox` index and the raw source in
   the `source` index.
-- **`import-mbox.py`** — Bulk imports existing mbox files into ES.
+- **`import-mbox.py`** — Bulk imports existing mbox files into OpenSearch.
 - **`migrate.py`** — Migrates databases from the older Lua-based PonyMail.
 - **`rethread.py`** — Recomputes threading metadata for existing emails.
-- **`setup.py`** — First-time ES index creation with correct mappings.
+- **`setup.py`** — First-time OpenSearch index creation with correct mappings.
 
 ### API Server (`server/`)
 
 An async Python HTTP server built on **aiohttp**. Handles all API
-requests, manages sessions, and queries ElasticSearch.
+requests, manages sessions, and queries OpenSearch.
 
 - Listens on a configurable port (default 8080)
 - Placed behind a reverse proxy (httpd or nginx) that serves the static
@@ -81,7 +81,7 @@ A static JavaScript/HTML frontend. No build step required for deployment
 — just serve the directory. Source JS files in `webui/js/source/` are
 concatenated into `webui/js/ponymail.js` via `build.sh` during development.
 
-### ElasticSearch
+### OpenSearch
 
 The sole data store. Contains these indices (prefixed by `db_prefix`,
 default `ponymail`):
@@ -140,9 +140,9 @@ Optional threading metadata (enabled via `archiver.threadinfo` config):
    - Acquires a database connection from the async pool
    - Creates a session object (validates cookie if present)
 4. **Endpoint** `process(server, session, indata)` executes:
-   - Builds ES query via `plugins.defuzzer` (normalizes dates/filters)
+   - Builds OpenSearch query via `plugins.defuzzer` (normalizes dates/filters)
    - Checks access via `plugins.aaa` (private list filtering)
-   - Queries ES via `session.database`
+   - Queries OpenSearch via `session.database`
    - Returns a dict (auto-serialized to JSON) or a custom `aiohttp.web.Response`
 5. **Response** sent back through proxy to client
 
@@ -156,7 +156,7 @@ user-installable extensions.
 | Plugin | Role |
 |--------|------|
 | `configuration.py` | YAML config parsing (all config keys defined here) |
-| `database.py` | Async ES client, connection pool, index names |
+| `database.py` | Async OpenSearch client, connection pool, index names |
 | `messages.py` | Email retrieval, threading logic, access filtering, trimming |
 | `session.py` | Cookie management, OAuth credential tracking |
 | `aaa.py` | Access control (public vs private list checks) |
@@ -176,7 +176,7 @@ Plugins in `tools/plugins/` support the archiver and import tools:
 
 | Plugin | Role |
 |--------|------|
-| `elastic.py` | Synchronous ES client for CLI tools |
+| `elastic.py` | Synchronous OpenSearch client for CLI tools |
 | `generators.py` | Email ID generation strategies |
 | `dkim_id.py` | DKIM-based permalink generation (collision-resistant) |
 | `textlib.py` | Text normalization, List-ID parsing |
