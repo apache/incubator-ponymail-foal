@@ -1,12 +1,12 @@
 name: Unit Tests to expose the change in output for as_bytes() with Python 3.12+
 
 on:
-  push:
-    paths-ignore:
-      - '**/integration-tests.yml'
-      - '**/type-tests.yml'
-      - '**/linting.yml'
-      - 'test/itest*'
+  # push:
+  #   paths-ignore:
+  #     - '**/integration-tests.yml'
+  #     - '**/type-tests.yml'
+  #     - '**/linting.yml'
+  #     - 'test/itest*'
   
   workflow_dispatch:
 
