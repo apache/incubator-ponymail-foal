@@ -19,6 +19,7 @@
 
 ## Getting Started
 
+- [Installation Guide](installing.md) — Step-by-step install with OpenSearch
 - [Operator Guide](operator_guide.md) — Install and run Foal (Docker or production)
 - [Architecture Overview](architecture.md) — How the components fit together
 
