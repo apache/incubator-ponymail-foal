@@ -436,6 +436,28 @@ async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict
     Wordclouds via significant terms query in ES
     The query must include a private mail filter if necessary
     """
+    # Filter out common stopwords and email-specific noise from the word cloud.
+    # OpenSearch's significant_terms can still surface these because on mailing
+    # lists, terms like "re" (from Re: subjects) are statistically frequent in
+    # both foreground and background sets.
+    STOPWORDS = frozenset({
+        # English stopwords
+        "a", "an", "and", "are", "as", "at", "be", "but", "by", "for",
+        "if", "in", "into", "is", "it", "no", "not", "of", "on", "or",
+        "such", "that", "the", "their", "then", "there", "these", "they",
+        "this", "to", "was", "will", "with", "from", "has", "have", "had",
+        "been", "would", "could", "should", "do", "does", "did", "can",
+        "may", "might", "shall", "we", "you", "he", "she", "its", "our",
+        "your", "my", "me", "him", "her", "us", "them", "who", "what",
+        "which", "when", "where", "how", "all", "each", "every", "both",
+        "few", "more", "most", "other", "some", "any", "only", "own",
+        "same", "so", "than", "too", "very", "just", "about", "above",
+        "after", "again", "also", "because", "before", "between", "down",
+        "during", "here", "new", "now", "off", "old", "one", "out",
+        "over", "still", "under", "up", "well",
+        # Email-specific junk (Re:, Fwd:, Fw:, Aw: prefixes after tokenization)
+        "re", "fwd", "fw", "aw",
+    })
     wc = {}
     try:
 
@@ -451,7 +473,9 @@ async def wordcloud(session: plugins.session.SessionObject, query_defuzzed: dict
         )
 
         for hit in res["aggregations"]["cloud"]["buckets"]:
-            wc[hit["key"]] = hit["doc_count"]
+            term = hit["key"]
+            if term not in STOPWORDS and len(term) > 2:
+                wc[term] = hit["doc_count"]
 
     except plugins.database.Timeout:  # If we time out, just return empty WC.
         pass
