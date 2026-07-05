@@ -38,7 +38,24 @@ All examples below show both modes.
 ## Authentication
 
 Public lists require no authentication. For private lists or write
-operations, include a session cookie:
+operations, authenticate in one of two ways.
+
+**Long-term API token (recommended for scripts).** Log in to the web UI,
+open the user menu → **API Tokens**, and create a token. Send it as a
+bearer token on each request:
+
+```
+Authorization: Bearer pmt_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Tokens are not tied to a browser and do not expire on the short session
+schedule, which makes them ideal for automation. A token grants access up to
+that of the account that created it, limited by the scopes you select
+(`read` / `write` / `admin`; defaults to read-only). The raw token is shown only once, at
+creation time — store it securely. Tokens can be listed and revoked from the
+same **API Tokens** panel, or via [`token.json`](API.md#tokenjson).
+
+**Session cookie (interactive).** Alternatively, include the session cookie:
 
 ```
 Cookie: ponymail=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -191,5 +208,6 @@ There is no rate limiting on the API. However, be respectful:
 ## Related
 
 - [API.md](API.md) — Full endpoint reference with response schemas
+- [generating_api_clients.md](generating_api_clients.md) — Auto-generate a typed client from the OpenAPI spec instead of hand-writing one
 - [search.md](search.md) — Search query syntax
-- GitHub issue [#312](https://github.com/apache/incubator-ponymail-foal/issues/312) — API token support (not yet implemented)
+- GitHub issue [#312](https://github.com/apache/incubator-ponymail-foal/issues/312) — API token support (implemented; see [Authentication](#authentication))

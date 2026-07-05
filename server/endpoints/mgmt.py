@@ -21,6 +21,8 @@ import plugins.server
 import plugins.session
 import plugins.messages
 import plugins.auditlog
+import plugins.database
+import plugins.token
 import re
 import typing
 import aiohttp.web
@@ -252,6 +254,48 @@ async def process(
                 return user_error("No changes made!")
 
         return aiohttp.web.Response(headers={}, status=404, text="Email not found!")
+
+    # Purge *all* API tokens belonging to a user. Intended for the case where a
+    # user's upstream credentials are reset/compromised and every long-term
+    # token they hold must be cut off at once. The target is identified either
+    # by account id (``cid``) or by ``email`` (which may resolve to more than one
+    # account if the user has logged in via several OAuth providers).
+    elif action == "token_purge":
+        target_cid = str(indata.get("cid", "")).strip()
+        target_email = str(indata.get("email", "")).strip().lower()
+        if not target_cid and not target_email:
+            return user_error("token_purge requires a 'cid' or 'email' to identify the user.")
+
+        cids: typing.List[str] = []
+        if target_cid:
+            cids.append(target_cid)
+        else:
+            # Resolve the email to every account id that carries it. credentials.email
+            # is a keyword field, so an exact term match is appropriate here.
+            res = await session.database.search(
+                index=session.database.dbs.db_account,
+                size=100,
+                body={"query": {"term": {"credentials.email": target_email}}},
+            )
+            cids = [hit["_source"]["cid"] for hit in res["hits"]["hits"] if hit["_source"].get("cid")]
+            if not cids:
+                return aiohttp.web.Response(headers={}, status=404, text="No account found for that email.")
+
+        total = 0
+        for target in cids:
+            total += await plugins.token.purge_tokens_for_cid(session.database, target)
+            try:
+                await plugins.auditlog.add_entry(
+                    session,
+                    action="token_purge",
+                    target=target,
+                    lid="",
+                    log="Purged all API tokens for account %s%s"
+                    % (target, (" (%s)" % target_email) if target_email else ""),
+                )
+            except plugins.database.DBError:
+                pass
+        return {"okay": True, "accounts": cids, "deleted": total, "message": "Purged %d token(s)." % total}
 
     return aiohttp.web.Response(headers={}, status=404, text="Unknown mgmt command requested")
 

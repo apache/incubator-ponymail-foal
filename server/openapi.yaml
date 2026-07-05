@@ -400,6 +400,15 @@ components:
       in: cookie
       name: ponymail
       type: apiKey
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Long-term API token sent as an `Authorization: Bearer <token>` header.
+        A token's access is the intersection of its scopes with the owner's
+        current permissions. See API.md#authentication. Token management
+        (`/api/token.json`) itself requires the interactive cookie session and
+        cannot be performed with a bearer token.
 paths:
   /api/compose.json:
     post:
@@ -426,6 +435,7 @@ paths:
       summary: Compose and dispatch an email to a list
       security:
       - cookieAuth: []
+      - bearerAuth: []
   /api/email.json:
     post:
       requestBody:
@@ -455,6 +465,7 @@ paths:
           description: unexpected error
       security:
       - cookieAuth: []
+      - bearerAuth: []
       summary: Fetches a single email and returns it as a JSON object
   /api/mbox.json:
     post:
@@ -479,6 +490,7 @@ paths:
           description: unexpected error
       security:
       - cookieAuth: []
+      - bearerAuth: []
       summary: Returns a list or a search result in mbox file format
   # /api/mgmt.json:
   #   TBA
@@ -565,6 +577,7 @@ paths:
           description: unexpected error
       security:
       - cookieAuth: []
+      - bearerAuth: []
       summary: Fetches the raw mbox source of an email
   /api/stats.json:
     post:
@@ -588,6 +601,7 @@ paths:
               example: "The search could not be completed"
       security:
       - cookieAuth: []
+      - bearerAuth: []
       summary: Searches the archives and returns the results that match
   /api/thread.json:
     post:
@@ -613,4 +627,71 @@ paths:
           description: unexpected error
       security:
       - cookieAuth: []
+      - bearerAuth: []
       summary: Fetches an email thread based on a parent email
+  /api/token.json:
+    post:
+      summary: Manage long-term API tokens (list, create, revoke)
+      description: >-
+        Requires an interactive (cookie) session; tokens cannot be managed using
+        token authentication. The raw token secret is returned only once, on create.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [list, create, revoke]
+                  default: list
+                description:
+                  type: string
+                  description: Label for the token (create)
+                scopes:
+                  type: string
+                  description: Space/comma-separated scopes to grant (create); defaults to "read"
+                lifetime:
+                  type: integer
+                  description: Token lifetime in seconds, 0 = never expires (create)
+                id:
+                  type: string
+                  description: Id of the token to revoke (revoke)
+      responses:
+        '200':
+          description: Token list, or the created token including its one-time secret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  okay:
+                    type: boolean
+                  token:
+                    type: string
+                    description: The raw token secret, present only on create
+                  tokens:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Unknown action, token limit reached, or missing id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Not logged in, tokens disabled, or attempted via token auth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Token to revoke not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - cookieAuth: []

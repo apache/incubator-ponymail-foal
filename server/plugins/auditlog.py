@@ -69,8 +69,15 @@ async def view(
             yield AuditLogEntry(doc["_source"])
 
 
-async def add_entry(session: plugins.session.SessionObject, action: str, target: str, lid: str, log: str) -> None:
-    """ Adds an entry to the audit log"""
+async def add_entry(
+    session: plugins.session.SessionObject, action: str, target: str, lid: str, log: str, refresh="wait_for"
+) -> None:
+    """ Adds an entry to the audit log.
+
+    ``refresh`` controls the ElasticSearch refresh policy; callers that do not
+    need the entry to be immediately searchable can pass ``False`` to avoid
+    blocking on a refresh cycle.
+    """
 
     # Default log entries based on type
     if not log and action == "delete":
@@ -90,5 +97,5 @@ async def add_entry(session: plugins.session.SessionObject, action: str, target:
             "lid": lid,
             "log": log,
         },
-        refresh='wait_for',
+        refresh=refresh,
     )

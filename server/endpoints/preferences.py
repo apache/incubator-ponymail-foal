@@ -46,6 +46,7 @@ async def process(
 
     prefs: dict = {"login": {}}
     prefs['versions'] = versions
+    prefs['tokens'] = {"enabled": server.config.tokens.enabled}
     if indata.get('oauth'):
         # filter subkeys starting with .
         # the providers is a dict of dicts; we want to filter out keys in the inner dict that start with '.'
@@ -83,8 +84,9 @@ async def process(
             if server.config.ui.fully_delete:  # Needed by the UI
                 prefs["login"]["credentials"]["fully_delete"] = True
 
-    # Logging out??
-    if indata.get("logout"):
+    # Logging out?? (only meaningful for cookie sessions - an API token has no
+    # server-side login session to remove; it is revoked via /api/token instead)
+    if indata.get("logout") and not session.token:
         # Remove session from ElasticSearch
         await plugins.session.remove_session(session)
 

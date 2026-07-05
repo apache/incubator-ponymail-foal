@@ -117,6 +117,58 @@ ui:
 
 ---
 
+## `tokens`
+
+Long-term API tokens let logged-in users authenticate to the API
+programmatically via an `Authorization: Bearer <token>` header, without the
+short session-cookie lifetime. See the [API documentation](API.md#authentication).
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enabled` | boolean | `false` | Allow creating and using API tokens. When `false`, the `token.json` endpoint is disabled and bearer tokens are ignored |
+| `default_lifetime` | integer | `2592000` (30 days) | Default token lifetime in seconds when the user does not request one. `0` means the token never expires |
+| `max_lifetime` | integer | `0` (no limit) | Upper bound on token lifetime in seconds. Requests above this (and `0`/never when this is set) are clamped down to it. `0` disables the cap |
+| `max_tokens` | integer | `25` | Maximum number of live tokens a single user may hold at once |
+| `cache_ttl` | integer | `0` | Seconds to cache token authentication in memory. `0` disables caching (default), so revocation and expiry take effect immediately. A value above `0` avoids two OpenSearch reads per token request on hot paths, at the cost of delaying revocation/expiry by up to that many seconds |
+| `cache_max` | integer | `10000` | Maximum number of entries in the in-memory token authentication cache (only relevant when `cache_ttl` > 0). The cache is flushed when it exceeds this, bounding memory use |
+| `revoke_on_identity_change` | boolean | `true` | When a user logs in and their OAuth identity/permissions differ from what was last stored (e.g. after an upstream credential reset or a change in group membership), automatically revoke all of that user's API tokens, so a token minted under the old identity cannot be reused. Set to `false` to keep tokens across identity changes |
+
+Example:
+```yaml
+tokens:
+  enabled: true
+  default_lifetime: 2592000   # 30 days
+  max_lifetime: 31536000      # 1 year hard cap
+  max_tokens: 25
+  revoke_on_identity_change: true
+```
+
+> **Note:** Tokens are opt-in. Before setting `enabled: true`, make sure the
+> `<prefix>-token` OpenSearch index exists. Fresh installs create it
+> automatically via `tools/setup.py`. Existing installs must create it first,
+> e.g. from the `tools/` directory:
+> `python3 mappings.py --shards 1 --replicas 0 token`.
+>
+> Enabling API tokens is a deployment decision: because tokens outlive the
+> short cookie session, an operator may prefer to leave them off, or to cap
+> their lifetime with `max_lifetime`. On a shared/managed instance this should
+> be coordinated with whoever runs the service (for ASF instances, Infra).
+
+**Cutting off a user's tokens.** Two mechanisms revoke *all* of a user's tokens
+at once, on top of a user revoking individual tokens via `token.json`:
+
+- **Automatic**, on the next login after their OAuth identity changes, when
+  `revoke_on_identity_change` is `true` (the default).
+- **Manual**, by an administrator, via the
+  [`token_purge`](API.md#mgmtjson) action of `mgmt.json` — useful when a
+  credential is known to be compromised and you cannot wait for the user's next
+  login.
+
+Neither depends on `cache_ttl`: with the default `cache_ttl: 0` a purge takes
+effect immediately; a non-zero cache delays it by up to that many seconds.
+
+---
+
 ## `oauth`
 
 OAuth authentication configuration. Controls which OAuth providers are

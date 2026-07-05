@@ -14,6 +14,19 @@ database:
 tasks:
   refresh_rate:  150                  # Background indexer run interval, in seconds
 
+# Long-term API tokens. Logged-in users can mint tokens and authenticate to the
+# API programmatically with 'Authorization: Bearer <token>'.
+tokens:
+  enabled:          false             # Allow creating/using API tokens at all
+  default_lifetime: 2592000           # Default token lifetime in seconds (0 = never expires). Default: 30 days
+  max_lifetime:     0                 # Upper bound on lifetime in seconds (0 = no limit)
+  max_tokens:       25                # Maximum number of live tokens per user
+  cache_ttl:        0                 # Seconds to cache token auth in memory (0 = disabled). >0 trades
+                                      # immediate revocation for fewer database lookups on hot API paths.
+  cache_max:        10000             # Max entries in the token auth cache (flushed if exceeded)
+  revoke_on_identity_change: true      # Auto-revoke a user's tokens when their OAuth identity/permissions
+                                       # change on login (e.g. after a credential reset). Default: true
+
 ui:
   wordcloud:       true
   mailhost:        localhost # domain[:port] - default port is 25

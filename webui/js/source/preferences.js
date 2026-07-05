@@ -93,6 +93,13 @@ function init_preferences(state, json) {
         prefsmenu.innerHTML = "";
 
 
+        if (G_ponymail_preferences.tokens && G_ponymail_preferences.tokens.enabled) {
+            let tokens = new HTML('a', {
+                href: "javascript:void(manage_tokens());"
+            }, "API Tokens");
+            prefsmenu.inject(new HTML('li', {}, tokens));
+        }
+
         let logout = new HTML('a', {
             href: "javascript:void(logout());"
         }, "Log out");

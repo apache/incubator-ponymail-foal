@@ -99,6 +99,37 @@ curl -X POST https://your-instance/api/mgmt.json \
   -d '{"action": "log", "filter": "delete"}'
 ```
 
+Alongside the admin email actions (`edit`, `delete`, `hide`, ...), the audit
+log also records API token lifecycle events — `token_create`, `token_revoke`,
+and `token_purge` — including the acting user and the token's scopes.
+
+### Revoking a user's API tokens
+
+When a user's upstream credentials are reset or compromised, you can cut off
+every long-term API token they hold in one call, identifying them by account id
+(`cid`) or email address:
+
+```bash
+curl -X POST https://your-instance/api/mgmt.json \
+  -H "Content-Type: application/json" \
+  -H "Cookie: ponymail=your-session-cookie" \
+  -d '{"action": "token_purge", "email": "user@example.org"}'
+```
+
+This deletes all of that user's tokens (an `email` may resolve to more than one
+account if they have logged in via several OAuth providers) and writes a
+`token_purge` audit entry per account.
+
+In most cases you do not need to do this by hand: with
+`tokens.revoke_on_identity_change` enabled (the default), a user's tokens are
+purged automatically the next time they log in if their OAuth identity or
+permissions have changed. The manual action above is for when you cannot wait
+for that next login — e.g. a credential is known to be compromised right now.
+Remember that a token can never do more than the account currently can: if you
+instead remove the user's access at the OAuth/authoritative-domain or
+`oauth.admins` level, their tokens lose that access on their very next request
+regardless.
+
 ---
 
 ## Command-Line Tools

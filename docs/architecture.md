@@ -91,6 +91,7 @@ default `ponymail`):
 | `ponymail-mbox` | Parsed email metadata (from, subject, date, body, list-id, threading info) |
 | `ponymail-source` | Raw RFC 2822 email source (the original message as received) |
 | `ponymail-account` | User session/preference data |
+| `ponymail-token` | Long-term API tokens (SHA-256 hash, owner, scopes, expiry) |
 | `ponymail-auditlog` | Admin action audit trail |
 
 ---
@@ -138,7 +139,8 @@ Optional threading metadata (enabled via `archiver.threadinfo` config):
    - Strips suffix (`.lua` → form parsing, `.json` → JSON parsing)
    - Looks up handler name in `self.handlers` dict
    - Acquires a database connection from the async pool
-   - Creates a session object (validates cookie if present)
+   - Creates a session object (validates the cookie or, for programmatic
+     clients, an `Authorization: Bearer` API token if present)
 4. **Endpoint** `process(server, session, indata)` executes:
    - Builds OpenSearch query via `plugins.defuzzer` (normalizes dates/filters)
    - Checks access via `plugins.aaa` (private list filtering)
@@ -158,10 +160,11 @@ user-installable extensions.
 | `configuration.py` | YAML config parsing (all config keys defined here) |
 | `database.py` | Async OpenSearch client, connection pool, index names |
 | `messages.py` | Email retrieval, threading logic, access filtering, trimming |
-| `session.py` | Cookie management, OAuth credential tracking |
+| `session.py` | Cookie management, API token authentication, OAuth credential tracking |
 | `aaa.py` | Access control (public vs private list checks) |
 | `defuzzer.py` | Date/query parameter normalization and validation |
-| `background.py` | Periodic tasks (refresh list counts, activity stats) |
+| `background.py` | Periodic tasks (refresh list counts, activity stats, purge expired API tokens) |
+| `token.py` | API token generation, SHA-256 hashing, per-action scopes, expiry |
 | `formdata.py` | Request body parsing (form-encoded vs JSON) |
 | `offloader.py` | Thread pool executor for CPU-bound JSON serialization |
 | `auditlog.py` | Admin action audit trail |

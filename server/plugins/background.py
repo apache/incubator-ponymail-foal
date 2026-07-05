@@ -29,6 +29,7 @@ from elasticsearch import VERSION as ES_VERSION
 import plugins.configuration
 import plugins.server
 import plugins.database
+import plugins.token
 
 PYPONY_RE_PREFIX = re.compile(r"^([a-zA-Z]+:\s*)+")
 ACTIVITY_TIMESPAN = "now-90d"  # How far back to look for "current" activity in lists
@@ -227,6 +228,20 @@ async def get_data(server: plugins.server.BaseServer):
                 "Could not fetch activity data - database down or not connected: %s"
                 % e
             )
+    # Housekeeping: purge expired API tokens so abandoned ones do not pile up,
+    # and drop stale entries from the optional in-memory token auth cache.
+    if server.config.tokens.enabled:
+        async with ProgTimer("Purging expired API tokens"):
+            now = int(time.time())
+            try:
+                db = plugins.database.Database(server.config.database)
+                await plugins.token.purge_expired_tokens(db, now)
+                await db.client.close()
+            except plugins.database.DBError as e:
+                print("Could not purge expired tokens: %s" % e)
+            expired = [key for key, val in server.data.token_cache.items() if val["expiry"] <= now]
+            for key in expired:
+                server.data.token_cache.pop(key, None)
 
 async def run_tasks(server: plugins.server.BaseServer) -> None:
     """

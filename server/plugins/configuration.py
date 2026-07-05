@@ -74,6 +74,37 @@ class OAuthConfig:
         self.providers = subyaml.get("providers", {})
 
 
+class TokensConfig:
+    """Configuration for long-term API tokens (see plugins/token.py)."""
+
+    enabled: bool
+    default_age: int  # seconds; 0 == token never expires
+    max_age: int  # seconds; 0 == no upper bound enforced
+    max_tokens: int  # per-account cap on the number of live tokens
+    cache_ttl: int  # seconds to cache token auth in memory; 0 == disabled
+    cache_max: int  # max number of entries in the in-memory token auth cache
+    revoke_on_identity_change: bool  # drop a user's tokens when their OAuth identity changes
+
+    def __init__(self, subyaml: dict):
+        self.enabled = bool(subyaml.get("enabled", False))
+        # Default to a 30-day lifetime when the user does not request one.
+        self.default_age = int(subyaml.get("default_lifetime", 86400 * 30))
+        self.max_age = int(subyaml.get("max_lifetime", 0))
+        self.max_tokens = int(subyaml.get("max_tokens", 25))
+        # Optional in-memory cache of token auth to avoid a database lookup on
+        # every request. Disabled by default (0) because caching delays the
+        # effect of revocation/expiry by up to this many seconds.
+        self.cache_ttl = int(subyaml.get("cache_ttl", 0))
+        # Upper bound on cache entries; the cache is flushed if it is exceeded,
+        # so token auth cannot grow memory without limit.
+        self.cache_max = int(subyaml.get("cache_max", 10000))
+        # When a user logs in and their OAuth identity/permissions differ from
+        # what was stored (e.g. after a credential reset or a group-membership
+        # change upstream), automatically revoke all of that user's API tokens
+        # so credentials minted under the old identity cannot be reused.
+        self.revoke_on_identity_change = bool(subyaml.get("revoke_on_identity_change", True))
+
+
 class DBConfig:
     dburl: str
     hostname: str
@@ -103,6 +134,7 @@ class Configuration:
     tasks: TaskConfig
     oauth: OAuthConfig
     ui: UIConfig
+    tokens: TokensConfig
 
     def __init__(self, yml: dict):
         self.server = ServerConfig(yml.get("server", {}))
@@ -110,6 +142,7 @@ class Configuration:
         self.tasks = TaskConfig(yml.get("tasks", {}))
         self.oauth = OAuthConfig(yml.get("oauth", {}))
         self.ui = UIConfig(yml.get("ui", {}))
+        self.tokens = TokensConfig(yml.get("tokens", {}))
 
 
 class InterData:
@@ -120,8 +153,10 @@ class InterData:
     lists: dict
     sessions: dict
     activity: dict
+    token_cache: dict
 
     def __init__(self):
         self.lists = {}
         self.sessions = {}
         self.activity = {}
+        self.token_cache = {}  # token hash -> cached auth (only used if tokens.cache_ttl > 0)

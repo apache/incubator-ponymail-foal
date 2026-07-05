@@ -42,6 +42,7 @@ class Elastic:
     db_attachment:      str
     db_account:         str
     db_session:         str
+    db_token:           str
     db_notification:    str
     db_auditlog:        str
     dbname:             str
@@ -58,6 +59,7 @@ class Elastic:
         self.db_account = dbname + '-account'
         self.db_attachment = dbname + '-attachment'
         self.db_session = dbname + '-session'
+        self.db_token = dbname + '-token'
         self.db_notification = dbname + '-notification'
         self.db_auditlog = dbname + '-auditlog'
         self.db_version = 0

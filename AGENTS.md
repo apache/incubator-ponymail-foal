@@ -29,6 +29,7 @@ server/
 │   ├── compose.py             # Send email (authenticated)
 │   ├── preferences.py         # User prefs + list overview
 │   ├── mgmt.py                # Admin GDPR operations
+│   ├── token.py               # Long-term API token management (create/list/revoke)
 │   ├── oauth.py               # OAuth login flow
 │   ├── pminfo.py              # Server activity info
 │   ├── gravatar.py            # Avatar caching proxy
@@ -37,13 +38,14 @@ server/
 │   ├── configuration.py       # YAML config parsing (source of truth for all config keys)
 │   ├── database.py            # ElasticSearch async client pool
 │   ├── messages.py            # Email query, threading, trimming logic
-│   ├── session.py             # Cookie-based sessions + OAuth credential tracking
+│   ├── session.py             # Cookie sessions + API token auth + OAuth credential tracking
 │   ├── aaa.py                 # Access control (public vs private lists)
 │   ├── defuzzer.py            # Date/query parameter normalization
-│   ├── background.py          # Periodic index refresh tasks
+│   ├── background.py          # Periodic index refresh + expired-token purge
 │   ├── formdata.py            # Request body parsing (form vs JSON)
 │   ├── offloader.py           # Thread pool for CPU-bound JSON serialization
 │   ├── auditlog.py            # Admin action logging
+│   ├── token.py               # API token generation, hashing, scopes, expiry
 │   └── oauth*.py              # Provider-specific OAuth token exchange
 └── testendpoints/             # Extra endpoints loaded with --testendpoints
 

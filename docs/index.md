@@ -37,6 +37,7 @@
 
 - [API Reference](API.md) — HTTP endpoint specifications
 - [API Client Guide](api_client_guide.md) — Curl examples and integration patterns
+- [Generating API Client Libraries](generating_api_clients.md) — Auto-generate typed clients from the OpenAPI spec
 - [Plugin & Endpoint Development](plugins.md) — How to extend Foal
 - [Style Guide](STYLEGUIDE.md) — Code conventions (Python + JavaScript)
 - [Versioning & Releases](releases.md) — How versions are tracked

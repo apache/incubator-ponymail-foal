@@ -37,6 +37,7 @@ import plugins.formdata
 import plugins.offloader
 import plugins.server
 import plugins.session
+import plugins.token
 
 from server_version import PONYMAIL_SERVER_VERSION
 PONYMAIL_FOAL_VERSION = "0.1.0"
@@ -165,6 +166,31 @@ class Server(plugins.server.BaseServer):
         # Find a handler, or 404
         if handler in self.handlers:
             session = await plugins.session.get_session(self, request)
+            # An expired or otherwise invalid bearer token is rejected explicitly
+            # (403) rather than silently downgraded to anonymous, so the client
+            # knows to refresh its credentials.
+            if session.token_invalid:
+                if session.database:
+                    self.dbpool.put_nowait(session.database)
+                    self.dbpool.task_done()
+                    session.database = None
+                return aiohttp.web.Response(
+                    headers={**headers, "content-type": "application/json"},
+                    status=403,
+                    text='{"okay": false, "message": "Invalid or expired API token."}',
+                )
+            # Enforce API-token scopes: a scoped token may only reach the
+            # endpoints its scopes permit. Cookie sessions are unaffected.
+            if not plugins.token.token_allows(session, handler):
+                if session.database:
+                    self.dbpool.put_nowait(session.database)
+                    self.dbpool.task_done()
+                    session.database = None
+                return aiohttp.web.Response(
+                    headers={**headers, "content-type": "application/json"},
+                    status=403,
+                    text='{"okay": false, "message": "This API token lacks the required scope for this endpoint."}',
+                )
             try:
                 # Wait for endpoint response. This is typically JSON in case of success,
                 # but could be an exception (that needs a traceback) OR

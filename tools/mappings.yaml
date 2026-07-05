@@ -148,6 +148,23 @@ session:
       type: long
     cid:
       type: keyword
+token:
+  dynamic: strict
+  properties:
+    id:
+      type: keyword
+    cid:
+      type: keyword
+    description:
+      type: keyword
+    created:
+      type: long
+    expires:
+      type: long
+    last_used:
+      type: long
+    scopes:
+      type: keyword
 source:
   dynamic: strict
   properties:

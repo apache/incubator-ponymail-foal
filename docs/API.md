@@ -21,7 +21,9 @@ This document describes the HTTP API for Pony Mail Foal. All endpoints
 accept JSON request bodies (POST) and return JSON unless otherwise noted.
 
 The formal OpenAPI 3.0 specification is available at
-[`server/openapi.yaml`](../server/openapi.yaml).
+[`server/openapi.yaml`](../server/openapi.yaml). You can auto-generate a typed
+client library in most languages from it rather than hand-writing one — see
+[Generating API Client Libraries](generating_api_clients.md).
 
 ---
 
@@ -36,6 +38,7 @@ The formal OpenAPI 3.0 specification is available at
   - [mbox.json — Download mbox archive](#mboxjson)
   - [compose.json — Send an email](#composejson)
   - [preferences.json — User preferences and list overview](#preferencesjson)
+  - [token.json — Long-term API tokens](#tokenjson)
   - [mgmt.json — Administrative operations](#mgmtjson)
   - [pminfo.json — Server activity info](#pminfojson)
   - [gravatar.json — Avatar image proxy](#gravatarjson)
@@ -49,10 +52,36 @@ The formal OpenAPI 3.0 specification is available at
 
 ## Authentication
 
-Foal uses cookie-based sessions via OAuth. The session cookie is named
-`ponymail`. Most read endpoints work without authentication for public
-lists. Private list access and write operations (compose, management)
-require an authenticated session via an authoritative OAuth provider.
+Foal supports two ways of authenticating API requests:
+
+1. **Cookie session (interactive).** Foal uses cookie-based sessions via OAuth.
+   The session cookie is named `ponymail`. This is what the web UI uses.
+2. **Long-term API token (programmatic).** Send an `Authorization: Bearer <token>`
+   header. Tokens are ideal for scripts and automation: they are not subject to
+   the short session-cookie lifetime and never require a browser round-trip. A
+   token grants access up to that of the account that created it (including any
+   private lists that account can reach), further limited by the token's
+   [scopes](#scopes). Create and manage tokens via
+   [`token.json`](#tokenjson) or the **API Tokens** entry in the web UI's user
+   menu.
+
+Most read endpoints work without authentication for public lists. Private list
+access and write operations (compose, management) require an authenticated
+session (cookie or token) via an authoritative OAuth provider.
+
+If a request presents a bearer token that is invalid, revoked, or expired, the
+server responds with **`403`** and `{"okay": false, "message": "Invalid or
+expired API token."}` — it does **not** silently fall back to anonymous access,
+so a client can detect the condition and refresh its credentials. (A token that
+is merely missing a required [scope](#scopes) gets `403` with a different
+message.)
+
+Example using a token:
+
+```
+curl -H "Authorization: Bearer pmt_XXXXXXXX..." \
+     "https://lists.example.org/api/mbox.json?list=dev@example.org&date=2024-01"
+```
 
 ---
 
@@ -320,6 +349,109 @@ POST /api/preferences.json
 
 ---
 
+### token.json
+
+**Create, list, and revoke long-term API tokens for the logged-in user.**
+
+```
+POST /api/token.json
+```
+
+Requires an interactive (cookie) session — tokens cannot be managed using token
+authentication. The raw token secret is returned **only once**, at creation
+time; the server stores only a hash of it.
+
+`list` is the default action. `create` and `revoke` must be sent as actions in a
+JSON POST body; mutation actions in query parameters are rejected.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `action` | string | no | One of `list` (default), `create`, `revoke` |
+| `description` | string | no | (`create`) Human-readable label for the token |
+| `scopes` | string/list | no | (`create`) Scopes to grant (space/comma-separated or a JSON list). Defaults to `read`. |
+| `lifetime` | integer | no | (`create`) Lifetime in seconds; `0` = never expires. Defaults to the server's configured default (30 days). Clamped to the server maximum if one is set. |
+| `id` | string | no | (`revoke`) Id of the token to revoke |
+
+#### Scopes
+
+A token's effective access is the **intersection** of its owner's account
+permissions and its scopes — a scope can only *restrict* access, never grant
+more than the account already has. A request with a token that lacks the
+required scope for an endpoint gets `403`.
+
+| Scope | Grants | Endpoints |
+|-------|--------|-----------|
+| `read` | Read the archives (search, fetch emails/threads/sources, download mbox, preferences) | `stats`, `email`, `thread`, `source`, `mbox`, `preferences`, `pminfo`, `gravatar`, `plain` |
+| `write` | Send email | `compose` |
+| `admin` | Administrative operations (hide/delete/edit) — only effective for admin accounts | `mgmt` |
+
+A scope is a **wish, not a stored grant.** The server does *not* snapshot the
+owner's permissions into the token when it is created. On **every** request it
+recomputes the effective access as the intersection of the token's scopes with
+the owner's **current** account permissions, resolved live from the account
+record at that moment. Two consequences follow:
+
+- If the owner **loses** a permission (removed from a private list, or their
+  admin/moderator status is dropped), every existing token immediately loses
+  that access on its next request — regardless of the scope it was minted with.
+  A token is therefore *not* a cached copy of permissions that could go stale;
+  there is nothing to invalidate or evict when permissions shrink.
+- If the owner **gains** a permission after a token was created, a token whose
+  scope already covers it starts working for the newly reachable resource
+  automatically, with no need to re-issue the token.
+
+The `admin` scope illustrates this: it only ever grants administrative access
+while the underlying account is *currently* an admin (see the
+[`oauth.admins`](configuration.md#oauth) list) — minting an `admin`-scoped
+token does not make a non-admin an admin, and an admin who is later removed
+from `oauth.admins` loses admin access through all of their tokens at once.
+
+Revoking a token (`action=revoke`) remains the way to kill one *specific*
+credential (for example a leaked one); reducing what the *account* itself can
+do is handled entirely by the live intersection above. To forcibly cut off
+**all** of a user's tokens at once — e.g. after their upstream credentials are
+reset — an administrator can use [`mgmt.json`](#mgmtjson)'s `token_purge`
+action.
+
+#### Response
+
+`action=create` (the only time the raw `token` is shown):
+
+```json
+{
+  "okay": true,
+  "id": "3f9a...c1",
+  "description": "laptop backup script",
+  "created": 1717977600,
+  "expires": 1720569600,
+  "last_used": 0,
+  "scopes": ["read"],
+  "token": "pmt_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}
+```
+
+`action=list`:
+
+```json
+{
+  "okay": true,
+  "tokens": [
+    {"id": "3f9a...c1", "description": "laptop backup script", "scopes": ["read"],
+     "created": 1717977600, "expires": 1720569600, "last_used": 1718000000}
+  ]
+}
+```
+
+**Notes:**
+- Use a token by sending `Authorization: Bearer <token>` on any API request
+  (see [Authentication](#authentication)).
+- Token management is disabled when `tokens.enabled` is `false` in
+  `ponymail.yaml`.
+
+---
+
 ### mgmt.json
 
 **Administrative endpoint for email management (GDPR operations).**
@@ -333,12 +465,14 @@ POST /api/mgmt.json
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `action` | string | **yes** | One of: `log`, `delete`, `hide`, `unhide`, `edit` |
+| `action` | string | **yes** | One of: `log`, `delete`, `hide`, `unhide`, `edit`, `token_purge` |
 | `document` | string | no | Single document permalink ID |
 | `documents` | array | no | Array of document permalink IDs (batch operations) |
 | `size` | integer | no | Number of audit log entries (for `action=log`, default: 50) |
 | `page` | integer | no | Page offset for audit log |
 | `filter` | string | no | Filter audit log by action type |
+| `cid` | string | no | (`token_purge`) Account id whose tokens to purge |
+| `email` | string | no | (`token_purge`) Email whose tokens to purge (resolves to every account with that address) |
 
 **Actions:**
 
@@ -347,6 +481,13 @@ POST /api/mgmt.json
 - `hide` — Hide emails from public view (recoverable)
 - `unhide` — Restore previously hidden emails
 - `edit` — Edit email metadata (list-id, etc.)
+- `token_purge` — Revoke **all** API tokens belonging to a user. Identify the
+  user by `cid` or `email` (at least one is required). Intended for when a
+  user's upstream credentials are reset or compromised and every long-term
+  token they hold must be cut off at once. Each purge is recorded in the audit
+  log as a `token_purge` entry. (Note: a normal login that changes a user's
+  OAuth identity already purges their tokens automatically — see
+  [`tokens.revoke_on_identity_change`](configuration.md#tokens).)
 
 #### Response
 
@@ -354,6 +495,12 @@ Varies by action. For `log`:
 
 ```json
 {"entries": [ /* audit log entries */ ]}
+```
+
+For `token_purge`:
+
+```json
+{"okay": true, "accounts": ["3f9a…c1"], "deleted": 4, "message": "Purged 4 token(s)."}
 ```
 
 For mutations: returns an `ActionResponse` with `okay` and `message`.

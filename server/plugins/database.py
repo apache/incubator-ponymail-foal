@@ -38,6 +38,7 @@ class DBNames:
         self.db_attachment = f"{dbprefix}-attachment"
         self.db_account = f"{dbprefix}-account"
         self.db_session = f"{dbprefix}-session"
+        self.db_token = f"{dbprefix}-token"
         self.db_notification = f"{dbprefix}-notification"
         self.db_auditlog = f"{dbprefix}-auditlog"
 
@@ -82,6 +83,20 @@ class Database:
         if not index:
             index = self.dbs.db_mbox
         res = await self.client.get(index=index, **kwargs)
+        return res
+
+    async def count(self, index="", **kwargs):
+        if not index:
+            index = self.dbs.db_mbox
+        res = await self.client.count(index=index, **kwargs)
+        return res
+
+    async def delete_by_query(self, index="", **kwargs):
+        # This bulk-deletes documents, so refuse to run without an explicit
+        # index rather than defaulting to a data index (or, worse, all indices).
+        if not index:
+            raise ValueError("delete_by_query requires an explicit index")
+        res = await self.client.delete_by_query(index=index, **kwargs)
         return res
 
     async def delete(self, index="", **kwargs):
