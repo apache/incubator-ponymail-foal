@@ -83,6 +83,156 @@ curl -H "Authorization: Bearer pmt_XXXXXXXX..." \
      "https://lists.example.org/api/mbox.json?list=dev@example.org&date=2024-01"
 ```
 
+### How token authentication works
+
+The diagrams below show every component involved: the authoritative **OAuth**
+provider, `main.py` (request entry + scope gate), `session.py`, `token.py`, the
+three OpenSearch indices, the **optional** in-memory token cache, and the
+`background.py` housekeeping sweep.
+
+#### Components
+
+```mermaid
+flowchart TB
+    UI["Web UI (browser)"]
+    Script["Script / automation"]
+    OAuth["Authoritative OAuth provider"]
+
+    subgraph Server["Foal server"]
+        Main["main.py<br/>request entry + scope gate"]
+        Sess["session.py<br/>get_session"]
+        Cache["optional token cache<br/>(tokens.cache_ttl)"]
+        Tok["token.py<br/>create / lookup / revoke / purge"]
+        BG["background.py<br/>periodic sweep"]
+    end
+
+    subgraph ES["OpenSearch indices"]
+        AcctIdx["ponymail-account"]
+        SessIdx["ponymail-session"]
+        TokIdx["ponymail-token"]
+    end
+
+    UI -->|OAuth login| OAuth
+    OAuth -->|identity + group membership| Sess
+    Sess -->|store cookie session| SessIdx
+    Sess -->|store credentials| AcctIdx
+
+    UI -->|cookie| Main
+    Script -->|Bearer pmt token| Main
+    Main --> Sess
+    Sess <-->|hit / miss| Cache
+    Sess -->|validate token| Tok
+    Tok --> TokIdx
+    Tok -->|current permissions| AcctIdx
+
+    BG -->|purge expired| TokIdx
+    OAuth -.->|identity or permission change| Tok
+```
+
+#### Creating a token
+
+Tokens can only be minted from an interactive (cookie) session established via
+OAuth — a token can never create another token. Only a SHA-256 digest of the
+secret is stored, so the raw token is shown to the user exactly once.
+
+```mermaid
+sequenceDiagram
+    actor User as User (browser)
+    participant OA as OAuth provider
+    participant API as main.py
+    participant TP as token.py
+    participant AS as ES ponymail-account
+    participant TS as ES ponymail-token
+
+    User->>OA: interactive OAuth login
+    OA-->>API: identity + group membership
+    API->>AS: upsert account credentials (cid)
+    Note over API,User: user now holds a cookie session
+
+    User->>API: POST /api/token.json (create, scopes, expires)
+    Note over API: rejected unless caller has a cookie session
+    API->>TP: create_token(cid, scopes, expires)
+    TP->>TP: raw = "pmt_" + 256-bit random secret
+    TP->>TS: store id=SHA-256(raw), cid, scopes, expires
+    TP-->>User: raw token (shown once; only its hash is kept)
+```
+
+#### Authenticating a request
+
+A bearer token is validated on every request (no cookie-lifetime limit). With
+the optional cache enabled (`tokens.cache_ttl > 0`) a recently-seen token skips
+the two database reads, at the cost of delaying revocation/expiry by up to
+`cache_ttl` seconds. The effective access is the intersection of the token's
+scopes and the owner's **current** account permissions, so a token can only ever
+restrict access, never escalate it.
+
+```mermaid
+sequenceDiagram
+    participant C as Client (script)
+    participant API as main.py
+    participant S as session.py
+    participant Ca as token cache (optional)
+    participant TS as ES ponymail-token
+    participant AS as ES ponymail-account
+
+    C->>API: GET /api/mbox.json + Bearer pmt_...
+    API->>S: get_session(request)
+
+    opt tokens.cache_ttl > 0
+        S->>Ca: lookup SHA-256(token)
+        Ca-->>S: fresh hit -> reuse session, skip DB
+    end
+
+    S->>TS: lookup_token(SHA-256(token))
+    alt unknown or expired
+        TS-->>S: not found (expired deleted on lookup)
+        S-->>API: token_invalid = true
+        API-->>C: 403 Invalid or expired API token
+    else valid
+        TS-->>S: cid, scopes, expires
+        S->>AS: fetch account(cid) current permissions
+        S->>Ca: store entry for cache_ttl (if enabled)
+        S-->>API: token session (scopes + live permissions)
+        alt endpoint scope not granted
+            API-->>C: 403 token lacks required scope
+        else scope granted
+            Note over API: effective access = permissions AND scopes
+            API-->>C: 200 response
+        end
+    end
+```
+
+#### Revocation and expiry
+
+Five mechanisms make sure a token cannot outlive the access it was minted for.
+All of them delete the row from `ponymail-token`, after which the next request
+carrying that token gets a `403`.
+
+```mermaid
+flowchart LR
+    U["User<br/>token.json revoke"]
+    A["Admin<br/>mgmt token_purge (cid or email)"]
+    O["OAuth re-login with changed<br/>identity/permissions<br/>(revoke_on_identity_change)"]
+    E["Token passes its expires time"]
+    BG["background.py periodic sweep"]
+
+    TS[("ponymail-token")]
+    Ca[("optional token cache")]
+    Done["Next request with the token -> 403"]
+
+    U -->|revoke_token cid,tid| TS
+    A -->|purge_tokens_for_cid| TS
+    O -->|purge_tokens_for_cid| TS
+    E -->|lazy delete on next lookup| TS
+    BG -->|purge_expired_tokens| TS
+    BG -->|drop stale entries| Ca
+
+    TS --> Done
+```
+
+See [`plugins/token.py`](../server/plugins/token.py) and
+[`plugins/session.py`](../server/plugins/session.py) for the implementation.
+
 ---
 
 ## Endpoints
