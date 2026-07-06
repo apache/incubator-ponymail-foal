@@ -38,6 +38,7 @@
 - [API Reference](API.md) — HTTP endpoint specifications
 - [API Client Guide](api_client_guide.md) — Curl examples and integration patterns
 - [Generating API Client Libraries](generating_api_clients.md) — Auto-generate typed clients from the OpenAPI spec
+- [asfquart / ATR Alignment](asfquart_migration.md) — How API tokens map to asfquart/ATR, and future Quart migration steps
 - [Plugin & Endpoint Development](plugins.md) — How to extend Foal
 - [Style Guide](STYLEGUIDE.md) — Code conventions (Python + JavaScript)
 - [Versioning & Releases](releases.md) — How versions are tracked
