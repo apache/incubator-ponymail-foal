@@ -73,34 +73,34 @@ function search(query, date) {
             // N.B. other options are currently ignored
         }
     }
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
+    let newhref = "list?%s:%s:%s".format(listid, date, encodeURIComponent(query));
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
         G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
         );
-    // See above: newhref values should have been encoded, but doing so now might invalidate existing URLs
+    // Encode header values for shareable URLs
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
-        newhref += "&header_from=%s".format(header_from.value);
+        newhref += "&header_from=%s".format(encodeURIComponent(header_from.value));
         header_from.value = "";
     }
     if (header_subject.value.length > 0) {
         sURL += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
-        newhref += "&header_subject=%s".format(header_subject.value);
+        newhref += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
         header_subject.value = "";
     }
     if (header_to.value.length > 0) {
         sURL += "&header_to=%s".format(encodeURIComponent(header_to.value));
-        newhref += "&header_to=%s".format(header_to.value);
+        newhref += "&header_to=%s".format(encodeURIComponent(header_to.value));
         header_to.value = "";
     }
     if (header_body.value.length > 0) {
         sURL += "&header_body=%s".format(encodeURIComponent(header_body.value));
-        newhref += "&header_body=%s".format(header_body.value);
+        newhref += "&header_body=%s".format(encodeURIComponent(header_body.value));
         header_body.value = "";
     }
     if (header_messageid.value.length > 0) {
         sURL += "&header_messageid=%s".format(encodeURIComponent(header_messageid.value));
-        newhref += "&header_messageid=%s".format(header_messageid.value);
+        newhref += "&header_messageid=%s".format(encodeURIComponent(header_messageid.value));
         header_messageid.value = "";
     }
     GET(sURL, renderListView, {

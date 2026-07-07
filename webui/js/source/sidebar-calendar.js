@@ -200,7 +200,7 @@ function calendar_click(year, month) {
         }
     }
     let newhref = "list?%s@%s:%u-%u".format(calendar_current_list, calendar_current_domain, year, month);
-    if (q && q.length > 0) newhref += ":" + q;
+    if (q && q.length > 0) newhref += ":" + encodeURIComponent(q);
 
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
