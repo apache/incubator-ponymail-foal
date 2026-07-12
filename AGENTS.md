@@ -10,8 +10,6 @@ Apache Pony Mail Foal is a mailing list archive system. It consists of:
 - **`webui/`** — Static JavaScript/HTML frontend served by a reverse proxy
 - **`tools/`** — Python CLI utilities for archiving, importing, and migrating email
 
-Production deployment: `https://lists.apache.org` (archives all ASF mailing lists).
-
 ## Repository Layout
 
 ```

@@ -19,10 +19,8 @@
 
 ## Current State
 
-Pony Mail Foal does not yet have formal tagged releases. The project
-runs from `master` (the ASF production instance at `lists.apache.org`
-tracks a deployed commit).
-
+Pony Mail Foal does not yet have formal tagged releases.
+The project runs from `master`
 ---
 
 ## How Versions Are Tracked
@@ -96,8 +94,7 @@ Admin users additionally see `elasticsearch_engine` and
 | 1.0.1 (legacy) | — | Last planned version of old Lua-based Pony Mail |
 
 The original Lua-based Pony Mail had releases at `0.9.x` beta level.
-Foal superseded it without a formal release — the ASF deployment
-transitioned directly from Lua to Foal on `lists.apache.org`.
+Foal superseded it
 
 ---
 
