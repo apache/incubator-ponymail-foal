@@ -84,6 +84,22 @@ authenticated users:
 Admin users additionally see `elasticsearch_engine` and
 `elasticsearch_library` versions.
 
+The ponymail.js file contains additional version information:
+
+```javascript
+const PONYMAIL_REVISION = '9f32148';
+
+const PONYMAIL_VERSION = "1.0.1"; 
+```
+
+The html files also include the PONYMAIL_REVISION value in links to css and js files:
+
+```html
+<link href="css/scaffolding.css?revision=9f32148" rel="stylesheet" media="all">
+
+<script src="js/ponymail.js?revision=9f32148"></script>
+```
+ 
 ---
 
 ## Release History
@@ -105,7 +121,7 @@ The project does not currently use git tags for releases
 
 When formal releases are established, the expected process would be:
 
-1. Update `PONYMAIL_FOAL_VERSION` in `server/main.py`
+1. Update `PONYMAIL_FOAL_VERSION` in `server/main.py` and `PONYMAIL_VERSION` in `webui/js/source/aavariables.js`
 2. Regenerate `server_version.py` and `ponymail.js`
 3. Tag the commit: `git tag v{version}`
 4. Create a GitHub release with changelog
