@@ -227,7 +227,7 @@ components:
           example: false
           type: boolean
         body:
-          description: The message body of the email, tuncated to 201 chars
+          description: The message body of the email, truncated to 201 chars
           example: "I like cakes.\nThe joke you made really made me laugh.\nBest,\nJess."
           type: string
         gravatar:
