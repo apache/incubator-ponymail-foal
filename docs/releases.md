@@ -62,6 +62,11 @@ The version is embedded in the concatenated `ponymail.js` output.
 A static string (`PONYMAIL_FOAL_VERSION = "0.1.0"`) in `server/main.py`.
 Updated manually for milestone releases.
 
+### Foal Javascript Version
+
+A static string (`const PONYMAIL_VERSION = "1.0.1";`) in `webui/js/source/aavariables.js`.
+Updated manually for milestone releases.
+
 ---
 
 ## Identifying the Running Version
