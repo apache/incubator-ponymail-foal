@@ -89,7 +89,7 @@ The ponymail.js file contains additional version information:
 ```javascript
 const PONYMAIL_REVISION = '9f32148';
 
-const PONYMAIL_VERSION = "1.0.1"; 
+const PONYMAIL_VERSION = "1.0.1";
 ```
 
 The html files also include the PONYMAIL_REVISION value in links to css and js files:
@@ -99,7 +99,7 @@ The html files also include the PONYMAIL_REVISION value in links to css and js f
 
 <script src="js/ponymail.js?revision=9f32148"></script>
 ```
- 
+
 ---
 
 ## Release History
