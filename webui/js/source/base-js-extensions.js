@@ -24,7 +24,8 @@ String.prototype.format = function() {
     let args = arguments;
     let n = 0;
     let t = this;
-    let rtn = this.replace(/(?!%)?%([-+]*)([0-9.]*)([a-zA-Z])/g, function(m, pm, len, fmt) {
+    let rtn = this.replace(/(?!%)?%([-+]?)([0-9.]*)([disu])/g, function(m, pm, len, fmt) {
+        // pm (plus/minus) is currently ignored
         len = parseInt(len || '1');
         // We need the correct number of args, balk otherwise, using ourselves to format the error!
         if (args.length <= n) {
@@ -48,6 +49,11 @@ String.prototype.format = function() {
                 return varg;
         }
     });
+    if (args.length != n) {
+        let err = "Error interpolating string '%s': Expected %u argments, got %u!".format(t, n, args.length);
+        console.log(err);
+        throw err;
+    }
     return rtn;
 };
 
