@@ -32,6 +32,7 @@ FOAL_MAX_SESSION_AGE = 86400 * 7  # Max 1 week between visits before voiding a s
 FOAL_SAVE_SESSION_INTERVAL = 3600  # Update sessions on disk max once per hour
 DATABASE_NOT_CONNECTED = "Database not connected!"
 OAUTH_PROVIDER_DEFAULT = "generic"
+FOAL_COOKIE_NAME = "ponymail" # Name of cookie that stores the session id
 
 class SessionCredentials:
     uid: str
@@ -101,8 +102,8 @@ async def get_session(
             cookies: http.cookies.SimpleCookie = http.cookies.SimpleCookie(
                 cookie_header
             )
-            if "ponymail" in cookies:
-                session_id = cookies["ponymail"].value
+            if FOAL_COOKIE_NAME in cookies:
+                session_id = cookies[FOAL_COOKIE_NAME].value
                 if not all(c in "abcdefg1234567890-" for c in session_id):
                     session_id = None
                 break
@@ -183,7 +184,7 @@ async def set_session(server: plugins.server.BaseServer, cid: str, **credentials
     """Create a new user session in the database"""
     session_id = str(uuid.uuid4())
     cookie: http.cookies.SimpleCookie = http.cookies.SimpleCookie()
-    cookie["ponymail"] = session_id
+    cookie[FOAL_COOKIE_NAME] = session_id
     session = SessionObject(
         server, last_accessed=int(time.time()), cookie=session_id, cid=cid
     )
@@ -200,7 +201,7 @@ async def set_session(server: plugins.server.BaseServer, cid: str, **credentials
 
     # Put DB handle back into the pool
     server.dbpool.put_nowait(session.database)
-    return cookie["ponymail"].OutputString()
+    return cookie[FOAL_COOKIE_NAME].OutputString()
 
 
 async def save_session(session: SessionObject):
