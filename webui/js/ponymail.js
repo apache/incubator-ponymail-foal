@@ -16,7 +16,7 @@
 */
 // THIS IS AN AUTOMATICALLY COMBINED FILE. PLEASE EDIT THE source/ FILES!
 
-const PONYMAIL_REVISION = '9f32148';
+const PONYMAIL_REVISION = '5e59be9';
 
 
 /******************************************
@@ -4237,34 +4237,34 @@ function search(query, date) {
             // N.B. other options are currently ignored
         }
     }
-    let newhref = "list?%s:%s:%s".format(listid, date, query);
+    let newhref = "list?%s:%s:%s".format(listid, date, encodeURIComponent(query));
     let sURL = '%sapi/stats.lua?d=%s&list=%s&domain=%s&q=%s'.format(
         G_apiURL, encodeURIComponent(date), encodeURIComponent(list), encodeURIComponent(domain), encodeURIComponent(query)
         );
-    // See above: newhref values should have been encoded, but doing so now might invalidate existing URLs
+    // Encode header values for shareable URLs
     if (header_from.value.length > 0) {
         sURL += "&header_from=%s".format(encodeURIComponent(header_from.value));
-        newhref += "&header_from=%s".format(header_from.value);
+        newhref += "&header_from=%s".format(encodeURIComponent(header_from.value));
         header_from.value = "";
     }
     if (header_subject.value.length > 0) {
         sURL += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
-        newhref += "&header_subject=%s".format(header_subject.value);
+        newhref += "&header_subject=%s".format(encodeURIComponent(header_subject.value));
         header_subject.value = "";
     }
     if (header_to.value.length > 0) {
         sURL += "&header_to=%s".format(encodeURIComponent(header_to.value));
-        newhref += "&header_to=%s".format(header_to.value);
+        newhref += "&header_to=%s".format(encodeURIComponent(header_to.value));
         header_to.value = "";
     }
     if (header_body.value.length > 0) {
         sURL += "&header_body=%s".format(encodeURIComponent(header_body.value));
-        newhref += "&header_body=%s".format(header_body.value);
+        newhref += "&header_body=%s".format(encodeURIComponent(header_body.value));
         header_body.value = "";
     }
     if (header_messageid.value.length > 0) {
         sURL += "&header_messageid=%s".format(encodeURIComponent(header_messageid.value));
-        newhref += "&header_messageid=%s".format(header_messageid.value);
+        newhref += "&header_messageid=%s".format(encodeURIComponent(header_messageid.value));
         header_messageid.value = "";
     }
     GET(sURL, renderListView, {
@@ -4493,7 +4493,7 @@ function calendar_click(year, month) {
         }
     }
     let newhref = "list?%s@%s:%u-%u".format(calendar_current_list, calendar_current_domain, year, month);
-    if (q && q.length > 0) newhref += ":" + q;
+    if (q && q.length > 0) newhref += ":" + encodeURIComponent(q);
 
     if (location.href !== newhref) {
         window.history.pushState({}, null, newhref);
@@ -4550,14 +4550,16 @@ async function sidebar_stats(json) {
     obj.inject(new HTML('h5', {}, "Most active authors: "));
     for (let i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
-            break;
+        break;
         }
         let par = json.participants[i];
+        let full_name = par.name;
         if (par.name.length > 24) {
             par.name = par.name.substring(0, 23) + "...";
         }
         if (par.name.length == 0) {
             par.name = par.email;
+            full_name = par.email;
         }
         let pdiv = new HTML('div', {
             class: "sidebar_stats_participant"
@@ -4567,7 +4569,11 @@ async function sidebar_stats(json) {
             src: GRAVATAR_URL.format(par.gravatar)
         })
         pdiv.inject(pimg);
-        pdiv.inject(new HTML('b', {}, par.name + ": "));
+        let plink = new HTML('a', {
+            href: 'javascript:void(0);',
+            onclick: "search('&header_from=" + full_name.replace(/'/g, "\\'") + "', '" + (G_current_month ? G_current_year + '-' + G_current_month : G_current_year) + "')"
+        }, par.name + ": ");
+        pdiv.inject(new HTML('b', {}, plink));
         pdiv.inject(new HTML('br'));
         pdiv.inject("%u emails sent".format(par.count));
         obj.inject(pdiv);

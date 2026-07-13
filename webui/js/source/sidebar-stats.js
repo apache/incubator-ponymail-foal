@@ -50,14 +50,16 @@ async function sidebar_stats(json) {
     obj.inject(new HTML('h5', {}, "Most active authors: "));
     for (let i = 0; i < json.participants.length; i++) {
         if (i >= 5) {
-            break;
+        break;
         }
         let par = json.participants[i];
+        let full_name = par.name;
         if (par.name.length > 24) {
             par.name = par.name.substring(0, 23) + "...";
         }
         if (par.name.length == 0) {
             par.name = par.email;
+            full_name = par.email;
         }
         let pdiv = new HTML('div', {
             class: "sidebar_stats_participant"
@@ -67,7 +69,11 @@ async function sidebar_stats(json) {
             src: GRAVATAR_URL.format(par.gravatar)
         })
         pdiv.inject(pimg);
-        pdiv.inject(new HTML('b', {}, par.name + ": "));
+        let plink = new HTML('a', {
+            href: 'javascript:void(0);',
+            onclick: "search('&header_from=" + full_name.replace(/'/g, "\\'") + "', '" + (G_current_month ? G_current_year + '-' + G_current_month : G_current_year) + "')"
+        }, par.name + ": ");
+        pdiv.inject(new HTML('b', {}, plink));
         pdiv.inject(new HTML('br'));
         pdiv.inject("%u emails sent".format(par.count));
         obj.inject(pdiv);
